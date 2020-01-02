@@ -88,7 +88,7 @@ export class WeightComponent implements OnInit {
    */
 
   getLatestWeight(): Weight{
-    return this.weights.filter(e => e.id == this.weights.length)[0];
+      return this.weights.filter(e => e.id == this.weights.length)[0];
   }
 
   getDaysSinceLastWeight(): number{
@@ -104,7 +104,9 @@ export class WeightComponent implements OnInit {
   }
 
   calculateBMI(){
-    return (+this.getLatestWeight().value / ((1.85)*(1.85))).toFixed(2);
+    if (this.weights.length != 0){
+      return (+this.getLatestWeight().value / ((1.85)*(1.85))).toFixed(2);
+    }
   }
 
   getLowestWeightValue(): number {

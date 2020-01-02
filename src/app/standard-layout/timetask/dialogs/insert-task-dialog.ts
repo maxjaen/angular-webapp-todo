@@ -1,8 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { TimeElement } from '../model/zeiterfassung';
-import { TaskService } from '../../tasks/services/task.service';
 import { Task } from '../../tasks/model/task';
+import { TaskService } from '../../tasks/services/task.service';
+import { TimeTask } from '../model/timetask';
+
 export interface Category {
   value: string;
   viewValue: string;
@@ -23,17 +24,17 @@ export class InsertTaskDialogTime {
   tasks: Task[];
 
   constructor(private taskService: TaskService, public dialogRef: MatDialogRef<InsertTaskDialogTime>,
-    @Inject(MAT_DIALOG_DATA) public data: TimeElement) {
-      this.taskService.getAllTasks().subscribe(e => {
-        this.tasks = e;
+    @Inject(MAT_DIALOG_DATA) public data: TimeTask) {
+      this.taskService.getAllTasks().subscribe(tasks => {
+        this.tasks = tasks;
       })
      }
 
-  selectCategory(event) {
+  selectCategory(event: { value: string; }) {
     this.data.shortdescr = event.value;
   };
 
-  selectDescription(event) {
+  selectDescription(event: { value: string; }) {
     this.data.longdescr = event.value;
   };
 

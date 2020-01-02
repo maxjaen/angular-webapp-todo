@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainingComponent } from './training/exercise.component';
-import { ZeiterfassungComponent } from './zeiterfassung/zeiterfassung.component';
+import { TimeTaskComponent } from './timetask/timetask.component';
 import { WeightComponent } from './weight/weight.component';
 import { TasksComponent} from './tasks/tasks.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms'
 import { InsertTaskDialog } from './tasks/dialogs/insert-task-dialog';
-import { InsertTaskDialogTime } from './zeiterfassung/dialogs/insert-task-dialog';
+import { InsertTaskDialogTime } from './timetask/dialogs/insert-task-dialog';
 import { RemoveTaskDialog } from './tasks/dialogs/remove-task-dialog';
 import { NgxTimerModule } from 'ngx-timer';
 import {
@@ -43,7 +43,7 @@ import {
 } from '@angular/material';
 
 @NgModule({
-  declarations: [TrainingComponent, TasksComponent, ZeiterfassungComponent, WeightComponent, InsertTaskDialog, InsertTaskDialogTime, RemoveTaskDialog],
+  declarations: [TrainingComponent, TasksComponent, TimeTaskComponent, WeightComponent, InsertTaskDialog, InsertTaskDialogTime, RemoveTaskDialog],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -85,7 +85,7 @@ import {
    exports: [
     TrainingComponent,
     TasksComponent,
-    ZeiterfassungComponent,
+    TimeTaskComponent,
     WeightComponent
   ],
   entryComponents: [

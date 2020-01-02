@@ -1,21 +1,21 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { ZeiterfassungService } from './services/zeiterfassung.service';
+import { TimeTaskService } from './services/timetask.service';
 import { MatDialog } from '@angular/material';
-import { TimeElement } from './model/zeiterfassung';
+import { TimeTask } from './model/timetask';
 import { InsertTaskDialogTime } from './dialogs/insert-task-dialog';
 import { countUpTimerConfigModel, timerTexts } from 'ngx-timer';
 import { CountupTimerService } from 'ngx-timer';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-zeiterfassung',
-  templateUrl: './zeiterfassung.component.html',
-  styleUrls: ['./zeiterfassung.component.scss']
+  selector: 'app-timetask',
+  templateUrl: './timetask.component.html',
+  styleUrls: ['./timetask.component.scss']
 })
-export class ZeiterfassungComponent implements OnInit {
+export class TimeTaskComponent implements OnInit {
 
-  timeElements: TimeElement[];
-  selectedTimeElement: TimeElement;
+  timeElements: TimeTask[];
+  selectedTimeElement: TimeTask;
   overallTime: number;
 
   id: number;
@@ -25,7 +25,7 @@ export class ZeiterfassungComponent implements OnInit {
   enddate: Date;
   testConfig: countUpTimerConfigModel;
 
-  constructor(private zeiterfassungService: ZeiterfassungService, private timerService: CountupTimerService, private titleService:Title, public dialog: MatDialog) {
+  constructor(private timeTaskService: TimeTaskService, private timerService: CountupTimerService, private titleService:Title, public dialog: MatDialog) {
     this.titleService.setTitle("Zeiterfassung");
   }
 
@@ -62,7 +62,7 @@ export class ZeiterfassungComponent implements OnInit {
   *
   */
 
-  selectTimeElement(timeElement: TimeElement) {
+  selectTimeElement(timeElement: TimeTask) {
     this.selectedTimeElement = timeElement;
     this.resetTimer();
   }
@@ -70,10 +70,10 @@ export class ZeiterfassungComponent implements OnInit {
   getTimeElementsFromService() {
     this.timeElements = [];
 
-    this.zeiterfassungService.getAllTimeElements().subscribe(data => {
+    this.timeTaskService.getAllTimeElements().subscribe(data => {
       this.timeElements = data
         .filter(e => new Date(e.startdate).getDay() == new Date().getDay())
-        .sort((one, two) => (one.id > two.id ? -1 : 1));
+        .sort((a, b) => (a.id > b.id ? -1 : 1));
 
       this.overallTime = data
         .filter(e => new Date(e.startdate).getDay() == new Date().getDay())
@@ -82,29 +82,29 @@ export class ZeiterfassungComponent implements OnInit {
     });
   }
 
-  continueTimeElement(timeElement: TimeElement) {
+  continueTimeElement(timeElement: TimeTask) {
     if (this.timerService.isTimerStart) {
       this.selectedTimeElement.enddate = new Date();
-      this.zeiterfassungService.putTimeElement(this.selectedTimeElement).subscribe(e => {
+      this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(e => {
         this.getTimeElementsFromService();
       })
     }
     this.resetTimer();
 
-    let tempTimeElement: TimeElement 
+    let tempTimeElement: TimeTask 
       = { shortdescr: timeElement.shortdescr, longdescr: timeElement.longdescr, id: null, startdate: this.createDateWithTimeOffset(), enddate: null };
 
-    this.zeiterfassungService.postTimeElement(tempTimeElement).subscribe(data => {
+    this.timeTaskService.postTimeElement(tempTimeElement).subscribe(data => {
       this.getTimeElementsFromService();
       this.selectedTimeElement.id = data.id;
       this.timerService.startTimer();
     });
   }
 
-  saveTimeElement(timeElement: TimeElement) {
+  saveTimeElement(timeElement: TimeTask) {
     if (!(timeElement === undefined)) {
       if (this.isNumber(timeElement.id)) {
-        this.zeiterfassungService.putTimeElement(timeElement).subscribe(data => {
+        this.timeTaskService.putTimeElement(timeElement).subscribe(data => {
           this.getTimeElementsFromService();
         });
       } else {
@@ -123,11 +123,11 @@ export class ZeiterfassungComponent implements OnInit {
     });
   }
 
-  removeTimeElement(timeElement: TimeElement) {
+  removeTimeElement(timeElement: TimeTask) {
     if (!(timeElement.id == this.selectedTimeElement.id)) {
       if (!(timeElement === undefined)) {
         if (this.isNumber(timeElement.id)) {
-          this.zeiterfassungService.deleteTimeElement(timeElement.id).subscribe(data => {
+          this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(data => {
             this.getTimeElementsFromService();
             this.hideSelectedTimeElement();
           });
@@ -152,7 +152,7 @@ export class ZeiterfassungComponent implements OnInit {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
       this.selectedTimeElement.enddate = this.createDateWithTimeOffset();
-      this.zeiterfassungService.putTimeElement(this.selectedTimeElement).subscribe(e => {
+      this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(() => {
         this.getTimeElementsFromService();
       })
     }
@@ -173,7 +173,7 @@ export class ZeiterfassungComponent implements OnInit {
   openInsertDialog(): void {
     if (this.timerService.isTimerStart) {
       this.selectedTimeElement.enddate = this.createDateWithTimeOffset();
-      this.zeiterfassungService.putTimeElement(this.selectedTimeElement).subscribe(e => {
+      this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(() => {
         this.hideSelectedTimeElement();
         this.getTimeElementsFromService();
       })
@@ -194,7 +194,7 @@ export class ZeiterfassungComponent implements OnInit {
         this.selectTimeElement(resultFromDialog);
 
         if (this.shortdescr != "" && this.longdescr != "") {
-          this.zeiterfassungService.postTimeElement(resultFromDialog).subscribe(resultFromPost => {
+          this.timeTaskService.postTimeElement(resultFromDialog).subscribe(resultFromPost => {
             this.getTimeElementsFromService();
             this.selectedTimeElement.id = resultFromPost.id;
             this.timerService.startTimer();
@@ -218,7 +218,7 @@ export class ZeiterfassungComponent implements OnInit {
     return !(isNaN(Number(param)))
   }
 
-  timeElementToTimestring(timeElement: TimeElement): string {
+  timeElementToTimestring(timeElement: TimeTask): string {
     return this.elementToTimestring(new Date(timeElement.enddate).getTime() - new Date(timeElement.startdate).getTime());
   }
 
@@ -236,7 +236,7 @@ export class ZeiterfassungComponent implements OnInit {
     return hours + ":" + minutes + ":" + seconds;
   }
 
-  showClockstring(timeElement: TimeElement): string {
+  showClockstring(timeElement: TimeTask): string {
     let startDate: Date = new Date(timeElement.startdate);
     let endDate: Date = new Date(timeElement.enddate);
     return "Started: " + this.fixClockstring(startDate.getHours())

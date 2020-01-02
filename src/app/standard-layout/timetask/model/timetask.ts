@@ -1,4 +1,4 @@
-export class TimeElement {
+export class TimeTask {
     id: number;
     shortdescr: string;
     longdescr: string;

@@ -5,7 +5,6 @@ import { InsertTaskDialog } from './dialogs/insert-task-dialog';
 import { RemoveTaskDialog } from './dialogs/remove-task-dialog';
 import { Task } from './model/task';
 import { MatDatepickerInputEvent } from '@angular/material';
-import { ZeiterfassungService } from '../zeiterfassung/services/zeiterfassung.service';
 import { Title } from '@angular/platform-browser';
 
 @Component({

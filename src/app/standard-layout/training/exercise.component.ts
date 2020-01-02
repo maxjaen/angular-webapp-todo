@@ -181,7 +181,6 @@ export class TrainingComponent implements OnInit {
     }
 
     // TODO validation not working yet
-
     // if (this.formGroups.map(e => e.getRawValue()).find(e => e.einheit == "" || e.saetz == "" || e.wdh == "" || !(this.isNumber(e.wdh)) || !(this.isNumber(e.saetz)))) {
     //   return false;
     // }
@@ -214,14 +213,12 @@ export class TrainingComponent implements OnInit {
     }
 
     if (exercise.category=="conditionalpattern2d"){
-      // TODO change typeformGroup
       let pattern: ConditionalPattern2d = {name :"conditionalpattern2d", period: 0, speed:0, unitperiod:"min", unitspeed:"km/h"};
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern); 
     }
 
     if (exercise.category=="countablepattern"){
-       // TODO change type
       let pattern: CountablePattern = {name :"countablepattern", records: 0, repetitions:0};
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern); 

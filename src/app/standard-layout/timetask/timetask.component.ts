@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { TimeTaskService } from './services/timetask.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { TimeTask } from './model/timetask';
 import { InsertTaskDialogTime } from './dialogs/insert-task-dialog';
 import { countUpTimerConfigModel, timerTexts } from 'ngx-timer';
@@ -25,7 +25,7 @@ export class TimeTaskComponent implements OnInit {
   enddate: Date;
   testConfig: countUpTimerConfigModel;
 
-  constructor(private timeTaskService: TimeTaskService, private timerService: CountupTimerService, private titleService:Title, public dialog: MatDialog) {
+  constructor(private timeTaskService: TimeTaskService, private timerService: CountupTimerService, private titleService:Title, public _dialog: MatDialog, private _snackBar: MatSnackBar) {
     this.titleService.setTitle("Zeiterfassung");
   }
 
@@ -104,7 +104,8 @@ export class TimeTaskComponent implements OnInit {
   saveTimeElement(timeElement: TimeTask) {
     if (!(timeElement === undefined)) {
       if (this.isNumber(timeElement.id)) {
-        this.timeTaskService.putTimeElement(timeElement).subscribe(data => {
+        this.timeTaskService.putTimeElement(timeElement).subscribe(() => {
+          this.openSnackBar("TimeTask saved!", null);
           this.getTimeElementsFromService();
         });
       } else {
@@ -124,10 +125,11 @@ export class TimeTaskComponent implements OnInit {
   }
 
   removeTimeElement(timeElement: TimeTask) {
-    if (!(timeElement.id == this.selectedTimeElement.id)) {
+    if ((!(timeElement.id == this.selectedTimeElement.id) || (this.timeElements.length == 1))) {
       if (!(timeElement === undefined)) {
         if (this.isNumber(timeElement.id)) {
-          this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(data => {
+          this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(() => {
+            this.openSnackBar("TimeTask removed!", null);
             this.getTimeElementsFromService();
             this.hideSelectedTimeElement();
           });
@@ -138,7 +140,7 @@ export class TimeTaskComponent implements OnInit {
         console.warn("removeTimeElement(): ID: " + timeElement.id + ", expected ID")
       }
     } else {
-      console.warn("Can't remove selected item: " + timeElement)
+      console.warn("Can't remove selected item: " + timeElement + this.timeElements.length)
     }
   }
 
@@ -153,6 +155,7 @@ export class TimeTaskComponent implements OnInit {
       this.resetTimer();
       this.selectedTimeElement.enddate = this.createDateWithTimeOffset();
       this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(() => {
+        this.openSnackBar("TimeTask finished!", null);
         this.getTimeElementsFromService();
       })
     }
@@ -174,13 +177,14 @@ export class TimeTaskComponent implements OnInit {
     if (this.timerService.isTimerStart) {
       this.selectedTimeElement.enddate = this.createDateWithTimeOffset();
       this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(() => {
+        this.openSnackBar("TimeTask saved!", null);
         this.hideSelectedTimeElement();
         this.getTimeElementsFromService();
       })
     }
     this.resetTimer();
 
-    const dialogRef = this.dialog.open(InsertTaskDialogTime, {
+    const dialogRef = this._dialog.open(InsertTaskDialogTime, {
       width: '250px',
       data: {
         shortdescr: this.shortdescr,
@@ -195,6 +199,7 @@ export class TimeTaskComponent implements OnInit {
 
         if (this.shortdescr != "" && this.longdescr != "") {
           this.timeTaskService.postTimeElement(resultFromDialog).subscribe(resultFromPost => {
+            this.openSnackBar("TimeTask created!", null);
             this.getTimeElementsFromService();
             this.selectedTimeElement.id = resultFromPost.id;
             this.timerService.startTimer();
@@ -213,6 +218,12 @@ export class TimeTaskComponent implements OnInit {
   * HELPER FUNCTIONS
   *
   */
+
+ openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: 2000,
+    });
+  }
 
   isNumber(param: any): boolean {
     return !(isNaN(Number(param)))

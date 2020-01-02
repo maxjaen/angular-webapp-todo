@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Weight } from './model/weight';
 import { WeightService } from './services/weight.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-weight',
@@ -15,7 +16,7 @@ export class WeightComponent implements OnInit {
     weight: new FormControl('')
   });
 
-  constructor(private weightService: WeightService) {  }
+  constructor(private weightService: WeightService,  private _snackBar: MatSnackBar) {  }
 
   ngOnInit() {
     this.getWeightsFromService();
@@ -38,6 +39,7 @@ export class WeightComponent implements OnInit {
 
       if (this.isNumber(tempWeight.value)) {
         this.weightService.postWeight(tempWeight).subscribe(() => {
+          this.openSnackBar("Weight created!", null);
           this.getWeightsFromService();
         });
       } else {
@@ -52,6 +54,7 @@ export class WeightComponent implements OnInit {
     if (!(weight === undefined)) {
       if (this.isNumber(weight.id)) {
         this.weightService.deleteWeight(weight.id).subscribe(() => {
+          this.openSnackBar("Weight removed!", null);
           this.getWeightsFromService();
         });
       } else {
@@ -60,6 +63,18 @@ export class WeightComponent implements OnInit {
     } else {
       console.warn("removeTask(): ID: " + weight.id + ", expected ID")
     }
+  }
+
+  /*
+   *
+   * HELPER FUNCTIONS
+   * 
+   */
+
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   isNumber(param: any): boolean {
@@ -71,7 +86,6 @@ export class WeightComponent implements OnInit {
    * STATISTICS
    * 
    */
-
 
   getLatestWeight(): Weight{
     return this.weights.filter(e => e.id == this.weights.length)[0];

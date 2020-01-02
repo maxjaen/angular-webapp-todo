@@ -4,7 +4,7 @@ import { TaskService } from './services/task.service';
 import { InsertTaskDialog } from './dialogs/insert-task-dialog';
 import { RemoveTaskDialog } from './dialogs/remove-task-dialog';
 import { Task } from './model/task';
-import { MatDatepickerInputEvent } from '@angular/material';
+import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -24,7 +24,7 @@ export class TasksComponent implements OnInit {
   date: Date;
   dateString: string
 
-  constructor(private taskService: TaskService,  private titleService:Title, public dialog: MatDialog) {
+  constructor(private taskService: TaskService,  private titleService:Title, public _dialog: MatDialog, private _snackBar: MatSnackBar) {
     this.titleService.setTitle("Aufgabenbereich");
   }
 
@@ -97,7 +97,8 @@ export class TasksComponent implements OnInit {
   saveTask(task: Task) {
     if (!(task === undefined)) {
       if (this.isNumber(task.id)) {
-        this.taskService.putTask(task).subscribe(data => {
+        this.taskService.putTask(task).subscribe(() => {
+          this.openSnackBar("Task saved!", null);
           this.getTasksFromService();
         });
       } else {
@@ -120,6 +121,7 @@ export class TasksComponent implements OnInit {
     if (!(task === undefined)) {
       if (this.isNumber(task.id)) {
         this.taskService.deleteTask(task.id).subscribe(() => {
+          this.openSnackBar("Task removed!", null);
           this.getTasksFromService();
           this.hideSelectedTask();
         });
@@ -140,7 +142,7 @@ export class TasksComponent implements OnInit {
   openInsertTaskDialog(): void {
     this.hideSelectedTask();
 
-    const dialogRef = this.dialog.open(InsertTaskDialog, {
+    const dialogRef = this._dialog.open(InsertTaskDialog, {
       width: '250px',
       data: {
         shortdescr: this.shortdescr,
@@ -157,6 +159,7 @@ export class TasksComponent implements OnInit {
 
         if (this.shortdescr != "" && this.longdescr != "") {
           this.taskService.postTask(postResult).subscribe(() => {
+            this.openSnackBar("Task created!", null);
             this.getTasksFromService();
           });
         } else {
@@ -168,8 +171,9 @@ export class TasksComponent implements OnInit {
     });
   }
 
+  /*
   openRemoveTaskDialog(): void {
-    const dialogRef = this.dialog.open(RemoveTaskDialog, {
+    const dialogRef = this._dialog.open(RemoveTaskDialog, {
       width: '250px',
       data: {
         id: this.id
@@ -180,6 +184,7 @@ export class TasksComponent implements OnInit {
       if (!(deleteID === undefined)) {
         if (this.isNumber(deleteID)) {
           this.taskService.deleteTask(deleteID).subscribe(() => {
+            this.openSnackBar("Task removed!", null);
             this.getTasksFromService();
           });
         } else {
@@ -190,12 +195,19 @@ export class TasksComponent implements OnInit {
       }
     });
   }
+  */
 
   /*
   *
   * HELPER FUNCTIONS
   *
   */
+
+ openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: 2000,
+    });
+  }
 
   isNumber(param: any): boolean {
     return !(isNaN(Number(param)))

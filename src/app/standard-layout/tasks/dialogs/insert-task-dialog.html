@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Neue Aufgabe erstellen Karsten</h1>
+<div mat-dialog-content>
+  <p>Aufgabenname</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.shortdescr">
+  </mat-form-field>
+  <p>Aufgabenbeschreibung</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.longdescr">
+  </mat-form-field>
+  <p>Stichtag</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.date" [matDatepicker]="picker" placeholder="Choose a date">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker ></mat-datepicker>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Abbrechen</button>
+  <button mat-button [mat-dialog-close]="data"
+  cdkFocusInitial>Erstellen</button>
+</div>

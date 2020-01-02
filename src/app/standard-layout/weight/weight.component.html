@@ -1,0 +1,49 @@
+<!-- <p>BMI/FFI</p> -->
+
+<div class="content" *ngIf="weights">
+    <div class="block">
+        <h2>Gewicht hinzufügen</h2>
+        <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
+                <form [formGroup]="form" style="display: inline;" class="example-form">
+                    <mat-form-field>
+                        <input matInput placeholder="Gewicht" formControlName="weight">
+                    </mat-form-field> 
+                </form>
+            <button style="margin-left: 2%;" (click)="saveWeight();" mat-stroked-button>Hinzufügen</button>    
+        </div>
+    </div>
+    <div class="block">
+        <h2>Statistiken</h2>
+        <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
+            <h1>{{ getDaysSinceLastWeight() }}</h1>
+            <p>Anzahl Tage seit letzter Messung</p>      
+        </div>
+        <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
+            <h1>{{ calculateBMI() }}</h1>
+            <p>BMI Ergebnis</p>      
+        </div>
+    </div>
+    <div class="block">
+        <h2>Übersicht</h2>
+        <div *ngFor="let weight of weights">
+            <mat-card [style.background-color]="getBackgroundColorValue(weight)" style="margin: 1%; display: block; overflow: auto; float: left;" class="example-card">
+                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" xPosition="before">
+                    <button (click)="removeWeight(weight)" mat-menu-item>Entfernen</button>
+                </mat-menu>
+                <mat-card-header style="float:left;">
+                    <mat-card-title>
+                    {{ weight.value }}
+                    <div style="margin-top: 20px; font-size: 12px;">
+                        {{ weight.date }}
+                    </div>
+                    </mat-card-title>
+                    <mat-card-subtitle>{{ weight.id }}</mat-card-subtitle>
+                </mat-card-header>
+            </mat-card>
+        </div>
+    </div>
+</div>
+<!-- TODO Statistiken, letztes Element kennzeichnen, Erstellen und Löschen, nach Jahren ordnen-->

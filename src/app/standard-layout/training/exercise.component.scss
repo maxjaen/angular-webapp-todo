@@ -1,0 +1,73 @@
+@media (max-width:379.767px) {
+    .categories, .selection {
+        width:100%;
+    }
+}
+
+.content {
+    margin: 3%;
+}
+
+.categories {
+    float: left;  
+    min-width: 379.767px;
+    margin: 2%;
+    margin-bottom: 40px;
+}
+
+.exercises {
+    display: block;
+    overflow: auto;
+    margin: 2%;
+    float: left;
+}
+
+.selection {
+    min-width: 379.767px;
+    float: left;
+    width: 100%;
+
+    .tab {
+        margin-bottom: 60px;
+        display: block;
+        overflow: auto;
+    }
+}
+
+.names {
+    margin-left: 3%;
+}
+
+.buttons {
+    margin-left: 0;
+    margin-right: 2%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.calc {
+    margin-top: 30px;
+}
+
+.selectionitem {
+    display: block;
+    overflow: auto;
+    margin-bottom: 20px;
+}
+
+.selectionitem:hover{
+    background-color: #464545;
+    cursor: pointer;
+}
+
+.sticky {
+    display: block;
+    overflow: auto;
+    position: fixed;
+    bottom: 0px;
+}
+
+.errormessage {
+    color: #6aceff;
+    width: 245px;
+}

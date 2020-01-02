@@ -1,0 +1,19 @@
+.content {
+    margin: 3%;
+}
+
+table {
+    width: 100%;
+  }
+
+#changeEventButton {
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+mat-card:hover{
+    background-color: #464545;
+    cursor: pointer;
+}

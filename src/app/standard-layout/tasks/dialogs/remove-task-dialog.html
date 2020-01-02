@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Bestehende Aufgabe löschen</h1>
+<div mat-dialog-content>
+<p>ID angeben</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.id">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Abbrechen</button>
+  <button mat-button [mat-dialog-close]="data.id"
+  cdkFocusInitial>Löschen</button>
+</div>

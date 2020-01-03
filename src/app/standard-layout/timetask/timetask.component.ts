@@ -25,6 +25,7 @@ export class TimeTaskComponent implements OnInit {
   enddate: Date;
   testConfig: countUpTimerConfigModel;
 
+  // TODO timerservice doesn't show correct time in chrome, when tab inactive
   constructor(private timeTaskService: TimeTaskService, private timerService: CountupTimerService, private titleService:Title, public _dialog: MatDialog, private _snackBar: MatSnackBar) {
     this.titleService.setTitle("Zeiterfassung");
   }

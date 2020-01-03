@@ -1,10 +1,6 @@
 # Presence
 
-* `ng serve --open` to start the new angular app
-
-<br/>
-
-## Start des Projektes
+## 1. Start des Projektes
 
 1. Suche Projektpfad aus: `cd ...`
 
@@ -33,13 +29,15 @@
 
 <br/>
 
-## JSON Server hinzufügen
+## 2. JSON Server hinzufügen
 
 1. `sudo npm install -g json-server`
 
 2. Server starten: `json-server --watch server/data.json`
 
-# Router
+<br/>
+
+## 3. Router
 
 1. Neue Routes in app-routing.module.ts hinzufügen
 
@@ -63,11 +61,10 @@
 
          <a mat-list-item href="tasks">Tasks</a>
 
-# Links
 
-1. https://www.w3schools.com/jsref/dom_obj_event.asp
+<br/>
 
-# Angular Material Style Scheme
+## 4.  Angular Material Style Scheme
 
  * https://medium.com/wineofbits/how-to-change-angular-material-theme-in-just-5-minutes-d8719d1f026
  * angular.json + restart >>
@@ -83,13 +80,14 @@
 
 -----------------
 
-## HAVE FUN!
+<br/>
 
------------------
+
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.17.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `ng serve -open` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 

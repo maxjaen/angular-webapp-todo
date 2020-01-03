@@ -42,9 +42,17 @@ export class TasksComponent implements OnInit {
   *
   */
 
-  @HostListener('click', ['$event']) onShiftMouseClick(event: MouseEvent) {
+  @HostListener('click', ['$event'])
+  onShiftMouseClick(event: MouseEvent) {
     if (event.shiftKey) {
       this.openInsertTaskDialog();
+    }
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    if (true) {
+        $event.returnValue = true;
     }
   }
 
@@ -66,6 +74,7 @@ export class TasksComponent implements OnInit {
       this.pinnedTasks = data.filter(e => e.pinned && !e.hided).sort(function (a, b) {
         return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
       });
+      this.titleService.setTitle("Aufgabenbereich" + " (" + this.pinnedTasks.length.toString() + " p | " + this.unpinnedTasks.length.toString() + " up)");
     });
   }
 

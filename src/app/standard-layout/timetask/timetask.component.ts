@@ -50,9 +50,17 @@ export class TimeTaskComponent implements OnInit {
   *
   */
 
-  @HostListener('click', ['$event']) onMouseClick(event: MouseEvent) {
+  @HostListener('click', ['$event'])
+  onMouseClick(event: MouseEvent) {
     if (event.shiftKey) {
       this.openInsertDialog();
+    }
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    if (true) {
+        $event.returnValue = true;
     }
   }
 
@@ -97,7 +105,7 @@ export class TimeTaskComponent implements OnInit {
     this.timeTaskService.postTimeElement(tempTimeElement).subscribe(data => {
       this.getTimeElementsFromService();
       this.selectedTimeElement.id = data.id;
-      this.timerService.startTimer();
+      this.startTimer();
     });
   }
 
@@ -150,6 +158,11 @@ export class TimeTaskComponent implements OnInit {
   *
   */
 
+  startTimer(){
+    this.timerService.startTimer();
+    this.titleService.setTitle("Zeiterfassung - Timer läuft...");
+  }
+
   pauseTimer() {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
@@ -165,6 +178,7 @@ export class TimeTaskComponent implements OnInit {
   resetTimer() {
     this.timerService.stopTimer();
     this.timerService.setTimervalue(0);
+    this.titleService.setTitle("Zeiterfassung");
   }
 
   /*
@@ -202,7 +216,7 @@ export class TimeTaskComponent implements OnInit {
             this.openSnackBar("TimeTask created!", null);
             this.getTimeElementsFromService();
             this.selectedTimeElement.id = resultFromPost.id;
-            this.timerService.startTimer();
+            this.startTimer();
           });
         } else {
           console.warn("dialogRef.afterClosed(): ID: " + this.id + ", expected that all fields aren't empty")

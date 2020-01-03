@@ -4,38 +4,25 @@ import { Task } from '../../tasks/model/task';
 import { TaskService } from '../../tasks/services/task.service';
 import { TimeTask } from '../model/timetask';
 
-export interface Category {
-  value: string;
-  viewValue: string;
-}
-
 @Component({
   selector: 'insert-task-dialog',
   templateUrl: 'insert-task-dialog.html',
 })
 export class InsertTaskDialogTime {
-  categories: Category[] = [
-    { value: 'haushalt-0', viewValue: 'Haushalt' },
-    { value: 'arbeit-1', viewValue: 'Arbeit' },
-    { value: 'persönlich-2', viewValue: 'Persönlich' },
-    { value: 'training-3', viewValue: 'Training' },
-    { value: 'lernen-4', viewValue: 'Lernen' }
-  ];
   tasks: Task[];
 
   constructor(private taskService: TaskService, public dialogRef: MatDialogRef<InsertTaskDialogTime>,
     @Inject(MAT_DIALOG_DATA) public data: TimeTask) {
       this.taskService.getAllTasks().subscribe(tasks => {
         this.tasks = tasks;
+        tasks.push({id: 0, shortdescr: "Not an existing task", longdescr: "", date: new Date(), hided: false, pinned: true});
       })
      }
 
-  selectCategory(event: { value: string; }) {
-    this.data.shortdescr = event.value;
-  };
-
-  selectDescription(event: { value: string; }) {
-    this.data.longdescr = event.value;
+  selectCategory(event: { value: Task; }) {
+    this.data.task = event.value;
+    this.data.shortdescr = event.value.shortdescr;
+    this.data.longdescr = event.value.longdescr;    
   };
 
   onNoClick(): void {

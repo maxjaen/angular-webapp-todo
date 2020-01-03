@@ -1,21 +1,13 @@
 <h1 mat-dialog-title>Neue Aufgabe erstellen</h1>
 <div mat-dialog-content>
 <mat-form-field>
-    <mat-label>Select Category</mat-label>
+    <mat-label>Existing Tasks</mat-label>
     <mat-select (selectionChange)="selectCategory($event)">
-      <mat-option *ngFor="let category of categories" [value]="category.viewValue">
-        {{category.viewValue}}
+      <mat-option *ngFor="let task of tasks" [value]="task">
+        {{task.shortdescr}}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field>
-      <mat-label>Select Description</mat-label>
-      <mat-select (selectionChange)="selectDescription($event)">
-        <mat-option *ngFor="let task of tasks" [value]="task.shortdescr">
-          {{task.shortdescr}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
   <p>Aufgabenname</p>
   <mat-form-field>
     <input matInput [(ngModel)]="data.shortdescr">

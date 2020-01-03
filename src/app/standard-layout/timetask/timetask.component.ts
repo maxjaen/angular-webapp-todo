@@ -46,8 +46,7 @@ export class TimeTaskComponent implements OnInit {
 
   /*
   *
-  * SHORTCUTS
-  * - creating new task with Shift+Click
+  * HOSTLISTENER
   *
   */
 
@@ -82,10 +81,11 @@ export class TimeTaskComponent implements OnInit {
     this.timeTaskService.getAllTimeElements().subscribe(data => {
       this.timeElements = data
         .filter(e => new Date(e.startdate).getDay() == new Date().getDay())
-        .sort((a, b) => (a.id > b.id ? -1 : 1));
+        .sort((a, b) => (a.id > b.id ? -1 : 1));      
 
       this.overallTime = data
         .filter(e => new Date(e.startdate).getDay() == new Date().getDay())
+        .filter(e => e.enddate !== null)
         .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
         .reduce((a, b) => a + b, 0);
     });
@@ -94,18 +94,17 @@ export class TimeTaskComponent implements OnInit {
   continueTimeElement(timeElement: TimeTask) {
     if (this.timerService.isTimerStart) {
       this.selectedTimeElement.enddate = new Date();
-      this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(e => {
+      this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(() => {
         this.getTimeElementsFromService();
       })
     }
     this.resetTimer();
 
-    let tempTimeElement: TimeTask 
-      = { shortdescr: timeElement.shortdescr, longdescr: timeElement.longdescr, id: null, startdate: this.createDateWithTimeOffset(), enddate: null };
+    let tempTimeElement: TimeTask = { shortdescr: timeElement.shortdescr, longdescr: timeElement.longdescr, id: null, startdate: this.createDateWithTimeOffset(), enddate: null };
 
     this.timeTaskService.postTimeElement(tempTimeElement).subscribe(data => {
       this.getTimeElementsFromService();
-      this.selectedTimeElement.id = data.id;
+      this.selectedTimeElement = data;
       this.startTimer();
     });
   }

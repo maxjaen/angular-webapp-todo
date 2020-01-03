@@ -37,8 +37,7 @@ export class TasksComponent implements OnInit {
 
   /*
   *
-  * SHORTCUTS
-  * - creating new task with Shift+Click
+  * HOSTLISTENER
   *
   */
 

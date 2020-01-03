@@ -15,9 +15,10 @@ import { Title } from '@angular/platform-browser';
 export class TasksComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'shortdescr', 'longdescr'];
-  tasks: Task[];
-  selectedTask: Task;
+  unpinnedTasks: Task[];
+  pinnedTasks: Task[];
 
+  selectedTask: Task;
   // TODO add reset mechanism
   deletedTask: Task;
 
@@ -58,6 +59,80 @@ export class TasksComponent implements OnInit {
     this.selectedTask = task;
   }
 
+  getTasksFromService() {
+    this.unpinnedTasks = [];
+
+    this.taskService.getAllTasks().subscribe(data => {
+      this.unpinnedTasks = data.filter(e => e.pinned == false).sort(function (a, b) {
+        return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
+      });
+    });
+    this.taskService.getAllTasks().subscribe(data => {
+      this.pinnedTasks = data.filter(e => e.pinned == true).sort(function (a, b) {
+        return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
+      });
+    });
+  }
+
+  saveTask(task: Task) {
+    if (!(task === undefined)) {
+      if (this.isNumber(task.id)) {
+        this.taskService.putTask(task).subscribe(() => {
+          this.openSnackBar("Task saved!", null);
+          this.getTasksFromService();
+        });
+      } else {
+        console.warn("putTask(): ID: " + task.id + ", expected number")
+      }
+    } else {
+      console.warn("putTask(): ID: " + task.id + ", expected ID")
+    }
+
+    this.hideSelectedTask();
+  }
+
+  saveAllTasks() {
+    this.unpinnedTasks.forEach(element => {
+      this.saveTask(element);
+    });
+    this.pinnedTasks.forEach(element => {
+      this.saveTask(element);
+    });
+  }
+
+  pinTask(task: Task) {
+    if (!(task === undefined)) {
+      if (this.isNumber(task.id)) {
+        task.pinned = !task.pinned;
+        this.taskService.putTask(task).subscribe(() => {
+          this.openSnackBar("Task (un)pinned!", null);
+          this.getTasksFromService();
+          this.hideSelectedTask();
+        });
+      } else {
+        console.warn("pinTask(): ID: " + task.id + ", expected number")
+      }
+    } else {
+      console.warn("pinTask(): ID: " + task.id + ", expected ID")
+    }
+  }
+
+  removeTask(task: Task) {
+    if (!(task === undefined)) {
+      if (this.isNumber(task.id)) {
+        this.taskService.deleteTask(task.id).subscribe(() => {
+          this.openSnackBar("Task removed!", null);
+          this.getTasksFromService();
+          this.hideSelectedTask();
+        });
+      } else {
+        console.warn("removeTask(): ID: " + task.id + ", expected number")
+      }
+    } else {
+      console.warn("removeTask(): ID: " + task.id + ", expected ID")
+    }
+  }
+
   changeTasksOrder(array: any[], direction: string, index: number){
     let actualElement: number = index;
     let lastElement: number = index - 1;
@@ -87,55 +162,6 @@ export class TasksComponent implements OnInit {
     }  
   }
 
-  getTasksFromService() {
-    this.tasks = [];
-
-    this.taskService.getAllTasks().subscribe(data => {
-      this.tasks = data.sort(function (a, b) {
-        return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
-      });
-    });
-  }
-
-  saveTask(task: Task) {
-    if (!(task === undefined)) {
-      if (this.isNumber(task.id)) {
-        this.taskService.putTask(task).subscribe(() => {
-          this.openSnackBar("Task saved!", null);
-          this.getTasksFromService();
-        });
-      } else {
-        console.warn("putTask(): ID: " + task.id + ", expected number")
-      }
-    } else {
-      console.warn("putTask(): ID: " + task.id + ", expected ID")
-    }
-
-    this.hideSelectedTask();
-  }
-
-  saveAllTasks() {
-    this.tasks.forEach(element => {
-      this.saveTask(element);
-    });
-  }
-
-  removeTask(task: Task) {
-    if (!(task === undefined)) {
-      if (this.isNumber(task.id)) {
-        this.taskService.deleteTask(task.id).subscribe(() => {
-          this.openSnackBar("Task removed!", null);
-          this.getTasksFromService();
-          this.hideSelectedTask();
-        });
-      } else {
-        console.warn("removeTask(): ID: " + task.id + ", expected number")
-      }
-    } else {
-      console.warn("removeTask(): ID: " + task.id + ", expected ID")
-    }
-  }
-
   /*
   *
   * DIALOGS/POPUPS
@@ -159,6 +185,8 @@ export class TasksComponent implements OnInit {
         if (postResult.date === undefined) {
           postResult.date = new Date();
         }
+
+        postResult.pinned = false;
 
         if (this.shortdescr != "" && this.longdescr != "") {
           this.taskService.postTask(postResult).subscribe(() => {

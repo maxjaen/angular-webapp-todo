@@ -40,9 +40,10 @@
             <mat-card-subtitle>{{ task.longdescr }}</mat-card-subtitle>
           </mat-card-header>
           <button (click)="removeTask(task)" style="float:right" mat-button>Delete</button>
-          <button (click)="pinTask(task)" style="float:right" mat-button>Pin</button>
-          <button (click)="changeTasksOrder(unpinnedTasks, 'unten', i)" style="float:right" mat-button>Unten</button>
-          <button (click)="changeTasksOrder(unpinnedTasks, 'oben', i)" style="float:right" mat-button>Oben</button>
+          <button (click)="hideTask(task)" style="float:right" mat-button>Hide</button>
+          <button (click)="pinTask(task)" style="float:right" mat-button>Unpin</button>
+          <button (click)="changeTasksOrder(pinnedTasks, 'unten', i)" style="float:right" mat-button>Down</button>
+          <button (click)="changeTasksOrder(pinnedTasks, 'oben', i)" style="float:right" mat-button>Up</button>
         </mat-card>
       </div>
     </div>
@@ -79,9 +80,10 @@
             <mat-card-subtitle>{{ task.longdescr }}</mat-card-subtitle>
           </mat-card-header>
           <button (click)="removeTask(task)" style="float:right" mat-button>Delete</button>
+          <button (click)="hideTask(task)" style="float:right" mat-button>Hide</button>
           <button (click)="pinTask(task)" style="float:right" mat-button>Pin</button>
-          <button (click)="changeTasksOrder(unpinnedTasks, 'unten', i)" style="float:right" mat-button>Unten</button>
-          <button (click)="changeTasksOrder(unpinnedTasks, 'oben', i)" style="float:right" mat-button>Oben</button>
+          <button (click)="changeTasksOrder(unpinnedTasks, 'unten', i)" style="float:right" mat-button>Down</button>
+          <button (click)="changeTasksOrder(unpinnedTasks, 'oben', i)" style="float:right" mat-button>Up</button>
         </mat-card>
       </div>
     </div>

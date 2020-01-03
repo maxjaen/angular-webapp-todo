@@ -6,6 +6,9 @@ import { RemoveTaskDialog } from './dialogs/remove-task-dialog';
 import { Task } from './model/task';
 import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
+import { totalmem } from 'os';
+import { Weight } from '../weight/model/weight';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -20,7 +23,7 @@ export class TasksComponent implements OnInit {
 
   selectedTask: Task;
   // TODO add reset mechanism
-  deletedTask: Task;
+  lastChangedTask: Task;
 
   id: number;
   shortdescr: string;
@@ -63,12 +66,12 @@ export class TasksComponent implements OnInit {
     this.unpinnedTasks = [];
 
     this.taskService.getAllTasks().subscribe(data => {
-      this.unpinnedTasks = data.filter(e => e.pinned == false).sort(function (a, b) {
+      this.unpinnedTasks = data.filter(e => e.pinned == false && e.hided == false).sort(function (a, b) {
         return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
       });
     });
     this.taskService.getAllTasks().subscribe(data => {
-      this.pinnedTasks = data.filter(e => e.pinned == true).sort(function (a, b) {
+      this.pinnedTasks = data.filter(e => e.pinned == true && e.hided == false).sort(function (a, b) {
         return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
       });
     });
@@ -103,9 +106,28 @@ export class TasksComponent implements OnInit {
   pinTask(task: Task) {
     if (!(task === undefined)) {
       if (this.isNumber(task.id)) {
-        task.pinned = !task.pinned;
+        this.copyTaskProperties(task, this.lastChangedTask);        
+        task.pinned = !task.pinned;        
         this.taskService.putTask(task).subscribe(() => {
-          this.openSnackBar("Task (un)pinned!", null);
+          this.openSnackBar("Task (un)pinned!", "Reset");
+          this.getTasksFromService();
+          this.hideSelectedTask();
+        });
+      } else {
+        console.warn("pinTask(): ID: " + task.id + ", expected number")
+      }
+    } else {
+      console.warn("pinTask(): ID: " + task.id + ", expected ID")
+    }
+  }
+
+  hideTask(task: Task) {
+    if (!(task === undefined)) {
+      if (this.isNumber(task.id)) {
+        this.copyTaskProperties(task, this.lastChangedTask);        
+        task.hided = true;
+        this.taskService.putTask(task).subscribe(() => {
+          this.openSnackBar("Task hided!", "Reset");
           this.getTasksFromService();
           this.hideSelectedTask();
         });
@@ -122,6 +144,22 @@ export class TasksComponent implements OnInit {
       if (this.isNumber(task.id)) {
         this.taskService.deleteTask(task.id).subscribe(() => {
           this.openSnackBar("Task removed!", null);
+          this.getTasksFromService();
+          this.hideSelectedTask();
+        });
+      } else {
+        console.warn("removeTask(): ID: " + task.id + ", expected number")
+      }
+    } else {
+      console.warn("removeTask(): ID: " + task.id + ", expected ID")
+    }
+  }
+
+  resetTask(task: Task){
+    if (!(task === undefined)) {
+      if (this.isNumber(task.id)) {        
+        this.taskService.putTask(task).subscribe(() => {
+          this.openSnackBar("Task reseted!", null);
           this.getTasksFromService();
           this.hideSelectedTask();
         });
@@ -186,6 +224,7 @@ export class TasksComponent implements OnInit {
           postResult.date = new Date();
         }
 
+        postResult.hide = false;
         postResult.pinned = false;
 
         if (this.shortdescr != "" && this.longdescr != "") {
@@ -236,7 +275,9 @@ export class TasksComponent implements OnInit {
 
  openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
-      duration: 2000,
+      duration: 4000,
+    }).onAction().subscribe(() => {
+      this.resetTask(this.lastChangedTask);
     });
   }
 
@@ -254,5 +295,9 @@ export class TasksComponent implements OnInit {
 
   getUTCStringFromTask(task: Task){
     return new Date(task.date).toUTCString()
+  }
+
+  copyTaskProperties(fromTask: Task, toTask: Task){
+    this.lastChangedTask = {id: fromTask.id, date: fromTask.date, hided: fromTask.hided, pinned: fromTask.pinned, shortdescr: fromTask.shortdescr, longdescr: fromTask.longdescr };
   }
 }

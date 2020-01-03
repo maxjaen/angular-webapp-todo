@@ -17,25 +17,28 @@
             </div>
         </div>
         <div *ngIf="timeElements">
+            <div *ngIf="timeElements.length==0" style="color: rgb(184, 113, 113); margin: 2%;">
+                <p>No TimeTaks available</p>
+            </div>
             <div *ngFor="let timeElement of timeElements">
-                    <div *ngIf="selectedTimeElement==timeElement" class="changeField" style="margin: 2%; display: block; overflow: auto;">
-                            <form class="example-form">
-                                <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                                    <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
-                                        [(ngModel)]="selectedTimeElement.shortdescr">
-                                    <mat-hint>{{message.value.length}} / 50</mat-hint>
-                                </mat-form-field>
-                                <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                                    <input matInput placeholder="description" name="longdescr"
-                                        [(ngModel)]="selectedTimeElement.longdescr">
-                                </mat-form-field>
-                                <button (click)="saveAllTimeElements()" style="float:right" mat-button>Save all
-                                </button>
-                                <button (click)="saveTimeElement(selectedTimeElement)" style="float:right" mat-button>Save
-                                    measurement
-                                </button>
-                            </form>
-                        </div>
+                <div *ngIf="selectedTimeElement==timeElement" class="changeField" style="margin: 2%; display: block; overflow: auto;">
+                    <form class="example-form">
+                        <mat-form-field class="example-full-width" style="margin-right: 2%;">
+                            <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
+                                [(ngModel)]="selectedTimeElement.shortdescr">
+                            <mat-hint>{{message.value.length}} / 50</mat-hint>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
+                            <input matInput placeholder="description" name="longdescr"
+                                [(ngModel)]="selectedTimeElement.longdescr">
+                        </mat-form-field>
+                        <button (click)="saveAllTimeElements()" style="float:right" mat-button>Save all
+                        </button>
+                        <button (click)="saveTimeElement(selectedTimeElement)" style="float:right" mat-button>Save
+                            measurement
+                        </button>
+                    </form>
+                </div>
                 <mat-card [style.background-color]="selectedTimeElement==timeElement ? '#607D8B' : '#424242'" (click)="selectTimeElement(timeElement);" style="margin: 2%; display: block; overflow: auto;"
                     class="example-card">
                     <mat-card-header style="float:left;">

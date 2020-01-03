@@ -88,7 +88,7 @@ export class WeightComponent implements OnInit {
    */
 
   getLatestWeight(): Weight{
-      return this.weights.filter(e => e.id == this.weights.length)[0];
+    return this.weights.filter(e => e.id == this.weights.length)[0];
   }
 
   getDaysSinceLastWeight(): number{
@@ -99,7 +99,8 @@ export class WeightComponent implements OnInit {
       let milliseconds: number = tempDate.getTime() - new Date(weight.date).getTime();
     
       return Math.floor(((milliseconds) / (1000 * 60 * 60 * 24)));
-    }  
+    }
+     
     return -1;
   }
 
@@ -107,6 +108,8 @@ export class WeightComponent implements OnInit {
     if (this.weights.length != 0){
       return (+this.getLatestWeight().value / ((1.85)*(1.85))).toFixed(2);
     }
+
+    return -1;
   }
 
   getLowestWeightValue(): number {

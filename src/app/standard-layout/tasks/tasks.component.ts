@@ -18,6 +18,9 @@ export class TasksComponent implements OnInit {
   tasks: Task[];
   selectedTask: Task;
 
+  // TODO add reset mechanism
+  deletedTask: Task;
+
   id: number;
   shortdescr: string;
   longdescr: string;

@@ -9,27 +9,35 @@
             </div>
             <div class="content">
                 <div class="selection">
-                    <div class="tab" #overviewtraining>
+                    <div class="tab" #overviewtraining *ngIf="trainings">
                         <h2>Trainingsübersicht</h2>
-                        <div *ngFor="let training of trainings">
-                            <mat-card style="max-width: 350px; margin: 2%; float: left" class="example-card">
-                                <mat-card-header style="float:left;">
-                                    <mat-card-title>{{ showDatestring(training.date) }}</mat-card-title>
-                                    <mat-card-subtitle>ID: {{ training.id }}</mat-card-subtitle>
-                                </mat-card-header>
-                            </mat-card>
+                        <div *ngIf="!trainings.length==0">
+                            <div *ngFor="let training of trainings">
+                                <mat-card style="max-width: 350px; margin: 2%; float: left" class="example-card">
+                                    <mat-card-header style="float:left;">
+                                        <mat-card-title>{{ showDatestring(training.date) }}</mat-card-title>
+                                        <mat-card-subtitle>ID: {{ training.id }}</mat-card-subtitle>
+                                    </mat-card-header>
+                                </mat-card>
+                            </div>
+                        </div>
+                        <div *ngIf="trainings.length==0" style="color: rgb(184, 113, 113);">
+                            <p>No trainings available</p>
                         </div>
                     </div>
                     <div class="tab" #createtraining>
                         <h2>Training erstellen</h2>
-                        <div class="categories">
+                        <div *ngIf="exercises.length==0" style="color: rgb(184, 113, 113);">
+                            <p>No exercises available</p>
+                        </div>
+                        <div *ngIf="!exercises.length==0" class="categories">
                             <div *ngFor="let category of selectDistinctExerciseCategories()">
                                 <p>{{ category }}</p>
                                 <div *ngFor="let exercise of exercises">
                                     <div class="names" *ngIf="exercise['category'] == category">
                                         <mat-checkbox [checked]="exercise.checked" (change)="toggleCheckboxEvent(exercise, $event)">
                                             {{ exercise['name'] }}
-                                         </mat-checkbox>
+                                        </mat-checkbox>
                                     </div>
                                 </div>
                             </div>

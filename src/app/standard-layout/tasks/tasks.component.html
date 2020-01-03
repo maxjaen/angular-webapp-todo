@@ -4,6 +4,9 @@
     <button id="changeEventButton" (click)="openInsertTaskDialog()" mat-fab color="primary">+</button>
   </div>
   <div *ngIf="tasks">
+    <div *ngIf="tasks.length==0" style="color: rgb(184, 113, 113); margin: 2%;">
+      <p>No Tasks available</p>
+    </div>
     <div *ngFor="let task of tasks; let i=index">
       <div *ngIf="task==selectedTask" class="changeField" style="margin: 2%; display: block; overflow: auto;">
         <form class="example-form">

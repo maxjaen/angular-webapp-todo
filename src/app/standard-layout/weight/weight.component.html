@@ -1,4 +1,4 @@
-<div class="content" *ngIf="weights">
+<div class="content">
     <div class="block">
         <h2>Gewicht hinzufügen</h2>
         <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
@@ -10,7 +10,7 @@
             <button style="margin-left: 2%;" (click)="saveWeight();" mat-stroked-button>Hinzufügen</button>    
         </div>
     </div>
-    <div class="block">
+    <div class="block" *ngIf="weights">
         <h2>Statistiken</h2>
         <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
             <h1>{{ getDaysSinceLastWeight() }}</h1>
@@ -23,24 +23,29 @@
     </div>
     <div class="block">
         <h2>Übersicht</h2>
-        <div *ngFor="let weight of weights">
-            <mat-card [style.background-color]="getBackgroundColorValue(weight)" style="margin: 1%; display: block; overflow: auto; float: left;" class="example-card">
-                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu" xPosition="before">
-                    <button (click)="removeWeight(weight)" mat-menu-item>Entfernen</button>
-                </mat-menu>
-                <mat-card-header style="float:left;">
-                    <mat-card-title>
-                    {{ weight.value }}
-                    <div style="margin-top: 20px; font-size: 12px;">
-                        {{ weight.date }}
-                    </div>
-                    </mat-card-title>
-                    <mat-card-subtitle>{{ weight.id }}</mat-card-subtitle>
-                </mat-card-header>
-            </mat-card>
+        <div *ngIf="!weights.length==0">
+            <div *ngFor="let weight of weights">
+                <mat-card [style.background-color]="getBackgroundColorValue(weight)" style="margin: 1%; display: block; overflow: auto; float: left;" class="example-card">
+                    <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" xPosition="before">
+                        <button (click)="removeWeight(weight)" mat-menu-item>Entfernen</button>
+                    </mat-menu>
+                    <mat-card-header style="float:left;">
+                        <mat-card-title>
+                        {{ weight.value }}
+                        <div style="margin-top: 20px; font-size: 12px;">
+                            {{ weight.date }}
+                        </div>
+                        </mat-card-title>
+                        <mat-card-subtitle>{{ weight.id }}</mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            </div>
+        </div>
+        <div *ngIf="weights.length==0" style="color: rgb(184, 113, 113);">
+            <p>No weights available</p>
         </div>
     </div>
 </div>

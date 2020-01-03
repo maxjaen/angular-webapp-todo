@@ -1,14 +1,10 @@
-import { Component, OnInit, Inject, HostListener } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { MatDialog} from '@angular/material/dialog';
 import { TaskService } from './services/task.service';
 import { InsertTaskDialog } from './dialogs/insert-task-dialog';
-import { RemoveTaskDialog } from './dialogs/remove-task-dialog';
 import { Task } from './model/task';
 import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
-import { totalmem } from 'os';
-import { Weight } from '../weight/model/weight';
-import { from } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -22,7 +18,6 @@ export class TasksComponent implements OnInit {
   pinnedTasks: Task[];
 
   selectedTask: Task;
-  // TODO add reset mechanism
   lastChangedTask: Task;
 
   id: number;
@@ -35,6 +30,7 @@ export class TasksComponent implements OnInit {
     this.titleService.setTitle("Aufgabenbereich");
   }
 
+  // TODO unsubscribe from services
   ngOnInit() {
     this.getTasksFromService();
   }
@@ -63,15 +59,11 @@ export class TasksComponent implements OnInit {
   }
 
   getTasksFromService() {
-    this.unpinnedTasks = [];
-
     this.taskService.getAllTasks().subscribe(data => {
-      this.unpinnedTasks = data.filter(e => e.pinned == false && e.hided == false).sort(function (a, b) {
+      this.unpinnedTasks = data.filter(e => !e.pinned && !e.hided).sort(function (a, b) {
         return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
       });
-    });
-    this.taskService.getAllTasks().subscribe(data => {
-      this.pinnedTasks = data.filter(e => e.pinned == true && e.hided == false).sort(function (a, b) {
+      this.pinnedTasks = data.filter(e => e.pinned && !e.hided).sort(function (a, b) {
         return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
       });
     });
@@ -85,10 +77,10 @@ export class TasksComponent implements OnInit {
           this.getTasksFromService();
         });
       } else {
-        console.warn("putTask(): ID: " + task.id + ", expected number")
+        console.warn("saveTask(): ID: " + task.id + ", expected number")
       }
     } else {
-      console.warn("putTask(): ID: " + task.id + ", expected ID")
+      console.warn("saveTask(): ID: " + task.id + ", expected ID")
     }
 
     this.hideSelectedTask();
@@ -106,7 +98,7 @@ export class TasksComponent implements OnInit {
   pinTask(task: Task) {
     if (!(task === undefined)) {
       if (this.isNumber(task.id)) {
-        this.copyTaskProperties(task, this.lastChangedTask);        
+        this.copyTaskPropertiesToLastChangedTask(task);        
         task.pinned = !task.pinned;        
         this.taskService.putTask(task).subscribe(() => {
           this.openSnackBar("Task (un)pinned!", "Reset");
@@ -124,7 +116,7 @@ export class TasksComponent implements OnInit {
   hideTask(task: Task) {
     if (!(task === undefined)) {
       if (this.isNumber(task.id)) {
-        this.copyTaskProperties(task, this.lastChangedTask);        
+        this.copyTaskPropertiesToLastChangedTask(task);        
         task.hided = true;
         this.taskService.putTask(task).subscribe(() => {
           this.openSnackBar("Task hided!", "Reset");
@@ -132,10 +124,26 @@ export class TasksComponent implements OnInit {
           this.hideSelectedTask();
         });
       } else {
-        console.warn("pinTask(): ID: " + task.id + ", expected number")
+        console.warn("hideTask(): ID: " + task.id + ", expected number")
       }
     } else {
-      console.warn("pinTask(): ID: " + task.id + ", expected ID")
+      console.warn("hideTask(): ID: " + task.id + ", expected ID")
+    }
+  }
+
+  resetTask(task: Task){
+    if (!(task === undefined)) {
+      if (this.isNumber(task.id)) {        
+        this.taskService.putTask(task).subscribe(() => {
+          this.openSnackBar("Task reseted!", null);
+          this.getTasksFromService();
+          this.hideSelectedTask();
+        });
+      } else {
+        console.warn("resetTask(): ID: " + task.id + ", expected number")
+      }
+    } else {
+      console.warn("resetTask(): ID: " + task.id + ", expected ID")
     }
   }
 
@@ -153,51 +161,6 @@ export class TasksComponent implements OnInit {
     } else {
       console.warn("removeTask(): ID: " + task.id + ", expected ID")
     }
-  }
-
-  resetTask(task: Task){
-    if (!(task === undefined)) {
-      if (this.isNumber(task.id)) {        
-        this.taskService.putTask(task).subscribe(() => {
-          this.openSnackBar("Task reseted!", null);
-          this.getTasksFromService();
-          this.hideSelectedTask();
-        });
-      } else {
-        console.warn("removeTask(): ID: " + task.id + ", expected number")
-      }
-    } else {
-      console.warn("removeTask(): ID: " + task.id + ", expected ID")
-    }
-  }
-
-  changeTasksOrder(array: any[], direction: string, index: number){
-    let actualElement: number = index;
-    let lastElement: number = index - 1;
-    let nextElement: number = index + 1;
-
-    switch(direction){
-      case "oben":
-          if (index !== 0){
-            var temp = array[lastElement];
-            array[lastElement] = array[actualElement]
-            array[actualElement] = temp;
-          } else {
-            console.warn("First element in array " + array + " cannot be moved further up to index " + (index - 1) + ". Array from 0 to " + (array.length - 1));
-          }
-          break;
-      case "unten":
-          if (actualElement < array.length - 1){
-            var temp: any = array[nextElement];
-            array[nextElement] = array[actualElement]
-            array[actualElement] = temp;
-          } else {
-            console.warn("Last element in array " + array + "cannot be moved further down to index " + (index + 1) + ". Array from 0 to " + (array.length - 1));   
-          }
-          break;
-      default: 
-        console.warn("Wrong direction selected");
-    }  
   }
 
   /*
@@ -297,7 +260,36 @@ export class TasksComponent implements OnInit {
     return new Date(task.date).toUTCString()
   }
 
-  copyTaskProperties(fromTask: Task, toTask: Task){
+  changeTasksOrder(array: any[], direction: string, index: number){
+    let actualElement: number = index;
+    let lastElement: number = index - 1;
+    let nextElement: number = index + 1;
+
+    switch(direction){
+      case "oben":
+          if (index !== 0){
+            var temp = array[lastElement];
+            array[lastElement] = array[actualElement]
+            array[actualElement] = temp;
+          } else {
+            console.warn("First element in array " + array + " cannot be moved further up to index " + (index - 1) + ". Array from 0 to " + (array.length - 1));
+          }
+          break;
+      case "unten":
+          if (actualElement < array.length - 1){
+            var temp: any = array[nextElement];
+            array[nextElement] = array[actualElement]
+            array[actualElement] = temp;
+          } else {
+            console.warn("Last element in array " + array + "cannot be moved further down to index " + (index + 1) + ". Array from 0 to " + (array.length - 1));   
+          }
+          break;
+      default: 
+        console.warn("Wrong direction selected");
+    }  
+  }
+
+  copyTaskPropertiesToLastChangedTask(fromTask: Task){
     this.lastChangedTask = {id: fromTask.id, date: fromTask.date, hided: fromTask.hided, pinned: fromTask.pinned, shortdescr: fromTask.shortdescr, longdescr: fromTask.longdescr };
   }
 }

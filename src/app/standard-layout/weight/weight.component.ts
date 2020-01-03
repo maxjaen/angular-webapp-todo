@@ -88,7 +88,8 @@ export class WeightComponent implements OnInit {
    */
 
   getLatestWeight(): Weight{
-    return this.weights.filter(e => e.id == this.weights.length)[0];
+    let id: number = this.weights.map(e => e.id).sort()[this.weights.length - 1]
+    return this.weights.filter(e => e.id == id)[0];
   }
 
   getDaysSinceLastWeight(): number{

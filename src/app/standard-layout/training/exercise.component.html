@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="exercises" *ngIf="exercisesToInsert">
-                            <div class="errormessage" *ngIf="exercisesToInsert.length==0">
+                            <div class="errormessage" *ngIf="!exercises.length==0 && exercisesToInsert.length==0">
                                 <p>
                                     Tick all the exercises you have done in your training!
                                 </p>

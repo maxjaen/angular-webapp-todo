@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Exercise } from './model/exercise';
 import { Training } from './model/training';
 import { ExerciseService } from './services/exercise.service';
 import { TrainingService } from './services/training.service';
 import { MatDatepickerInputEvent } from '@angular/material';
-import { ExercisePattern } from './model/exercise-pattern';
 import { WeightPattern } from './model/weight-pattern';
 import { ConditionalPattern } from './model/conditional-pattern';
 import { CountablePattern } from './model/countable-pattern';
@@ -21,13 +20,14 @@ export class TrainingComponent implements OnInit {
 
   trainings: Training[];
   trainingsDate: Date = new Date();
+  training: Training;
+  trainingDescription: string = "";
 
   exercises: Exercise[];
   exercisesToInsert: Exercise[] = [];
 
   formGroups: FormGroup[] = [];
   formGroupToInsert: FormGroup;
-  training: Training;
 
   constructor(private exerciseService: ExerciseService, private trainingService: TrainingService,  private titleService:Title) {
     this.titleService.setTitle("Training");
@@ -37,6 +37,18 @@ export class TrainingComponent implements OnInit {
     this.getExercisesFromService();
     this.getTrainingsFromService();
   }
+
+  /* 
+  *
+  * HOSTLISTENER
+  *
+  */
+
+  @HostListener('window:beforeunload')
+  onBeforeUnload() {
+    return false;
+  }
+  
 
   getExercisesFromService() {
     this.exerciseService.getAllExercises().subscribe(exercises => {
@@ -62,7 +74,9 @@ export class TrainingComponent implements OnInit {
   */
 
   createTraining() {
-    this.training = { id: 0, exercices: [], date: this.trainingsDate };
+    this.training = { id: 0, exercices: [], date: this.trainingsDate, description: this.trainingDescription };
+
+    this.trainingDescription = "";
 
     this.formGroups.forEach(formGroup => {
       this.training.exercices.push(formGroup.getRawValue());
@@ -154,15 +168,23 @@ export class TrainingComponent implements OnInit {
     let patternArray: string[] = this.getPatternKeys(exercise);
 
     patternArray.forEach(key => {
-      if (key != "name"){
-        this.formGroupToInsert.addControl(key, new FormControl(''));
-      } else {
+      if (key == "name"){
         this.formGroupToInsert.addControl(key, new FormControl(exercise.name));
+      } else if(key.includes("unit")){   
+        this.formGroupToInsert.addControl(key, new FormControl(exercise.pattern[key]));
+      } else {
+        this.formGroupToInsert.addControl(key, new FormControl(''));
+
       }
-    });
+    });    
     
+    console.log(patternArray);
+
+    console.log(exercise.pattern);
+
     this.formGroupToInsert.addControl("category", new FormControl(exercise.category));
-    this.formGroupToInsert.addControl("pattern", new FormControl(exercise.pattern));
+    // TODO add units to JSON
+    // this.formGroupToInsert.addControl("pattern", new FormControl(exercise.pattern));
     
     this.formGroups.push(this.formGroupToInsert);
   }
@@ -207,13 +229,13 @@ export class TrainingComponent implements OnInit {
 
   getPatternKeys(exercise: Exercise){
     if (exercise.category=="conditionalpattern1d"){
-      let pattern: ConditionalPattern = {name :"conditionalpattern1d", records: 0, repetitions:0, unit:"kg"};
+      let pattern: ConditionalPattern = {name :"conditionalpattern1d", records: 0, repetitions:0, unit:"s"};
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern); 
     }
 
     if (exercise.category=="conditionalpattern2d"){
-      let pattern: ConditionalPattern2d = {name :"conditionalpattern2d", period: 0, speed:0, unitperiod:"min", unitspeed:"km/h"};
+      let pattern: ConditionalPattern2d = {name :"conditionalpattern2d", period: 0, speed:0, unitperiod:"min", unitspeed: "km/h"};
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern); 
     }

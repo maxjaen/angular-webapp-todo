@@ -92,6 +92,7 @@ export class WeightComponent implements OnInit {
     return this.weights.filter(e => e.id == id)[0];
   }
 
+  // TODO wrong calculation of days after new year
   getDaysSinceLastWeight(): number{
     let weight: Weight = this.getLatestWeight(); 
     
@@ -127,9 +128,9 @@ export class WeightComponent implements OnInit {
 
   getBackgroundColorValue(weight: Weight): string {
 
-    if (weight.id == this.weights.length) {
-      return '#607D8B';
-    }
+    // if (weight.id == this.weights.length) {
+    //   return '#607D8B';
+    // }
 
     let highestValue: number = this.getHighestWeightValue();
     if (weight.value == highestValue) {

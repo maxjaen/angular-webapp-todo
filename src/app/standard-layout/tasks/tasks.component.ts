@@ -48,11 +48,9 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any) {
-    if (true) {
-        $event.returnValue = true;
-    }
+  @HostListener('window:beforeunload')
+  onBeforeUnload() {
+    return false;
   }
 
   /*

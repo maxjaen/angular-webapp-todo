@@ -43,10 +43,13 @@
                             </div>
                         </div>
                         <div class="exercises" *ngIf="exercisesToInsert">
-                            <div class="errormessage" *ngIf="!exercisesToInsert.length==0">
+                            <div class="errormessage" *ngIf="exercisesToInsert.length==0">
                                 <p>
                                     Tick all the exercises you have done in your training!
                                 </p>
+                            </div>
+                            <div *ngIf="exercisesToInsert.length!=0">
+                                <h2 style="margin-bottom: 10px; margin-top: 50px;">Workout</h2>
                             </div>
                             <div *ngFor="let exercise of exercisesToInsert; let i=index" class="selectionitem">
                                 <div *ngIf="!compareToLastExercise(exercise, i)">
@@ -92,13 +95,13 @@
                                                     <input matInput placeholder="Dauer" formControlName="period">
                                                 </mat-form-field>
                                                 <mat-form-field class="example-full-width">
-                                                    <input matInput placeholder="Einheit" value="min">
+                                                    <input matInput placeholder="Einheit" formControlName="unitperiod" value="min">
                                                 </mat-form-field>
                                                 <mat-form-field class="example-full-width">
                                                         <input matInput placeholder="Geschwindigkeit" formControlName="speed">
                                                     </mat-form-field>
                                                     <mat-form-field class="example-full-width">
-                                                        <input matInput placeholder="Einheit" value="km/h">
+                                                        <input matInput placeholder="Einheit" formControlName="unitspeed" value="km/h">
                                                     </mat-form-field>
                                             </form>
                                         </div>
@@ -114,7 +117,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div *ngIf="exercisesToInsert.length!=0">    
+                            <div *ngIf="exercisesToInsert.length!=0">
+                                <h2 style="margin-bottom: 10px; margin-top: 50px;">Description</h2>
+                                <mat-form-field class="example-full-width">
+                                    <textarea matInput placeholder="Leave a comment" [(ngModel)]="trainingDescription"></textarea>
+                                </mat-form-field>
+                                <h2 style="margin-bottom: 10px; margin-top: 50px;">Date</h2> 
                                 <mat-form-field>
                                     <input matInput (dateChange)="setTrainingsDate('change', $event)"
                                         [matDatepicker]="picker" placeholder="Choose a date">

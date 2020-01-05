@@ -14,8 +14,16 @@ export class TrainingService {
   getAllTrainings (): Observable<Training[]> {
     return this.httpClient.get<Array<Training>>(this.url);
   }
+
+  getTrainingByID (id: number): Observable<Training> {
+    return this.httpClient.get<Training>(this.url + "/" + id);
+  }
   
   postTraining(training: Training): Observable<Training>{
     return this.httpClient.post<Training>(this.url, training);
+  }
+
+  deleteTrainingByID (id: number): Observable<Training> {
+    return this.httpClient.delete<Training>(this.url + "/" + id);
   }
 }

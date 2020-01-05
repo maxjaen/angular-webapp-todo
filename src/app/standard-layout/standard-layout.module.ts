@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainingComponent } from './training/exercise.component';
+import { TrainingViewComponent } from './training/components/training-view/training-view.component';
 import { TimeTaskComponent } from './timetask/timetask.component';
 import { WeightComponent } from './weight/weight.component';
 import { TasksComponent} from './tasks/tasks.component';
@@ -43,7 +44,7 @@ import {
 } from '@angular/material';
 
 @NgModule({
-  declarations: [TrainingComponent, TasksComponent, TimeTaskComponent, WeightComponent, InsertTaskDialog, InsertTaskDialogTime, RemoveTaskDialog],
+  declarations: [TrainingComponent, TasksComponent, TimeTaskComponent, WeightComponent, InsertTaskDialog, InsertTaskDialogTime, RemoveTaskDialog, TrainingViewComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -86,7 +87,8 @@ import {
     TrainingComponent,
     TasksComponent,
     TimeTaskComponent,
-    WeightComponent
+    WeightComponent,
+    TrainingViewComponent
   ],
   entryComponents: [
     InsertTaskDialog,

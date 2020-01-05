@@ -14,4 +14,12 @@ export class ExerciseService {
   getAllExercises (): Observable<Exercise[]> {
     return this.httpClient.get<Array<Exercise>>(this.url);
   }
+
+  postExercise(exercise: Exercise): Observable<Exercise>{
+    return this.httpClient.post<Exercise>(this.url, exercise);
+  }
+
+  deleteExercise(exercise: Exercise): Observable<Exercise>{
+    return this.httpClient.delete<Exercise>(this.url + "/" + exercise.id);
+  }
 }

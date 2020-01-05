@@ -4,8 +4,8 @@ import { TasksComponent } from './standard-layout/tasks/tasks.component';
 import { TrainingComponent } from './standard-layout/training/exercise.component';
 import { DashboardComponent } from './basic-layout/dashboard/dashboard.component';
 import { TimeTaskComponent } from './standard-layout/timetask/timetask.component';
+import { TrainingViewComponent } from './standard-layout/training/components/training-view/training-view.component';
 
-// TODO new routerlink for training detail page
 const routes: Routes = [
   {
     path: '', component: TasksComponent
@@ -15,6 +15,9 @@ const routes: Routes = [
   },
   { 
     path: 'training', component: TrainingComponent 
+  },
+  { 
+    path: 'training/:id', component: TrainingViewComponent 
   },
   { 
     path: 'zeiterfassung', component: TimeTaskComponent 

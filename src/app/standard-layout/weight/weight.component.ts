@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Weight } from './model/weight';
 import { WeightService } from './services/weight.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
@@ -13,7 +13,9 @@ export class WeightComponent implements OnInit {
   weights: Weight[];
 
   form = new FormGroup({
-    weight: new FormControl('')
+    weight: new FormControl('', [
+      Validators.required
+    ])
   });
 
   constructor(private weightService: WeightService,  private _snackBar: MatSnackBar) {  }
@@ -88,11 +90,12 @@ export class WeightComponent implements OnInit {
    */
 
   getLatestWeight(): Weight{
-    let id: number = this.weights.map(e => e.id).sort()[this.weights.length - 1]
+    let id: number = this.weights.map(e => e.id).sort(function (a, b) {
+      return a - b;
+    })[this.weights.length - 1];
     return this.weights.filter(e => e.id == id)[0];
   }
 
-  // TODO wrong calculation of days after new year
   getDaysSinceLastWeight(): number{
     let weight: Weight = this.getLatestWeight(); 
     

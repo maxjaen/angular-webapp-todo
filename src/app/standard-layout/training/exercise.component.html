@@ -3,14 +3,14 @@
         <div *ngIf="exercises">
             <div class="sticky">
                 <button type="button" mat-raised-button
-                    (click)="scroll('overviewtraining')">Trainingsübersicht</button>
+                    (click)="scroll('overviewtraining')">Overview Training</button>
                 <button type="button" mat-raised-button
-                    (click)="scroll('createtraining')">Trainingserstellung</button>
+                    (click)="scroll('createtraining')">Create Training</button>
             </div>
             <div class="content">
                 <div class="selection">
                     <div class="tab" #overviewtraining *ngIf="trainings">
-                        <h2>Trainingsübersicht</h2>
+                        <h2> Overview Training</h2>
                         <div *ngIf="!trainings.length==0">
                             <div *ngFor="let training of trainings">
                                 <mat-card style="max-width: 350px; margin: 2%; float: left" class="example-card">
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <div class="tab" #createtraining>
-                        <h2>Training erstellen</h2>
+                        <h2>Create Training</h2>
                         <div *ngIf="exercises.length==0" style="color: #0275d8;">
                             <p>No exercises available</p>
                         </div>
@@ -142,7 +142,7 @@
             </div>
         </div>
     </mat-tab>
-    <mat-tab label="Gewicht">
+    <mat-tab label="Weight">
             <app-weight></app-weight>
     </mat-tab>
 </mat-tab-group>

@@ -1,32 +1,32 @@
 <div class="content">
     <div class="block">
-        <h2>Gewicht hinzufügen</h2>
+        <h2>Insert weight</h2>
         <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
                 <form [formGroup]="form" style="display: inline;" class="example-form">
                     <mat-form-field>
-                        <input matInput placeholder="Gewicht" formControlName="weight">
+                        <input matInput placeholder="weight in kg" formControlName="weight">
                     </mat-form-field> 
                 </form>
-            <button style="margin-left: 2%;" (click)="saveWeight();" mat-stroked-button>Hinzufügen</button>    
+            <button style="margin-left: 2%;" (click)="saveWeight();" mat-stroked-button>Insert</button>    
         </div>
     </div>
     <div class="block" *ngIf="weights">
-        <h2>Statistiken</h2>
+        <h2>Statistics</h2>
         <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
             <h1>{{ getDaysSinceLastWeight() }}</h1>
-            <p>Anzahl Tage seit letzter Messung</p>      
+            <p>days since last measurement</p>      
         </div>
         <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
             <h1>{{ weights.length }}</h1>
-            <p>Anzahl der Messungen</p>      
+            <p>measurements</p>      
         </div>
         <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
             <h1>{{ calculateBMI() }}</h1>
-            <p>BMI Ergebnis</p>      
+            <p>BMI result</p>      
         </div>
     </div>
     <div class="block">
-        <h2>Übersicht</h2>
+        <h2>Overview</h2>
         <div *ngIf="!weights.length==0">
             <div *ngFor="let weight of weights">
                 <mat-card [style.background-color]="getBackgroundColorValue(weight)" style="margin: 1%; display: block; overflow: auto; float: left;" class="example-card">
@@ -34,7 +34,7 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu" xPosition="before">
-                        <button (click)="removeWeight(weight)" mat-menu-item>Entfernen</button>
+                        <button (click)="removeWeight(weight)" mat-menu-item>Remove</button>
                     </mat-menu>
                     <mat-card-header style="float:left;">
                         <mat-card-title>

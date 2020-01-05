@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Neue Aufgabe erstellen</h1>
+<h1 mat-dialog-title>Create new timetask</h1>
 <div mat-dialog-content>
 <mat-form-field>
     <mat-label>Existing Tasks</mat-label>
@@ -8,17 +8,17 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <p>Aufgabenname</p>
+  <p>task name</p>
   <mat-form-field>
     <input matInput [(ngModel)]="data.shortdescr">
   </mat-form-field>
-  <p>Aufgabenbeschreibung</p>
+  <p>task description</p>
   <mat-form-field>
     <input matInput [(ngModel)]="data.longdescr">
   </mat-form-field>  
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Abbrechen</button>
+  <button mat-button (click)="onNoClick()">Cancel</button>
   <button mat-button [mat-dialog-close]="data"
-  cdkFocusInitial>Erstellen</button>
+  cdkFocusInitial>Create</button>
 </div>

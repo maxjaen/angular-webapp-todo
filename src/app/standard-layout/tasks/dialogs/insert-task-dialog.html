@@ -1,10 +1,10 @@
-<h1 mat-dialog-title>Neue Aufgabe erstellen Karsten</h1>
+<h1 mat-dialog-title>Create new task</h1>
 <div mat-dialog-content>
-  <p>Aufgabenname</p>
+  <p>task name</p>
   <mat-form-field>
     <input matInput [(ngModel)]="data.shortdescr">
   </mat-form-field>
-  <p>Aufgabenbeschreibung</p>
+  <p>task description</p>
   <mat-form-field>
     <input matInput [(ngModel)]="data.longdescr">
   </mat-form-field>
@@ -16,7 +16,7 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Abbrechen</button>
+  <button mat-button (click)="onNoClick()">Cancel</button>
   <button mat-button [mat-dialog-close]="data"
-  cdkFocusInitial>Erstellen</button>
+  cdkFocusInitial>Create</button>
 </div>

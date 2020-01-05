@@ -1,7 +1,7 @@
 <div class="content">
   <div class="insert"></div>
   <div>
-    <button id="changeEventButton" (click)="openInsertTaskDialog()" mat-fab color="primary">+</button>
+    <button id="changeEventButton" title="Create new task" (click)="openInsertTaskDialog()" mat-fab color="primary">+</button>
   </div>
   <div *ngIf="unpinnedTasks && pinnedTasks">
     <div *ngIf="unpinnedTasks.length==0 && pinnedTasks.length==0" style="color: #0275d8; margin: 2%;">

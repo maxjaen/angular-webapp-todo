@@ -78,12 +78,13 @@ export class TimeTaskComponent implements OnInit {
 
     this.timeTaskService.getAllTimeElements().subscribe(data => {
       this.timeElements = data
-        .filter(e => new Date(e.startdate).getDay() == new Date().getDay())
+        .filter(e => new Date(e.startdate).getDate() == new Date().getDate())
         .sort((a, b) => (a.id > b.id ? -1 : 1));      
 
       this.overallTime = data
-        .filter(e => new Date(e.startdate).getDay() == new Date().getDay())
-        .filter(e => e.enddate !== null)
+        .filter(e => new Date(e.startdate).getDate() == new Date().getDate())
+        // TODO validate date
+        .filter(e => e.enddate !== null && e.enddate !== undefined)
         .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
         .reduce((a, b) => a + b, 0);
     });
@@ -233,7 +234,7 @@ export class TimeTaskComponent implements OnInit {
 
  openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
-      duration: 2000,
+      duration: 4000,
     });
   }
 

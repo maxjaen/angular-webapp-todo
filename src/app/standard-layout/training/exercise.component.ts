@@ -153,7 +153,6 @@ export class TrainingComponent implements OnInit {
   }
 
   createExerciseString(exercise: Exercise):string {
-    // TODO filter names in stringArray
     let stringArray: string[] = Object.getOwnPropertyNames(exercise).filter(e => e != "name" && e != "category")
     let tempString = "";
 
@@ -205,17 +204,9 @@ export class TrainingComponent implements OnInit {
   toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean; }) {
     this.setCheckBoxFromExerciseName(exercise.name, true);
 
-    // TODO comment code nessessary?
     if (event.checked === true) {
-      // if (!this.exercisesToInsert.find(e => e.name == exercise.name)){
         this.exercisesToInsert.push(exercise);
         this.createFormGroup(exercise);
-      // } else {
-      //   let tempExercise: Exercise = this.exercisesToInsert.filter(e => e.name == exercise.name)[0];
-      //   this.exercisesToInsert.push(tempExercise);
-      //   let tempGroup: FormGroup = this.formGroups.filter(e => e.getRawValue().name == exercise.name)[0];
-      //   this.formGroups.push(tempGroup);
-      // }
     } else {      
       while (this.exercisesToInsert.find(e => e.name == exercise.name)) {
         this.removeElementFromArray(exercise, this.exercisesToInsert);

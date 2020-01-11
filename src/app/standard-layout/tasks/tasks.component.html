@@ -6,7 +6,7 @@
       <button id="changeEventButton" title="Create new task" (click)="openInsertTaskDialog()" mat-fab color="primary">+</button>
    </div>
    <div *ngIf="unpinnedTasks && pinnedTasks">
-      <div *ngIf="unpinnedTasks.length==0 && pinnedTasks.length==0" style="color: #0275d8; margin: 2%;">
+      <div *ngIf="unpinnedTasks.length==0 && pinnedTasks.length==0" style="color: #47556c; margin: 2%;">
          <p>No Tasks available</p>
       </div>
       <div *ngIf="!pinnedTasks.length==0" class="pinnedtasks">
@@ -31,7 +31,7 @@
                   <button (click)="saveTask(selectedTask)" style="float:right" mat-button>Save task</button>
                </form>
             </div>
-            <mat-card [style.background-color]="task==selectedTask ? '#0275d8' : '#424242'" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
+            <mat-card [style.background-color]="task==selectedTask ? '#47556c' : '#424242'" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
             <mat-card-header style="float:left;">
                <mat-card-title>
                   {{ task.shortdescr }}

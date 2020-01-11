@@ -1,65 +1,106 @@
 
 
-<div class="content">
-   <div style="margin: 2%;" class="insert">
-      <div>
-         <button id="changeEventButton" (click)="openInsertDialog()" mat-flat-button color="primary"
-            style="margin-right: 1%;">Start</button>
-         <button id="changeEventButton" (click)="finishTimer()" mat-flat-button color="primary">Finish</button>
-      </div>
-   </div>
-   <div class="show" style="display: block; width: 100%;">
-      <div style=" margin: 2%;">
-         <countup-timer style="font-size: 42px;" [countUpTimerConfig]="testConfig">
-         </countup-timer>
-         <div *ngIf="overallTime">
-            <p>
-               Time overall: <span style="color: coral;">{{millisecondsToTimestring(overallTime)}}</span>
-            </p>
-         </div>
-      </div>
-      <div *ngIf="timeElements">
-         <div *ngIf="timeElements.length==0" style="color: #0275d8; margin: 2%;">
-            <p>No TimeTaks available</p>
-         </div>
-         <div *ngFor="let timeElement of timeElements">
-            <div *ngIf="selectedTimeElement==timeElement" class="changeField" style="margin: 2%; display: block; overflow: auto;">
-               <form class="example-form">
-                  <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                     <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
-                     [(ngModel)]="selectedTimeElement.shortdescr">
-                     <mat-hint>{{message.value.length}} / 50</mat-hint>
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                     <input matInput placeholder="description" name="longdescr"
-                     [(ngModel)]="selectedTimeElement.longdescr">
-                  </mat-form-field>
-                  <button (click)="saveAllTimeElements()" style="float:right" mat-button>Save all
-                  </button>
-                  <button (click)="saveTimeElement(selectedTimeElement)" style="float:right" mat-button>Save
-                  measurement
-                  </button>
-               </form>
+<mat-tab-group>
+   <mat-tab label="Today">
+      <div class="content">
+         <div style="margin: 2%;" class="insert">
+            <div>
+               <button id="changeEventButton" (click)="openInsertDialog()" mat-flat-button color="primary"
+                  style="margin-right: 1%;">Start</button>
+               <button id="changeEventButton" (click)="finishTimer()" mat-flat-button color="primary">Finish</button>
             </div>
-            <mat-card [style.background-color]="getBackgroundColorValue(timeElement)" (click)="selectTimeElement(timeElement);" style="margin: 2%; display: block; overflow: auto;"
-            class="example-card">
-            <mat-card-header style="float:left;">
-               <mat-card-title>
-                  {{timeElement.shortdescr}}
-                  <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
-                  No measurement enddate available...
          </div>
-         <div *ngIf="timeElement.enddate" style="margin-top: 20px; font-size: 12px;">
-         {{ timeElementToTimestring(timeElement) }} >> {{ showClockstring(timeElement) }}
+         <div class="show" style="display: block; width: 100%;">
+            <div style=" margin: 2%;">
+               <countup-timer style="font-size: 42px;" [countUpTimerConfig]="testConfig">
+               </countup-timer>
+               <div>
+                  <p>
+                     Time overall: <span style="color: coral;"> {{ millisecondsToTimestring(calculateOverallTime(timeElements)) }}</span>
+                  </p>
+               </div>
+            </div>
+            <div *ngIf="timeElements">
+               <div *ngIf="timeElements.length==0" style="color: #47556c; margin: 2%;">
+                  <p>No TimeTask available</p>
+               </div>
+               <div *ngFor="let timeElement of timeElements">
+                  <div *ngIf="selectedTimeElement==timeElement" class="changeField" style="margin: 2%; display: block; overflow: auto;">
+                     <form class="example-form">
+                        <mat-form-field class="example-full-width" style="margin-right: 2%;">
+                           <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
+                           [(ngModel)]="selectedTimeElement.shortdescr">
+                           <mat-hint>{{message.value.length}} / 50</mat-hint>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
+                           <input matInput placeholder="description" name="longdescr"
+                           [(ngModel)]="selectedTimeElement.longdescr">
+                        </mat-form-field>
+                        <button (click)="saveAllTimeElements()" style="float:right" mat-button>Save all
+                        </button>
+                        <button (click)="saveTimeElement(selectedTimeElement)" style="float:right" mat-button>Save
+                        measurement
+                        </button>
+                     </form>
+                  </div>
+                  <mat-card [style.background-color]="getBackgroundColorValue(timeElement)" (click)="selectTimeElement(timeElement);" style="margin: 2%; display: block; overflow: auto;"
+                  class="example-card">
+                  <mat-card-header style="float:left;">
+                     <mat-card-title>
+                        {{timeElement.shortdescr}}
+                        <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
+                        No measurement enddate available...
+               </div>
+               <div *ngIf="timeElement.enddate" style="margin-top: 20px; font-size: 12px;">
+               {{ timeElementToTimestring(timeElement) }} >> {{ showClockstring(timeElement) }}
+               </div>
+               </mat-card-title>
+               <mat-card-subtitle>{{timeElement.longdescr}}</mat-card-subtitle>
+               </mat-card-header>
+               <button (click)="removeTimeElement(timeElement)" style="float:right" mat-button>Delete measurement</button>
+               <button (click)="continueTimeElement(timeElement);" style="float:right" mat-button>Continue measurement</button>
+               </mat-card>
+            </div>
          </div>
-         </mat-card-title>
-         <mat-card-subtitle>{{timeElement.longdescr}}</mat-card-subtitle>
-         </mat-card-header>
-         <button (click)="removeTimeElement(timeElement)" style="float:right" mat-button>Delete measurement</button>
-         <button (click)="continueTimeElement(timeElement);" style="float:right" mat-button>Continue measurement</button>
-         </mat-card>
       </div>
-   </div>
-</div>
-</div>
+      </div>
+   </mat-tab>
+   <mat-tab label="History">
+      <div class="content">
+         <mat-form-field>
+            <mat-label>Recorded dates</mat-label>
+            <mat-select (selectionChange)="selectDate($event)">
+              <mat-option *ngFor="let date of selectDistinctDates();" [value]="date">
+                {{date}}
+              </mat-option>
+            </mat-select>
+         </mat-form-field>
+         <div *ngIf="selectedHistoryElements">
+             <div>
+                  <p>
+                     Time overall: <span style="color: coral;">{{ millisecondsToTimestring(calculateOverallTime(selectedHistoryElements)) }}</span>
+                  </p>
+               </div>
+            <div *ngFor="let timeElement of selectedHistoryElements">
+                  <mat-card [style.background-color]="getBackgroundColorValue(timeElement)" style="margin: 2%; display: block; overflow: auto;"
+                  class="example-card">
+                  <mat-card-header style="float:left;">
+                     <mat-card-title>
+                        {{timeElement.shortdescr}}
+                        <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
+                        No measurement enddate available...
+                        </div>
+                        <div *ngIf="timeElement.enddate" style="margin-top: 20px; font-size: 12px;">
+                        {{ timeElementToTimestring(timeElement) }} >> {{ showClockstring(timeElement) }}
+                        </div>
+               </mat-card-title>
+               <mat-card-subtitle>{{timeElement.longdescr}}</mat-card-subtitle>
+               </mat-card-header>
+               </mat-card>
+            </div> 
+          </div>
+      </div>
+   </mat-tab>
+</mat-tab-group>
+
 

@@ -14,9 +14,11 @@ import { Title } from "@angular/platform-browser";
 })
 export class TimeTaskComponent implements OnInit {
   timeElements: TimeTask[];
+  _timeElements: TimeTask[] = [];
+
   runningTimeElement: TimeTask;
   selectedTimeElement: TimeTask;
-  overallTime: number;
+  selectedHistoryElements: TimeTask[];
 
   id: number;
   shortdescr: string;
@@ -93,18 +95,11 @@ export class TimeTaskComponent implements OnInit {
     this.timeElements = [];
 
     this.timeTaskService.getAllTimeElements().subscribe(data => {
+      this._timeElements = data;
+
       this.timeElements = data
         .filter(e => new Date(e.startdate).getDate() == new Date().getDate())
         .sort((a, b) => (a.id > b.id ? -1 : 1));
-
-      this.overallTime = data
-        .filter(e => new Date(e.startdate).getDate() == new Date().getDate())
-        // TODO validate date
-        .filter(e => e.enddate !== null && e.enddate !== undefined)
-        .map(
-          e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime()
-        )
-        .reduce((a, b) => a + b, 0);
 
       if (this.timerService.isTimerStart) {
         if (this.timeElements.length > 0) {
@@ -112,6 +107,19 @@ export class TimeTaskComponent implements OnInit {
         }
       }
     });
+  }
+
+  calculateOverallTime(timeTasks: TimeTask[]): number {
+    return (
+      timeTasks
+        // TODO validate date
+        //.filter(e => new Date(e.startdate).getDate() == new Date().getDate())
+        //.filter(e => e.enddate !== null && e.enddate !== undefined)
+        .map(
+          e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime()
+        )
+        .reduce((a, b) => a + b, 0)
+    );
   }
 
   continueTimeElement(timeElement: TimeTask) {
@@ -374,9 +382,52 @@ export class TimeTaskComponent implements OnInit {
       this.selectedTimeElement !== null &&
       this.selectedTimeElement.id == timeTask.id
     ) {
-      return "#47556c"; //Dunkelblau
+      return "#47556c";
     }
 
-    return "#424242"; // Dunkelgrau
+    return "#424242";
+  }
+
+  selectDistinctDates(): Array<String> {
+    let tempDates: Date[] = [];
+    this._timeElements.forEach(timeElement => {
+      if (
+        !tempDates.find(date => {
+          let DateToInsert: Date = new Date(timeElement.startdate);
+          let insertedDate: Date = new Date(date);
+          return (
+            insertedDate.getDate() == DateToInsert.getDate() &&
+            insertedDate.getMonth() == DateToInsert.getMonth() &&
+            insertedDate.getFullYear() == DateToInsert.getFullYear()
+          );
+        })
+      ) {
+        tempDates.push(timeElement.startdate);
+      }
+    });
+
+    return tempDates.map(e => {
+      let date: Date = new Date(e);
+      return (
+        date.getDate() + "." + date.getMonth() + 1 + "." + date.getFullYear()
+      );
+    });
+  }
+
+  selectDate(event: { value: String }) {
+    let dateArray: String[] = event.value.split(".");
+    let day: String = dateArray[0];
+    let month: String = dateArray[1];
+    let year: String = dateArray[2];
+
+    this.selectedHistoryElements = this._timeElements.filter(e => {
+      let date: Date = new Date(e.startdate);
+
+      return (
+        date.getDate() == +day &&
+        date.getMonth() == +month - 1 &&
+        date.getFullYear() == +year
+      );
+    });
   }
 }

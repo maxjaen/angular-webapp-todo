@@ -1,196 +1,199 @@
+
+
 <mat-tab-group>
-    <mat-tab label="Training">
-        <div *ngIf="exercises">
-            <div class="sticky">
-                <button type="button" mat-raised-button
-                    (click)="scroll('overviewtraining')">Overview Training</button>
-                <button type="button" mat-raised-button
-                    (click)="scroll('createtraining')">Create Training</button>
+   <mat-tab label="Training">
+      <div *ngIf="exercises">
+         <div class="sticky">
+            <button type="button" mat-raised-button
+               (click)="scroll('overviewtraining')">Overview Training</button>
+            <button type="button" mat-raised-button
+               (click)="scroll('createtraining')">Create Training</button>
+         </div>
+         <div class="content">
+            <div class="selection">
+               <div class="tab" #overviewtraining *ngIf="trainings">
+                  <h2> Overview Training</h2>
+                  <div *ngIf="!trainings.length==0">
+                     <div *ngFor="let training of trainings">
+                        <mat-card (click)="gotoTraining(training)" style="max-width: 350px; margin: 2%; float: left" class="example-card">
+                           <mat-card-header style="float:left;">
+                              <mat-card-title>{{ showDatestring(training.date) }}</mat-card-title>
+                              <mat-card-subtitle>ID: {{ training.id }}</mat-card-subtitle>
+                           </mat-card-header>
+                        </mat-card>
+                     </div>
+                  </div>
+                  <div *ngIf="trainings.length==0" style="color: #0275d8;">
+                     <p>No trainings available</p>
+                  </div>
+               </div>
+               <div class="tab" #createexercise *ngIf="trainings">
+                  <h2>Create Exercise</h2>
+                  <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
+                     <form [formGroup]="exerciseCreateForm" style="display: inline;" class="example-form">
+                        <mat-form-field>
+                           <input matInput placeholder="exercise name" name ="exercisename" formControlName="name">
+                        </mat-form-field>
+                        <mat-form-field>
+                           <mat-label>Choose pattern</mat-label>
+                           <mat-select (selectionChange)="addCategory($event)">
+                              <mat-option *ngFor="let patternString of patterns" [value]="patternString">
+                              {{patternString}}
+                              </mat-option>
+                           </mat-select>
+                        </mat-form-field>
+                     </form>
+                     <button style="margin-left: 2%;" (click)="saveExercise();" mat-stroked-button>Insert</button>
+                  </div>
+               </div>
+               <div class="tab" #deleteexercise *ngIf="trainings && exercisesToInsert.length==0">
+                  <h2>Delete Exercise</h2>
+                  <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
+                     <form style="display: inline;" class="example-form">
+                        <mat-form-field>
+                           <mat-label>Choose pattern</mat-label>
+                           <mat-select (selectionChange)="selectExerciseToDetele($event)">
+                              <mat-option *ngFor="let exercise of exercises" [value]="exercise">
+                              {{exercise.name}}
+                              </mat-option>
+                           </mat-select>
+                        </mat-form-field>
+                     </form>
+                     <button style="margin-left: 2%;" (click)="deleteExercise();" mat-stroked-button>Delete</button>
+                  </div>
+               </div>
+               <div class="tab" #createtraining>
+                  <h2>Create Training</h2>
+                  <div *ngIf="exercises.length==0" style="color: #0275d8;">
+                     <p>No exercises available</p>
+                  </div>
+                  <div *ngIf="!exercises.length==0" class="categories">
+                     <div *ngFor="let category of selectDistinctExerciseCategories()">
+                        <p>{{ category }}</p>
+                        <div *ngFor="let exercise of exercises">
+                           <div class="names" *ngIf="exercise['category'] == category">
+                              <mat-checkbox [checked]="exercise.checked" (change)="toggleCheckboxEvent(exercise, $event)">
+                              {{ exercise['name'] }}
+                              </mat-checkbox>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="exercises" *ngIf="exercisesToInsert">
+                     <div class="calc">
+                        <button style="margin-right: 20px;" type="button" mat-raised-button
+                        (click)="createTraining()" [disabled]="!formIsValid()">Create training</button>
+                        <button type="button" mat-raised-button (click)="resetForm()"
+                        color="warn" [disabled]="exercisesToInsert.length==0">Reset</button>
+                     </div>
+                     <div class="errormessage" *ngIf="!exercises.length==0 && exercisesToInsert.length==0">
+                        <mat-form-field>
+                           <mat-label>Check or choose</mat-label>
+                           <mat-select (selectionChange)="selectTraining($event)">
+                              <mat-option *ngFor="let training of trainings" [value]="training">
+                              {{training.date}}
+                              </mat-option>
+                           </mat-select>
+                        </mat-form-field>
+                     </div>
+                     <div *ngIf="exercisesToInsert.length!=0">
+                        <h2 style="margin-bottom: 10px; margin-top: 50px;">Workout</h2>
+                     </div>
+                     <div *ngFor="let exercise of exercisesToInsert; let i=index" class="selectionitem">
+                        <div *ngIf="!compareToLastExercise(exercise, i)">
+                           <p style="display: inline; margin-right: 15px;">{{ exercise['name'] }}</p>
+                           <button (click)="toggleCheckboxEvent(exercise, {checked : true})" class="buttons"
+                              mat-mini-fab color="primary"> + </button>
+                           <button (click)="removeElementFromForm(exercise, i)" class="buttons" mat-mini-fab
+                              color="primary"> - </button>
+                        </div>
+                        <div>
+                           <div *ngIf="isWeightPattern(exercise);">
+                              <form [formGroup]="getFormGroup(i)" class="example-form">
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Sätze" formControlName="records">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Wiederholungen" formControlName="repetitions">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Gewicht" formControlName="weight">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Einheit" formControlName="unit" value="kg">
+                                 </mat-form-field>
+                                 <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
+                                 <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
+                              </form>
+                           </div>
+                           <div *ngIf="isConditionalPattern1d(exercise);">
+                              <form [formGroup]="getFormGroup(i)" class="example-form">
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Anzahl" formControlName="records">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Dauer" formControlName="repetitions">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Einheit" formControlName="unit" value="s">
+                                 </mat-form-field>
+                                 <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
+                                 <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
+                              </form>
+                           </div>
+                           <div *ngIf="isConditionalPattern2d(exercise);">
+                              <form [formGroup]="getFormGroup(i)" class="example-form">
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Dauer" formControlName="period">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Einheit" formControlName="unitperiod" value="min">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Geschwindigkeit" formControlName="speed">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Einheit" formControlName="unitspeed" value="km/h">
+                                 </mat-form-field>
+                                 <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
+                                 <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
+                              </form>
+                           </div>
+                           <div *ngIf="isCountablePattern(exercise);">
+                              <form [formGroup]="getFormGroup(i)" class="example-form">
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Sätze" formControlName="records">
+                                 </mat-form-field>
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Wiederholungen" formControlName="repetitions">
+                                 </mat-form-field>
+                                 <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
+                                 <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
+                              </form>
+                           </div>
+                        </div>
+                     </div>
+                     <div *ngIf="exercisesToInsert.length!=0">
+                        <h2 style="margin-bottom: 10px; margin-top: 50px;">Description</h2>
+                        <mat-form-field class="example-full-width">
+                           <textarea matInput placeholder="Leave a comment" [(ngModel)]="trainingDescription"></textarea>
+                        </mat-form-field>
+                        <h2 style="margin-bottom: 10px; margin-top: 50px;">Date</h2>
+                        <mat-form-field>
+                           <input matInput (dateChange)="setTrainingsDate('change', $event)"
+                           [matDatepicker]="picker" placeholder="Choose a date">
+                           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                           <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                     </div>
+                  </div>
+               </div>
             </div>
-            <div class="content">
-                <div class="selection">
-                    <div class="tab" #overviewtraining *ngIf="trainings">
-                        <h2> Overview Training</h2>
-                        <div *ngIf="!trainings.length==0">
-                            <div *ngFor="let training of trainings">
-                                <mat-card (click)="gotoTraining(training)" style="max-width: 350px; margin: 2%; float: left" class="example-card">
-                                    <mat-card-header style="float:left;">
-                                        <mat-card-title>{{ showDatestring(training.date) }}</mat-card-title>
-                                        <mat-card-subtitle>ID: {{ training.id }}</mat-card-subtitle>
-                                    </mat-card-header>
-                                </mat-card>
-                            </div>
-                        </div>
-                        <div *ngIf="trainings.length==0" style="color: #0275d8;">
-                            <p>No trainings available</p>
-                        </div>
-                    </div>
-                    <div class="tab" #createexercise *ngIf="trainings">
-                        <h2>Create Exercise</h2>
-                        <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
-                            <form [formGroup]="exerciseCreateForm" style="display: inline;" class="example-form">
-                                <mat-form-field>
-                                    <input matInput placeholder="exercise name" name ="exercisename" formControlName="name">
-                                </mat-form-field> 
-                                <mat-form-field>
-                                    <mat-label>Choose pattern</mat-label>
-                                    <mat-select (selectionChange)="addCategory($event)">
-                                      <mat-option *ngFor="let patternString of patterns" [value]="patternString">
-                                        {{patternString}}
-                                      </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </form>
-                            <button style="margin-left: 2%;" (click)="saveExercise();" mat-stroked-button>Insert</button>
-                        </div>
-                    </div>
-                    <div class="tab" #deleteexercise *ngIf="trainings && exercisesToInsert.length==0">
-                        <h2>Delete Exercise</h2>
-                        <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
-                            <form style="display: inline;" class="example-form">
-                                <mat-form-field>
-                                    <mat-label>Choose pattern</mat-label>
-                                    <mat-select (selectionChange)="selectExerciseToDetele($event)">
-                                      <mat-option *ngFor="let exercise of exercises" [value]="exercise">
-                                        {{exercise.name}}
-                                      </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </form>
-                            <button style="margin-left: 2%;" (click)="deleteExercise();" mat-stroked-button>Delete</button>
-                        </div>
-                    </div>
-                    <div class="tab" #createtraining>
-                        <h2>Create Training</h2>
-                        <div *ngIf="exercises.length==0" style="color: #0275d8;">
-                            <p>No exercises available</p>
-                        </div>
-                        <div *ngIf="!exercises.length==0" class="categories">
-                            <div *ngFor="let category of selectDistinctExerciseCategories()">
-                                <p>{{ category }}</p>
-                                <div *ngFor="let exercise of exercises">
-                                    <div class="names" *ngIf="exercise['category'] == category">
-                                        <mat-checkbox [checked]="exercise.checked" (change)="toggleCheckboxEvent(exercise, $event)">
-                                            {{ exercise['name'] }}
-                                        </mat-checkbox>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="exercises" *ngIf="exercisesToInsert">
-                            <div class="calc">
-                                <button style="margin-right: 20px;" type="button" mat-raised-button
-                                    (click)="createTraining()" [disabled]="!formIsValid()">Create training</button>
-                                <button type="button" mat-raised-button (click)="resetForm()"
-                                    color="warn" [disabled]="exercisesToInsert.length==0">Reset</button>
-                            </div>
-                            <div class="errormessage" *ngIf="!exercises.length==0 && exercisesToInsert.length==0">
-                                <mat-form-field>
-                                    <mat-label>Check or choose</mat-label>
-                                    <mat-select (selectionChange)="selectTraining($event)">
-                                        <mat-option *ngFor="let training of trainings" [value]="training">
-                                            {{training.date}}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <div *ngIf="exercisesToInsert.length!=0">
-                                <h2 style="margin-bottom: 10px; margin-top: 50px;">Workout</h2>
-                            </div>
-                            <div *ngFor="let exercise of exercisesToInsert; let i=index" class="selectionitem">
-                                <div *ngIf="!compareToLastExercise(exercise, i)">
-                                    <p style="display: inline; margin-right: 15px;">{{ exercise['name'] }}</p>
-                                    <button (click)="toggleCheckboxEvent(exercise, {checked : true})" class="buttons"
-                                    mat-mini-fab color="primary"> + </button>
-                                    <button (click)="removeElementFromForm(exercise, i)" class="buttons" mat-mini-fab
-                                    color="primary"> - </button>
-                                </div>
-                                <div>
-                                    <div *ngIf="isWeightPattern(exercise);">
-                                        <form [formGroup]="getFormGroup(i)" class="example-form">
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Sätze" formControlName="records">
-                                            </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Wiederholungen" formControlName="repetitions">
-                                            </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                    <input matInput placeholder="Gewicht" formControlName="weight">
-                                                </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Einheit" formControlName="unit" value="kg">
-                                            </mat-form-field>
-                                            <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
-                                            <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
-                                        </form>
-                                    </div>
-                                    <div *ngIf="isConditionalPattern1d(exercise);">
-                                        <form [formGroup]="getFormGroup(i)" class="example-form">
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Anzahl" formControlName="records">
-                                            </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Dauer" formControlName="repetitions">
-                                            </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Einheit" formControlName="unit" value="s">
-                                            </mat-form-field>
-                                            <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
-                                            <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
-                                        </form>
-                                    </div>
-                                    <div *ngIf="isConditionalPattern2d(exercise);">
-                                        <form [formGroup]="getFormGroup(i)" class="example-form">
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Dauer" formControlName="period">
-                                            </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Einheit" formControlName="unitperiod" value="min">
-                                            </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                    <input matInput placeholder="Geschwindigkeit" formControlName="speed">
-                                                </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Einheit" formControlName="unitspeed" value="km/h">
-                                            </mat-form-field>
-                                            <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
-                                            <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
-                                        </form>
-                                    </div>
-                                    <div *ngIf="isCountablePattern(exercise);">
-                                        <form [formGroup]="getFormGroup(i)" class="example-form">
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Sätze" formControlName="records">
-                                            </mat-form-field>
-                                            <mat-form-field class="example-full-width">
-                                                <input matInput placeholder="Wiederholungen" formControlName="repetitions">
-                                            </mat-form-field>
-                                            <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
-                                            <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div *ngIf="exercisesToInsert.length!=0">
-                                <h2 style="margin-bottom: 10px; margin-top: 50px;">Description</h2>
-                                <mat-form-field class="example-full-width">
-                                    <textarea matInput placeholder="Leave a comment" [(ngModel)]="trainingDescription"></textarea>
-                                </mat-form-field>
-                                <h2 style="margin-bottom: 10px; margin-top: 50px;">Date</h2> 
-                                <mat-form-field>
-                                    <input matInput (dateChange)="setTrainingsDate('change', $event)"
-                                        [matDatepicker]="picker" placeholder="Choose a date">
-                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
-                                </mat-form-field>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </mat-tab>
-    <mat-tab label="Weight">
-            <app-weight></app-weight>
-    </mat-tab>
+         </div>
+      </div>
+   </mat-tab>
+   <mat-tab label="Weight">
+      <app-weight></app-weight>
+   </mat-tab>
 </mat-tab-group>
+

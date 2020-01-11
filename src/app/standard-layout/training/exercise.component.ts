@@ -1,25 +1,35 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Exercise } from './model/exercise';
-import { Training } from './model/training';
-import { ExerciseService } from './services/exercise.service';
-import { TrainingService } from './services/training.service';
-import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
-import { WeightPattern } from './model/weight-pattern';
-import { ConditionalPattern } from './model/conditional-pattern';
-import { CountablePattern } from './model/countable-pattern';
-import { ConditionalPattern2d } from './model/conditional-pattern2d';
-import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  HostListener
+} from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Exercise } from "./model/exercise";
+import { Training } from "./model/training";
+import { ExerciseService } from "./services/exercise.service";
+import { TrainingService } from "./services/training.service";
+import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
+import { WeightPattern } from "./model/weight-pattern";
+import { ConditionalPattern } from "./model/conditional-pattern";
+import { CountablePattern } from "./model/countable-pattern";
+import { ConditionalPattern2d } from "./model/conditional-pattern2d";
+import { Title } from "@angular/platform-browser";
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'app-exercise',
-  templateUrl: './exercise.component.html',
-  styleUrls: ['./exercise.component.scss']
+  selector: "app-exercise",
+  templateUrl: "./exercise.component.html",
+  styleUrls: ["./exercise.component.scss"]
 })
 export class TrainingComponent implements OnInit {
-
-  patterns = ["conditionalpattern1d", "conditionalpattern2d", "countablepattern", "weightpattern"];
+  patterns = [
+    "conditionalpattern1d",
+    "conditionalpattern2d",
+    "countablepattern",
+    "weightpattern"
+  ];
 
   trainings: Training[];
   trainingsDate: Date = new Date();
@@ -28,12 +38,8 @@ export class TrainingComponent implements OnInit {
 
   exerciseToCreate: Exercise = new Exercise();
   exerciseCreateForm = new FormGroup({
-    'name': new FormControl('', [
-      Validators.required
-    ]),
-    'category': new FormControl('', [
-      Validators.required
-    ])
+    name: new FormControl("", [Validators.required]),
+    category: new FormControl("", [Validators.required])
   });
 
   exerciseToDelete: Exercise = new Exercise();
@@ -44,7 +50,13 @@ export class TrainingComponent implements OnInit {
   formGroups: FormGroup[] = [];
   formGroupToInsert: FormGroup;
 
-  constructor(private exerciseService: ExerciseService, private trainingService: TrainingService,  private titleService:Title, private _snackBar: MatSnackBar, private router: Router) {
+  constructor(
+    private exerciseService: ExerciseService,
+    private trainingService: TrainingService,
+    private titleService: Title,
+    private _snackBar: MatSnackBar,
+    private router: Router
+  ) {
     this.titleService.setTitle("Training");
   }
 
@@ -53,34 +65,34 @@ export class TrainingComponent implements OnInit {
     this.getTrainingsFromService();
   }
 
-  /* 
-  *
-  * HOSTLISTENER
-  *
-  */
+  /*
+   *
+   * HOSTLISTENER
+   *
+   */
 
-  @HostListener('window:beforeunload')
+  @HostListener("window:beforeunload")
   onBeforeUnload() {
     return false;
   }
-  
-  /* 
-  *
-  * EXERCISE FUNCTIONS
-  *
-  */
+
+  /*
+   *
+   * EXERCISE FUNCTIONS
+   *
+   */
 
   getExercisesFromService() {
     this.exerciseService.getAllExercises().subscribe(exercises => {
-      this.exercises = exercises
+      this.exercises = exercises;
     });
   }
 
-  addCategory(event: { value: string; }) {
+  addCategory(event: { value: string }) {
     this.exerciseToCreate.category = event.value;
-  };
+  }
 
-  saveExercise(){
+  saveExercise() {
     this.exerciseToCreate.name = this.exerciseCreateForm.getRawValue().name;
 
     this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
@@ -89,23 +101,21 @@ export class TrainingComponent implements OnInit {
     });
   }
 
-  selectExerciseToDetele(event: { value: Exercise; }){
+  selectExerciseToDetele(event: { value: Exercise }) {
     this.exerciseToDelete = event.value;
   }
 
-  deleteExercise(){
+  deleteExercise() {
     this.exerciseService.deleteExercise(this.exerciseToDelete).subscribe(() => {
       this.openSnackBar("Exercise deleted!", null);
       this.getExercisesFromService();
     });
   }
 
-
-
-  compareToLastExercise(exercise: Exercise, index: number): boolean{
+  compareToLastExercise(exercise: Exercise, index: number): boolean {
     // cant compare first element to element before because doesnt exist
-    if (index > 0){
-      if (this.exercisesToInsert[index - 1].name == exercise.name){
+    if (index > 0) {
+      if (this.exercisesToInsert[index - 1].name == exercise.name) {
         return true;
       }
     }
@@ -114,24 +124,29 @@ export class TrainingComponent implements OnInit {
   }
 
   /*
-  *
-  * TRAINING FUNCTIONS
-  *
-  */
- selectTraining(event: { value: Training; }) {
-   this.trainingDescription = event.value.description;
+   *
+   * TRAINING FUNCTIONS
+   *
+   */
+  selectTraining(event: { value: Training }) {
+    this.trainingDescription = event.value.description;
 
     event.value.exercices.forEach(element => {
-      this.toggleCheckboxEvent(element, {checked: true});   
-    }); 
-  };
+      this.toggleCheckboxEvent(element, { checked: true });
+    });
+  }
 
   gotoTraining(training: Training) {
-    this.router.navigate(['/training/'+training.id]);
+    this.router.navigate(["/training/" + training.id]);
   }
 
   createTraining() {
-    this.training = { id: 0, exercices: [], date: this.trainingsDate, description: this.trainingDescription };
+    this.training = {
+      id: 0,
+      exercices: [],
+      date: this.trainingsDate,
+      description: this.trainingDescription
+    };
 
     this.trainingDescription = "";
 
@@ -142,7 +157,7 @@ export class TrainingComponent implements OnInit {
     this.training.exercices.forEach(element => {
       element.string = this.createExerciseString(element);
     });
-    
+
     this.trainingService.postTraining(this.training).subscribe(() => {
       this.openSnackBar("Training created!", null);
       this.trainingService.getAllTrainings().subscribe(e => {
@@ -152,14 +167,16 @@ export class TrainingComponent implements OnInit {
     });
   }
 
-  createExerciseString(exercise: Exercise):string {
-    let stringArray: string[] = Object.getOwnPropertyNames(exercise).filter(e => e != "name" && e != "category")
+  createExerciseString(exercise: Exercise): string {
+    let stringArray: string[] = Object.getOwnPropertyNames(exercise).filter(
+      e => e != "name" && e != "category"
+    );
     let tempString = "";
 
     stringArray.forEach((element, index) => {
-      if (index == 0){
+      if (index == 0) {
         tempString += "Exercise [" + element + ": " + exercise[element] + ", ";
-      } else if (index == stringArray.length - 1){
+      } else if (index == stringArray.length - 1) {
         tempString += element + ": " + exercise[element] + "]";
       } else {
         tempString += element + ": " + exercise[element] + ", ";
@@ -171,13 +188,13 @@ export class TrainingComponent implements OnInit {
 
   getTrainingsFromService() {
     this.trainingService.getAllTrainings().subscribe(trainings => {
-     if (trainings.length >= 2){
-      this.trainings = trainings.sort(function (a, b) {
-        return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
-      });
-     } else {
-      this.trainings = trainings;
-     }
+      if (trainings.length >= 2) {
+        this.trainings = trainings.sort(function(a, b) {
+          return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
+        });
+      } else {
+        this.trainings = trainings;
+      }
     });
   }
 
@@ -187,76 +204,96 @@ export class TrainingComponent implements OnInit {
 
   showDatestring(date: Date): string {
     let tempDate: Date = new Date(date);
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return tempDate.toLocaleDateString('de-DE', options);
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    };
+    return tempDate.toLocaleDateString("de-DE", options);
   }
-  
+
   fixClockstring(time: number) {
-    return (time < 10) ? "0" + time : time;
+    return time < 10 ? "0" + time : time;
   }
 
   /*
-  *
-  * CHECKBOX METHODS
-  *
-  */
+   *
+   * CHECKBOX METHODS
+   *
+   */
 
-  toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean; }) {
+  toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean }) {
     this.setCheckBoxFromExerciseName(exercise.name, true);
 
     if (event.checked === true) {
-        this.exercisesToInsert.push(exercise);
-        this.createFormGroup(exercise);
-    } else {      
+      this.exercisesToInsert.push(exercise);
+      this.createFormGroup(exercise);
+    } else {
       while (this.exercisesToInsert.find(e => e.name == exercise.name)) {
         this.removeElementFromArray(exercise, this.exercisesToInsert);
-      };
-      
+      }
+
       while (this.formGroups.find(e => e.getRawValue().name == exercise.name)) {
-        this.removeElementFromArray(this.formGroups.filter(e => e.getRawValue().name == exercise.name)[0], this.formGroups);
-      };      
-    }    
+        this.removeElementFromArray(
+          this.formGroups.filter(e => e.getRawValue().name == exercise.name)[0],
+          this.formGroups
+        );
+      }
+    }
   }
 
   setCheckBoxFromExerciseName(exerciseName: string, checked: boolean) {
-    this.exercises.filter(exercise => exerciseName == exercise.name).forEach(exercise => {
-      exercise.checked = checked;
-    })
+    this.exercises
+      .filter(exercise => exerciseName == exercise.name)
+      .forEach(exercise => {
+        exercise.checked = checked;
+      });
   }
 
   /*
-  *
-  * FORM METHODS
-  *
-  */
+   *
+   * FORM METHODS
+   *
+   */
 
   getFormGroup(index: number): FormGroup {
     return this.formGroups[index];
   }
 
   createFormGroup(exercise: Exercise) {
-    this.formGroupToInsert = new FormGroup({})
+    this.formGroupToInsert = new FormGroup({});
 
     let patternArray: string[] = this.getPatternKeys(exercise);
-    
+
     patternArray.forEach(key => {
-      if (key == "name"){
+      if (key == "name") {
         this.formGroupToInsert.addControl(key, new FormControl(exercise.name));
-      } else if(key.includes("unit")){   
-        this.formGroupToInsert.addControl(key, new FormControl(exercise.pattern[key]));
-      } else {        
-        this.formGroupToInsert.addControl(key, new FormControl(exercise[key.toString()], Validators.required));
+      } else if (key.includes("unit")) {
+        this.formGroupToInsert.addControl(
+          key,
+          new FormControl(exercise.pattern[key])
+        );
+      } else {
+        this.formGroupToInsert.addControl(
+          key,
+          new FormControl(exercise[key.toString()], Validators.required)
+        );
       }
-    });    
-    
-    this.formGroupToInsert.addControl("category", new FormControl(exercise.category));
-    // this.formGroupToInsert.addControl("pattern", new FormControl(exercise.pattern));
-    
+    });
+
+    this.formGroupToInsert.addControl(
+      "category",
+      new FormControl(exercise.category)
+    );
+
     this.formGroups.push(this.formGroupToInsert);
   }
 
   removeElementFromForm(exercise: Exercise, elementPosition: number) {
-    if (this.exercisesToInsert.filter(e => e.name == exercise.name).length == 1) {
+    if (
+      this.exercisesToInsert.filter(e => e.name == exercise.name).length == 1
+    ) {
       this.setCheckBoxFromExerciseName(exercise.name, false);
     }
     this.removePositionFromArray(elementPosition, this.exercisesToInsert);
@@ -268,19 +305,15 @@ export class TrainingComponent implements OnInit {
       return false;
     }
 
-    // TODO validating types not working yet
-    // if (this.formGroups.map(e => e.getRawValue()).find(e => e.einheit == "" || e.saetz == "" || e.wdh == "" || !(this.isNumber(e.wdh)) || !(this.isNumber(e.saetz)))) {
-    //   return false;
-    // }
+    // TODO validating form
 
     return true;
   }
 
   resetForm() {
     this.exercisesToInsert = [];
-    this.formGroupToInsert= null;
+    this.formGroupToInsert = null;
     this.formGroups = [];
-
 
     this.exercises.forEach(exercise => {
       exercise.checked = false;
@@ -288,80 +321,101 @@ export class TrainingComponent implements OnInit {
   }
 
   /*
-  *
-  * PATTERN METHODS
-  *
-  */
+   *
+   * PATTERN METHODS
+   *
+   */
 
-  getPatternKeys(exercise: Exercise){
-    if (exercise.category=="conditionalpattern1d"){
-      let pattern: ConditionalPattern = {name :"conditionalpattern1d", records: 0, repetitions:0, unit:"s"};
+  getPatternKeys(exercise: Exercise) {
+    if (exercise.category == "conditionalpattern1d") {
+      let pattern: ConditionalPattern = {
+        name: "conditionalpattern1d",
+        records: 0,
+        repetitions: 0,
+        unit: "s"
+      };
       exercise.pattern = pattern;
-      return Object.getOwnPropertyNames(pattern); 
+      return Object.getOwnPropertyNames(pattern);
     }
 
-    if (exercise.category=="conditionalpattern2d"){
-      let pattern: ConditionalPattern2d = {name :"conditionalpattern2d", period: 0, speed:0, unitperiod:"min", unitspeed: "km/h"};
+    if (exercise.category == "conditionalpattern2d") {
+      let pattern: ConditionalPattern2d = {
+        name: "conditionalpattern2d",
+        period: 0,
+        speed: 0,
+        unitperiod: "min",
+        unitspeed: "km/h"
+      };
       exercise.pattern = pattern;
-      return Object.getOwnPropertyNames(pattern); 
+      return Object.getOwnPropertyNames(pattern);
     }
 
-    if (exercise.category=="countablepattern"){
-      let pattern: CountablePattern = {name :"countablepattern", records: 0, repetitions:0};
+    if (exercise.category == "countablepattern") {
+      let pattern: CountablePattern = {
+        name: "countablepattern",
+        records: 0,
+        repetitions: 0
+      };
       exercise.pattern = pattern;
-      return Object.getOwnPropertyNames(pattern); 
+      return Object.getOwnPropertyNames(pattern);
     }
 
-    if (exercise.category=="weightpattern"){
-      let pattern: WeightPattern = {name :"weightpattern", records: 0, repetitions:0, weight:0, unit:"kg"};
+    if (exercise.category == "weightpattern") {
+      let pattern: WeightPattern = {
+        name: "weightpattern",
+        records: 0,
+        repetitions: 0,
+        weight: 0,
+        unit: "kg"
+      };
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern);
     }
   }
 
-  isConditionalPattern1d(exercise: Exercise): boolean{   
-    if (exercise.pattern.name == "conditionalpattern1d"){
+  isConditionalPattern1d(exercise: Exercise): boolean {
+    if (exercise.pattern.name == "conditionalpattern1d") {
       return true;
     }
 
     return false;
-  };
+  }
 
-  isConditionalPattern2d(exercise: Exercise): boolean{   
-    if (exercise.pattern.name == "conditionalpattern2d"){
+  isConditionalPattern2d(exercise: Exercise): boolean {
+    if (exercise.pattern.name == "conditionalpattern2d") {
       return true;
     }
 
     return false;
-  };
-  
-  isCountablePattern(exercise: Exercise): boolean{   
-    if (exercise.pattern.name == "countablepattern"){
+  }
+
+  isCountablePattern(exercise: Exercise): boolean {
+    if (exercise.pattern.name == "countablepattern") {
       return true;
     }
 
     return false;
-  };
+  }
 
-  isWeightPattern(exercise: Exercise): boolean{
-    if (exercise.pattern.name == "weightpattern"){    
+  isWeightPattern(exercise: Exercise): boolean {
+    if (exercise.pattern.name == "weightpattern") {
       return true;
     }
 
     return false;
-  };
+  }
 
   /*
-  *
-  * HELPER METHODS
-  *
-  */
+   *
+   * HELPER METHODS
+   *
+   */
 
- openSnackBar(message: string, action: string) {
-  this._snackBar.open(message, action, {
-    duration: 4000,
-  })
-}
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: 4000
+    });
+  }
 
   removePositionFromArray(elementPosition: number, array: any[]) {
     array.splice(elementPosition, 1);
@@ -372,7 +426,7 @@ export class TrainingComponent implements OnInit {
   }
 
   isNumber(param: any): boolean {
-    return !(isNaN(Number(param)))
+    return !isNaN(Number(param));
   }
 
   selectDistinctExerciseCategories(): Array<string> {
@@ -383,56 +437,78 @@ export class TrainingComponent implements OnInit {
     return self.indexOf(value) === index;
   }
 
-  switchPosition(direction: string, index: number){
+  switchPosition(direction: string, index: number) {
     this.changeExerciseOrder(this.formGroups, direction, index);
     this.changeExerciseOrder(this.exercisesToInsert, direction, index);
   }
 
-  changeExerciseOrder(array: any[], direction: string, index: number){
+  changeExerciseOrder(array: any[], direction: string, index: number) {
     let actualElement: number = index;
     let lastElement: number = index - 1;
     let nextElement: number = index + 1;
 
-    switch(direction){
+    switch (direction) {
       case "up":
-          if (index !== 0){
-            var temp = array[lastElement];
-            array[lastElement] = array[actualElement]
-            array[actualElement] = temp;
-          } else {
-            console.warn("First element in array " + array + " cannot be moved further up to index " + (index - 1) + ". Array from 0 to " + (array.length - 1));
-          }
-          break;
+        if (index !== 0) {
+          var temp = array[lastElement];
+          array[lastElement] = array[actualElement];
+          array[actualElement] = temp;
+        } else {
+          console.warn(
+            "First element in array " +
+              array +
+              " cannot be moved further up to index " +
+              (index - 1) +
+              ". Array from 0 to " +
+              (array.length - 1)
+          );
+        }
+        break;
       case "down":
-          if (actualElement < array.length - 1){
-            var temp: any = array[nextElement];
-            array[nextElement] = array[actualElement]
-            array[actualElement] = temp;
-          } else {
-            console.warn("Last element in array " + array + "cannot be moved further down to index " + (index + 1) + ". Array from 0 to " + (array.length - 1));   
-          }
-          break;
-      default: 
+        if (actualElement < array.length - 1) {
+          var temp: any = array[nextElement];
+          array[nextElement] = array[actualElement];
+          array[actualElement] = temp;
+        } else {
+          console.warn(
+            "Last element in array " +
+              array +
+              "cannot be moved further down to index " +
+              (index + 1) +
+              ". Array from 0 to " +
+              (array.length - 1)
+          );
+        }
+        break;
+      default:
         console.warn("Wrong direction selected");
-    }  
+    }
   }
 
   /*
-  *
-  * SMOOTH SCROLLING
-  *
-  */
+   *
+   * SMOOTH SCROLLING
+   *
+   */
 
-  @ViewChild("overviewtraining", { read: undefined, static: false }) overviewtraining: ElementRef;
-  @ViewChild("createtraining", { read: undefined, static: false }) createtraining: ElementRef;
+  @ViewChild("overviewtraining", { read: undefined, static: false })
+  overviewtraining: ElementRef;
+  @ViewChild("createtraining", { read: undefined, static: false })
+  createtraining: ElementRef;
 
   scroll(el: string) {
     switch (el) {
       case "overviewtraining":
-        this.overviewtraining.nativeElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        this.overviewtraining.nativeElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
         break;
       case "createtraining":
-        this.createtraining.nativeElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        this.createtraining.nativeElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
         break;
     }
   }

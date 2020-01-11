@@ -14,7 +14,7 @@ import { Title } from "@angular/platform-browser";
 })
 export class TimeTaskComponent implements OnInit {
   timeElements: TimeTask[];
-  _timeElements: TimeTask[] = [];
+  _timeElements: TimeTask[];
 
   runningTimeElement: TimeTask;
   selectedTimeElement: TimeTask;
@@ -92,7 +92,9 @@ export class TimeTaskComponent implements OnInit {
   }
 
   getTimeElementsFromService() {
+    this.selectedHistoryElements = [];
     this.timeElements = [];
+    this._timeElements = [];
 
     this.timeTaskService.getAllTimeElements().subscribe(data => {
       this._timeElements = data;

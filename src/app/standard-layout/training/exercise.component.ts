@@ -128,6 +128,7 @@ export class TrainingComponent implements OnInit {
    * TRAINING FUNCTIONS
    *
    */
+
   selectTraining(event: { value: Training }) {
     this.trainingDescription = event.value.description;
 

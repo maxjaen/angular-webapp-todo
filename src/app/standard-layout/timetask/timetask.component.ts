@@ -1,20 +1,20 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { TimeTaskService } from './services/timetask.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { TimeTask } from './model/timetask';
-import { InsertTaskDialogTime } from './dialogs/insert-task-dialog';
-import { countUpTimerConfigModel, timerTexts } from 'ngx-timer';
-import { CountupTimerService } from 'ngx-timer';
-import { Title } from '@angular/platform-browser';
+import { Component, OnInit, HostListener } from "@angular/core";
+import { TimeTaskService } from "./services/timetask.service";
+import { MatDialog, MatSnackBar } from "@angular/material";
+import { TimeTask } from "./model/timetask";
+import { InsertTaskDialogTime } from "./dialogs/insert-task-dialog";
+import { countUpTimerConfigModel, timerTexts } from "ngx-timer";
+import { CountupTimerService } from "ngx-timer";
+import { Title } from "@angular/platform-browser";
 
 @Component({
-  selector: 'app-timetask',
-  templateUrl: './timetask.component.html',
-  styleUrls: ['./timetask.component.scss']
+  selector: "app-timetask",
+  templateUrl: "./timetask.component.html",
+  styleUrls: ["./timetask.component.scss"]
 })
 export class TimeTaskComponent implements OnInit {
-
   timeElements: TimeTask[];
+  runningTimeElement: TimeTask;
   selectedTimeElement: TimeTask;
   overallTime: number;
 
@@ -25,8 +25,14 @@ export class TimeTaskComponent implements OnInit {
   enddate: Date;
   testConfig: countUpTimerConfigModel;
 
-  // TODO timerservice doesn't show correct time in chrome, when tab inactive -> google chrome problem
-  constructor(private timeTaskService: TimeTaskService, private timerService: CountupTimerService, private titleService:Title, public _dialog: MatDialog, private _snackBar: MatSnackBar) {
+  // TODO timerservice doesn't show correct time in google chrome, when tab inactive
+  constructor(
+    private timeTaskService: TimeTaskService,
+    private timerService: CountupTimerService,
+    private titleService: Title,
+    public _dialog: MatDialog,
+    private _snackBar: MatSnackBar
+  ) {
     this.titleService.setTitle("Zeiterfassung");
   }
 
@@ -37,7 +43,7 @@ export class TimeTaskComponent implements OnInit {
 
   setTimerConfig() {
     this.testConfig = new countUpTimerConfigModel();
-    this.testConfig.timerClass = 'test_Timer_class';
+    this.testConfig.timerClass = "test_Timer_class";
     this.testConfig.timerTexts = new timerTexts();
     this.testConfig.timerTexts.hourText = " h -";
     this.testConfig.timerTexts.minuteText = " min -";
@@ -45,32 +51,42 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /*
-  *
-  * HOSTLISTENER
-  *
-  */
+   *
+   * HOSTLISTENER
+   *
+   */
 
-  @HostListener('click', ['$event'])
+  @HostListener("click", ["$event"])
   onMouseClick(event: MouseEvent) {
     if (event.shiftKey) {
       this.openInsertDialog();
     }
   }
 
-  @HostListener('window:beforeunload')
+  @HostListener("window:beforeunload")
   onBeforeUnload() {
-      return false;
+    return false;
   }
 
   /*
-  *
-  * TIMEELEMENT METHODS
-  *
-  */
+   *
+   * TIMEELEMENT METHODS
+   *
+   */
 
   selectTimeElement(timeElement: TimeTask) {
-    this.selectedTimeElement = timeElement;
-    this.resetTimer();
+    if (
+      this.selectedTimeElement === undefined ||
+      this.selectedTimeElement === null
+    ) {
+      this.selectedTimeElement = timeElement;
+    } else {
+      this.hideSelectedTimeElement();
+    }
+  }
+
+  selectRunningTimeElement(timeElement: TimeTask) {
+    this.runningTimeElement = timeElement;
   }
 
   getTimeElementsFromService() {
@@ -79,31 +95,49 @@ export class TimeTaskComponent implements OnInit {
     this.timeTaskService.getAllTimeElements().subscribe(data => {
       this.timeElements = data
         .filter(e => new Date(e.startdate).getDate() == new Date().getDate())
-        .sort((a, b) => (a.id > b.id ? -1 : 1));      
+        .sort((a, b) => (a.id > b.id ? -1 : 1));
 
       this.overallTime = data
         .filter(e => new Date(e.startdate).getDate() == new Date().getDate())
         // TODO validate date
         .filter(e => e.enddate !== null && e.enddate !== undefined)
-        .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
+        .map(
+          e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime()
+        )
         .reduce((a, b) => a + b, 0);
+
+      if (this.timerService.isTimerStart) {
+        if (this.timeElements.length > 0) {
+          this.runningTimeElement = this.timeElements[0];
+        }
+      }
     });
   }
 
   continueTimeElement(timeElement: TimeTask) {
     if (this.timerService.isTimerStart) {
-      this.selectedTimeElement.enddate = new Date();
-      this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(() => {
-        this.getTimeElementsFromService();
-      })
+      this.runningTimeElement.enddate = new Date();
+      this.timeTaskService
+        .putTimeElement(this.runningTimeElement)
+        .subscribe(() => {
+          this.getTimeElementsFromService();
+        });
     }
     this.resetTimer();
 
-    let tempTimeElement: TimeTask = { shortdescr: timeElement.shortdescr, longdescr: timeElement.longdescr, id: null, startdate: this.createDateWithTimeOffset(), enddate: null };
+    let tempTimeElement: TimeTask = {
+      shortdescr: timeElement.shortdescr,
+      longdescr: timeElement.longdescr,
+      id: null,
+      startdate: this.createDateWithTimeOffset(),
+      enddate: null,
+      task: timeElement.task
+    };
 
     this.timeTaskService.postTimeElement(tempTimeElement).subscribe(data => {
       this.getTimeElementsFromService();
-      this.selectedTimeElement = data;
+      this.runningTimeElement = data;
+      this.hideSelectedTimeElement();
       this.startTimer();
     });
   }
@@ -116,10 +150,14 @@ export class TimeTaskComponent implements OnInit {
           this.getTimeElementsFromService();
         });
       } else {
-        console.warn("saveTimeElement(): ID: " + timeElement.id + ", expected number")
+        console.warn(
+          "saveTimeElement(): ID: " + timeElement.id + ", expected number"
+        );
       }
     } else {
-      console.warn("saveTimeElement(): ID: " + timeElement.id + ", expected ID")
+      console.warn(
+        "saveTimeElement(): ID: " + timeElement.id + ", expected ID"
+      );
     }
 
     this.hideSelectedTimeElement();
@@ -132,46 +170,56 @@ export class TimeTaskComponent implements OnInit {
   }
 
   removeTimeElement(timeElement: TimeTask) {
-    if ((!(timeElement.id == this.selectedTimeElement.id) || (this.timeElements.length == 1))) {
-      if (!(timeElement === undefined)) {
-        if (this.isNumber(timeElement.id)) {
-          this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(() => {
-            this.openSnackBar("TimeTask removed!", null);
-            this.getTimeElementsFromService();
-            this.hideSelectedTimeElement();
-          });
-        } else {
-          console.warn("removeTimeElement(): ID: " + timeElement.id + ", expected number")
-        }
-      } else {
-        console.warn("removeTimeElement(): ID: " + timeElement.id + ", expected ID")
+    if (timeElement === undefined) {
+      return;
+    }
+
+    if (!this.isNumber(timeElement.id)) {
+      return;
+    }
+
+    if (window.confirm("Are sure you want to delete this item ?")) {
+      if (
+        this.runningTimeElement !== undefined &&
+        this.runningTimeElement !== null &&
+        timeElement.id == this.runningTimeElement.id
+      ) {
+        this.openSnackBar("Can't delete running TimeTask!", null);
+        return;
       }
-    } else {
-      console.warn("Can't remove selected item: " + timeElement + this.timeElements.length)
+
+      this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(() => {
+        this.openSnackBar("TimeTask removed!", null);
+        this.getTimeElementsFromService();
+        this.hideSelectedTimeElement();
+      });
     }
   }
 
   /*
-  *
-  * TIMER
-  *
-  */
+   *
+   * TIMER
+   *
+   */
 
-  startTimer(){
+  startTimer() {
     this.timerService.startTimer();
     this.titleService.setTitle("Zeiterfassung - Timer läuft...");
   }
 
-  pauseTimer() {
+  finishTimer() {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
-      this.selectedTimeElement.enddate = this.createDateWithTimeOffset();
-      this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(() => {
-        this.openSnackBar("TimeTask finished!", null);
-        this.getTimeElementsFromService();
-      })
+      this.runningTimeElement.enddate = this.createDateWithTimeOffset();
+      this.timeTaskService
+        .putTimeElement(this.runningTimeElement)
+        .subscribe(() => {
+          this.hideRunningTimeElement();
+          this.hideSelectedTimeElement();
+          this.openSnackBar("TimeTask finished!", null);
+          this.getTimeElementsFromService();
+        });
     }
-    this.hideSelectedTimeElement();
   }
 
   resetTimer() {
@@ -181,24 +229,28 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /*
-  *
-  * DIALOGS/POPUPS
-  *
-  */
+   *
+   * DIALOGS/POPUPS
+   *
+   */
 
   openInsertDialog(): void {
     if (this.timerService.isTimerStart) {
-      this.selectedTimeElement.enddate = this.createDateWithTimeOffset();
-      this.timeTaskService.putTimeElement(this.selectedTimeElement).subscribe(() => {
-        this.openSnackBar("TimeTask saved!", null);
-        this.hideSelectedTimeElement();
-        this.getTimeElementsFromService();
-      })
+      this.runningTimeElement.enddate = this.createDateWithTimeOffset();
+      this.timeTaskService
+        .putTimeElement(this.runningTimeElement)
+        .subscribe(() => {
+          this.openSnackBar("TimeTask saved!", null);
+          this.hideSelectedTimeElement();
+          this.getTimeElementsFromService();
+        });
     }
     this.resetTimer();
+    this.hideSelectedTimeElement();
+    this.hideRunningTimeElement();
 
     const dialogRef = this._dialog.open(InsertTaskDialogTime, {
-      width: '250px',
+      width: "250px",
       data: {
         shortdescr: this.shortdescr,
         longdescr: this.longdescr
@@ -208,42 +260,56 @@ export class TimeTaskComponent implements OnInit {
     dialogRef.afterClosed().subscribe(resultFromDialog => {
       if (!(resultFromDialog === undefined)) {
         resultFromDialog.startdate = this.createDateWithTimeOffset();
-        this.selectTimeElement(resultFromDialog);
+        this.selectRunningTimeElement(resultFromDialog);
 
         if (this.shortdescr != "" && this.longdescr != "") {
-          this.timeTaskService.postTimeElement(resultFromDialog).subscribe(resultFromPost => {
-            this.openSnackBar("TimeTask created!", null);
-            this.getTimeElementsFromService();
-            this.selectedTimeElement.id = resultFromPost.id;
-            this.startTimer();
-          });
+          this.timeTaskService
+            .postTimeElement(resultFromDialog)
+            .subscribe(resultFromPost => {
+              this.openSnackBar("TimeTask created!", null);
+              this.getTimeElementsFromService();
+              this.runningTimeElement.id = resultFromPost.id;
+              this.resetTimer();
+              this.startTimer();
+            });
         } else {
-          console.warn("dialogRef.afterClosed(): ID: " + this.id + ", expected that all fields aren't empty")
+          console.warn(
+            "dialogRef.afterClosed(): ID: " +
+              this.id +
+              ", expected that all fields aren't empty"
+          );
         }
       } else {
-        console.warn("dialogRef.afterClosed(): resultFromDialog: " + resultFromDialog + ", expected resultFromDialog")
+        console.warn(
+          "dialogRef.afterClosed(): resultFromDialog: " +
+            resultFromDialog +
+            ", expected resultFromDialog"
+        );
       }
     });
   }
 
   /*
-  *
-  * HELPER FUNCTIONS
-  *
-  */
+   *
+   * HELPER FUNCTIONS
+   *
+   */
 
- openSnackBar(message: string, action: string) {
+  openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
-      duration: 4000,
+      duration: 4000
     });
   }
 
   isNumber(param: any): boolean {
-    return !(isNaN(Number(param)))
+    return !isNaN(Number(param));
   }
 
   timeElementToTimestring(timeElement: TimeTask): string {
-    return this.elementToTimestring(new Date(timeElement.enddate).getTime() - new Date(timeElement.startdate).getTime());
+    return this.elementToTimestring(
+      new Date(timeElement.enddate).getTime() -
+        new Date(timeElement.startdate).getTime()
+    );
   }
 
   millisecondsToTimestring(milliseconds: number): string {
@@ -254,23 +320,30 @@ export class TimeTaskComponent implements OnInit {
     let seconds: any = Math.floor((milliseconds / 1000) % 60);
     let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
     let hours: any = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
-    hours = (hours < 10) ? "0" + hours : hours;
-    minutes = (minutes < 10) ? "0" + minutes : minutes;
-    seconds = (seconds < 10) ? "0" + seconds : seconds;
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
     return hours + ":" + minutes + ":" + seconds;
   }
 
   showClockstring(timeElement: TimeTask): string {
     let startDate: Date = new Date(timeElement.startdate);
     let endDate: Date = new Date(timeElement.enddate);
-    return "Started: " + this.fixClockstring(startDate.getHours())
-      + ":" + this.fixClockstring(startDate.getMinutes()) + ", "
-      + "Finished: " + this.fixClockstring(endDate.getHours())
-      + ":" + this.fixClockstring(endDate.getMinutes());
+    return (
+      "Started: " +
+      this.fixClockstring(startDate.getHours()) +
+      ":" +
+      this.fixClockstring(startDate.getMinutes()) +
+      ", " +
+      "Finished: " +
+      this.fixClockstring(endDate.getHours()) +
+      ":" +
+      this.fixClockstring(endDate.getMinutes())
+    );
   }
 
   fixClockstring(time: number) {
-    return (time < 10) ? "0" + time : time;
+    return time < 10 ? "0" + time : time;
   }
 
   createDateWithTimeOffset(): Date {
@@ -281,5 +354,29 @@ export class TimeTaskComponent implements OnInit {
 
   hideSelectedTimeElement() {
     this.selectedTimeElement = null;
+  }
+
+  hideRunningTimeElement() {
+    this.runningTimeElement = null;
+  }
+
+  getBackgroundColorValue(timeTask: TimeTask): string {
+    if (
+      this.runningTimeElement !== undefined &&
+      this.runningTimeElement !== null &&
+      this.runningTimeElement.id == timeTask.id
+    ) {
+      return "#6c4747"; // Dunkelrot
+    }
+
+    if (
+      this.selectedTimeElement !== undefined &&
+      this.selectedTimeElement !== null &&
+      this.selectedTimeElement.id == timeTask.id
+    ) {
+      return "#47556c"; //Dunkelblau
+    }
+
+    return "#424242"; // Dunkelgrau
   }
 }

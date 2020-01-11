@@ -296,6 +296,18 @@ export class TrainingComponent implements OnInit {
     ) {
       this.setCheckBoxFromExerciseName(exercise.name, false);
     }
+
+    while (true) {
+      if (
+        elementPosition < this.exercisesToInsert.length &&
+        this.exercisesToInsert[elementPosition + 1].name == exercise.name
+      ) {
+        elementPosition++;
+      } else {
+        break;
+      }
+    }
+
     this.removePositionFromArray(elementPosition, this.exercisesToInsert);
     this.removePositionFromArray(elementPosition, this.formGroups);
   }

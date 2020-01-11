@@ -62,10 +62,12 @@ export class WeightComponent implements OnInit {
   removeWeight(weight: Weight) {
     if (!(weight === undefined)) {
       if (this.isNumber(weight.id)) {
-        this.weightService.deleteWeight(weight.id).subscribe(() => {
-          this.openSnackBar("Weight removed!", null);
-          this.getWeightsFromService();
-        });
+        if (window.confirm("Are sure you want to delete this item ?")) {
+          this.weightService.deleteWeight(weight.id).subscribe(() => {
+            this.openSnackBar("Weight removed!", null);
+            this.getWeightsFromService();
+          });
+        }
       } else {
         console.warn("removeTask(): ID: " + weight.id + ", expected number");
       }

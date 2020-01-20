@@ -17,7 +17,11 @@ export class InsertTaskDialogTime {
     @Inject(MAT_DIALOG_DATA) public data: TimeTask
   ) {
     this.taskService.getAllTasks().subscribe(tasks => {
-      this.tasks = tasks;
+      this.tasks = tasks
+        .filter(e => !e.hided)
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
       tasks.push({
         id: 0,
         shortdescr: "Not an existing task",

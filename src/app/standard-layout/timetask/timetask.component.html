@@ -76,7 +76,7 @@
             </mat-select>
          </mat-form-field>
          <div *ngIf="selectedHistoryElements">
-             <div>
+             <div *ngIf="selectedHistoryElements.length > 0">
                   <p>
                      Time overall: <span style="color: coral;">{{ millisecondsToTimestring(calculateOverallTime(selectedHistoryElements)) }}</span>
                   </p>

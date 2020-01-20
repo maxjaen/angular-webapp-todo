@@ -110,16 +110,21 @@ export class TimeTaskComponent implements OnInit {
   }
 
   calculateOverallTime(timeTasks: TimeTask[]): number {
-    return (
-      timeTasks
-        // TODO validate date
-        //.filter(e => new Date(e.startdate).getDate() == new Date().getDate())
-        //.filter(e => e.enddate !== null && e.enddate !== undefined)
-        .map(
-          e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime()
-        )
-        .reduce((a, b) => a + b, 0)
-    );
+    return timeTasks
+      .filter(
+        e =>
+          e.hasOwnProperty("startdate") &&
+          e.startdate !== null &&
+          e.startdate !== undefined
+      )
+      .filter(
+        e =>
+          e.hasOwnProperty("enddate") &&
+          e.enddate !== null &&
+          e.enddate !== undefined
+      )
+      .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
+      .reduce((a, b) => a + b, 0);
   }
 
   continueTimeElement(timeElement: TimeTask) {

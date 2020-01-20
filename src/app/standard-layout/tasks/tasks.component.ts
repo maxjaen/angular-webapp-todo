@@ -329,9 +329,11 @@ export class TasksComponent implements OnInit {
   }
 
   getBackgroundColorValue(task: Task): string {
-    let tempdate: Date = new Date();
+    let actualDate: Date = new Date();
     let tempTaskDate: Date = new Date(task.date);
+    let dayMilliseconds: number = 1000 * 60 * 60 * 24;
 
+    // Selected task
     if (
       this.selectedTask !== undefined &&
       this.selectedTask !== null &&
@@ -340,18 +342,26 @@ export class TasksComponent implements OnInit {
       return "#47556c";
     }
 
+    // More than 30 days -> long-term
+    if (actualDate.getTime() < tempTaskDate.getTime() - dayMilliseconds * 30) {
+      return "#476c6a";
+    }
+
+    // Today -> due
     if (
-      tempTaskDate.getDate() == tempdate.getDate() &&
-      tempTaskDate.getMonth() == tempdate.getMonth() &&
-      tempTaskDate.getFullYear() == tempdate.getFullYear()
+      tempTaskDate.getDate() == actualDate.getDate() &&
+      tempTaskDate.getMonth() == actualDate.getMonth() &&
+      tempTaskDate.getFullYear() == actualDate.getFullYear()
     ) {
       return "#6c6447";
     }
 
-    if (tempdate.getTime() > tempTaskDate.getTime() + 60 * 60 * 24) {
+    // More than one day -> overdue
+    if (actualDate.getTime() > tempTaskDate.getTime() + dayMilliseconds) {
       return "#6c4747";
     }
 
+    // Standard colour
     return "#536c47";
   }
 }

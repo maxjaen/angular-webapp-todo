@@ -445,7 +445,7 @@ export class TimeTaskComponent implements OnInit {
   }
 
   getBulletPoints(str: string) {
-    let stringArray = str.split("|");
+    let stringArray = str.split("\n");
     return stringArray;
   }
 }

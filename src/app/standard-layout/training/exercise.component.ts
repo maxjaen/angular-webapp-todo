@@ -17,6 +17,7 @@ import { CountablePattern } from "./model/countable-pattern";
 import { ConditionalPattern2d } from "./model/conditional-pattern2d";
 import { Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
+import { FreePattern } from "./model/free-pattern";
 
 @Component({
   selector: "app-exercise",
@@ -28,7 +29,8 @@ export class TrainingComponent implements OnInit {
     "conditionalpattern1d",
     "conditionalpattern2d",
     "countablepattern",
-    "weightpattern"
+    "weightpattern",
+    "freepattern"
   ];
 
   trainings: Training[];
@@ -175,12 +177,24 @@ export class TrainingComponent implements OnInit {
     let tempString = "";
 
     stringArray.forEach((element, index) => {
-      if (index == 0) {
-        tempString += "Exercise [" + element + ": " + exercise[element] + ", ";
+      tempString += "Exercise [";
+
+      // only one element
+      if (index == 0 && stringArray.length == 1) {
+        tempString += element + ": " + exercise[element];
+        // not only one element start
+      } else if (index == 0) {
+        tempString += element + ": " + exercise[element] + ", ";
+        // not only one element finish
       } else if (index == stringArray.length - 1) {
-        tempString += element + ": " + exercise[element] + "]";
+        tempString += element + ": " + exercise[element];
+        // not only one element middle
       } else {
         tempString += element + ": " + exercise[element] + ", ";
+      }
+
+      if (index == stringArray.length - 1) {
+        tempString += "]";
       }
     });
 
@@ -300,7 +314,7 @@ export class TrainingComponent implements OnInit {
 
     while (true) {
       if (
-        elementPosition < this.exercisesToInsert.length &&
+        elementPosition < this.exercisesToInsert.length - 1 &&
         this.exercisesToInsert[elementPosition + 1].name == exercise.name
       ) {
         elementPosition++;
@@ -384,6 +398,15 @@ export class TrainingComponent implements OnInit {
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern);
     }
+
+    if (exercise.category == "freepattern") {
+      let pattern: FreePattern = {
+        name: "freepattern",
+        text: ""
+      };
+      exercise.pattern = pattern;
+      return Object.getOwnPropertyNames(pattern);
+    }
   }
 
   isConditionalPattern1d(exercise: Exercise): boolean {
@@ -412,6 +435,14 @@ export class TrainingComponent implements OnInit {
 
   isWeightPattern(exercise: Exercise): boolean {
     if (exercise.pattern.name == "weightpattern") {
+      return true;
+    }
+
+    return false;
+  }
+
+  isFreePattern(exercise: Exercise): boolean {
+    if (exercise.pattern.name == "freepattern") {
       return true;
     }
 
@@ -509,8 +540,8 @@ export class TrainingComponent implements OnInit {
   @ViewChild("createtraining", { read: undefined, static: false })
   createtraining: ElementRef;
 
-  scroll(el: string) {
-    switch (el) {
+  scroll(element: string) {
+    switch (element) {
       case "overviewtraining":
         this.overviewtraining.nativeElement.scrollIntoView({
           behavior: "smooth",

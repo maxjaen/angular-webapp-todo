@@ -171,6 +171,15 @@
                                  <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
                               </form>
                            </div>
+                            <div *ngIf="isFreePattern(exercise);">
+                              <form [formGroup]="getFormGroup(i)" class="example-form">
+                                 <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Einheit" formControlName="text">
+                                 </mat-form-field>
+                                 <button class="posbuttons" (click)="switchPosition('up',i)" mat-stroked-button color="primary">Up</button>
+                                 <button class="posbuttons" (click)="switchPosition('down',i)" mat-stroked-button color="primary">Down</button>
+                              </form>
+                           </div>
                         </div>
                      </div>
                      <div *ngIf="exercisesToInsert.length!=0">

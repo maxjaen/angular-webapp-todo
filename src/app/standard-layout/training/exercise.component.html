@@ -15,7 +15,7 @@
                   <h2> Overview Training</h2>
                   <div *ngIf="!trainings.length==0">
                      <div *ngFor="let training of trainings">
-                        <mat-card (click)="gotoTraining(training)" style="max-width: 350px; margin: 2%; float: left" class="example-card">
+                        <mat-card (click)="gotoTraining(training)" style="width: 300px; min-width: 300px; max-width: 300px; margin: 2%; float: left" class="example-card">
                            <mat-card-header style="float:left;">
                               <mat-card-title>{{ showDatestring(training.date) }}</mat-card-title>
                               <mat-card-subtitle>ID: {{ training.id }}</mat-card-subtitle>

@@ -10,14 +10,10 @@ import { Exercise } from "../../model/exercise";
   styleUrls: ["./training-view.component.scss"]
 })
 export class TrainingViewComponent implements OnInit {
-  actualTraining: Training = {
-    id: 0,
-    date: null,
-    description: "",
-    exercices: null
-  };
+  actualTraining: Training;
   dataSource: Exercise[] = [];
   displayedColumns: string[] = ["name", "category", "string"];
+
   constructor(
     private trainingService: TrainingService,
     private route: ActivatedRoute,
@@ -52,5 +48,16 @@ export class TrainingViewComponent implements OnInit {
 
   gotoTraining() {
     this.router.navigate(["/training"]);
+  }
+
+  showDatestring(date: Date): string {
+    let tempDate: Date = new Date(date);
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    };
+    return tempDate.toLocaleDateString("de-DE", options);
   }
 }

@@ -45,7 +45,7 @@
                   </div>
                   <mat-card [style.background-color]="getBackgroundColorValue(timeElement)" (click)="selectTimeElement(timeElement);" style="margin: 2%; display: block; overflow: auto;"
                   class="example-card">
-                  <mat-card-header style="float:left;">
+                  <mat-card-header style="float: left;">
                      <mat-card-title>
                         {{timeElement.shortdescr}}
                         <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
@@ -55,10 +55,16 @@
                {{ timeElementToTimestring(timeElement) }} >> {{ showClockstring(timeElement) }}
                </div>
                </mat-card-title>
-               <mat-card-subtitle>{{timeElement.longdescr}}</mat-card-subtitle>
+               <mat-card-subtitle style="margin-top: 3px;" *ngIf="timeElement.longdescr.length>0">
+                  <ul *ngFor="let point of getBulletPoints(timeElement.longdescr);">
+                     <li>{{ point}}</li>
+                  </ul>
+               </mat-card-subtitle>
                </mat-card-header>
-               <button (click)="removeTimeElement(timeElement)" style="float:right" mat-button>Delete measurement</button>
-               <button (click)="continueTimeElement(timeElement);" style="float:right" mat-button>Continue measurement</button>
+               <div style="display: flex; justify-content: flex-end; float: right;">
+                  <button (click)="continueTimeElement(timeElement);" mat-button>Continue</button>
+                  <button (click)="removeTimeElement(timeElement)" mat-button>Delete</button>
+               </div>
                </mat-card>
             </div>
          </div>
@@ -94,7 +100,11 @@
                         {{ timeElementToTimestring(timeElement) }} >> {{ showClockstring(timeElement) }}
                         </div>
                </mat-card-title>
-               <mat-card-subtitle>{{timeElement.longdescr}}</mat-card-subtitle>
+               <mat-card-subtitle *ngIf="timeElement.longdescr.length>0">
+                  <ul *ngFor="let point of getBulletPoints(timeElement.longdescr);">
+                     <li>{{ point}}</li>
+                  </ul>
+               </mat-card-subtitle>
                </mat-card-header>
                </mat-card>
             </div> 

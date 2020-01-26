@@ -130,6 +130,10 @@ export class TimeTaskComponent implements OnInit {
   }
 
   continueTimeElement(timeElement: TimeTask) {
+    if (!window.confirm("Are sure you want to continue this item ?")) {
+      return;
+    }
+
     if (this.timerService.isTimerStart) {
       this.runningTimeElement.enddate = new Date();
       this.timeTaskService
@@ -193,22 +197,24 @@ export class TimeTaskComponent implements OnInit {
       return;
     }
 
-    if (window.confirm("Are sure you want to delete this item ?")) {
-      if (
-        this.runningTimeElement !== undefined &&
-        this.runningTimeElement !== null &&
-        timeElement.id == this.runningTimeElement.id
-      ) {
-        this.openSnackBar("Can't delete running TimeTask!", null);
-        return;
-      }
-
-      this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(() => {
-        this.openSnackBar("TimeTask removed!", null);
-        this.getTimeElementsFromService();
-        this.hideSelectedTimeElement();
-      });
+    if (!window.confirm("Are sure you want to delete this item ?")) {
+      return;
     }
+
+    if (
+      this.runningTimeElement !== undefined &&
+      this.runningTimeElement !== null &&
+      timeElement.id == this.runningTimeElement.id
+    ) {
+      this.openSnackBar("Can't delete running TimeTask!", null);
+      return;
+    }
+
+    this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(() => {
+      this.openSnackBar("TimeTask removed!", null);
+      this.getTimeElementsFromService();
+      this.hideSelectedTimeElement();
+    });
   }
 
   /*
@@ -436,5 +442,10 @@ export class TimeTaskComponent implements OnInit {
         date.getFullYear() == +year
       );
     });
+  }
+
+  getBulletPoints(str: string) {
+    let stringArray = str.split("|");
+    return stringArray;
   }
 }

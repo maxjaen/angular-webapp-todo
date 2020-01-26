@@ -175,12 +175,13 @@ export class TasksComponent implements OnInit {
   removeTask(task: Task) {
     if (!(task === undefined)) {
       if (this.isNumber(task.id)) {
-        if (window.confirm("Are sure you want to delete this item ?")) {
-          this.taskService.deleteTask(task.id).subscribe(() => {
-            this.openSnackBar("Task removed!", null);
-            this.getTasksFromService();
-          });
+        if (!window.confirm("Are sure you want to delete this item ?")) {
+          return;
         }
+        this.taskService.deleteTask(task.id).subscribe(() => {
+          this.openSnackBar("Task removed!", null);
+          this.getTasksFromService();
+        });
       } else {
         console.warn("removeTask(): ID: " + task.id + ", expected number");
       }
@@ -363,5 +364,10 @@ export class TasksComponent implements OnInit {
 
     // Standard colour
     return "#536c47";
+  }
+
+  getBulletPoints(str: string) {
+    let stringArray = str.split("|");
+    return stringArray;
   }
 }

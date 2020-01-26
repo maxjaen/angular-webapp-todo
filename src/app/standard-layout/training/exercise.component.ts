@@ -174,21 +174,19 @@ export class TrainingComponent implements OnInit {
     let stringArray: string[] = Object.getOwnPropertyNames(exercise).filter(
       e => e != "name" && e != "category"
     );
-    let tempString = "";
+    let tempString = "Exercise [";
 
     stringArray.forEach((element, index) => {
-      tempString += "Exercise [";
-
       // only one element
       if (index == 0 && stringArray.length == 1) {
         tempString += element + ": " + exercise[element];
-        // not only one element start
+        // more than one element - start
       } else if (index == 0) {
         tempString += element + ": " + exercise[element] + ", ";
-        // not only one element finish
+        // more than one element - finish
       } else if (index == stringArray.length - 1) {
         tempString += element + ": " + exercise[element];
-        // not only one element middle
+        // more than one element - middle
       } else {
         tempString += element + ": " + exercise[element] + ", ";
       }

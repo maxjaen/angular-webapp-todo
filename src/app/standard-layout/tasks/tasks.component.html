@@ -19,7 +19,7 @@
                      <mat-hint>{{ message.value.length }} / 50</mat-hint>
                   </mat-form-field>
                   <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                     <textarea matInput placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr"></textarea>
+                     <textarea matInput placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr" (ngModelChange)="replaceWithShortcut(selectedTask);"></textarea>
                   </mat-form-field>
                   <mat-form-field>
                      <input matInput (dateChange)="addDateValuesToSelectedTask('change', $event)" [matDatepicker]="picker"
@@ -41,7 +41,7 @@
                   </div>
                </mat-card-title>
                <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr.length>0">
-                  <ul *ngFor="let point of getBulletPoints(task.longdescr);">
+                  <ul *ngFor="let point of this.utilityService.toBulletPoints(task.longdescr);">
                      <li>{{ point }}</li>
                   </ul>
                </mat-card-subtitle>
@@ -50,8 +50,8 @@
                <button (click)="pinTask(task)" mat-button>Unpin</button>
                <button (click)="hideTask(task)" mat-button>Hide</button>
                <button (click)="removeTask(task)" mat-button>Delete</button>
-               <!-- <button (click)="changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
-               <button (click)="changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
+               <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
+               <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
             </div>
             </mat-card>
          </div>
@@ -66,7 +66,7 @@
                      <mat-hint>{{ message.value.length }} / 50</mat-hint>
                   </mat-form-field>
                   <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                     <textarea matInput placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr"></textarea>
+                     <textarea matInput placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr" (ngModelChange)="replaceWithShortcut(selectedTask);"></textarea>
                   </mat-form-field>
                   <mat-form-field>
                      <input matInput (dateChange)="addDateValuesToSelectedTask('change', $event)" [matDatepicker]="picker"
@@ -86,8 +86,8 @@
                      {{ getUTCStringFromTask(task) }}
                   </div>
                </mat-card-title>
-               <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr.length>0">
-                  <ul *ngFor="let point of getBulletPoints(task.longdescr);">
+               <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr && task.longdescr.length>0">
+                  <ul *ngFor="let point of this.utilityService.toBulletPoints(task.longdescr);">
                      <li>{{ point }}</li>
                   </ul>
                </mat-card-subtitle>

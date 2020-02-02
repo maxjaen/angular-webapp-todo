@@ -3,6 +3,8 @@ import { Weight } from "./model/weight";
 import { WeightService } from "./services/weight.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material";
+import { StringDistributorService } from "../sharedservices/string-distributor.service";
+import { UtilityService } from "../sharedservices/utility.service";
 
 @Component({
   selector: "app-weight",
@@ -18,6 +20,8 @@ export class WeightComponent implements OnInit {
 
   constructor(
     private weightService: WeightService,
+    private stringDistributorService: StringDistributorService,
+    private utilityService: UtilityService,
     private _snackBar: MatSnackBar
   ) {}
 
@@ -40,7 +44,7 @@ export class WeightComponent implements OnInit {
       let weightValue: number = this.form.getRawValue().weight;
       let tempWeight: Weight = { id: 0, value: weightValue, date: new Date() };
 
-      if (this.isNumber(tempWeight.value)) {
+      if (this.utilityService.isNumber(tempWeight.value)) {
         this.weightService.postWeight(tempWeight).subscribe(() => {
           this.openSnackBar("Weight created!", null);
           this.getWeightsFromService();
@@ -61,7 +65,7 @@ export class WeightComponent implements OnInit {
 
   removeWeight(weight: Weight) {
     if (!(weight === undefined)) {
-      if (this.isNumber(weight.id)) {
+      if (this.utilityService.isNumber(weight.id)) {
         if (window.confirm("Are sure you want to delete this item ?")) {
           this.weightService.deleteWeight(weight.id).subscribe(() => {
             this.openSnackBar("Weight removed!", null);
@@ -86,10 +90,6 @@ export class WeightComponent implements OnInit {
     this._snackBar.open(message, action, {
       duration: 2000
     });
-  }
-
-  isNumber(param: any): boolean {
-    return !isNaN(Number(param));
   }
 
   /*
@@ -147,25 +147,27 @@ export class WeightComponent implements OnInit {
   getBackgroundColorValue(weight: Weight): string {
     let highestValue: number = this.getHighestWeightValue();
     if (weight.value == highestValue) {
-      return "#758B60";
+      return this.stringDistributorService.COLORS.DARKGREEN;
     }
 
     let lowestValue: number = this.getLowestWeightValue();
     if (weight.value == lowestValue) {
-      return "#8B6066";
+      return this.stringDistributorService.COLORS.RED;
     }
 
     let averageValue: number = this.getAverageWeightValue();
     if (weight.value <= averageValue + 1 && weight.value >= averageValue - 1) {
-      return "#8B7B60";
-    }
-    if (weight.value < averageValue - 1) {
-      return "#8B6B60";
-    }
-    if (weight.value > averageValue + 1) {
-      return "#8B8B60";
+      return this.stringDistributorService.COLORS.YELLOW;
     }
 
-    return "424242";
+    if (weight.value < averageValue - 1) {
+      return this.stringDistributorService.COLORS.ORANGE;
+    }
+
+    if (weight.value > averageValue + 1) {
+      return this.stringDistributorService.COLORS.LIGHTGREEN;
+    }
+
+    return this.stringDistributorService.COLORS.DARKGRAY;
   }
 }

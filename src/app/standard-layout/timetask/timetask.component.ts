@@ -6,6 +6,9 @@ import { InsertTaskDialogTime } from "./dialogs/insert-task-dialog";
 import { countUpTimerConfigModel, timerTexts } from "ngx-timer";
 import { CountupTimerService } from "ngx-timer";
 import { Title } from "@angular/platform-browser";
+import { StringDistributorService } from "../sharedservices/string-distributor.service";
+import { UtilityService } from "../sharedservices/utility.service";
+import { AmazingTimePickerService } from "amazing-time-picker";
 
 @Component({
   selector: "app-timetask",
@@ -31,6 +34,9 @@ export class TimeTaskComponent implements OnInit {
   constructor(
     private timeTaskService: TimeTaskService,
     private timerService: CountupTimerService,
+    private stringDistributorService: StringDistributorService,
+    private utilityService: UtilityService,
+    private timePickerService: AmazingTimePickerService,
     private titleService: Title,
     public _dialog: MatDialog,
     private _snackBar: MatSnackBar
@@ -163,7 +169,7 @@ export class TimeTaskComponent implements OnInit {
 
   saveTimeElement(timeElement: TimeTask) {
     if (!(timeElement === undefined)) {
-      if (this.isNumber(timeElement.id)) {
+      if (this.utilityService.isNumber(timeElement.id)) {
         this.timeTaskService.putTimeElement(timeElement).subscribe(() => {
           this.openSnackBar("TimeTask saved!", null);
           this.getTimeElementsFromService();
@@ -193,7 +199,7 @@ export class TimeTaskComponent implements OnInit {
       return;
     }
 
-    if (!this.isNumber(timeElement.id)) {
+    if (!this.utilityService.isNumber(timeElement.id)) {
       return;
     }
 
@@ -322,8 +328,36 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
-  isNumber(param: any): boolean {
-    return !isNaN(Number(param));
+  changeStartDate(timeElement: TimeTask) {
+    const amazingTimePicker = this.timePickerService.open();
+    amazingTimePicker.afterClose().subscribe(time => {
+      let temp: Date = new Date(timeElement.startdate);
+      let test: string[] = time.split(":");
+
+      timeElement.startdate = new Date(
+        temp.getFullYear(),
+        temp.getMonth(),
+        temp.getDate(),
+        +test[0],
+        +test[1]
+      );
+    });
+  }
+
+  changeEndDate(timeElement: TimeTask) {
+    const amazingTimePicker = this.timePickerService.open();
+    amazingTimePicker.afterClose().subscribe(time => {
+      let temp: Date = new Date(timeElement.enddate);
+      let test: string[] = time.split(":");
+
+      timeElement.enddate = new Date(
+        temp.getFullYear(),
+        temp.getMonth(),
+        temp.getDate(),
+        +test[0],
+        +test[1]
+      );
+    });
   }
 
   timeElementToTimestring(timeElement: TimeTask): string {
@@ -387,7 +421,7 @@ export class TimeTaskComponent implements OnInit {
       this.runningTimeElement !== null &&
       this.runningTimeElement.id == timeTask.id
     ) {
-      return "#6c4747"; // Dunkelrot
+      return this.stringDistributorService.COLORS.RED;
     }
 
     if (
@@ -395,10 +429,10 @@ export class TimeTaskComponent implements OnInit {
       this.selectedTimeElement !== null &&
       this.selectedTimeElement.id == timeTask.id
     ) {
-      return "#47556c";
+      return this.stringDistributorService.COLORS.BLUE;
     }
 
-    return "#424242";
+    return this.stringDistributorService.COLORS.DARKGRAY;
   }
 
   selectDistinctDates(): Array<String> {
@@ -444,8 +478,9 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
-  getBulletPoints(str: string) {
-    let stringArray = str.split("\n");
-    return stringArray;
+  replaceWithShortcut(task: TimeTask) {
+    this.stringDistributorService.SHORTCUTS.forEach(replacePair => {
+      task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
+    });
   }
 }

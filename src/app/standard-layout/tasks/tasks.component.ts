@@ -5,6 +5,8 @@ import { InsertTaskDialog } from "./dialogs/insert-task-dialog";
 import { Task } from "./model/task";
 import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
 import { Title } from "@angular/platform-browser";
+import { StringDistributorService } from "../sharedservices/string-distributor.service";
+import { UtilityService } from "../sharedservices/utility.service";
 
 @Component({
   selector: "app-tasks",
@@ -28,6 +30,8 @@ export class TasksComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private titleService: Title,
+    private stringDistributorService: StringDistributorService,
+    private utilityService: UtilityService,
     public _dialog: MatDialog,
     private _snackBar: MatSnackBar
   ) {
@@ -96,7 +100,7 @@ export class TasksComponent implements OnInit {
 
   saveTask(task: Task) {
     if (!(task === undefined)) {
-      if (this.isNumber(task.id)) {
+      if (this.utilityService.isNumber(task.id)) {
         this.taskService.putTask(task).subscribe(() => {
           this.openSnackBar("Task saved!", null);
           this.getTasksFromService();
@@ -122,7 +126,7 @@ export class TasksComponent implements OnInit {
 
   pinTask(task: Task) {
     if (!(task === undefined)) {
-      if (this.isNumber(task.id)) {
+      if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.pinned = !task.pinned;
         this.taskService.putTask(task).subscribe(() => {
@@ -140,7 +144,7 @@ export class TasksComponent implements OnInit {
 
   hideTask(task: Task) {
     if (!(task === undefined)) {
-      if (this.isNumber(task.id)) {
+      if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.hided = true;
         this.taskService.putTask(task).subscribe(() => {
@@ -158,7 +162,7 @@ export class TasksComponent implements OnInit {
 
   resetTask(task: Task) {
     if (!(task === undefined)) {
-      if (this.isNumber(task.id)) {
+      if (this.utilityService.isNumber(task.id)) {
         this.taskService.putTask(task).subscribe(() => {
           this.openSnackBar("Task reseted!", null);
           this.getTasksFromService();
@@ -174,7 +178,7 @@ export class TasksComponent implements OnInit {
 
   removeTask(task: Task) {
     if (!(task === undefined)) {
-      if (this.isNumber(task.id)) {
+      if (this.utilityService.isNumber(task.id)) {
         if (!window.confirm("Are sure you want to delete this item ?")) {
           return;
         }
@@ -256,10 +260,6 @@ export class TasksComponent implements OnInit {
       });
   }
 
-  isNumber(param: any): boolean {
-    return !isNaN(Number(param));
-  }
-
   addDateValuesToSelectedTask(
     type: string,
     event: MatDatepickerInputEvent<Date>
@@ -273,49 +273,6 @@ export class TasksComponent implements OnInit {
 
   getUTCStringFromTask(task: Task) {
     return new Date(task.date).toUTCString();
-  }
-
-  changeTasksOrder(array: any[], direction: string, index: number) {
-    let actualElement: number = index;
-    let lastElement: number = index - 1;
-    let nextElement: number = index + 1;
-
-    switch (direction) {
-      case "oben":
-        if (index !== 0) {
-          var temp = array[lastElement];
-          array[lastElement] = array[actualElement];
-          array[actualElement] = temp;
-        } else {
-          console.warn(
-            "First element in array " +
-              array +
-              " cannot be moved further up to index " +
-              (index - 1) +
-              ". Array from 0 to " +
-              (array.length - 1)
-          );
-        }
-        break;
-      case "unten":
-        if (actualElement < array.length - 1) {
-          var temp: any = array[nextElement];
-          array[nextElement] = array[actualElement];
-          array[actualElement] = temp;
-        } else {
-          console.warn(
-            "Last element in array " +
-              array +
-              "cannot be moved further down to index " +
-              (index + 1) +
-              ". Array from 0 to " +
-              (array.length - 1)
-          );
-        }
-        break;
-      default:
-        console.warn("Wrong direction selected");
-    }
   }
 
   copyTaskPropertiesToLastChangedTask(fromTask: Task) {
@@ -340,34 +297,35 @@ export class TasksComponent implements OnInit {
       this.selectedTask !== null &&
       this.selectedTask.id == task.id
     ) {
-      return "#47556c";
+      return this.stringDistributorService.COLORS.BLUE;
     }
 
-    // More than 30 days -> long-term
+    // More than 30 days
     if (actualDate.getTime() < tempTaskDate.getTime() - dayMilliseconds * 30) {
-      return "#476c6a";
+      return this.stringDistributorService.COLORS.CYAN;
     }
 
-    // Today -> due
+    // More than one day
+    if (actualDate.getTime() > tempTaskDate.getTime() + dayMilliseconds) {
+      return this.stringDistributorService.COLORS.RED;
+    }
+
+    // Today
     if (
       tempTaskDate.getDate() == actualDate.getDate() &&
       tempTaskDate.getMonth() == actualDate.getMonth() &&
       tempTaskDate.getFullYear() == actualDate.getFullYear()
     ) {
-      return "#6c6447";
-    }
-
-    // More than one day -> overdue
-    if (actualDate.getTime() > tempTaskDate.getTime() + dayMilliseconds) {
-      return "#6c4747";
+      return this.stringDistributorService.COLORS.YELLOW;
     }
 
     // Standard colour
-    return "#536c47";
+    return this.stringDistributorService.COLORS.DARKGREEN;
   }
 
-  getBulletPoints(str: string) {
-    let stringArray = str.split("\n");
-    return stringArray;
+  replaceWithShortcut(task: Task) {
+    this.stringDistributorService.SHORTCUTS.forEach(replacePair => {
+      task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
+    });
   }
 }

@@ -34,13 +34,19 @@
                         </mat-form-field>
                         <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
                            <textarea matInput placeholder="description" name="longdescr"
-                           [(ngModel)]="selectedTimeElement.longdescr"></textarea>
+                           [(ngModel)]="selectedTimeElement.longdescr" (ngModelChange)="replaceWithShortcut(selectedTimeElement);"></textarea>
                         </mat-form-field>
-                        <button (click)="saveAllTimeElements()" style="float:right" mat-button>Save all
-                        </button>
-                        <button (click)="saveTimeElement(selectedTimeElement)" style="float:right" mat-button>Save
-                        measurement
-                        </button>
+                        <div style="display: flex; justify-content: flex-end; float: right;">
+                           <button (click)="changeStartDate(selectedTimeElement)" style="float:right" mat-button color="accent">Start
+                           </button>
+                           <button (click)="changeEndDate(selectedTimeElement)" style="float:right" mat-button color="accent">End
+                           </button>
+                           <button (click)="saveAllTimeElements()" style="float:right" mat-button>Save all
+                           </button>
+                           <button (click)="saveTimeElement(selectedTimeElement)" style="float:right" mat-button>Save
+                           measurement
+                           </button>
+                        </div>
                      </form>
                   </div>
                   <mat-card [style.background-color]="getBackgroundColorValue(timeElement)" (click)="selectTimeElement(timeElement);" style="margin: 2%; display: block; overflow: auto;"
@@ -55,8 +61,8 @@
                {{ timeElementToTimestring(timeElement) }} >> {{ showClockstring(timeElement) }}
                </div>
                </mat-card-title>
-               <mat-card-subtitle style="margin-top: 3px;" *ngIf="timeElement.longdescr.length>0">
-                  <ul *ngFor="let point of getBulletPoints(timeElement.longdescr);">
+               <mat-card-subtitle style="margin-top: 3px;" *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
+                  <ul *ngFor="let point of this.utilityService.toBulletPoints(timeElement.longdescr);">
                      <li>{{ point}}</li>
                   </ul>
                </mat-card-subtitle>
@@ -101,7 +107,7 @@
                         </div>
                </mat-card-title>
                <mat-card-subtitle *ngIf="timeElement.longdescr.length>0">
-                  <ul *ngFor="let point of getBulletPoints(timeElement.longdescr);">
+                  <ul *ngFor="let point of this.utilityService.toBulletPoints(timeElement.longdescr);">
                      <li>{{ point}}</li>
                   </ul>
                </mat-card-subtitle>

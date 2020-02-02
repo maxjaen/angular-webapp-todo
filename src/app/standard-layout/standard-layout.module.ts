@@ -10,6 +10,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { InsertTaskDialog } from "./tasks/dialogs/insert-task-dialog";
 import { InsertTaskDialogTime } from "./timetask/dialogs/insert-task-dialog";
 import { NgxTimerModule } from "ngx-timer";
+import { AmazingTimePickerModule } from "amazing-time-picker";
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -58,6 +59,7 @@ import {
     ReactiveFormsModule,
     FormsModule,
     NgxTimerModule,
+    AmazingTimePickerModule,
 
     // Material
     MatAutocompleteModule,

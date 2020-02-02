@@ -42,7 +42,9 @@ export class WeightComponent implements OnInit {
   saveWeight() {
     if (this.form.getRawValue().weight != "") {
       let weightValue: number = this.form.getRawValue().weight;
-      let tempWeight: Weight = { id: 0, value: weightValue, date: new Date() };
+      let temp: Date = new Date();
+      temp.setHours(temp.getHours() + 1);
+      let tempWeight: Weight = { id: 0, value: weightValue, date: temp };
 
       if (this.utilityService.isNumber(tempWeight.value)) {
         this.weightService.postWeight(tempWeight).subscribe(() => {
@@ -112,6 +114,7 @@ export class WeightComponent implements OnInit {
 
     if (weight !== undefined) {
       let tempDate: Date = new Date();
+      tempDate.setHours(tempDate.getHours() + 1);
       let milliseconds: number =
         tempDate.getTime() - new Date(weight.date).getTime();
 

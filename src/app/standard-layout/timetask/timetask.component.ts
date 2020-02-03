@@ -390,19 +390,15 @@ export class TimeTaskComponent implements OnInit {
     let endDate: Date = new Date(timeElement.enddate);
     return (
       "Started: " +
-      this.fixClockstring(startDate.getHours()) +
+      this.utilityService.formatToTwoDigits(startDate.getHours()) +
       ":" +
-      this.fixClockstring(startDate.getMinutes()) +
+      this.utilityService.formatToTwoDigits(startDate.getMinutes()) +
       ", " +
       "Finished: " +
-      this.fixClockstring(endDate.getHours()) +
+      this.utilityService.formatToTwoDigits(endDate.getHours()) +
       ":" +
-      this.fixClockstring(endDate.getMinutes())
+      this.utilityService.formatToTwoDigits(endDate.getMinutes())
     );
-  }
-
-  fixClockstring(time: number) {
-    return time < 10 ? "0" + time : time;
   }
 
   createDateWithTimeOffset(): Date {
@@ -457,12 +453,18 @@ export class TimeTaskComponent implements OnInit {
       }
     });
 
-    return tempDates.map(e => {
-      let date: Date = new Date(e);
-      return (
-        date.getDate() + "." + date.getMonth() + 1 + "." + date.getFullYear()
-      );
-    });
+    return tempDates
+      .sort(e => new Date(e).getTime())
+      .map(e => {
+        let date: Date = new Date(e);
+        return (
+          this.utilityService.formatToTwoDigits(date.getDate()) +
+          "." +
+          this.utilityService.formatToTwoDigits(date.getMonth() + 1) +
+          "." +
+          this.utilityService.formatToTwoDigits(date.getFullYear())
+        );
+      });
   }
 
   selectDate(event: { value: String }) {
@@ -486,5 +488,16 @@ export class TimeTaskComponent implements OnInit {
     this.stringDistributorService.SHORTCUTS.forEach(replacePair => {
       task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
     });
+  }
+
+  calculateWeekNumber() {
+    let now = new Date();
+    let onejan = new Date(now.getFullYear(), 0, 1);
+    return this.utilityService.formatToTwoDigits(
+      Math.ceil(
+        ((now.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) /
+          7
+      )
+    );
   }
 }

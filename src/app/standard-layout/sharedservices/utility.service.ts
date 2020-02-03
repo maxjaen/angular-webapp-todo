@@ -6,16 +6,40 @@ import { Injectable } from "@angular/core";
 export class UtilityService {
   constructor() {}
 
-  toBulletPoints(str: string) {
-    let stringArray = str.split("\n");
-    return stringArray;
+  splitToBulletPoints(str: string) {
+    return str.split("\n");
+  }
+
+  formatToTwoDigits(num: number) {
+    return num < 10 ? "0" + num : num;
   }
 
   isNumber(param: any): boolean {
     return !isNaN(Number(param));
   }
 
-  changeTasksOrder(array: any[], direction: string, index: number) {
+  isToday(date: Date): boolean {
+    let temp = new Date();
+
+    if (
+      date.getDate() == temp.getDate() &&
+      date.getMonth() == temp.getMonth() &&
+      date.getFullYear() == temp.getFullYear()
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  removePositionFromArray(elementPosition: number, array: any[]) {
+    array.splice(elementPosition, 1);
+  }
+  removeElementFromArray(element: any, array: any[]) {
+    array.splice(array.indexOf(element), 1);
+  }
+
+  changeOrder(array: any[], direction: string, index: number) {
     let actualElement: number = index;
     let lastElement: number = index - 1;
     let nextElement: number = index + 1;

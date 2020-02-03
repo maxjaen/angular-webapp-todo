@@ -18,6 +18,7 @@ import { ConditionalPattern2d } from "./model/conditional-pattern2d";
 import { Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { FreePattern } from "./model/free-pattern";
+import { UtilityService } from "../sharedservices/utility.service";
 
 @Component({
   selector: "app-exercise",
@@ -55,6 +56,7 @@ export class TrainingComponent implements OnInit {
   constructor(
     private exerciseService: ExerciseService,
     private trainingService: TrainingService,
+    private utilityService: UtilityService,
     private titleService: Title,
     private _snackBar: MatSnackBar,
     private router: Router
@@ -226,10 +228,6 @@ export class TrainingComponent implements OnInit {
     return tempDate.toLocaleDateString("de-DE", options);
   }
 
-  fixClockstring(time: number) {
-    return time < 10 ? "0" + time : time;
-  }
-
   /*
    *
    * CHECKBOX METHODS
@@ -244,11 +242,14 @@ export class TrainingComponent implements OnInit {
       this.createFormGroup(exercise);
     } else {
       while (this.exercisesToInsert.find(e => e.name == exercise.name)) {
-        this.removeElementFromArray(exercise, this.exercisesToInsert);
+        this.utilityService.removeElementFromArray(
+          exercise,
+          this.exercisesToInsert
+        );
       }
 
       while (this.formGroups.find(e => e.getRawValue().name == exercise.name)) {
-        this.removeElementFromArray(
+        this.utilityService.removeElementFromArray(
           this.formGroups.filter(e => e.getRawValue().name == exercise.name)[0],
           this.formGroups
         );
@@ -321,8 +322,14 @@ export class TrainingComponent implements OnInit {
       }
     }
 
-    this.removePositionFromArray(elementPosition, this.exercisesToInsert);
-    this.removePositionFromArray(elementPosition, this.formGroups);
+    this.utilityService.removePositionFromArray(
+      elementPosition,
+      this.exercisesToInsert
+    );
+    this.utilityService.removePositionFromArray(
+      elementPosition,
+      this.formGroups
+    );
   }
 
   formIsValid(): boolean {
@@ -459,72 +466,17 @@ export class TrainingComponent implements OnInit {
     });
   }
 
-  removePositionFromArray(elementPosition: number, array: any[]) {
-    array.splice(elementPosition, 1);
-  }
-
-  removeElementFromArray(element: any, array: any[]) {
-    array.splice(array.indexOf(element), 1);
-  }
-
-  isNumber(param: any): boolean {
-    return !isNaN(Number(param));
+  onlyUniques(value, index, self) {
+    return self.indexOf(value) === index;
   }
 
   selectDistinctExerciseCategories(): Array<string> {
     return this.exercises.map(e => e.category).filter(this.onlyUniques);
   }
 
-  onlyUniques(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
   switchPosition(direction: string, index: number) {
-    this.changeExerciseOrder(this.formGroups, direction, index);
-    this.changeExerciseOrder(this.exercisesToInsert, direction, index);
-  }
-
-  changeExerciseOrder(array: any[], direction: string, index: number) {
-    let actualElement: number = index;
-    let lastElement: number = index - 1;
-    let nextElement: number = index + 1;
-
-    switch (direction) {
-      case "up":
-        if (index !== 0) {
-          var temp = array[lastElement];
-          array[lastElement] = array[actualElement];
-          array[actualElement] = temp;
-        } else {
-          console.warn(
-            "First element in array " +
-              array +
-              " cannot be moved further up to index " +
-              (index - 1) +
-              ". Array from 0 to " +
-              (array.length - 1)
-          );
-        }
-        break;
-      case "down":
-        if (actualElement < array.length - 1) {
-          var temp: any = array[nextElement];
-          array[nextElement] = array[actualElement];
-          array[actualElement] = temp;
-        } else {
-          console.warn(
-            "Last element in array " +
-              array +
-              "cannot be moved further down to index " +
-              (index + 1) +
-              ". Array from 0 to " +
-              (array.length - 1)
-          );
-        }
-        break;
-      default:
-        console.warn("Wrong direction selected");
-    }
+    this.utilityService.changeOrder(this.formGroups, direction, index);
+    this.utilityService.changeOrder(this.exercisesToInsert, direction, index);
   }
 
   /*

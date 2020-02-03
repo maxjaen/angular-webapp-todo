@@ -1,6 +1,7 @@
 
 
 <mat-tab-group>
+   <!-- ###################### TODAY TAB ###################### -->
    <mat-tab label="Today">
       <div class="content">
          <div style="margin: 2%;" class="insert">
@@ -16,7 +17,10 @@
                </countup-timer>
                <div>
                   <p>
-                     Time overall: <span style="color: coral;"> {{ millisecondsToTimestring(calculateOverallTime(timeElements)) }}</span>
+                     Time today: <span style="color: coral;"> {{ millisecondsToTimestring(calculateOverallTime(timeElements)) }}</span>
+                  </p>
+                  <p>
+                     Week: <span style="color: coral;">{{ calculateWeekNumber() }}</span>
                   </p>
                </div>
             </div>
@@ -30,7 +34,7 @@
                         <mat-form-field class="example-full-width" style="margin-right: 2%;">
                            <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
                            [(ngModel)]="selectedTimeElement.shortdescr">
-                           <mat-hint>{{message.value.length}} / 50</mat-hint>
+                           <mat-hint>{{ message.value.length }} / 50</mat-hint>
                         </mat-form-field>
                         <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
                            <textarea matInput placeholder="description" name="longdescr"
@@ -52,7 +56,7 @@
                   class="example-card">
                   <mat-card-header style="float: left;">
                      <mat-card-title>
-                        {{timeElement.shortdescr}}
+                        {{ timeElement.shortdescr }}
                         <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
                         No measurement enddate available...
                </div>
@@ -61,8 +65,8 @@
                </div>
                </mat-card-title>
                <mat-card-subtitle style="margin-top: 3px;" *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
-                  <ul *ngFor="let point of this.utilityService.toBulletPoints(timeElement.longdescr);">
-                     <li>{{ point}}</li>
+                  <ul *ngFor="let point of this.utilityService.splitToBulletPoints(timeElement.longdescr);">
+                     <li>{{ point }}</li>
                   </ul>
                </mat-card-subtitle>
                </mat-card-header>
@@ -76,20 +80,21 @@
       </div>
       </div>
    </mat-tab>
+   <!-- ###################### HISTORY TAB ###################### -->
    <mat-tab label="History">
       <div class="content">
          <mat-form-field>
             <mat-label>Recorded dates</mat-label>
             <mat-select (selectionChange)="selectDate($event)">
               <mat-option *ngFor="let date of selectDistinctDates();" [value]="date">
-                {{date}}
+                {{ date }}
               </mat-option>
             </mat-select>
          </mat-form-field>
          <div *ngIf="selectedHistoryElements">
              <div *ngIf="selectedHistoryElements.length > 0">
                   <p>
-                     Time overall: <span style="color: coral;">{{ millisecondsToTimestring(calculateOverallTime(selectedHistoryElements)) }}</span>
+                     Time: <span style="color: coral;">{{ millisecondsToTimestring(calculateOverallTime(selectedHistoryElements)) }}</span>
                   </p>
                </div>
             <div *ngFor="let timeElement of selectedHistoryElements">
@@ -97,7 +102,7 @@
                   class="example-card">
                   <mat-card-header style="float:left;">
                      <mat-card-title>
-                        {{timeElement.shortdescr}}
+                        {{ timeElement.shortdescr }}
                         <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
                         No measurement enddate available...
                         </div>
@@ -106,8 +111,8 @@
                         </div>
                </mat-card-title>
                <mat-card-subtitle *ngIf="timeElement.longdescr.length>0">
-                  <ul *ngFor="let point of this.utilityService.toBulletPoints(timeElement.longdescr);">
-                     <li>{{ point}}</li>
+                  <ul *ngFor="let point of this.utilityService.splitToBulletPoints(timeElement.longdescr);">
+                     <li>{{ point }}</li>
                   </ul>
                </mat-card-subtitle>
                </mat-card-header>

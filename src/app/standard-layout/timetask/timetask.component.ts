@@ -107,6 +107,10 @@ export class TimeTaskComponent implements OnInit {
 
       this.timeElements = data
         .filter(e => new Date(e.startdate).getDate() == new Date().getDate())
+        .filter(e => new Date(e.startdate).getMonth() == new Date().getMonth())
+        .filter(
+          e => new Date(e.startdate).getFullYear() == new Date().getFullYear()
+        )
         .sort((a, b) => (a.id > b.id ? -1 : 1));
 
       if (this.timerService.isTimerStart) {

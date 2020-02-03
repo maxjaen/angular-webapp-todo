@@ -31,7 +31,6 @@ export class TrainingViewComponent implements OnInit {
         .subscribe(training => {
           this.actualTraining = training;
           this.dataSource = this.actualTraining.exercices;
-          console.log(this.dataSource);
         });
     });
   }

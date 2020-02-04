@@ -23,7 +23,7 @@
                   </p>
                   <p>
                      <span>Time today: </span>
-                     <span [style.color]="this.stringDistributorService.COLORS.RED"> {{ millisecondsToTimestring(calculateTodayTime(timeElements)) }}</span>
+                     <span [style.color]="this.stringDistributorService.COLORS.WHITE"> {{ millisecondsToTimestring(calculateTodayTime(timeElements)) }}</span>
                   </p>
                   <p>
                      <span>Week: </span>
@@ -113,7 +113,7 @@
                   </p>
                </div>
             <div *ngFor="let timeElement of selectedHistoryElements">
-                  <mat-card [style.background-color]="getBackgroundColorValue(timeElement)" style="margin: 2%; display: block; overflow: auto;"
+                  <mat-card [style.background-color]="this.stringDistributorService.COLORS.GRAY" style="margin: 2%; display: block; overflow: auto;"
                   class="example-card">
                   <mat-card-header style="float:left;">
                      <mat-card-title>

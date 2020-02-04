@@ -25,6 +25,7 @@ export class Colors {
   constructor() {}
 
   BLACK = "#000000";
+  WHITE = "#ffffff";
   PINK = "#c936c4";
   VIOLET = "#6e36c9";
   BLUE = "#27548c";
@@ -35,4 +36,5 @@ export class Colors {
   ORANGE = "#C97136";
   RED = "#C93636";
   DARKGRAY = "#424242";
+  HOVERDAKGRAY = "#464545";
 }

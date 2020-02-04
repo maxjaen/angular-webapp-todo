@@ -121,7 +121,7 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
-  calculateOverallTime(timeTasks: TimeTask[]): number {
+  calculateTodayTime(timeTasks: TimeTask[]): number {
     return timeTasks
       .filter(
         e =>
@@ -139,13 +139,37 @@ export class TimeTaskComponent implements OnInit {
       .reduce((a, b) => a + b, 0);
   }
 
+  calculateOverallTime(timeTasks: TimeTask[]): number {
+    return timeTasks
+      .filter(
+        e =>
+          e.hasOwnProperty("startdate") &&
+          e.startdate !== null &&
+          e.startdate !== undefined
+      )
+      .filter(
+        e =>
+          e.hasOwnProperty("enddate") &&
+          e.enddate !== null &&
+          e.enddate !== undefined
+      )
+      .filter(
+        e =>
+          this.calculateWeekNumber() ==
+          this.calculateWeekNumberFromDate(new Date(e.startdate))
+      )
+      .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
+      .reduce((a, b) => a + b, 0);
+  }
+
   continueTimeElement(timeElement: TimeTask) {
-    if (!window.confirm("Are sure you want to continue this item ?")) {
+    if (!window.confirm("Are sure you want to continue this item?")) {
       return;
     }
 
     if (this.timerService.isTimerStart) {
       this.runningTimeElement.enddate = new Date();
+      this.enddate.setHours(this.enddate.getHours() + 1);
       this.timeTaskService
         .putTimeElement(this.runningTimeElement)
         .subscribe(() => {
@@ -335,7 +359,7 @@ export class TimeTaskComponent implements OnInit {
   changeStartDate(timeElement: TimeTask) {
     const amazingTimePicker = this.timePickerService.open();
     amazingTimePicker.afterClose().subscribe(time => {
-      let temp: Date = new Date(timeElement.startdate);
+      let temp: Date = new Date();
       let test: string[] = time.split(":");
 
       timeElement.startdate = new Date(
@@ -351,7 +375,7 @@ export class TimeTaskComponent implements OnInit {
   changeEndDate(timeElement: TimeTask) {
     const amazingTimePicker = this.timePickerService.open();
     amazingTimePicker.afterClose().subscribe(time => {
-      let temp: Date = new Date(timeElement.enddate);
+      let temp: Date = new Date();
       let test: string[] = time.split(":");
 
       timeElement.enddate = new Date(
@@ -385,19 +409,14 @@ export class TimeTaskComponent implements OnInit {
     return hours + ":" + minutes + ":" + seconds;
   }
 
-  showClockstring(timeElement: TimeTask): string {
-    let startDate: Date = new Date(timeElement.startdate);
-    let endDate: Date = new Date(timeElement.enddate);
+  formatDateToString(date: Date, str: String): string {
+    let temp: Date = new Date(date);
     return (
-      "Started: " +
-      this.utilityService.formatToTwoDigits(startDate.getHours()) +
+      str +
+      ": " +
+      this.utilityService.formatToTwoDigits(temp.getHours()) +
       ":" +
-      this.utilityService.formatToTwoDigits(startDate.getMinutes()) +
-      ", " +
-      "Finished: " +
-      this.utilityService.formatToTwoDigits(endDate.getHours()) +
-      ":" +
-      this.utilityService.formatToTwoDigits(endDate.getMinutes())
+      this.utilityService.formatToTwoDigits(temp.getMinutes())
     );
   }
 
@@ -421,7 +440,7 @@ export class TimeTaskComponent implements OnInit {
       this.runningTimeElement !== null &&
       this.runningTimeElement.id == timeTask.id
     ) {
-      return this.stringDistributorService.COLORS.RED;
+      return this.stringDistributorService.COLORS.YELLOW;
     }
 
     if (
@@ -432,7 +451,11 @@ export class TimeTaskComponent implements OnInit {
       return this.stringDistributorService.COLORS.BLUE;
     }
 
-    return this.stringDistributorService.COLORS.DARKGRAY;
+    if (timeTask !== undefined && timeTask !== null && !timeTask.enddate) {
+      return this.stringDistributorService.COLORS.RED;
+    }
+
+    return this.stringDistributorService.COLORS.DARKGREEN;
   }
 
   selectDistinctDates(): Array<String> {
@@ -490,14 +513,18 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
-  calculateWeekNumber() {
+  calculateWeekNumber(): number {
     let now = new Date();
     let onejan = new Date(now.getFullYear(), 0, 1);
-    return this.utilityService.formatToTwoDigits(
-      Math.ceil(
-        ((now.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) /
-          7
-      )
+    return Math.ceil(
+      ((now.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) / 7
+    );
+  }
+
+  calculateWeekNumberFromDate(date: Date): number {
+    let onejan = new Date(date.getFullYear(), 0, 1);
+    return Math.ceil(
+      ((date.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) / 7
     );
   }
 }

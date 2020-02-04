@@ -12,15 +12,22 @@
             </div>
          </div>
          <div class="show" style="display: block; width: 100%;">
-            <div style=" margin: 2%;">
+            <div style="margin: 2%; font-family: 'Indie Flower', cursive; font-size: 30px; ">
                <countup-timer style="font-size: 42px;" [countUpTimerConfig]="testConfig">
                </countup-timer>
+               <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
                <div>
                   <p>
-                     Time today: <span style="color: coral;"> {{ millisecondsToTimestring(calculateOverallTime(timeElements)) }}</span>
+                     <span>Time overall: </span>
+                     <span [style.color]="this.stringDistributorService.COLORS.WHITE"> {{ millisecondsToTimestring(calculateOverallTime(_timeElements)) }}</span>
                   </p>
                   <p>
-                     Week: <span style="color: coral;">{{ calculateWeekNumber() }}</span>
+                     <span>Time today: </span>
+                     <span [style.color]="this.stringDistributorService.COLORS.RED"> {{ millisecondsToTimestring(calculateTodayTime(timeElements)) }}</span>
+                  </p>
+                  <p>
+                     <span>Week: </span>
+                     <span [style.color]="this.stringDistributorService.COLORS.WHITE">{{ this.utilityService.formatToTwoDigits(calculateWeekNumber()) }}</span>
                   </p>
                </div>
             </div>
@@ -52,28 +59,36 @@
                         </div>
                      </form>
                   </div>
-                  <mat-card [style.background-color]="getBackgroundColorValue(timeElement)" (click)="selectTimeElement(timeElement);" style="margin: 2%; display: block; overflow: auto;"
-                  class="example-card">
-                  <mat-card-header style="float: left;">
-                     <mat-card-title>
-                        {{ timeElement.shortdescr }}
-                        <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
+                  <mat-card (click)="selectTimeElement(timeElement);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
+                  <div style="width: 30px; float: inline-start; height: 30px;" [style.background-color]="getBackgroundColorValue(timeElement)"></div>
+                  <div style="display: inline-block;">
+                     <mat-card-header style="float: left;">
+                        <mat-card-title>
+                           {{ timeElement.shortdescr }}
+                     <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
                         No measurement enddate available...
-               </div>
-               <div *ngIf="timeElement.enddate" style="margin-top: 20px; font-size: 12px;">
-               {{ timeElementToTimestring(timeElement) }} >> {{ showClockstring(timeElement) }}
-               </div>
-               </mat-card-title>
-               <mat-card-subtitle style="margin-top: 3px;" *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
-                  <ul *ngFor="let point of this.utilityService.splitToBulletPoints(timeElement.longdescr);">
-                     <li>{{ point }}</li>
-                  </ul>
-               </mat-card-subtitle>
-               </mat-card-header>
-               <div style="display: flex; justify-content: flex-end; float: right;">
-                  <button (click)="continueTimeElement(timeElement);" mat-button>Continue</button>
-                  <button (click)="removeTimeElement(timeElement)" mat-button>Delete</button>
-               </div>
+                     </div>
+                     <div style="margin-top: 20px; font-size: 12px;">
+                        <div *ngIf="timeElement.enddate" style="display: inline;">
+                           {{ timeElementToTimestring(timeElement) }} >>
+                        </div>
+                        {{ formatDateToString(timeElement.startdate, "Start")}}
+                        <div *ngIf="timeElement.enddate" style="display: inline;">
+                           , {{formatDateToString(timeElement.enddate, "End") }}
+                        </div>
+                     </div>
+                  </mat-card-title>
+                  <mat-card-subtitle style="margin-top: 3px;" *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
+                     <ul *ngFor="let point of this.utilityService.splitToBulletPoints(timeElement.longdescr);">
+                        <li>{{ point }}</li>
+                     </ul>
+                  </mat-card-subtitle>
+                  </mat-card-header>
+                  </div>
+                  <div style="display: flex; justify-content: flex-end; float: right;">
+                     <button (click)="continueTimeElement(timeElement);" mat-button>Continue</button>
+                     <button (click)="removeTimeElement(timeElement)" mat-button>Delete</button>
+                  </div>
                </mat-card>
             </div>
          </div>
@@ -94,7 +109,7 @@
          <div *ngIf="selectedHistoryElements">
              <div *ngIf="selectedHistoryElements.length > 0">
                   <p>
-                     Time: <span style="color: coral;">{{ millisecondsToTimestring(calculateOverallTime(selectedHistoryElements)) }}</span>
+                     Time: <span style="color: coral;">{{ millisecondsToTimestring(calculateTodayTime(selectedHistoryElements)) }}</span>
                   </p>
                </div>
             <div *ngFor="let timeElement of selectedHistoryElements">
@@ -103,12 +118,18 @@
                   <mat-card-header style="float:left;">
                      <mat-card-title>
                         {{ timeElement.shortdescr }}
-                        <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
-                        No measurement enddate available...
-                        </div>
-                        <div *ngIf="timeElement.enddate" style="margin-top: 20px; font-size: 12px;">
-                        {{ timeElementToTimestring(timeElement) }} >> {{ showClockstring(timeElement) }}
-                        </div>
+                           <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'" style="margin-top: 20px; font-size: 12px;">
+                     No measurement enddate available...
+                  </div>
+                  <div style="margin-top: 20px; font-size: 12px;">
+                     <div *ngIf="timeElement.enddate" style="display: inline;">
+                        {{ timeElementToTimestring(timeElement) }} >>
+                     </div>
+                     {{ formatDateToString(timeElement.startdate, "Start")}}
+                     <div *ngIf="timeElement.enddate" style="display: inline;">
+                        , {{formatDateToString(timeElement.enddate, "End") }}
+                     </div>
+                  </div>
                </mat-card-title>
                <mat-card-subtitle *ngIf="timeElement.longdescr.length>0">
                   <ul *ngFor="let point of this.utilityService.splitToBulletPoints(timeElement.longdescr);">

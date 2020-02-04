@@ -32,28 +32,31 @@
                </form>
             </div>
             <!-- <mat-card [style.background-color]="task==selectedTask ? '#47556c' : '#424242'" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card"> -->
-            <mat-card [style.background-color]="getBackgroundColorValue(task)" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
-               <mat-card-header  style="float: left;">
-               <mat-card-title>
-                  {{ task.shortdescr }}
-                  <div style="margin-top: 20px; font-size: 12px;">
-                     {{ getUTCStringFromTask(task) }}
+            <mat-card  (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
+               <div style="width: 30px; float:inline-start; height: 30px;" [style.background-color]="getBackgroundColorValue(task)" > </div>
+               <div style="display: inline-block;">
+                  <mat-card-header>
+                     <mat-card-title>
+                        {{ task.shortdescr }}
+                        <div style="margin-top: 20px; font-size: 12px;">
+                           {{ getUTCStringFromTask(task) }}
+                        </div>
+                     </mat-card-title>
+                     <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr.length>0">
+                        <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
+                           <li>{{ point }}</li>
+                        </ul>
+                     </mat-card-subtitle>
+                  </mat-card-header>
+                  <div style="display: flex; justify-content: flex-end; float: right;">
+                     <button (click)="pinTask(task)" mat-button>Unpin</button>
+                     <button (click)="hideTask(task)" mat-button>Hide</button>
+                     <button (click)="removeTask(task)" mat-button>Delete</button>
+                     <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
+                     <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
                   </div>
-               </mat-card-title>
-               <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr.length>0">
-                  <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
-                     <li>{{ point }}</li>
-                  </ul>
-               </mat-card-subtitle>
-            </mat-card-header>
-            <div style="display: flex; justify-content: flex-end; float: right;">
-               <button (click)="pinTask(task)" mat-button>Unpin</button>
-               <button (click)="hideTask(task)" mat-button>Hide</button>
-               <button (click)="removeTask(task)" mat-button>Delete</button>
-               <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
-               <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
-            </div>
-            </mat-card>
+               </div>       
+            </mat-card> 
          </div>
       </div>
       <div *ngIf="!unpinnedTasks.length==0" class="unpinnedtasks">
@@ -78,20 +81,23 @@
                   <button (click)="saveTask(selectedTask)" style="float:right" mat-button>Save task</button>
                </form>
             </div>
-            <mat-card [style.background-color]="getBackgroundColorValue(task)" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
-            <mat-card-header style="float: left;">
-               <mat-card-title>
-                  {{ task.shortdescr }}
-                  <div style="margin-top: 20px; font-size: 12px;">
-                     {{ getUTCStringFromTask(task) }}
-                  </div>
-               </mat-card-title>
-               <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr && task.longdescr.length>0">
-                  <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
-                     <li>{{ point }}</li>
-                  </ul>
-               </mat-card-subtitle>
-            </mat-card-header>
+             <mat-card  (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
+                  <div style="width: 30px; float: inline-start; height: 30px;" [style.background-color]="getBackgroundColorValue(task)" > </div>
+                  <div style="display: inline-block;">
+                     <mat-card-header>
+                        <mat-card-title>
+                           {{ task.shortdescr }}
+                           <div style="margin-top: 20px; font-size: 12px;">
+                              {{ getUTCStringFromTask(task) }}
+                           </div>
+                        </mat-card-title>
+                        <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr.length>0">
+                           <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
+                              <li>{{ point }}</li>
+                           </ul>
+                        </mat-card-subtitle>
+                     </mat-card-header>
+                  </div>    
             <div style="display: flex; justify-content: flex-end; float: right;">
                <button (click)="pinTask(task)" mat-button>Pin</button>
                <button (click)="hideTask(task)" mat-button>Hide</button>

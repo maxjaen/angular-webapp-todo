@@ -12,18 +12,18 @@
             </div>
          </div>
          <div class="show" style="display: block; width: 100%;">
-            <div style="margin: 2%; font-family: 'Indie Flower', cursive; font-size: 30px; ">
+            <div style="margin: 2%; font-size: 18px; ">
                <countup-timer style="font-size: 42px;" [countUpTimerConfig]="testConfig">
                </countup-timer>
-               <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
                <div>
+                  <!-- TODO check when elements length 0 or elements object null -->
                   <p>
-                     <span>Time overall: </span>
-                     <span [style.color]="this.stringDistributorService.COLORS.WHITE"> {{ millisecondsToTimestring(calculateOverallTime(_timeElements)) }}</span>
+                     <span>Time week: </span>
+                     <span [style.color]="this.stringDistributorService.COLORS.WHITE"> {{ this.millisecondsToTimestring(calculateOverallTime(allTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Time today: </span>
-                     <span [style.color]="this.stringDistributorService.COLORS.WHITE"> {{ millisecondsToTimestring(calculateTodayTime(timeElements)) }}</span>
+                     <span [style.color]="this.stringDistributorService.COLORS.WHITE"> {{ this.millisecondsToTimestring(calculateTodayTime(todayTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Week: </span>
@@ -31,11 +31,11 @@
                   </p>
                </div>
             </div>
-            <div *ngIf="timeElements">
-               <div *ngIf="timeElements.length==0" style="color: #47556c; margin: 2%;">
+            <div *ngIf="todayTimeElements">
+               <div *ngIf="todayTimeElements.length==0" style="color: #47556c; margin: 2%;">
                   <p>No TimeTask available</p>
                </div>
-               <div *ngFor="let timeElement of timeElements">
+               <div *ngFor="let timeElement of todayTimeElements">
                   <div *ngIf="selectedTimeElement==timeElement" class="changeField" style="margin: 2%; display: block; overflow: auto;">
                      <form class="example-form">
                         <mat-form-field class="example-full-width" style="margin-right: 2%;">
@@ -61,7 +61,7 @@
                   </div>
                   <mat-card (click)="selectTimeElement(timeElement);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
                   <div style="width: 30px; float: inline-start; height: 30px;" [style.background-color]="getBackgroundColorValue(timeElement)"></div>
-                  <div style="display: inline-block;">
+                  <div style="width: 70%; display: inline-block;">
                      <mat-card-header style="float: left;">
                         <mat-card-title>
                            {{ timeElement.shortdescr }}
@@ -106,13 +106,13 @@
               </mat-option>
             </mat-select>
          </mat-form-field>
-         <div *ngIf="selectedHistoryElements">
-             <div *ngIf="selectedHistoryElements.length > 0">
+         <div *ngIf="historyElements">
+             <div *ngIf="historyElements.length > 0">
                   <p>
-                     Time: <span style="color: coral;">{{ millisecondsToTimestring(calculateTodayTime(selectedHistoryElements)) }}</span>
+                     Time: <span style="color: coral;">{{ millisecondsToTimestring(calculateTodayTime(historyElements)) }}</span>
                   </p>
                </div>
-            <div *ngFor="let timeElement of selectedHistoryElements">
+            <div *ngFor="let timeElement of historyElements">
                   <mat-card [style.background-color]="this.stringDistributorService.COLORS.GRAY" style="margin: 2%; display: block; overflow: auto;"
                   class="example-card">
                   <mat-card-header style="float:left;">

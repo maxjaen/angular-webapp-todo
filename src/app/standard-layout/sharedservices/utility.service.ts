@@ -6,12 +6,40 @@ import { Injectable } from "@angular/core";
 export class UtilityService {
   constructor() {}
 
+  propertyHasValue(object: any, property: string): boolean {
+    if (
+      object.hasOwnProperty(property) &&
+      object[property] !== null &&
+      object[property] !== undefined
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   splitToBulletPoints(str: string) {
     return str.split("\n");
   }
 
   formatToTwoDigits(num: number) {
     return num < 10 ? "0" + num : num;
+  }
+
+  getDayString(num: number): string {
+    return [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ][num];
+  }
+
+  randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   isNumber(param: any): boolean {

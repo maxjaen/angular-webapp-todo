@@ -16,12 +16,12 @@ import { AmazingTimePickerService } from "amazing-time-picker";
   styleUrls: ["./timetask.component.scss"]
 })
 export class TimeTaskComponent implements OnInit {
-  timeElements: TimeTask[];
-  _timeElements: TimeTask[];
+  todayTimeElements: TimeTask[];
+  allTimeElements: TimeTask[];
 
   runningTimeElement: TimeTask;
   selectedTimeElement: TimeTask;
-  selectedHistoryElements: TimeTask[];
+  historyElements: TimeTask[];
 
   id: number;
   shortdescr: string;
@@ -98,24 +98,32 @@ export class TimeTaskComponent implements OnInit {
   }
 
   getTimeElementsFromService() {
-    this.selectedHistoryElements = [];
-    this.timeElements = [];
-    this._timeElements = [];
+    this.historyElements = [];
+    this.todayTimeElements = [];
+    this.allTimeElements = [];
 
     this.timeTaskService.getAllTimeElements().subscribe(data => {
-      this._timeElements = data;
+      this.allTimeElements = data;
 
-      this.timeElements = data
-        .filter(e => new Date(e.startdate).getDate() == new Date().getDate())
-        .filter(e => new Date(e.startdate).getMonth() == new Date().getMonth())
-        .filter(
-          e => new Date(e.startdate).getFullYear() == new Date().getFullYear()
-        )
+      this.todayTimeElements = data
+        .filter(e => {
+          let startdate: Date = new Date(e.startdate);
+          let now: Date = new Date();
+
+          if (
+            startdate.getDate() == now.getDate() &&
+            startdate.getMonth() == now.getMonth() &&
+            startdate.getFullYear() == now.getFullYear()
+          ) {
+            return true;
+          }
+          return false;
+        })
         .sort((a, b) => (a.id > b.id ? -1 : 1));
 
       if (this.timerService.isTimerStart) {
-        if (this.timeElements.length > 0) {
-          this.runningTimeElement = this.timeElements[0];
+        if (this.todayTimeElements.length > 0) {
+          this.runningTimeElement = this.todayTimeElements[0];
         }
       }
     });
@@ -125,15 +133,8 @@ export class TimeTaskComponent implements OnInit {
     return timeTasks
       .filter(
         e =>
-          e.hasOwnProperty("startdate") &&
-          e.startdate !== null &&
-          e.startdate !== undefined
-      )
-      .filter(
-        e =>
-          e.hasOwnProperty("enddate") &&
-          e.enddate !== null &&
-          e.enddate !== undefined
+          this.utilityService.propertyHasValue(e, "startdate") &&
+          this.utilityService.propertyHasValue(e, "enddate")
       )
       .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
       .reduce((a, b) => a + b, 0);
@@ -143,20 +144,10 @@ export class TimeTaskComponent implements OnInit {
     return timeTasks
       .filter(
         e =>
-          e.hasOwnProperty("startdate") &&
-          e.startdate !== null &&
-          e.startdate !== undefined
-      )
-      .filter(
-        e =>
-          e.hasOwnProperty("enddate") &&
-          e.enddate !== null &&
-          e.enddate !== undefined
-      )
-      .filter(
-        e =>
+          this.utilityService.propertyHasValue(e, "startdate") &&
+          this.utilityService.propertyHasValue(e, "enddate") &&
           this.calculateWeekNumber() ==
-          this.calculateWeekNumberFromDate(new Date(e.startdate))
+            this.calculateWeekNumberFromDate(new Date(e.startdate))
       )
       .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
       .reduce((a, b) => a + b, 0);
@@ -179,9 +170,10 @@ export class TimeTaskComponent implements OnInit {
     this.resetTimer();
 
     let tempTimeElement: TimeTask = {
+      id: null,
+      title: timeElement.title,
       shortdescr: timeElement.shortdescr,
       longdescr: timeElement.longdescr,
-      id: null,
       startdate: this.createDateWithTimeOffset(),
       enddate: null,
       task: timeElement.task
@@ -217,7 +209,7 @@ export class TimeTaskComponent implements OnInit {
   }
 
   saveAllTimeElements() {
-    this.timeElements.forEach(element => {
+    this.todayTimeElements.forEach(element => {
       this.saveTimeElement(element);
     });
   }
@@ -402,7 +394,7 @@ export class TimeTaskComponent implements OnInit {
   elementToTimestring(milliseconds: number): string {
     let seconds: any = Math.floor((milliseconds / 1000) % 60);
     let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
-    let hours: any = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
+    let hours: any = Math.floor(milliseconds / (1000 * 60 * 60));
     hours = hours < 10 ? "0" + hours : hours;
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -460,7 +452,7 @@ export class TimeTaskComponent implements OnInit {
 
   selectDistinctDates(): Array<String> {
     let tempDates: Date[] = [];
-    this._timeElements.forEach(timeElement => {
+    this.allTimeElements.forEach(timeElement => {
       if (
         !tempDates.find(date => {
           let DateToInsert: Date = new Date(timeElement.startdate);
@@ -485,18 +477,21 @@ export class TimeTaskComponent implements OnInit {
           "." +
           this.utilityService.formatToTwoDigits(date.getMonth() + 1) +
           "." +
-          this.utilityService.formatToTwoDigits(date.getFullYear())
+          this.utilityService.formatToTwoDigits(date.getFullYear()) +
+          ", " +
+          this.utilityService.getDayString(date.getDay())
         );
       });
   }
 
   selectDate(event: { value: String }) {
-    let dateArray: String[] = event.value.split(".");
+    let str: String[] = event.value.split(",");
+    let dateArray: String[] = str[0].split(".");
     let day: String = dateArray[0];
     let month: String = dateArray[1];
     let year: String = dateArray[2];
 
-    this.selectedHistoryElements = this._timeElements.filter(e => {
+    this.historyElements = this.allTimeElements.filter(e => {
       let date: Date = new Date(e.startdate);
 
       return (

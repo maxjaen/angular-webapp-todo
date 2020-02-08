@@ -17,6 +17,7 @@ export class TasksComponent implements OnInit {
   displayedColumns: string[] = ["id", "shortdescr", "longdescr"];
   unpinnedTasks: Task[];
   pinnedTasks: Task[];
+  hidedElements: Task[];
 
   selectedTask: Task;
   lastChangedTask: Task;
@@ -82,11 +83,19 @@ export class TasksComponent implements OnInit {
         .sort(function(a, b) {
           return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
         });
+
       this.pinnedTasks = data
         .filter(e => e.pinned && !e.hided)
         .sort(function(a, b) {
           return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
         });
+
+      this.hidedElements = data
+        .filter(e => e.hided)
+        .sort(function(a, b) {
+          return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
+        });
+
       this.titleService.setTitle(
         "Aufgabenbereich" +
           " (" +
@@ -146,7 +155,7 @@ export class TasksComponent implements OnInit {
     if (!(task === undefined)) {
       if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
-        task.hided = true;
+        task.hided = !task.hided;
         this.taskService.putTask(task).subscribe(() => {
           this.openSnackBar("Task hided!", "Reset");
           this.getTasksFromService();

@@ -73,7 +73,7 @@ export class UtilityService {
     let nextElement: number = index + 1;
 
     switch (direction) {
-      case "oben":
+      case "up":
         if (index !== 0) {
           var temp = array[lastElement];
           array[lastElement] = array[actualElement];
@@ -89,7 +89,7 @@ export class UtilityService {
           );
         }
         break;
-      case "unten":
+      case "down":
         if (actualElement < array.length - 1) {
           var temp: any = array[nextElement];
           array[nextElement] = array[actualElement];

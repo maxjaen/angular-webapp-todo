@@ -243,7 +243,7 @@ export class TrainingComponent implements OnInit {
     } else {
       while (this.exercisesToInsert.find(e => e.name == exercise.name)) {
         this.utilityService.removeElementFromArray(
-          exercise,
+          this.exercisesToInsert.filter(e => e.name == exercise.name)[0],
           this.exercisesToInsert
         );
       }

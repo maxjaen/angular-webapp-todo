@@ -9,7 +9,7 @@ import { TrainingViewComponent } from "./standard-layout/training/components/tra
 const routes: Routes = [
   {
     path: "",
-    component: TasksComponent
+    component: DashboardComponent
   },
   {
     path: "tasks",

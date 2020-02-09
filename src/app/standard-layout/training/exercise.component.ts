@@ -485,9 +485,9 @@ export class TrainingComponent implements OnInit {
    *
    */
 
-  @ViewChild("overviewtraining", { read: undefined })
+  @ViewChild("overviewtraining")
   overviewtraining: ElementRef;
-  @ViewChild("createtraining", { read: undefined })
+  @ViewChild("createtraining")
   createtraining: ElementRef;
 
   scroll(element: string) {

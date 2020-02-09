@@ -141,7 +141,7 @@ export class TrainingComponent implements OnInit {
     });
   }
 
-  gotoTraining(training: Training) {
+  viewTraining(training: Training) {
     this.router.navigate(["/training/" + training.id]);
   }
 

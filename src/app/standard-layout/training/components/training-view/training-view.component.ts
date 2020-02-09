@@ -39,13 +39,13 @@ export class TrainingViewComponent implements OnInit {
     if (window.confirm("Are sure you want to delete this item ?")) {
       this.route.params.subscribe(params => {
         this.trainingService.deleteTrainingByID(+params["id"]).subscribe(() => {
-          this.gotoTraining();
+          this.viewTraining();
         });
       });
     }
   }
 
-  gotoTraining() {
+  viewTraining() {
     this.router.navigate(["/training"]);
   }
 

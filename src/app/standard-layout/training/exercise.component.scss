@@ -1,12 +1,10 @@
+@import "../../../styles.scss";
+
 @media (max-width: 379.767px) {
   .categories,
   .selection {
     width: 100%;
   }
-}
-
-.content {
-  margin: 3%;
 }
 
 .categories {

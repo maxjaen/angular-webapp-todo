@@ -34,8 +34,8 @@ export class TimeTaskComponent implements OnInit {
   constructor(
     private timeTaskService: TimeTaskService,
     private timerService: CountupTimerService,
-    private stringDistributorService: StringDistributorService,
-    private utilityService: UtilityService,
+    public stringDistributorService: StringDistributorService,
+    public utilityService: UtilityService,
     private timePickerService: AmazingTimePickerService,
     private titleService: Title,
     public _dialog: MatDialog,

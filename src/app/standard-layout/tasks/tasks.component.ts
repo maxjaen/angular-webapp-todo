@@ -31,8 +31,8 @@ export class TasksComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private titleService: Title,
-    private stringDistributorService: StringDistributorService,
-    private utilityService: UtilityService,
+    public stringDistributorService: StringDistributorService,
+    public utilityService: UtilityService,
     public _dialog: MatDialog,
     private _snackBar: MatSnackBar
   ) {

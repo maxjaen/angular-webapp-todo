@@ -13,7 +13,7 @@
             <div class="selection">
                <div class="tab" #overviewtraining *ngIf="trainings">
                   <h2> Overview Training</h2>
-                  <div *ngIf="!trainings.length==0">
+                  <div *ngIf="trainings.length>0">
                      <div *ngFor="let training of trainings">
                         <mat-card (click)="gotoTraining(training)" style="width: 300px; min-width: 300px; max-width: 300px; margin: 2%; float: left" class="example-card">
                            <mat-card-header style="float:left;">
@@ -67,7 +67,7 @@
                   <div *ngIf="exercises.length==0" style="color: #47556c;">
                      <p>No exercises available</p>
                   </div>
-                  <div *ngIf="!exercises.length==0" class="categories">
+                  <div *ngIf="exercises.length>0" class="categories">
                      <div *ngFor="let category of selectDistinctExerciseCategories()">
                         <p>{{ category }}</p>
                         <div *ngFor="let exercise of exercises">
@@ -86,7 +86,7 @@
                         <button type="button" mat-raised-button (click)="resetForm()"
                         color="warn" [disabled]="exercisesToInsert.length==0">Reset</button>
                      </div>
-                     <div class="errormessage" *ngIf="!exercises.length==0 && exercisesToInsert.length==0">
+                     <div class="errormessage" *ngIf="exercises.length>0 && exercisesToInsert.length==0">
                         <mat-form-field>
                            <mat-label>Check or choose</mat-label>
                            <mat-select (selectionChange)="selectTraining($event)">

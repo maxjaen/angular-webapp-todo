@@ -29,7 +29,7 @@
    </div>
    <div class="block">
       <h2>Overview</h2>
-      <div *ngIf="!weights.length==0">
+      <div *ngIf="weights.length>0">
          <div *ngFor="let weight of weights">
             <mat-card [style.background-color]="getBackgroundColorValue(weight)" style="margin: 1%; display: block; overflow: auto; float: left;" class="example-card">
                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">

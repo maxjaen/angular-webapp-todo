@@ -43,9 +43,10 @@
                                  {{ getUTCStringFromTask(task) }}
                               </div>
                            </mat-card-title>
-                           <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr && task.longdescr.length>0">
+                           <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length>0">
                               <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
-                                 <li>{{ point }}</li>
+                                    <div *ngIf="point.length>0"><li>{{ point }}</li></div>
+                                    <div *ngIf="point.length==0"><hr></div>
                               </ul>
                            </mat-card-subtitle>
                         </mat-card-header>       
@@ -92,9 +93,10 @@
                                     {{ getUTCStringFromTask(task) }}
                                  </div>
                               </mat-card-title>
-                              <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr && task.longdescr.length>0">
+                              <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length>0">
                                  <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
-                                    <li>{{ point }}</li>
+                                    <div *ngIf="point.length>0"><li>{{ point }}</li></div>
+                                    <div *ngIf="point.length==0">{{ point }}</div>
                                  </ul>
                               </mat-card-subtitle>
                            </mat-card-header>
@@ -125,9 +127,10 @@
                                  {{ getUTCStringFromTask(task) }}
                               </div>
                            </mat-card-title>
-                           <mat-card-subtitle style="margin-top: 3px;" *ngIf="task.longdescr.length>0">
+                           <mat-card-subtitle *ngIf="task.longdescr.length>0">
                               <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
-                                 <li>{{ point }}</li>
+                                    <div *ngIf="point.length>0"><li>{{ point }}</li></div>
+                                    <div *ngIf="point.length==0">{{ point }}</div>
                               </ul>
                            </mat-card-subtitle>
                         </mat-card-header>       

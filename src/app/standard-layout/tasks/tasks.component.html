@@ -4,37 +4,50 @@
       <div class="content">
          <div class="insert"></div>
          <div>
-            <button id="changeEventButton" title="Create new task" (click)="openInsertTaskDialog()" mat-fab color="primary">+</button>
+            <button id="changeEventButton" title="Create new task" (click)="openInsertTaskDialog()" mat-fab
+               color="primary">
+               +
+            </button>
          </div>
          <div *ngIf="unpinnedTasks && pinnedTasks">
-            <div *ngIf="unpinnedTasks.length==0 && pinnedTasks.length==0" style="color: #47556c; margin: 2%;">
+            <div *ngIf="unpinnedTasks.length == 0 && pinnedTasks.length == 0" style="color: #47556c; margin: 2%;">
                <p>No Tasks available</p>
             </div>
-            <div *ngIf="pinnedTasks.length>0" class="pinnedtasks">
+            <div *ngIf="pinnedTasks.length > 0" class="pinnedtasks">
                <h3>Pinned Tasks</h3>
-               <div *ngFor="let task of pinnedTasks; let i=index">
-                  <div *ngIf="task==selectedTask" class="changeField" style="margin: 2%; display: block; overflow: auto;">
+               <div *ngFor="let task of pinnedTasks; let i = index">
+                  <div *ngIf="task == selectedTask" class="changeField"
+                     style="margin: 2%; display: block; overflow: auto;">
                      <form class="example-form">
                         <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                           <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"[(ngModel)]="selectedTask.shortdescr">
+                           <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
+                              [(ngModel)]="selectedTask.shortdescr" />
                            <mat-hint>{{ message.value.length }} / 50</mat-hint>
                         </mat-form-field>
                         <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                           <textarea matInput placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr" (ngModelChange)="replaceWithShortcut(selectedTask);"></textarea>
+                           <textarea matInput placeholder="description" name="longdescr"
+                              [(ngModel)]="selectedTask.longdescr"
+                              (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
                         </mat-form-field>
                         <mat-form-field>
-                           <input matInput (dateChange)="addDateValuesToSelectedTask('change', $event)" [matDatepicker]="picker"
-                           placeholder="Choose a date">
+                           <input matInput (dateChange)="addDateValuesToSelectedTask('change', $event)"
+                              [matDatepicker]="picker" placeholder="Choose a date" />
                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
-                        <button (click)="saveAllTasks()" style="float:right" mat-button>Save all</button>
-                        <button (click)="saveTask(selectedTask)" style="float:right" mat-button>Save task</button>
+                        <button (click)="saveAllTasks()" style="float:right" mat-button>
+                           Save all
+                        </button>
+                        <button (click)="saveTask(selectedTask)" style="float:right" mat-button>
+                           Save task
+                        </button>
                      </form>
                   </div>
                   <!-- <mat-card [style.background-color]="task==selectedTask ? '#47556c' : '#424242'" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card"> -->
-                  <mat-card  (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
-                     <div style="width: 30px; height: 30px; float:inline-start;" [style.background-color]="getBackgroundColorValue(task)" > </div>
+                  <mat-card (click)="selectTask(task)" style="margin: 2%; display: block; overflow: auto;"
+                     class="example-card">
+                     <div style="width: 30px; height: 30px; float:inline-start;"
+                        [style.background-color]="getBackgroundColorValue(task)"></div>
                      <div style="width: 70%; display: inline-block;">
                         <mat-card-header>
                            <mat-card-title>
@@ -43,64 +56,82 @@
                                  {{ getUTCStringFromTask(task) }}
                               </div>
                            </mat-card-title>
-                           <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length>0">
-                              <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
-                                    <div *ngIf="point.length>0"><li>{{ point }}</li></div>
-                                    <div *ngIf="point.length==0"><hr></div>
+                           <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
+                              <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr)">
+                                 <div *ngIf="point.length > 0">
+                                    <li>{{ point }}</li>
+                                 </div>
+                                 <div *ngIf="point.length == 0">
+                                    <hr />
+                                 </div>
                               </ul>
                            </mat-card-subtitle>
-                        </mat-card-header>       
-                     </div>     
+                        </mat-card-header>
+                     </div>
                      <div style="display: flex; justify-content: flex-end; float: right;">
-                           <button (click)="pinTask(task)" mat-button>Unpin</button>
-                           <button (click)="hideTask(task)" mat-button>Hide</button>
-                           <button (click)="removeTask(task)" mat-button>Delete</button>
-                           <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
+                        <button (click)="pinTask(task)" mat-button>Unpin</button>
+                        <button (click)="hideTask(task)" mat-button>Hide</button>
+                        <button (click)="removeTask(task)" mat-button>Delete</button>
+                        <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
                            <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
-                        </div>  
-                  </mat-card> 
+                     </div>
+                  </mat-card>
                </div>
             </div>
-            <div *ngIf="unpinnedTasks.length>0" class="unpinnedtasks">
+            <div *ngIf="unpinnedTasks.length > 0" class="unpinnedtasks">
                <h3>Unpinned Tasks</h3>
-               <div *ngFor="let task of unpinnedTasks; let i=index">
-                  <div *ngIf="task==selectedTask" class="changeField" style="margin: 2%; display: block; overflow: auto;">
+               <div *ngFor="let task of unpinnedTasks; let i = index">
+                  <div *ngIf="task == selectedTask" class="changeField"
+                     style="margin: 2%; display: block; overflow: auto;">
                      <form class="example-form">
                         <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                           <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"[(ngModel)]="selectedTask.shortdescr">
+                           <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
+                              [(ngModel)]="selectedTask.shortdescr" />
                            <mat-hint>{{ message.value.length }} / 50</mat-hint>
                         </mat-form-field>
                         <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                           <textarea matInput placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr" (ngModelChange)="replaceWithShortcut(selectedTask);"></textarea>
+                           <textarea matInput placeholder="description" name="longdescr"
+                              [(ngModel)]="selectedTask.longdescr"
+                              (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
                         </mat-form-field>
                         <mat-form-field>
-                           <input matInput (dateChange)="addDateValuesToSelectedTask('change', $event)" [matDatepicker]="picker"
-                           placeholder="Choose a date">
+                           <input matInput (dateChange)="addDateValuesToSelectedTask('change', $event)"
+                              [matDatepicker]="picker" placeholder="Choose a date" />
                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
-                        <button (click)="saveAllTasks()" style="float:right" mat-button>Save all</button>
-                        <button (click)="saveTask(selectedTask)" style="float:right" mat-button>Save task</button>
+                        <button (click)="saveAllTasks()" style="float:right" mat-button>
+                           Save all
+                        </button>
+                        <button (click)="saveTask(selectedTask)" style="float:right" mat-button>
+                           Save task
+                        </button>
                      </form>
                   </div>
-                  <mat-card  (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card">
-                        <div style="width: 30px; float: inline-start; height: 30px;" [style.background-color]="getBackgroundColorValue(task)" > </div>
-                        <div style="width: 70%; display: inline-block;">
-                           <mat-card-header>
-                              <mat-card-title>
-                                 {{ task.shortdescr }}
-                                 <div style="margin-top: 20px; font-size: 12px;">
-                                    {{ getUTCStringFromTask(task) }}
+                  <mat-card (click)="selectTask(task)" style="margin: 2%; display: block; overflow: auto;"
+                     class="example-card">
+                     <div style="width: 30px; float: inline-start; height: 30px;"
+                        [style.background-color]="getBackgroundColorValue(task)"></div>
+                     <div style="width: 70%; display: inline-block;">
+                        <mat-card-header>
+                           <mat-card-title>
+                              {{ task.shortdescr }}
+                              <div style="margin-top: 20px; font-size: 12px;">
+                                 {{ getUTCStringFromTask(task) }}
+                              </div>
+                           </mat-card-title>
+                           <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
+                              <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr)">
+                                 <div *ngIf="point.length > 0">
+                                    <li>{{ point }}</li>
                                  </div>
-                              </mat-card-title>
-                              <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length>0">
-                                 <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
-                                    <div *ngIf="point.length>0"><li>{{ point }}</li></div>
-                                    <div *ngIf="point.length==0">{{ point }}</div>
-                                 </ul>
-                              </mat-card-subtitle>
-                           </mat-card-header>
-                        </div>    
+                                 <div *ngIf="point.length == 0">
+                                    <hr />
+                                 </div>
+                              </ul>
+                           </mat-card-subtitle>
+                        </mat-card-header>
+                     </div>
                      <div style="display: flex; justify-content: flex-end; float: right;">
                         <button (click)="pinTask(task)" mat-button>Pin</button>
                         <button (click)="hideTask(task)" mat-button>Hide</button>
@@ -114,36 +145,41 @@
          </div>
       </div>
    </mat-tab>
-    <mat-tab label="History">
+   <mat-tab label="History">
       <div *ngIf="hidedElements">
-            <div *ngFor="let task of hidedElements">
-                  <mat-card style="margin: 2%; display: block; overflow: auto;" class="example-card">
-                     <div style="width: 30px; height: 30px; float:inline-start;" [style.background-color]="this.stringDistributorService.COLORS.DARKGRAY" > </div>
-                     <div style="width: 70%; display: inline-block;">
-                        <mat-card-header>
-                           <mat-card-title>
-                              {{ task.shortdescr }}
-                              <div style="margin-top: 20px; font-size: 12px;">
-                                 {{ getUTCStringFromTask(task) }}
-                              </div>
-                           </mat-card-title>
-                           <mat-card-subtitle *ngIf="task.longdescr.length>0">
-                              <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr);">
-                                    <div *ngIf="point.length>0"><li>{{ point }}</li></div>
-                                    <div *ngIf="point.length==0">{{ point }}</div>
-                              </ul>
-                           </mat-card-subtitle>
-                        </mat-card-header>       
-                     </div>     
-                     <div style="display: flex; justify-content: flex-end; float: right;">
-                           <button (click)="hideTask(task)" mat-button>Unhide</button>
-                           <button (click)="removeTask(task)" mat-button>Delete</button>
-                           <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
+         <div *ngFor="let task of hidedElements">
+            <mat-card style="margin: 2%; display: block; overflow: auto;" class="example-card">
+               <div style="width: 30px; height: 30px; float:inline-start;" [style.background-color]="
+              this.stringDistributorService.COLORS.DARKGRAY
+            "></div>
+               <div style="width: 70%; display: inline-block;">
+                  <mat-card-header>
+                     <mat-card-title>
+                        {{ task.shortdescr }}
+                        <div style="margin-top: 20px; font-size: 12px;">
+                           {{ getUTCStringFromTask(task) }}
+                        </div>
+                     </mat-card-title>
+                     <mat-card-subtitle *ngIf="task.longdescr.length > 0">
+                        <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr)">
+                           <div *ngIf="point.length > 0">
+                              <li>{{ point }}</li>
+                           </div>
+                           <div *ngIf="point.length == 0">
+                              <hr />
+                           </div>
+                        </ul>
+                     </mat-card-subtitle>
+                  </mat-card-header>
+               </div>
+               <div style="display: flex; justify-content: flex-end; float: right;">
+                  <button (click)="hideTask(task)" mat-button>Unhide</button>
+                  <button (click)="removeTask(task)" mat-button>Delete</button>
+                  <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
                            <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
-                        </div>  
-                  </mat-card> 
-            </div> 
-          </div>
-    </mat-tab>
+               </div>
+            </mat-card>
+         </div>
+      </div>
+   </mat-tab>
 </mat-tab-group>
-

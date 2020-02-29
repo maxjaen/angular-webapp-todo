@@ -160,7 +160,7 @@
                            {{ getUTCStringFromTask(task) }}
                         </div>
                      </mat-card-title>
-                     <mat-card-subtitle *ngIf="task.longdescr.length > 0">
+                     <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
                         <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr)">
                            <div *ngIf="point.length > 0">
                               <li>{{ point }}</li>

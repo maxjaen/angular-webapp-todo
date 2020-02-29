@@ -14,7 +14,7 @@ export class StringDistributorService {
     ["ada ", "AUF DER AGENDA: "],
     ["spä ", "SPÄTER: "],
     ["tod ", "TODO: "],
-    ["tes ", "TESTEN: "],
+    // ["tes ", "TESTEN: "],
     ["erl ", "ERLEDIGT: "]
   ];
 }

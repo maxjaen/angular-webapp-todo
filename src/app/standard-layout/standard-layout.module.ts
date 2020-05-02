@@ -42,6 +42,7 @@ import {
   MatToolbarModule,
   MatTooltipModule
 } from "@angular/material";
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {
     WeightComponent,
     InsertTaskDialog,
     InsertTaskDialogTime,
-    TrainingViewComponent
+    TrainingViewComponent,
+    SettingsComponent
   ],
   imports: [
     CommonModule,

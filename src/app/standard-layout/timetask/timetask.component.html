@@ -87,7 +87,7 @@
                               </div>
                            </mat-card-title>
                            <mat-card-subtitle *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
-                              <ul *ngFor="let point of this.utilityService.splitToBulletPoints(timeElement.longdescr);">
+                              <ul *ngFor="let point of this.utilityService.split(timeElement.longdescr);">
                                  <div *ngIf="point.length>0">
                                     <li>{{ point }}</li>
                                  </div>
@@ -145,7 +145,7 @@
                         </div>
                      </mat-card-title>
                      <mat-card-subtitle *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
-                        <ul *ngFor="let point of this.utilityService.splitToBulletPoints(timeElement.longdescr);">
+                        <ul *ngFor="let point of this.utilityService.split(timeElement.longdescr);">
                            <li>{{ point }}</li>
                         </ul>
                      </mat-card-subtitle>

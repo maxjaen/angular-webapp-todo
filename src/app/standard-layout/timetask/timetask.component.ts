@@ -10,10 +10,16 @@ import { StringDistributorService } from "../sharedservices/string-distributor.s
 import { UtilityService } from "../sharedservices/utility.service";
 import { AmazingTimePickerService } from "amazing-time-picker";
 
+const START_DATE_STRING = "startdate";
+const END_DATE_STRING = "enddate";
+const EMPTY_STRING = "";
+const SUMER_TIME = 1;
+// CHANGE to "const WINTER_TIME = 0;" if necessary
+
 @Component({
   selector: "app-timetask",
   templateUrl: "./timetask.component.html",
-  styleUrls: ["./timetask.component.scss"]
+  styleUrls: ["./timetask.component.scss"],
 })
 export class TimeTaskComponent implements OnInit {
   todayTimeElements: TimeTask[];
@@ -37,11 +43,11 @@ export class TimeTaskComponent implements OnInit {
     public stringDistributorService: StringDistributorService,
     public utilityService: UtilityService,
     private timePickerService: AmazingTimePickerService,
-    private titleService: Title,
+    private _tabTitle: Title,
     public _dialog: MatDialog,
     private _snackBar: MatSnackBar
   ) {
-    this.titleService.setTitle("Zeiterfassung");
+    this._tabTitle.setTitle("Time Management");
   }
 
   ngOnInit() {
@@ -49,6 +55,7 @@ export class TimeTaskComponent implements OnInit {
     this.setTimerConfig();
   }
 
+  // Setup view with timer settings
   setTimerConfig() {
     this.testConfig = new countUpTimerConfigModel();
     this.testConfig.timerClass = "test_Timer_class";
@@ -59,9 +66,9 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /*
-   *
+   * ===================================================================================
    * HOSTLISTENER
-   *
+   * ===================================================================================
    */
 
   @HostListener("click", ["$event"])
@@ -77,11 +84,13 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /*
-   *
+   * ===================================================================================
    * TIMEELEMENT METHODS
-   *
+   * ===================================================================================
    */
 
+  // Selected current TimeElement if not already set,
+  // otherwise hide current selected TimeElement
   selectTimeElement(timeElement: TimeTask) {
     if (
       this.selectedTimeElement === undefined ||
@@ -93,20 +102,23 @@ export class TimeTaskComponent implements OnInit {
     }
   }
 
+  // Set the current running timeElement
   selectRunningTimeElement(timeElement: TimeTask) {
     this.runningTimeElement = timeElement;
   }
 
+  // Get all TimeElements from service
+  // Fill three lists with a subset of these TimeElements
   getTimeElementsFromService() {
     this.historyElements = [];
     this.todayTimeElements = [];
     this.allTimeElements = [];
 
-    this.timeTaskService.getAllTimeElements().subscribe(data => {
+    this.timeTaskService.getAllTimeElements().subscribe((data) => {
       this.allTimeElements = data;
 
       this.todayTimeElements = data
-        .filter(e => {
+        .filter((e) => {
           let startdate: Date = new Date(e.startdate);
           let now: Date = new Date();
 
@@ -129,30 +141,53 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
+  // Calculate the overall work time for the current day
   calculateTodayTime(timeTasks: TimeTask[]): number {
     return timeTasks
       .filter(
-        e =>
-          this.utilityService.propertyHasValue(e, "startdate") &&
-          this.utilityService.propertyHasValue(e, "enddate")
+        (timetask) =>
+          this.utilityService.objectHasPropertyWithValue(
+            timetask,
+            START_DATE_STRING
+          ) &&
+          this.utilityService.objectHasPropertyWithValue(
+            timetask,
+            END_DATE_STRING
+          )
       )
-      .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
+      .map(
+        (timetask) =>
+          new Date(timetask.enddate).getTime() -
+          new Date(timetask.startdate).getTime()
+      )
       .reduce((a, b) => a + b, 0);
   }
 
+  // Calculate the overall time for the current week
   calculateOverallTime(timeTasks: TimeTask[]): number {
     return timeTasks
       .filter(
-        e =>
-          this.utilityService.propertyHasValue(e, "startdate") &&
-          this.utilityService.propertyHasValue(e, "enddate") &&
+        (timeTasks) =>
+          this.utilityService.objectHasPropertyWithValue(
+            timeTasks,
+            START_DATE_STRING
+          ) &&
+          this.utilityService.objectHasPropertyWithValue(
+            timeTasks,
+            END_DATE_STRING
+          ) &&
           this.calculateWeekNumber() ==
-            this.calculateWeekNumberFromDate(new Date(e.startdate))
+            this.calculateWeekNumberFromDate(new Date(timeTasks.startdate))
       )
-      .map(e => new Date(e.enddate).getTime() - new Date(e.startdate).getTime())
+      .map(
+        (validTimeTasks) =>
+          new Date(validTimeTasks.enddate).getTime() -
+          new Date(validTimeTasks.startdate).getTime()
+      )
       .reduce((a, b) => a + b, 0);
   }
 
+  // Create a new TimeTask from an already finished TimeTask
   continueTimeElement(timeElement: TimeTask) {
     if (!window.confirm("Are sure you want to continue this item?")) {
       return;
@@ -176,10 +211,10 @@ export class TimeTaskComponent implements OnInit {
       longdescr: timeElement.longdescr,
       startdate: this.createDateWithTimeOffset(),
       enddate: null,
-      task: timeElement.task
+      task: timeElement.task,
     };
 
-    this.timeTaskService.postTimeElement(tempTimeElement).subscribe(data => {
+    this.timeTaskService.postTimeElement(tempTimeElement).subscribe((data) => {
       this.getTimeElementsFromService();
       this.runningTimeElement = data;
       this.hideSelectedTimeElement();
@@ -187,8 +222,9 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
+  // Save TimeTask in the database
   saveTimeElement(timeElement: TimeTask) {
-    if (!(timeElement === undefined)) {
+    if (timeElement !== undefined) {
       if (this.utilityService.isNumber(timeElement.id)) {
         this.timeTaskService.putTimeElement(timeElement).subscribe(() => {
           this.openSnackBar("TimeTask saved!", null);
@@ -208,12 +244,14 @@ export class TimeTaskComponent implements OnInit {
     this.hideSelectedTimeElement();
   }
 
+  // Save all TimeTasks in the database
   saveAllTimeElements() {
-    this.todayTimeElements.forEach(element => {
+    this.todayTimeElements.forEach((element) => {
       this.saveTimeElement(element);
     });
   }
 
+  // Remove selected TimeTask from the database
   removeTimeElement(timeElement: TimeTask) {
     if (timeElement === undefined) {
       return;
@@ -223,7 +261,7 @@ export class TimeTaskComponent implements OnInit {
       return;
     }
 
-    if (!window.confirm("Are sure you want to delete this item ?")) {
+    if (!window.confirm("Are sure you want to delete this item?")) {
       return;
     }
 
@@ -232,7 +270,7 @@ export class TimeTaskComponent implements OnInit {
       this.runningTimeElement !== null &&
       timeElement.id == this.runningTimeElement.id
     ) {
-      this.openSnackBar("Can't delete running TimeTask!", null);
+      this.openSnackBar("Can't delete current running TimeTask!", null);
       return;
     }
 
@@ -244,16 +282,20 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /*
-   *
+   * ===================================================================================
    * TIMER
-   *
+   * ===================================================================================
    */
 
+  // Start timer service and set tab name
   startTimer() {
     this.timerService.startTimer();
-    this.titleService.setTitle("Zeiterfassung - Timer läuft...");
+    this._tabTitle.setTitle("Timer is running...");
   }
 
+  // Finish the current TimeTask and reset the Timer
+  // Add enddate property to TimeElement in the database
+  // Triggered with finish button
   finishTimer() {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
@@ -269,18 +311,22 @@ export class TimeTaskComponent implements OnInit {
     }
   }
 
+  // Reset timer back to the start
   resetTimer() {
     this.timerService.stopTimer();
     this.timerService.setTimervalue(0);
-    this.titleService.setTitle("Zeiterfassung");
+    this._tabTitle.setTitle("Time Management");
   }
 
   /*
-   *
+   * ===================================================================================
    * DIALOGS/POPUPS
-   *
+   * ===================================================================================
    */
 
+  // Open popup dialog to create a new TimeTask
+  // Finish current TimeTask if still running
+  // Add new TimeElement to the database
   openInsertDialog(): void {
     if (this.timerService.isTimerStart) {
       this.runningTimeElement.enddate = this.createDateWithTimeOffset();
@@ -288,7 +334,7 @@ export class TimeTaskComponent implements OnInit {
         .putTimeElement(this.runningTimeElement)
         .subscribe(() => {
           this.openSnackBar("TimeTask saved!", null);
-          this.hideSelectedTimeElement();
+          // this.hideSelectedTimeElement();
           this.getTimeElementsFromService();
         });
     }
@@ -300,19 +346,19 @@ export class TimeTaskComponent implements OnInit {
       width: "250px",
       data: {
         shortdescr: this.shortdescr,
-        longdescr: this.longdescr
-      }
+        longdescr: this.longdescr,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(resultFromDialog => {
-      if (!(resultFromDialog === undefined)) {
+    dialogRef.afterClosed().subscribe((resultFromDialog) => {
+      if (resultFromDialog !== undefined) {
         resultFromDialog.startdate = this.createDateWithTimeOffset();
         this.selectRunningTimeElement(resultFromDialog);
 
-        if (this.shortdescr != "" && this.longdescr != "") {
+        if (this.shortdescr != EMPTY_STRING && this.longdescr != EMPTY_STRING) {
           this.timeTaskService
             .postTimeElement(resultFromDialog)
-            .subscribe(resultFromPost => {
+            .subscribe((resultFromPost) => {
               this.openSnackBar("TimeTask created!", null);
               this.getTimeElementsFromService();
               this.runningTimeElement.id = resultFromPost.id;
@@ -337,61 +383,62 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /*
-   *
+   * ===================================================================================
    * HELPER FUNCTIONS
-   *
+   * ===================================================================================
    */
 
+  // Opens popup menu for notifications
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
-      duration: 4000
+      duration: 4000,
     });
   }
 
+  // Change start hour and start minutes of a TimeTask
   changeStartDate(timeElement: TimeTask) {
     const amazingTimePicker = this.timePickerService.open();
-    amazingTimePicker.afterClose().subscribe(time => {
+    amazingTimePicker.afterClose().subscribe((time) => {
       let temp: Date = new Date();
-      let test: string[] = time.split(":");
+      let timePickerResult: string[] = time.split(":");
 
       timeElement.startdate = new Date(
         temp.getFullYear(),
         temp.getMonth(),
         temp.getDate(),
-        +test[0],
-        +test[1]
+        +timePickerResult[0], // hour
+        +timePickerResult[1] // min
       );
     });
   }
 
+  // Change end hour and end minutes of a TimeTask
   changeEndDate(timeElement: TimeTask) {
     const amazingTimePicker = this.timePickerService.open();
-    amazingTimePicker.afterClose().subscribe(time => {
+    amazingTimePicker.afterClose().subscribe((time) => {
       let temp: Date = new Date();
-      let test: string[] = time.split(":");
+      let timePickerResult: string[] = time.split(":");
 
       timeElement.enddate = new Date(
         temp.getFullYear(),
         temp.getMonth(),
         temp.getDate(),
-        +test[0],
-        +test[1]
+        +timePickerResult[0], // hour
+        +timePickerResult[1] // min
       );
     });
   }
 
+  // Create time view string from TimeTask
   timeElementToTimestring(timeElement: TimeTask): string {
-    return this.elementToTimestring(
+    return this.millisecondsToTimestring(
       new Date(timeElement.enddate).getTime() -
         new Date(timeElement.startdate).getTime()
     );
   }
 
+  // Create time view string from milliseconds
   millisecondsToTimestring(milliseconds: number): string {
-    return this.elementToTimestring(milliseconds);
-  }
-
-  elementToTimestring(milliseconds: number): string {
     let seconds: any = Math.floor((milliseconds / 1000) % 60);
     let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
     let hours: any = Math.floor(milliseconds / (1000 * 60 * 60));
@@ -401,7 +448,9 @@ export class TimeTaskComponent implements OnInit {
     return hours + ":" + minutes + ":" + seconds;
   }
 
-  formatDateToString(date: Date, str: String): string {
+  // Formate date to string
+  // Return formated string
+  formatDateToString(date: Date, str: string): string {
     let temp: Date = new Date(date);
     return (
       str +
@@ -412,20 +461,26 @@ export class TimeTaskComponent implements OnInit {
     );
   }
 
+  // Create new Date with correct time
+  // Returns current date
   createDateWithTimeOffset(): Date {
     let date: Date = new Date();
-    date.setHours(date.getHours() + 1);
+    date.setHours(date.getHours() + 1 + SUMER_TIME);
     return date;
   }
 
+  // Remove selected TimeElement
   hideSelectedTimeElement() {
     this.selectedTimeElement = null;
   }
 
+  // Remove running TimeElement
   hideRunningTimeElement() {
     this.runningTimeElement = null;
   }
 
+  // Get backround color for different types of TimeTasks
+  // Return backround color
   getBackgroundColorValue(timeTask: TimeTask): string {
     if (
       this.runningTimeElement !== undefined &&
@@ -450,11 +505,13 @@ export class TimeTaskComponent implements OnInit {
     return this.stringDistributorService.COLORS.DARKGREEN;
   }
 
-  selectDistinctDates(): Array<String> {
+  // Get distinct dates of all TimeTasks
+  // Returns array of distinct dates
+  selectDistinctDates(): Array<string> {
     let tempDates: Date[] = [];
-    this.allTimeElements.forEach(timeElement => {
+    this.allTimeElements.forEach((timeElement) => {
       if (
-        !tempDates.find(date => {
+        !tempDates.find((date) => {
           let DateToInsert: Date = new Date(timeElement.startdate);
           let insertedDate: Date = new Date(date);
           return (
@@ -469,8 +526,8 @@ export class TimeTaskComponent implements OnInit {
     });
 
     return tempDates
-      .sort(e => new Date(e).getTime())
-      .map(e => {
+      .sort((e) => new Date(e).getTime())
+      .map((e) => {
         let date: Date = new Date(e);
         return (
           this.utilityService.formatToTwoDigits(date.getDate()) +
@@ -484,14 +541,16 @@ export class TimeTaskComponent implements OnInit {
       });
   }
 
-  selectDate(event: { value: String }) {
-    let str: String[] = event.value.split(",");
-    let dateArray: String[] = str[0].split(".");
-    let day: String = dateArray[0];
-    let month: String = dateArray[1];
-    let year: String = dateArray[2];
+  // Get all TimeElements start at the specific date based on the parameter
+  // Returns history of TimeElements for a day
+  selectDate(event: { value: string }) {
+    let str: string[] = event.value.split(",");
+    let dateArray: string[] = str[0].split(".");
+    let day: string = dateArray[0];
+    let month: string = dateArray[1];
+    let year: string = dateArray[2];
 
-    this.historyElements = this.allTimeElements.filter(e => {
+    this.historyElements = this.allTimeElements.filter((e) => {
       let date: Date = new Date(e.startdate);
 
       return (
@@ -502,12 +561,14 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
+  // Change all abbreviations to text in the task description (based on ngModelChange)
   replaceWithShortcut(task: TimeTask) {
-    this.stringDistributorService.SHORTCUTS.forEach(replacePair => {
+    this.stringDistributorService.SHORTCUTS.forEach((replacePair) => {
       task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
     });
   }
 
+  // Calculate week number for the current day
   calculateWeekNumber(): number {
     let now = new Date();
     let onejan = new Date(now.getFullYear(), 0, 1);
@@ -516,6 +577,7 @@ export class TimeTaskComponent implements OnInit {
     );
   }
 
+  // Calculate week number for the given date
   calculateWeekNumberFromDate(date: Date): number {
     let onejan = new Date(date.getFullYear(), 0, 1);
     return Math.ceil(

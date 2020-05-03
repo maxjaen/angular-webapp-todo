@@ -43,6 +43,8 @@ import {
   MatTooltipModule
 } from "@angular/material";
 import { SettingsComponent } from './settings/settings.component';
+import { SessionComponent } from './session/session.component';
+import { LandingPageComponent } from './landing-page/landing-page.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ import { SettingsComponent } from './settings/settings.component';
     InsertTaskDialog,
     InsertTaskDialogTime,
     TrainingViewComponent,
-    SettingsComponent
+    SettingsComponent,
+    SessionComponent,
+    LandingPageComponent
   ],
   imports: [
     CommonModule,

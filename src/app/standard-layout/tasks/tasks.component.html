@@ -30,8 +30,8 @@
                               (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
                         </mat-form-field>
                         <mat-form-field>
-                           <input matInput (dateChange)="addDateValuesToSelectedTask('change', $event)"
-                              [matDatepicker]="picker" placeholder="Choose a date" />
+                           <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
+                              placeholder="Choose a date" />
                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
@@ -57,7 +57,7 @@
                               </div>
                            </mat-card-title>
                            <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
-                              <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr)">
+                              <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
                                  <div *ngIf="point.length > 0">
                                     <li>{{ point }}</li>
                                  </div>
@@ -95,8 +95,8 @@
                               (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
                         </mat-form-field>
                         <mat-form-field>
-                           <input matInput (dateChange)="addDateValuesToSelectedTask('change', $event)"
-                              [matDatepicker]="picker" placeholder="Choose a date" />
+                           <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
+                              placeholder="Choose a date" />
                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
@@ -121,7 +121,7 @@
                               </div>
                            </mat-card-title>
                            <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
-                              <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr)">
+                              <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
                                  <div *ngIf="point.length > 0">
                                     <li>{{ point }}</li>
                                  </div>
@@ -161,7 +161,7 @@
                         </div>
                      </mat-card-title>
                      <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
-                        <ul *ngFor="let point of this.utilityService.splitToBulletPoints(task.longdescr)">
+                        <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
                            <div *ngIf="point.length > 0">
                               <li>{{ point }}</li>
                            </div>

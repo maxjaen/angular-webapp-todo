@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class StringDistributorService {
   constructor() {}
@@ -9,13 +9,12 @@ export class StringDistributorService {
   COLORS: Colors = new Colors();
 
   SHORTCUTS = [
-    ["pro ", "PROBLEM: "],
-    ["lös ", "LÖSUNG: "],
-    ["ada ", "AUF DER AGENDA: "],
-    ["spä ", "SPÄTER: "],
-    ["tod ", "TODO: "],
-    // ["tes ", "TESTEN: "],
-    ["erl ", "ERLEDIGT: "]
+    ["<pr>", "PROBLEM: "],
+    ["<SO>", "SOLUTION: "],
+    ["<ag>", "AGENDA: "],
+    ["<la>", "LATER: "],
+    ["<do>", "TODO: "],
+    ["<fi>", "FINISHED: "],
   ];
 }
 

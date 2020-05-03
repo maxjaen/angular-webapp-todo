@@ -11,7 +11,7 @@ import { UtilityService } from "../sharedservices/utility.service";
 @Component({
   selector: "app-tasks",
   templateUrl: "./tasks.component.html",
-  styleUrls: ["./tasks.component.scss"]
+  styleUrls: ["./tasks.component.scss"],
 })
 export class TasksComponent implements OnInit {
   displayedColumns: string[] = ["id", "shortdescr", "longdescr"];
@@ -30,13 +30,13 @@ export class TasksComponent implements OnInit {
 
   constructor(
     private taskService: TaskService,
-    private titleService: Title,
     public stringDistributorService: StringDistributorService,
     public utilityService: UtilityService,
+    private _tabTitle: Title,
     public _dialog: MatDialog,
     private _snackBar: MatSnackBar
   ) {
-    this.titleService.setTitle("Aufgabenbereich");
+    this._tabTitle.setTitle("Tasklist");
   }
 
   // TODO unsubscribe from services
@@ -45,9 +45,9 @@ export class TasksComponent implements OnInit {
   }
 
   /*
-   *
+   * ===================================================================================
    * HOSTLISTENER
-   *
+   * ===================================================================================
    */
 
   @HostListener("click", ["$event"])
@@ -63,11 +63,13 @@ export class TasksComponent implements OnInit {
   }
 
   /*
-   *
+   * ===================================================================================
    * TASK METHODS
-   *
+   * ===================================================================================
    */
 
+  // Selected current Task if not already set,
+  // otherwise hide current selected Task
   selectTask(task: Task) {
     if (this.selectedTask === undefined || this.selectedTask === null) {
       this.selectedTask = task;
@@ -76,39 +78,43 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  // Get all Tasks from service
+  // Fill three lists with a subset of these TimeElements
   getTasksFromService() {
-    this.taskService.getAllTasks().subscribe(data => {
+    this.taskService.getAllTasks().subscribe((data) => {
       this.unpinnedTasks = data
-        .filter(e => !e.pinned && !e.hided)
-        .sort(function(a, b) {
+        .filter((e) => !e.pinned && !e.hided)
+        .sort(function (a, b) {
           return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
         });
 
       this.pinnedTasks = data
-        .filter(e => e.pinned && !e.hided)
-        .sort(function(a, b) {
+        .filter((e) => e.pinned && !e.hided)
+        .sort(function (a, b) {
           return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
         });
 
       this.hidedElements = data
-        .filter(e => e.hided)
-        .sort(function(a, b) {
+        .filter((e) => e.hided)
+        .sort(function (a, b) {
           return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
         });
 
-      this.titleService.setTitle(
-        "Aufgabenbereich" +
-          " (" +
-          this.pinnedTasks.length.toString() +
-          " p | " +
-          this.unpinnedTasks.length.toString() +
-          "   up)"
-      );
+      // set tab title
+      if (this.pinnedTasks.length > 0) {
+        this._tabTitle.setTitle(
+          "Tasklist" + " (" + this.pinnedTasks.length.toString() + ")"
+        );
+      } else {
+        this._tabTitle.setTitle("Tasklist");
+      }
+      // --------------
     });
   }
 
+  // Save task in the database
   saveTask(task: Task) {
-    if (!(task === undefined)) {
+    if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         this.taskService.putTask(task).subscribe(() => {
           this.openSnackBar("Task saved!", null);
@@ -124,25 +130,23 @@ export class TasksComponent implements OnInit {
     this.hideSelectedTask();
   }
 
+  // Save all Tasks in the database
   saveAllTasks() {
-    this.unpinnedTasks.forEach(element => {
+    this.unpinnedTasks.forEach((element) => {
       this.saveTask(element);
     });
-    this.pinnedTasks.forEach(element => {
+    this.pinnedTasks.forEach((element) => {
       this.saveTask(element);
     });
   }
 
+  // Change pin property of a task in the database
   pinTask(task: Task) {
-    if (!(task === undefined)) {
+    if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.pinned = !task.pinned;
-        this.taskService.putTask(task).subscribe(() => {
-          this.openSnackBar("Task (un)pinned!", "Reset");
-          this.getTasksFromService();
-          this.hideSelectedTask();
-        });
+        this.changeTask(task, "Task (un)pinned!", "Reset");
       } else {
         console.warn("pinTask(): ID: " + task.id + ", expected number");
       }
@@ -151,16 +155,13 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  // Change hide property of a task in the database
   hideTask(task: Task) {
-    if (!(task === undefined)) {
+    if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.hided = !task.hided;
-        this.taskService.putTask(task).subscribe(() => {
-          this.openSnackBar("Task hided!", "Reset");
-          this.getTasksFromService();
-          this.hideSelectedTask();
-        });
+        this.changeTask(task, "Task hided!", "Reset");
       } else {
         console.warn("hideTask(): ID: " + task.id + ", expected number");
       }
@@ -169,14 +170,12 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  // Reset the task and save the last changed task with all properties back to the database
+  // Triggered when undo a task action in a notification
   resetTask(task: Task) {
-    if (!(task === undefined)) {
+    if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
-        this.taskService.putTask(task).subscribe(() => {
-          this.openSnackBar("Task reseted!", null);
-          this.getTasksFromService();
-          this.hideSelectedTask();
-        });
+        this.changeTask(task, "Task reseted!", null);
       } else {
         console.warn("resetTask(): ID: " + task.id + ", expected number");
       }
@@ -185,8 +184,9 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  // Removes task from the database
   removeTask(task: Task) {
-    if (!(task === undefined)) {
+    if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         if (!window.confirm("Are sure you want to delete this item ?")) {
           return;
@@ -203,12 +203,28 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  // Execute put action on task and following commands
+  changeTask(
+    task: Task,
+    notificationMessage: string,
+    notificationAction: string
+  ) {
+    this.taskService.putTask(task).subscribe(() => {
+      this.openSnackBar(notificationMessage, notificationAction);
+      this.getTasksFromService(); // TODO
+      this.hideSelectedTask();
+    });
+  }
+
   /*
-   *
+   * ===================================================================================
    * DIALOGS/POPUPS
-   *
+   * ===================================================================================
    */
 
+  // Open popup dialog to create a new Task
+  // Hide selected task
+  // Add new Task to the database
   openInsertTaskDialog(): void {
     this.hideSelectedTask();
 
@@ -217,12 +233,12 @@ export class TasksComponent implements OnInit {
       data: {
         shortdescr: this.shortdescr,
         longdescr: this.longdescr,
-        date: this.date
-      }
+        date: this.date,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(postResult => {
-      if (!(postResult === undefined)) {
+    dialogRef.afterClosed().subscribe((postResult) => {
+      if (postResult !== undefined) {
         if (postResult.date === undefined) {
           postResult.date = new Date();
         }
@@ -253,15 +269,16 @@ export class TasksComponent implements OnInit {
   }
 
   /*
-   *
+   * ===================================================================================
    * HELPER FUNCTIONS
-   *
+   * ===================================================================================
    */
 
+  // Opens popup menu for notifications
   openSnackBar(message: string, action: string) {
     this._snackBar
       .open(message, action, {
-        duration: 4000
+        duration: 4000,
       })
       .onAction()
       .subscribe(() => {
@@ -269,21 +286,24 @@ export class TasksComponent implements OnInit {
       });
   }
 
-  addDateValuesToSelectedTask(
-    type: string,
-    event: MatDatepickerInputEvent<Date>
-  ) {
+  // Change target date of the selected task
+  changeDateFromTask(event: MatDatepickerInputEvent<Date>) {
     this.selectedTask.date = event.value;
   }
 
+  // Remove selected Task
   hideSelectedTask() {
     this.selectedTask = null;
   }
 
+  // Get utc date format from Task
+  // Return utc date string
   getUTCStringFromTask(task: Task) {
     return new Date(task.date).toUTCString();
   }
 
+  // Copy all properties from the current task to the last changed task
+  // Can be used to "undo" an action like delete, put, ..
   copyTaskPropertiesToLastChangedTask(fromTask: Task) {
     this.lastChangedTask = {
       id: fromTask.id,
@@ -291,10 +311,12 @@ export class TasksComponent implements OnInit {
       hided: fromTask.hided,
       pinned: fromTask.pinned,
       shortdescr: fromTask.shortdescr,
-      longdescr: fromTask.longdescr
+      longdescr: fromTask.longdescr,
     };
   }
 
+  // Get backround color for different types of TimeTasks
+  // Return backround color
   getBackgroundColorValue(task: Task): string {
     let actualDate: Date = new Date();
     let tempTaskDate: Date = new Date(task.date);
@@ -332,8 +354,9 @@ export class TasksComponent implements OnInit {
     return this.stringDistributorService.COLORS.DARKGREEN;
   }
 
+  // Change all abbreviations to text in the task description (based on ngModelChange)
   replaceWithShortcut(task: Task) {
-    this.stringDistributorService.SHORTCUTS.forEach(replacePair => {
+    this.stringDistributorService.SHORTCUTS.forEach((replacePair) => {
       task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
     });
   }

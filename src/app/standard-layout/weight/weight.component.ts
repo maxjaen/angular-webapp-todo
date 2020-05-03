@@ -9,13 +9,13 @@ import { UtilityService } from "../sharedservices/utility.service";
 @Component({
   selector: "app-weight",
   templateUrl: "./weight.component.html",
-  styleUrls: ["./weight.component.scss"]
+  styleUrls: ["./weight.component.scss"],
 })
 export class WeightComponent implements OnInit {
   weights: Weight[];
 
   form = new FormGroup({
-    weight: new FormControl("", [Validators.required])
+    weight: new FormControl("", [Validators.required]),
   });
 
   constructor(
@@ -29,16 +29,20 @@ export class WeightComponent implements OnInit {
     this.getWeightsFromService();
   }
 
+  // Get all Weights (sorted) from service
   getWeightsFromService() {
     this.weights = [];
 
-    this.weightService.getAllWeights().subscribe(e => {
-      this.weights = e.sort(function(a, b) {
+    this.weightService.getAllWeights().subscribe((weights) => {
+      weights.sort(function (a, b) {
         return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
       });
+
+      this.weights = weights;
     });
   }
 
+  // Save Weight in the database
   saveWeight() {
     if (this.form.getRawValue().weight != "") {
       let weightValue: number = this.form.getRawValue().weight;
@@ -65,8 +69,9 @@ export class WeightComponent implements OnInit {
     }
   }
 
+  // Remove selected Weight from the database
   removeWeight(weight: Weight) {
-    if (!(weight === undefined)) {
+    if (weight !== undefined) {
       if (this.utilityService.isNumber(weight.id)) {
         if (window.confirm("Are sure you want to delete this item ?")) {
           this.weightService.deleteWeight(weight.id).subscribe(() => {
@@ -83,32 +88,35 @@ export class WeightComponent implements OnInit {
   }
 
   /*
-   *
+   * ===================================================================================
    * HELPER FUNCTIONS
-   *
+   * ===================================================================================
    */
 
+  // Opens popup menu for notifications
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
-      duration: 2000
+      duration: 2000,
     });
   }
 
   /*
-   *
+   * ===================================================================================
    * STATISTICS
-   *
+   * ===================================================================================
    */
 
+  // Get the latest weight measurement
   getLatestWeight(): Weight {
     let id: number = this.weights
-      .map(e => e.id)
-      .sort(function(a, b) {
+      .map((e) => e.id)
+      .sort(function (a, b) {
         return a - b;
       })[this.weights.length - 1];
-    return this.weights.filter(e => e.id == id)[0];
+    return this.weights.filter((e) => e.id == id)[0];
   }
 
+  // Get the number of days since last training session
   getDaysSinceLastWeight(): number {
     let weight: Weight = this.getLatestWeight();
 
@@ -124,6 +132,7 @@ export class WeightComponent implements OnInit {
     return -1;
   }
 
+  // Calculate BMI index
   calculateBMI() {
     if (this.weights.length != 0) {
       return (+this.getLatestWeight().value / (1.85 * 1.85)).toFixed(2);
@@ -132,21 +141,30 @@ export class WeightComponent implements OnInit {
     return -1;
   }
 
+  // Get lowest weight value of all weight data
   getLowestWeightValue(): number {
-    return this.weights.map(e => e.value).sort()[0];
+    return this.weights
+      .map((e) => e.value)
+      .sort(this.utilityService.sortNumerical)[this.weights.length - 1];
   }
 
+  // Get average data value from all weight data
   getAverageWeightValue(): number {
     return (
-      this.weights.map(e => +e.value).reduce((a, b) => a + b, 0) /
+      this.weights.map((e) => +e.value).reduce((a, b) => a + b, 0) /
       this.weights.length
     );
   }
 
+  // Get highest weight value of all weight data
   getHighestWeightValue(): number {
-    return this.weights.map(e => e.value).sort()[this.weights.length - 1];
+    return this.weights
+      .map((e) => e.value)
+      .sort(this.utilityService.sortNumerical)[0];
   }
 
+  // Get backround color for different weight intervals
+  // Return backround color
   getBackgroundColorValue(weight: Weight): string {
     let highestValue: number = this.getHighestWeightValue();
     if (weight.value == highestValue) {

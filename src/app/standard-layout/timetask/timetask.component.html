@@ -31,6 +31,13 @@
                         [style.color]="this.stringDistributorService.COLORS.WHITE">{{ this.utilityService.formatToTwoDigits(calculateWeekNumber()) }}</span>
                   </p>
                </div>
+               <div *ngIf="accumulatedElements && accumulatedElements.length>1">
+                  <br>
+                  <div *ngFor="let element of accumulatedElements">
+                     {{element.value}}: {{element.key}}
+                  </div>
+                  <br>
+               </div>
             </div>
             <div *ngIf="todayTimeElements">
                <div *ngIf="todayTimeElements.length==0" style="color: #47556c; margin: 2%;">

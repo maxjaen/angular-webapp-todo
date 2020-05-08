@@ -16,6 +16,11 @@ const EMPTY_STRING = "";
 const SUMER_TIME = 1;
 // CHANGE to "const WINTER_TIME = 0;" if necessary
 
+interface KeyValuePair {
+  key: string;
+  value: string;
+}
+
 @Component({
   selector: "app-timetask",
   templateUrl: "./timetask.component.html",
@@ -28,6 +33,7 @@ export class TimeTaskComponent implements OnInit {
   runningTimeElement: TimeTask;
   selectedTimeElement: TimeTask;
   historyElements: TimeTask[];
+  accumulatedElements: KeyValuePair[];
 
   id: number;
   shortdescr: string;
@@ -138,7 +144,37 @@ export class TimeTaskComponent implements OnInit {
           this.runningTimeElement = this.todayTimeElements[0];
         }
       }
+
+      let keys = this.todayTimeElements
+        .map((e) => e.shortdescr)
+        .filter(this.onlyUnique);
+
+      let arr: KeyValuePair[] = [];
+
+      keys.forEach((key) => {
+        let element: KeyValuePair = {
+          key: key,
+          value: this.millisecondsToTimestring(
+            this.todayTimeElements
+              .filter((e) => e.shortdescr == key)
+              .reduce(
+                (a, b) =>
+                  a +
+                  (new Date(b.enddate).getTime() -
+                    new Date(b.startdate).getTime()),
+                0
+              )
+          ),
+        };
+
+        arr.push(element);
+      });
+      this.accumulatedElements = arr;
     });
+  }
+
+  onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
   }
 
   // Calculate the overall work time for the current day

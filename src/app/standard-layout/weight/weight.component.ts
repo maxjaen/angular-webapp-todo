@@ -21,7 +21,7 @@ export class WeightComponent implements OnInit {
   constructor(
     private weightService: WeightService,
     private stringDistributorService: StringDistributorService,
-    private utilityService: UtilityService,
+    private _utilityService: UtilityService,
     private _snackBar: MatSnackBar
   ) {}
 
@@ -50,7 +50,7 @@ export class WeightComponent implements OnInit {
       temp.setHours(temp.getHours() + 1);
       let tempWeight: Weight = { id: 0, value: weightValue, date: temp };
 
-      if (this.utilityService.isNumber(tempWeight.value)) {
+      if (this._utilityService.isNumber(tempWeight.value)) {
         this.weightService.postWeight(tempWeight).subscribe(() => {
           this.openSnackBar("Weight created!", null);
           this.getWeightsFromService();
@@ -72,7 +72,7 @@ export class WeightComponent implements OnInit {
   // Remove selected Weight from the database
   removeWeight(weight: Weight) {
     if (weight !== undefined) {
-      if (this.utilityService.isNumber(weight.id)) {
+      if (this._utilityService.isNumber(weight.id)) {
         if (window.confirm("Are sure you want to delete this item ?")) {
           this.weightService.deleteWeight(weight.id).subscribe(() => {
             this.openSnackBar("Weight removed!", null);
@@ -144,8 +144,8 @@ export class WeightComponent implements OnInit {
   // Get lowest weight value of all weight data
   getLowestWeightValue(): number {
     return this.weights
-      .map((e) => e.value)
-      .sort(this.utilityService.sortNumerical)[this.weights.length - 1];
+      .map((weight) => weight.value)
+      .sort(this._utilityService.sortNumerical)[this.weights.length - 1];
   }
 
   // Get average data value from all weight data
@@ -159,8 +159,8 @@ export class WeightComponent implements OnInit {
   // Get highest weight value of all weight data
   getHighestWeightValue(): number {
     return this.weights
-      .map((e) => e.value)
-      .sort(this.utilityService.sortNumerical)[0];
+      .map((weight) => weight.value)
+      .sort(this._utilityService.sortNumerical)[0];
   }
 
   // Get backround color for different weight intervals

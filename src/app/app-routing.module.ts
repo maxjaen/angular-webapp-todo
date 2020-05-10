@@ -47,6 +47,10 @@ const routes: Routes = [
     path: "session",
     component: SessionComponent,
   },
+  {
+    path: "overview",
+    component: DashboardComponent,
+  },
 ];
 
 @NgModule({

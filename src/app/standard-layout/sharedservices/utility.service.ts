@@ -65,9 +65,13 @@ export class UtilityService {
   // Sort function for numerical values
   // otherwise standard sort would be alphabetical
   sortNumerical(a: number, b: number) {
-    if (a < b) return -1;
+    if (a > b) return -1;
     if (a < b) return 1;
     else return 0;
+  }
+
+  sortDistinct(value, index, self) {
+    return self.indexOf(value) === index;
   }
 
   // Checks if an object has the a specific property

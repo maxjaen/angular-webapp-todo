@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { Exercise } from "../training/model/exercise";
-import { ExerciseService } from "../training/services/exercise.service";
 import { Training } from "../training/model/training";
 import { TrainingService } from "../training/services/training.service";
 
@@ -68,6 +67,7 @@ export class SessionComponent implements OnInit {
   // Choose olf training as template for new training
   selectTraining(event: { value: Training }) {
     this.selectedTimedTraining = event.value;
+    this.currentExercise = null;
   }
 
   doWorkout(i: number) {

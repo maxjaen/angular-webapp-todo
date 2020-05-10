@@ -2,144 +2,176 @@
    <!-- ###################### TODAY TAB ###################### -->
    <mat-tab label="Tasks">
       <div class="content">
-         <div class="insert"></div>
-         <div>
-            <button id="changeEventButton" title="Create new task" (click)="openInsertTaskDialog()" mat-fab
-               color="primary">
-               +
-            </button>
-         </div>
-         <div *ngIf="unpinnedTasks && pinnedTasks">
-            <div *ngIf="unpinnedTasks.length == 0 && pinnedTasks.length == 0" style="color: #47556c; margin: 2%;">
-               <p>No Tasks available</p>
+         <div *ngIf="!focusedTask">
+            <div class="insert"></div>
+            <div>
+               <button id="changeEventButton" title="Create new task" (click)="openInsertTaskDialog()" mat-fab
+                  color="primary">
+                  +
+               </button>
             </div>
-            <div *ngIf="pinnedTasks.length > 0" class="pinnedtasks">
-               <h3>Pinned Tasks</h3>
-               <div *ngFor="let task of pinnedTasks; let i = index">
-                  <div *ngIf="task == selectedTask" class="changeField"
-                     style="margin: 2%; display: block; overflow: auto;">
-                     <form class="example-form">
-                        <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                           <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
-                              [(ngModel)]="selectedTask.shortdescr" />
-                           <mat-hint>{{ message.value.length }} / 50</mat-hint>
-                        </mat-form-field>
-                        <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                           <textarea matInput placeholder="description" name="longdescr"
-                              [(ngModel)]="selectedTask.longdescr"
-                              (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
-                        </mat-form-field>
-                        <mat-form-field>
-                           <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
-                              placeholder="Choose a date" />
-                           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                           <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
-                        <button (click)="saveAllTasks()" style="float:right" mat-button>
-                           Save all
-                        </button>
-                        <button (click)="saveTask(selectedTask)" style="float:right" mat-button>
-                           Save task
-                        </button>
-                     </form>
+            <div *ngIf="unpinnedTasks && pinnedTasks">
+               <div *ngIf="unpinnedTasks.length == 0 && pinnedTasks.length == 0" style="color: #47556c; margin: 2%;">
+                  <p>No Tasks available</p>
+               </div>
+               <div *ngIf="pinnedTasks.length > 0" class="pinnedtasks">
+                  <h3>Pinned Tasks</h3>
+                  <div *ngFor="let task of pinnedTasks; let i = index">
+                     <div *ngIf="task == selectedTask" class="changeField"
+                        style="margin: 2%; display: block; overflow: auto;">
+                        <form class="example-form">
+                           <mat-form-field class="example-full-width" style="margin-right: 2%;">
+                              <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
+                                 [(ngModel)]="selectedTask.shortdescr" />
+                              <mat-hint>{{ message.value.length }} / 50</mat-hint>
+                           </mat-form-field>
+                           <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
+                              <textarea matInput placeholder="description" name="longdescr"
+                                 [(ngModel)]="selectedTask.longdescr"
+                                 (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
+                           </mat-form-field>
+                           <mat-form-field>
+                              <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
+                                 placeholder="Choose a date" />
+                              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker></mat-datepicker>
+                           </mat-form-field>
+                           <button (click)="saveAllTasks()" style="float:right" mat-button>
+                              Save all
+                           </button>
+                           <button (click)="saveTask(selectedTask)" style="float:right" mat-button>
+                              Save task
+                           </button>
+                        </form>
+                     </div>
+                     <!-- <mat-card [style.background-color]="task==selectedTask ? '#47556c' : '#424242'" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card"> -->
+                     <mat-card (click)="selectTask(task)" style="margin: 2%; display: block; overflow: auto;"
+                        class="example-card">
+                        <div *ngIf="this.settings && this.settings[0]['settingsmenu'][1]['settings'][0]['value']">
+                           <div style="width: 30px; height: 30px; float:inline-start;"
+                              [style.background-color]="getBackgroundColorValue(task)">
+                           </div>
+                        </div>
+                        <div style="width: 70%; display: inline-block;">
+                           <mat-card-header>
+                              <mat-card-title>
+                                 {{ task.shortdescr }}
+                                 <div
+                                    *ngIf="this.settings && this.settings[0]['settingsmenu'][1]['settings'][0]['value']">
+                                    <div style="margin-top: 20px; font-size: 12px;">
+                                       {{ getUTCStringFromTask(task) }}
+                                    </div>
+                                 </div>
+                              </mat-card-title>
+                              <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
+                                 <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
+                                    <div *ngIf="point.length > 0">
+                                       <li>{{ point }}</li>
+                                    </div>
+                                    <div *ngIf="point.length == 0">
+                                       <hr />
+                                    </div>
+                                 </ul>
+                              </mat-card-subtitle>
+                           </mat-card-header>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; float: right;">
+                           <button (click)="focusTask(task)" mat-button>Focus</button>
+                           <button (click)="pinTask(task)" mat-button>Unpin</button>
+                           <button (click)="hideTask(task)" mat-button>Hide</button>
+                           <button (click)="removeTask(task)" mat-button>Delete</button>
+                           <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
+                                       <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
+                        </div>
+                     </mat-card>
                   </div>
-                  <!-- <mat-card [style.background-color]="task==selectedTask ? '#47556c' : '#424242'" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card"> -->
-                  <mat-card (click)="selectTask(task)" style="margin: 2%; display: block; overflow: auto;"
-                     class="example-card">
-                     <div style="width: 30px; height: 30px; float:inline-start;"
-                        [style.background-color]="getBackgroundColorValue(task)"></div>
-                     <div style="width: 70%; display: inline-block;">
-                        <mat-card-header>
-                           <mat-card-title>
-                              {{ task.shortdescr }}
-                              <div style="margin-top: 20px; font-size: 12px;">
-                                 {{ getUTCStringFromTask(task) }}
-                              </div>
-                           </mat-card-title>
-                           <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
-                              <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
-                                 <div *ngIf="point.length > 0">
-                                    <li>{{ point }}</li>
-                                 </div>
-                                 <div *ngIf="point.length == 0">
-                                    <hr />
-                                 </div>
-                              </ul>
-                           </mat-card-subtitle>
-                        </mat-card-header>
+               </div>
+               <div *ngIf="unpinnedTasks.length > 0" class="unpinnedtasks">
+                  <h3>Unpinned Tasks</h3>
+                  <div *ngFor="let task of unpinnedTasks; let i = index">
+                     <div *ngIf="task == selectedTask" class="changeField"
+                        style="margin: 2%; display: block; overflow: auto;">
+                        <form class="example-form">
+                           <mat-form-field class="example-full-width" style="margin-right: 2%;">
+                              <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
+                                 [(ngModel)]="selectedTask.shortdescr" />
+                              <mat-hint>{{ message.value.length }} / 50</mat-hint>
+                           </mat-form-field>
+                           <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
+                              <textarea matInput placeholder="description" name="longdescr"
+                                 [(ngModel)]="selectedTask.longdescr"
+                                 (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
+                           </mat-form-field>
+                           <mat-form-field>
+                              <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
+                                 placeholder="Choose a date" />
+                              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker></mat-datepicker>
+                           </mat-form-field>
+                           <button (click)="saveAllTasks()" style="float:right" mat-button>
+                              Save all
+                           </button>
+                           <button (click)="saveTask(selectedTask)" style="float:right" mat-button>
+                              Save task
+                           </button>
+                        </form>
                      </div>
-                     <div style="display: flex; justify-content: flex-end; float: right;">
-                        <button (click)="pinTask(task)" mat-button>Unpin</button>
-                        <button (click)="hideTask(task)" mat-button>Hide</button>
-                        <button (click)="removeTask(task)" mat-button>Delete</button>
-                        <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
-                           <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
-                     </div>
-                  </mat-card>
+                     <mat-card (click)="selectTask(task)" style="margin: 2%; display: block; overflow: auto;"
+                        class="example-card">
+                        <div *ngIf="this.settings && this.settings[0]['settingsmenu'][1]['settings'][0]['value']">>
+                           <div style="width: 30px; float: inline-start; height: 30px;"
+                              [style.background-color]="getBackgroundColorValue(task)"></div>
+                        </div>
+                        <div style="width: 70%; display: inline-block;">
+                           <mat-card-header>
+                              <mat-card-title>
+                                 {{ task.shortdescr }}
+                                 <div
+                                    *ngIf="this.settings && this.settings[0]['settingsmenu'][1]['settings'][0]['value']">
+                                    <div style="margin-top: 20px; font-size: 12px;">
+                                       {{ getUTCStringFromTask(task) }}
+                                    </div>
+                                 </div>
+                              </mat-card-title>
+                              <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
+                                 <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
+                                    <div *ngIf="point.length > 0">
+                                       <li>{{ point }}</li>
+                                    </div>
+                                    <div *ngIf="point.length == 0">
+                                       <hr />
+                                    </div>
+                                 </ul>
+                              </mat-card-subtitle>
+                           </mat-card-header>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; float: right;">
+                           <button (click)="pinTask(task)" mat-button>Pin</button>
+                           <button (click)="hideTask(task)" mat-button>Hide</button>
+                           <button (click)="removeTask(task)" mat-button>Delete</button>
+                           <!-- <button (click)="changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
+                                    <button (click)="changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
+                        </div>
+
+                     </mat-card>
+                  </div>
                </div>
             </div>
-            <div *ngIf="unpinnedTasks.length > 0" class="unpinnedtasks">
-               <h3>Unpinned Tasks</h3>
-               <div *ngFor="let task of unpinnedTasks; let i = index">
-                  <div *ngIf="task == selectedTask" class="changeField"
-                     style="margin: 2%; display: block; overflow: auto;">
-                     <form class="example-form">
-                        <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                           <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
-                              [(ngModel)]="selectedTask.shortdescr" />
-                           <mat-hint>{{ message.value.length }} / 50</mat-hint>
-                        </mat-form-field>
-                        <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                           <textarea matInput placeholder="description" name="longdescr"
-                              [(ngModel)]="selectedTask.longdescr"
-                              (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
-                        </mat-form-field>
-                        <mat-form-field>
-                           <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
-                              placeholder="Choose a date" />
-                           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                           <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
-                        <button (click)="saveAllTasks()" style="float:right" mat-button>
-                           Save all
-                        </button>
-                        <button (click)="saveTask(selectedTask)" style="float:right" mat-button>
-                           Save task
-                        </button>
-                     </form>
+         </div>
+         <div *ngIf="focusedTask">
+            <div style="margin-bottom: 200px;">
+               <button (click)="focusTask(focusedTask)" mat-button>🜄</button>
+               <button (click)="removeTask(focusedTask)" mat-button>🜂</button>
+            </div>
+            <div style="text-align: center;">
+               <h2 style="font-size: 50px;">{{ this.focusedTask.shortdescr }}</h2>
+               <div *ngFor="let point of this.utilityService.split(this.focusedTask.longdescr)">
+                  <div *ngIf="point.length > 0">
+                     <p>{{ point }}</p>
                   </div>
-                  <mat-card (click)="selectTask(task)" style="margin: 2%; display: block; overflow: auto;"
-                     class="example-card">
-                     <div style="width: 30px; float: inline-start; height: 30px;"
-                        [style.background-color]="getBackgroundColorValue(task)"></div>
-                     <div style="width: 70%; display: inline-block;">
-                        <mat-card-header>
-                           <mat-card-title>
-                              {{ task.shortdescr }}
-                              <div style="margin-top: 20px; font-size: 12px;">
-                                 {{ getUTCStringFromTask(task) }}
-                              </div>
-                           </mat-card-title>
-                           <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
-                              <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
-                                 <div *ngIf="point.length > 0">
-                                    <li>{{ point }}</li>
-                                 </div>
-                                 <div *ngIf="point.length == 0">
-                                    <hr />
-                                 </div>
-                              </ul>
-                           </mat-card-subtitle>
-                        </mat-card-header>
-                     </div>
-                     <div style="display: flex; justify-content: flex-end; float: right;">
-                        <button (click)="pinTask(task)" mat-button>Pin</button>
-                        <button (click)="hideTask(task)" mat-button>Hide</button>
-                        <button (click)="removeTask(task)" mat-button>Delete</button>
-                        <!-- <button (click)="changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
-                        <button (click)="changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
-                     </div>
-                  </mat-card>
+                  <div *ngIf="point.length == 0">
+                     <hr />
+                  </div>
                </div>
             </div>
          </div>
@@ -181,5 +213,5 @@
             </mat-card>
          </div>
       </div>
-   </mat-tab>
+   </mat-tab>>
 </mat-tab-group>

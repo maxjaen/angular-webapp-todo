@@ -4,8 +4,11 @@
       <button type="button" mat-raised-button (click)="scroll('createtraining')">Create Training</button>
    </div>
    <div class="content">
-      <div class="selection">
-         <div class="tab" #overviewtraining *ngIf="trainings">
+      <div *ngIf="!trainings">
+         <mat-progress-bar mode="buffer"></mat-progress-bar>
+      </div>
+      <div class="selection" *ngIf="trainings">
+         <div class="tab" #overviewtraining>
             <h2> Overview Training</h2>
             <div *ngIf="trainings.length>0">
                <div *ngFor="let training of trainings">
@@ -18,11 +21,11 @@
                   </mat-card>
                </div>
             </div>
-            <div *ngIf="trainings.length==0" style="color: #47556c;">
+            <div *ngIf="trainings.length==0" style="color: #484747;">
                <p>No trainings available</p>
             </div>
          </div>
-         <div class="tab" #createexercise *ngIf="trainings">
+         <div class="tab" #createexercise>
             <h2>Create Exercise</h2>
             <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
                <form [formGroup]="exerciseCreateForm" style="display: inline;" class="example-form">
@@ -41,7 +44,7 @@
                <button style="margin-left: 2%;" (click)="saveExercise();" mat-stroked-button>Insert</button>
             </div>
          </div>
-         <div class="tab" #deleteexercise *ngIf="trainings && exercisesToInsert.length==0">
+         <div class="tab" #deleteexercise *ngIf="exercisesToInsert.length==0">
             <h2>Delete Exercise</h2>
             <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
                <form style="display: inline;" class="example-form">
@@ -59,7 +62,7 @@
          </div>
          <div class="tab" #createtraining>
             <h2>Create Training</h2>
-            <div *ngIf="exercises.length==0" style="color: #47556c;">
+            <div *ngIf="exercises.length==0" style="color: #484747;">
                <p>No exercises available</p>
             </div>
             <div *ngIf="exercises.length>0" class="categories">

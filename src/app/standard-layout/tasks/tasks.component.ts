@@ -7,6 +7,8 @@ import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
 import { Title } from "@angular/platform-browser";
 import { StringDistributorService } from "../sharedservices/string-distributor.service";
 import { UtilityService } from "../sharedservices/utility.service";
+import { Settings } from "../settings/model/settings";
+import { SettingsService } from "../settings/services/settings.service";
 
 @Component({
   selector: "app-tasks",
@@ -14,11 +16,14 @@ import { UtilityService } from "../sharedservices/utility.service";
   styleUrls: ["./tasks.component.scss"],
 })
 export class TasksComponent implements OnInit {
+  settings: Settings[] = [];
+
   displayedColumns: string[] = ["id", "shortdescr", "longdescr"];
   unpinnedTasks: Task[];
   pinnedTasks: Task[];
   hidedElements: Task[];
 
+  focusedTask: Task;
   selectedTask: Task;
   lastChangedTask: Task;
 
@@ -29,6 +34,7 @@ export class TasksComponent implements OnInit {
   dateString: string;
 
   constructor(
+    private settingsService: SettingsService,
     private taskService: TaskService,
     public stringDistributorService: StringDistributorService,
     public utilityService: UtilityService,
@@ -41,6 +47,7 @@ export class TasksComponent implements OnInit {
 
   // TODO unsubscribe from services
   ngOnInit() {
+    this.getSettingsFromService();
     this.getTasksFromService();
   }
 
@@ -60,6 +67,13 @@ export class TasksComponent implements OnInit {
   @HostListener("window:beforeunload")
   onBeforeUnload() {
     return false;
+  }
+
+  // Get all settings from service
+  getSettingsFromService() {
+    this.settingsService.getAllSettings().subscribe((settings) => {
+      this.settings = settings;
+    });
   }
 
   /*
@@ -152,6 +166,15 @@ export class TasksComponent implements OnInit {
       }
     } else {
       console.warn("pinTask(): ID: " + task.id + ", expected ID");
+    }
+  }
+
+  // Change pin property of a task in the database
+  focusTask(task: Task) {
+    if (this.focusedTask == null || this.focusedTask == undefined){
+      this.focusedTask = task;
+    } else {
+      this.focusedTask = null;
     }
   }
 

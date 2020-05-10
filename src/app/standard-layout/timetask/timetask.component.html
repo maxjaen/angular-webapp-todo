@@ -2,13 +2,6 @@
    <!-- ###################### TODAY TAB ###################### -->
    <mat-tab label="Today">
       <div class="content">
-         <div style="margin: 2%;" class="insert">
-            <div>
-               <button id="changeEventButton" (click)="openInsertDialog()" mat-flat-button color="primary"
-                  style="margin-right: 1%;">Start</button>
-               <button id="changeEventButton" (click)="finishTimer()" mat-flat-button color="primary">Finish</button>
-            </div>
-         </div>
          <div class="show" style="display: block; width: 100%;">
             <div style="margin: 2%; font-size: 18px; ">
                <countup-timer style="font-size: 42px;" [countUpTimerConfig]="testConfig">
@@ -17,18 +10,18 @@
                   <!-- TODO check when elements length 0 or elements object null -->
                   <p>
                      <span>Time week: </span>
-                     <span [style.color]="this.stringDistributorService.COLORS.WHITE">
+                     <span [style.color]="this._stringService.COLORS.WHITE">
                         {{ this.millisecondsToTimestring(calculateOverallTime(allTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Time today: </span>
-                     <span [style.color]="this.stringDistributorService.COLORS.WHITE">
+                     <span [style.color]="this._stringService.COLORS.WHITE">
                         {{ this.millisecondsToTimestring(calculateTodayTime(todayTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Week: </span>
                      <span
-                        [style.color]="this.stringDistributorService.COLORS.WHITE">{{ this.utilityService.formatToTwoDigits(calculateWeekNumber()) }}</span>
+                        [style.color]="this._stringService.COLORS.WHITE">{{ this._utilityService.formatToTwoDigits(calculateWeekNumber()) }}</span>
                   </p>
                </div>
                <div *ngIf="accumulatedElements && accumulatedElements.length>1">
@@ -39,8 +32,15 @@
                   <br>
                </div>
             </div>
+            <div style="margin: 2%;" class="insert">
+               <div>
+                  <button id="changeEventButton" (click)="openInsertDialog()" mat-flat-button color="primary"
+                     style="margin-right: 1%;">Start</button>
+                  <button id="changeEventButton" (click)="finishTimer()" mat-flat-button color="primary">Finish</button>
+               </div>
+            </div>
             <div *ngIf="todayTimeElements">
-               <div *ngIf="todayTimeElements.length==0" style="color: #47556c; margin: 2%;">
+               <div *ngIf="todayTimeElements.length==0" style="color: #484747; margin: 2%;">
                   <p>No TimeTask available</p>
                </div>
                <div *ngFor="let timeElement of todayTimeElements">
@@ -94,7 +94,7 @@
                               </div>
                            </mat-card-title>
                            <mat-card-subtitle *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
-                              <ul *ngFor="let point of this.utilityService.split(timeElement.longdescr);">
+                              <ul *ngFor="let point of this._utilityService.split(timeElement.longdescr);">
                                  <div *ngIf="point.length>0">
                                     <li>{{ point }}</li>
                                  </div>
@@ -131,8 +131,15 @@
                      style="color: coral;">{{ millisecondsToTimestring(calculateTodayTime(historyElements)) }}</span>
                </p>
             </div>
+            <div *ngIf="historyAccumulatedElements">
+               <br>
+               <div *ngFor="let element of historyAccumulatedElements">
+                  {{element.value}}: {{element.key}}
+               </div>
+               <br>
+            </div>
             <div *ngFor="let timeElement of historyElements">
-               <mat-card [style.background-color]="this.stringDistributorService.COLORS.DARKGRAY"
+               <mat-card [style.background-color]="this._stringService.COLORS.DARKGRAY"
                   style="margin: 2%; display: block; overflow: auto;" class="example-card">
                   <mat-card-header style="float:left;">
                      <mat-card-title>
@@ -152,11 +159,14 @@
                         </div>
                      </mat-card-title>
                      <mat-card-subtitle *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
-                        <ul *ngFor="let point of this.utilityService.split(timeElement.longdescr);">
+                        <ul *ngFor="let point of this._utilityService.split(timeElement.longdescr);">
                            <li>{{ point }}</li>
                         </ul>
                      </mat-card-subtitle>
                   </mat-card-header>
+                  <div style="display: flex; justify-content: flex-end; float: right;">
+                     <button (click)="removeTimeElement(timeElement)" mat-button>Delete</button>
+                  </div>
                </mat-card>
             </div>
          </div>

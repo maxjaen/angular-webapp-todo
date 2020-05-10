@@ -10,7 +10,117 @@ To use this project, the first step is to clone the project. Navigate to the dir
     "weights": [],
     "timetasks": [],
     "trainings": [],
-    "tasks": []
+    "tasks": [],
+    "settings": [
+    {
+      "id": 0,
+      "startpage": [
+        {
+          "name": "tasks",
+          "symbol": "📚",
+          "displaytext": "You have _ pinned task/s",
+          "type": "task"
+        },
+        {
+          "name": "timetask",
+          "symbol": "⏰",
+          "displaytext": "You have worked _ today",
+          "type": "task"
+        },
+        {
+          "name": "training",
+          "symbol": "🏆",
+          "displaytext": "Create or view your trainings",
+          "type": "fitness"
+        },
+        {
+          "name": "session",
+          "symbol": "🏅",
+          "displaytext": "Your previous workout session lasts _ seconds",
+          "type": "fitness"
+        },
+        {
+          "name": "weight",
+          "symbol": "⚖️",
+          "displaytext": "Your weight is currently _ kilograms",
+          "type": "fitness"
+        },
+        {
+          "name": "settings",
+          "symbol": "⚙️",
+          "displaytext": "Change whatever you want",
+          "type": "general"
+        }
+      ],
+      "settingsmenu": [
+        {
+          "name": "General",
+          "settings": [
+            {
+              "displaytext": "Show Tasks module",
+              "value": true
+            },
+            {
+              "displaytext": "Show Fitness module",
+              "value": true
+            }
+          ]
+        },
+        {
+          "name": "Tasks",
+          "settings": [
+            {
+              "displaytext": "Show status color",
+              "value": false
+            },
+            {
+              "displaytext": "Show creation date",
+              "value": "false"
+            },
+            {
+              "displaytext": "Enable history",
+              "value": true
+            }
+          ]
+        },
+        {
+          "name": "Timetasks",
+          "settings": [
+            {
+              "displaytext": "Show total this week",
+              "value": "false"
+            },
+            {
+              "displaytext": "Show total today",
+              "value": "false"
+            },
+            {
+              "displaytext": "Show week number",
+              "value": "false"
+            },
+            {
+              "displaytext": "Enable history",
+              "value": true
+            }
+          ]
+        },
+        {
+          "name": "Session",
+          "settings": [
+            {
+              "displaytext": "Play sound",
+              "value": "false"
+            }
+          ]
+        }
+      ],
+      "theme": {
+        "name": "test",
+        "colorprimary": "",
+        "colorsecundary": ""
+      }
+    }
+  ]
     }
 
 <br/>

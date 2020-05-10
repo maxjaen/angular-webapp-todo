@@ -1,20 +1,99 @@
 <div class="content">
-    <div>
-        <div>
-            <p style="font-family: 'Share Tech Mono', monospace; font-size: 50px; margin-left: 20%;">Hello Max.</p>
-
-            <div class="grid-container" style="font-family: 'Share Tech Mono', monospace; font-size: 20px;">
-                <div><a href="https://reddit.com/">reddit</a> </div>
-                <div><a href="https://www.reddit.com/r/GYM/">Gym</a></div>
-                <div><a href="https://www.youtube.com/watch?v=GBmVlvKZLAE">Workout Music</a></div>
-                <div><a href="https://reddit.com/r/wholesomememes/">Wholesome Memes</a></div>
-                <div>5</div>
-                <div>6</div>
-                <div><a href="https://www.youtube.com/results?search_query=Just+do+it">Just do it</a></div>
-                <div>8</div>
-                <div>9</div>
-
-
+    <div *ngIf="settings && settings.length > 0">
+        <h1 class="mat-h1">Dashboard</h1>
+        <div *ngIf="this.settings && this.settings.length > 0">
+            <div *ngFor="let component of this.settings[0].startpage">
+                <div *ngIf="this.settings[0]['settingsmenu'][0]['settings'][0]['value'] && component.type=='task'">
+                    <mat-card (click)="goToUrl(component)" class="dashboard-card"
+                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #4a4141;">
+                        <!--<mat-card-header style="float: right;">
+                            <mat-card-title>
+                                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu" xPosition="before">
+                                    <button mat-menu-item>Remove</button>
+                                </mat-menu>
+                            </mat-card-title>
+                        </mat-card-header>-->
+                        <mat-card-content class="dashboard-card-content">
+                            <div
+                                style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
+                                {{component.symbol}}
+                            </div>
+                            <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
+                                <div
+                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_')">
+                                    {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}
+                                </div>
+                                <div *ngIf="!component.displaytext.includes('_')">
+                                    {{ component.displaytext }}
+                                </div>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+                <div *ngIf="this.settings[0]['settingsmenu'][0]['settings'][1]['value'] && component.type=='fitness'">
+                    <mat-card (click)=" goToUrl(component)" class="dashboard-card"
+                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #49414a;">
+                        <!--<mat-card-header style="float: right;">
+                                            <mat-card-title>
+                                                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                                                    <mat-icon>more_vert</mat-icon>
+                                                </button>
+                                                <mat-menu #menu="matMenu" xPosition="before">
+                                                    <button mat-menu-item>Remove</button>
+                                                </mat-menu>
+                                            </mat-card-title>
+                                        </mat-card-header>-->
+                        <mat-card-content class="dashboard-card-content">
+                            <div
+                                style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
+                                {{component.symbol}}
+                            </div>
+                            <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
+                                <div
+                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_')">
+                                    {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}
+                                </div>
+                                <div *ngIf="!component.displaytext.includes('_')">
+                                    {{ component.displaytext }}
+                                </div>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+                <div *ngIf="component.type=='general'">
+                    <mat-card (click)=" goToUrl(component)" class="dashboard-card"
+                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px;">
+                        <!--<mat-card-header style="float: right;">
+                                                            <mat-card-title>
+                                                                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                                                                    <mat-icon>more_vert</mat-icon>
+                                                                </button>
+                                                                <mat-menu #menu="matMenu" xPosition="before">
+                                                                    <button mat-menu-item>Remove</button>
+                                                                </mat-menu>
+                                                            </mat-card-title>
+                                                        </mat-card-header>-->
+                        <mat-card-content class="dashboard-card-content">
+                            <div
+                                style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
+                                {{component.symbol}}
+                            </div>
+                            <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
+                                <div
+                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_')">
+                                    {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}
+                                </div>
+                                <div *ngIf="!component.displaytext.includes('_')">
+                                    {{ component.displaytext }}
+                                </div>
+                                <div style="color: red;"></div>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
             </div>
         </div>
     </div>

@@ -23,11 +23,14 @@
                             </div>
                             <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
                                 <div
-                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_')">
+                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
                                     {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}
                                 </div>
                                 <div *ngIf="!component.displaytext.includes('_')">
                                     {{ component.displaytext }}
+                                </div>
+                                <div *ngIf="!hasPlaceHolder(component.name) && !isIgnoredModule(component.name)">
+                                    no data available
                                 </div>
                             </div>
                         </mat-card-content>
@@ -53,11 +56,14 @@
                             </div>
                             <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
                                 <div
-                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_')">
+                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
                                     {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}
                                 </div>
                                 <div *ngIf="!component.displaytext.includes('_')">
                                     {{ component.displaytext }}
+                                </div>
+                                <div *ngIf="!hasPlaceHolder(component.name) && !isIgnoredModule(component.name)">
+                                    no data available
                                 </div>
                             </div>
                         </mat-card-content>
@@ -83,13 +89,15 @@
                             </div>
                             <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
                                 <div
-                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_')">
+                                    *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
                                     {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}
                                 </div>
                                 <div *ngIf="!component.displaytext.includes('_')">
                                     {{ component.displaytext }}
                                 </div>
-                                <div style="color: red;"></div>
+                                <div *ngIf="!hasPlaceHolder(component.name) && !isIgnoredModule(component.name)">
+                                    no data available
+                                </div>
                             </div>
                         </mat-card-content>
                     </mat-card>

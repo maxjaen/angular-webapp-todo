@@ -14,6 +14,7 @@ interface KeyValuePair {
   key: string;
   value: string;
 }
+
 @Component({
   selector: "app-landing-page",
   templateUrl: "./landing-page.component.html",
@@ -22,6 +23,7 @@ interface KeyValuePair {
 export class LandingPageComponent implements OnInit {
   settings: Settings[] = [];
   placeHolderArray: KeyValuePair[] = [];
+  ignoreModules: string[] = ["settings", "training"];
 
   constructor(
     private settingsService: SettingsService,
@@ -42,6 +44,8 @@ export class LandingPageComponent implements OnInit {
     this.getTimeTaskPlaceholderFromService();
     this.getSessionPlaceholderFromService();
     this.getWeightPlaceholderFromService();
+
+    console.log(this.placeHolderArray);
   }
 
   goToUrl(component: StartPageSetting) {
@@ -72,14 +76,19 @@ export class LandingPageComponent implements OnInit {
 
       if (timetasks.length > 0) {
         tempValue = timetasks
-          .filter(
-            (data) =>
-              this._utilityService.objectHasPropertyWithValue(
-                data,
-                "startdate"
-              ) &&
-              this._utilityService.objectHasPropertyWithValue(data, "enddate")
-          )
+          .filter((e) => {
+            let startdate: Date = new Date(e.startdate);
+            let now: Date = new Date();
+
+            if (
+              startdate.getDate() == now.getDate() &&
+              startdate.getMonth() == now.getMonth() &&
+              startdate.getFullYear() == now.getFullYear()
+            ) {
+              return true;
+            }
+            return false;
+          })
           .map(
             (filteredData) =>
               new Date(filteredData.enddate).getTime() -
@@ -99,39 +108,50 @@ export class LandingPageComponent implements OnInit {
 
   getSessionPlaceholderFromService() {
     this.trainingService.getAllTrainings().subscribe((trainings) => {
-      let training = trainings.filter((training) =>
-        training.exercices.every(
-          (exercise) => exercise.category == "conditionalpattern1d"
-        )
-      )[0];
+      if (trainings.length > 0) {
+        let training = trainings.filter((training) =>
+          training.exercices.every(
+            (exercise) => exercise.category == "conditionalpattern1d"
+          )
+        )[0];
 
-      let element: KeyValuePair = {
-        key: "session",
-        value: (
-          training.exercices
-            .map((exercise) => +exercise["repetitions"])
-            .reduce((sum, current) => sum + current, 0) +
-          5 * training.exercices.length
-        ).toString(),
-      };
-
-      this.placeHolderArray.push(element);
+        let element: KeyValuePair = {
+          key: "session",
+          value: (
+            training.exercices
+              .map((exercise) => +exercise["repetitions"])
+              .reduce((sum, current) => sum + current, 0) +
+            5 * training.exercices.length
+          ).toString(),
+        };
+        this.placeHolderArray.push(element);
+      }
     });
   }
 
   getWeightPlaceholderFromService() {
     this.weightService.getAllWeights().subscribe((weights) => {
-      let element: KeyValuePair = {
-        key: "weight",
-        value: weights[weights.length - 1].value.toString(),
-      };
+      if (weights.length > 0) {
+        let element: KeyValuePair = {
+          key: "weight",
+          value: weights[weights.length - 1].value.toString(),
+        };
 
-      this.placeHolderArray.push(element);
+        this.placeHolderArray.push(element);
+      }
     });
   }
 
   getPlaceHolderValueFromKey(key: string) {
-    return this.placeHolderArray.filter((e) => e.key == key)[0]["value"];
+    return this.placeHolderArray.filter((e) => e.key == key)[0].value;
+  }
+
+  hasPlaceHolder(key: string) {
+    return this.placeHolderArray.filter((e) => e.key == key)[0] != undefined;
+  }
+
+  isIgnoredModule(str: string) {
+    return this.ignoreModules.indexOf(str) > -1;
   }
 
   replacePlaceholder(word: string, from: string, to: string) {

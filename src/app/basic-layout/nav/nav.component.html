@@ -6,7 +6,7 @@
       <a mat-list-item routerLink="startpage">Home</a>
       <a mat-list-item routerLink="settings">Settings</a>
     </mat-nav-list>
-    <div *ngIf="this.settings['settingsmenu'][0]['settings'][0]['value']">
+    <div *ngIf="this.settings && this.settings['settingsmenu'][0]['settings'][0]['value']">
       <br />
       <mat-toolbar>TASKS</mat-toolbar>
       <mat-nav-list>
@@ -14,7 +14,7 @@
         <a mat-list-item routerLink="timetask">Time Management</a>
       </mat-nav-list>
     </div>
-    <div *ngIf="this.settings['settingsmenu'][0]['settings'][1]['value']">
+    <div *ngIf="this.settings && this.settings['settingsmenu'][0]['settings'][1]['value']">
       <br />
       <mat-toolbar>FITNESS</mat-toolbar>
       <mat-nav-list>

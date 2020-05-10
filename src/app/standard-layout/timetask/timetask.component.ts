@@ -163,26 +163,30 @@ export class TimeTaskComponent implements OnInit {
   // Get all TimeTasks with time accumulated by name
   // Return sorted KeyValuePair array
   getAccumulatedTimeTaskPairs(data: TimeTask[]): KeyValuePair[] {
-    return data
-      .map((key) => {
-        let element: KeyValuePair = {
-          key: key.shortdescr, // name of timetask as string
-          value: this.millisecondsToTimestring(
-            // time as string
-            data
-              .filter((e) => e.shortdescr == key.shortdescr)
-              .reduce(
-                (a, b) =>
-                  a +
-                  (new Date(b.enddate).getTime() -
-                    new Date(b.startdate).getTime()),
-                0
-              )
-          ),
-        };
-        return element;
-      })
-      .filter(this._utilityService.sortDistinct);
+    let array: KeyValuePair[] = [];
+
+    data.map((key) => {
+      let element: KeyValuePair = {
+        key: key.shortdescr, // name of timetask as string
+        value: this.millisecondsToTimestring(
+          // time as string
+          data
+            .filter((e) => e.shortdescr == key.shortdescr)
+            .reduce(
+              (a, b) =>
+                a +
+                (new Date(b.enddate).getTime() -
+                  new Date(b.startdate).getTime()),
+              0
+            )
+        ),
+      };
+      if (array.filter((e) => e.key == element.key).length == 0) {
+        array.push(element);
+      }
+    });
+
+    return array;
   }
 
   // Calculate the overall work time for the current day

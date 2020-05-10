@@ -1,1 +1,28 @@
-<p>settings works!</p>
+<div class="content">
+    <div *ngIf="this.settings && this.settings.length > 0">
+        <div *ngFor="let component of this.getSettingTitles()" style="margin-bottom:  60px;">
+            <div style="margin-bottom: 30px;">
+                <h2>{{component["name"]}}</h2>
+                <hr />
+
+            </div>
+            <div *ngFor="let setting of component['settings']">
+                <div style="display:flow-root;">
+                    <div style="float: left; font-size: 15px; margin-bottom: 20px;">
+                        {{setting["displaytext"]}}
+                    </div>
+                    <div style="float: right;">
+                        <section class="example-section">
+                            <mat-slide-toggle class="example-margin" [color]="" [checked]="setting['value']"
+                                [disabled]="" (change)="this.toogleSlider(setting, $event)">
+                            </mat-slide-toggle>
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <button (click)="saveSettings();" mat-flat-button color="primary" style="margin-right: 1%;">Save settings</button>
+</div>

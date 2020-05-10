@@ -29,16 +29,17 @@
                                  [(ngModel)]="selectedTask.shortdescr" />
                               <mat-hint>{{ message.value.length }} / 50</mat-hint>
                            </mat-form-field>
-                           <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                              <textarea matInput placeholder="description" name="longdescr"
-                                 [(ngModel)]="selectedTask.longdescr"
-                                 (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
-                           </mat-form-field>
                            <mat-form-field>
                               <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
                                  placeholder="Choose a date" />
                               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                               <mat-datepicker #picker></mat-datepicker>
+                           </mat-form-field>
+                           <mat-form-field class="example-full-width"
+                              style="margin-right: 2%; width: 100%; margin-top: 50px;">
+                              <textarea style="height: 300px;" matInput placeholder="description" name="longdescr"
+                                 [(ngModel)]="selectedTask.longdescr"
+                                 (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
                            </mat-form-field>
                            <button (click)="saveAllTasks()" style="float:right" mat-button>
                               Save all
@@ -101,16 +102,17 @@
                                  [(ngModel)]="selectedTask.shortdescr" />
                               <mat-hint>{{ message.value.length }} / 50</mat-hint>
                            </mat-form-field>
-                           <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                              <textarea matInput placeholder="description" name="longdescr"
-                                 [(ngModel)]="selectedTask.longdescr"
-                                 (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
-                           </mat-form-field>
                            <mat-form-field>
                               <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
                                  placeholder="Choose a date" />
                               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                               <mat-datepicker #picker></mat-datepicker>
+                           </mat-form-field>
+                           <mat-form-field class="example-full-width"
+                              style="margin-right: 2%; width: 100%; margin-top: 50px;">
+                              <textarea style="height: 300px;" matInput placeholder="description" name="longdescr"
+                                 [(ngModel)]="selectedTask.longdescr"
+                                 (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
                            </mat-form-field>
                            <button (click)="saveAllTasks()" style="float:right" mat-button>
                               Save all

@@ -2,6 +2,13 @@
    <!-- ###################### TODAY TAB ###################### -->
    <mat-tab label="Today">
       <div class="content">
+         <div class="block">
+            <div *ngIf="todayTimeElements.length==0" style="margin-bottom: 100px;">
+               <p>Can't find any timetasks</p>
+               <br>
+               <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </div>
+         </div>
          <div class="show" style="display: block; width: 100%;">
             <div style="margin: 2%; font-size: 18px; ">
                <countup-timer style="font-size: 42px;" [countUpTimerConfig]="testConfig">
@@ -40,9 +47,6 @@
                </div>
             </div>
             <div *ngIf="todayTimeElements">
-               <div *ngIf="todayTimeElements.length==0" style="color: #484747; margin: 2%;">
-                  <p>No TimeTask available</p>
-               </div>
                <div *ngFor="let timeElement of todayTimeElements">
                   <div *ngIf="selectedTimeElement==timeElement" class="changeField"
                      style="margin: 2%; display: block; overflow: auto;">

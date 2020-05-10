@@ -2,6 +2,13 @@
    <!-- ###################### TODAY TAB ###################### -->
    <mat-tab label="Tasks">
       <div class="content">
+         <div class="block">
+            <div *ngIf="unpinnedTasks.length == 0 && pinnedTasks.length == 0" style="margin-bottom: 100px;">
+               <p>Can't find any tasks</p>
+               <br>
+               <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </div>
+         </div>
          <div *ngIf="!focusedTask">
             <div class="insert"></div>
             <div>
@@ -11,9 +18,6 @@
                </button>
             </div>
             <div *ngIf="unpinnedTasks && pinnedTasks">
-               <div *ngIf="unpinnedTasks.length == 0 && pinnedTasks.length == 0" style="color: #47556c; margin: 2%;">
-                  <p>No Tasks available</p>
-               </div>
                <div *ngIf="pinnedTasks.length > 0" class="pinnedtasks">
                   <h3>Pinned Tasks</h3>
                   <div *ngFor="let task of pinnedTasks; let i = index">

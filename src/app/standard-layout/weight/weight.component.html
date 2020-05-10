@@ -1,5 +1,10 @@
 <div class="content">
    <div class="block">
+      <div *ngIf="weights.length==0" style="margin-bottom: 100px;">
+         <p>Can't find any weights</p>
+         <br>
+         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </div>
       <h2>Insert weight</h2>
       <div style="margin: 1%; display: block; overflow: auto; float: left; width: 50%;">
          <form [formGroup]="form" style="display: inline;" class="example-form">
@@ -47,11 +52,6 @@
                </mat-card-header>
             </mat-card>
          </div>
-      </div>
-      <div *ngIf="weights.length==0" style="color: #484747;">
-         <p>No weights available</p>
-         <br>
-         <mat-progress-bar mode="buffer"></mat-progress-bar>
       </div>
    </div>
 </div>

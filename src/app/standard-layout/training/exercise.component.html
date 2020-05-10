@@ -4,8 +4,12 @@
       <button type="button" mat-raised-button (click)="scroll('createtraining')">Create Training</button>
    </div>
    <div class="content">
-      <div *ngIf="!trainings">
-         <mat-progress-bar mode="buffer"></mat-progress-bar>
+      <div class="block">
+         <div *ngIf="trainings.length==0" style="margin-bottom: 100px;">
+            <p>Can't find any trainings</p>
+            <br>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+         </div>
       </div>
       <div class="selection" *ngIf="trainings">
          <div class="tab" #overviewtraining>

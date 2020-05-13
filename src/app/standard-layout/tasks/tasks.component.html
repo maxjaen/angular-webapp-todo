@@ -165,9 +165,10 @@
             </div>
          </div>
          <div *ngIf="focusedTask">
-            <div style="margin-bottom: 200px;">
+            <div style="margin-bottom: 40px;">
                <button (click)="focusTask(focusedTask)" mat-button>🜄</button>
                <button (click)="removeTask(focusedTask)" mat-button>🜂</button>
+               <hr>
             </div>
             <div style="text-align: center;">
                <h2 style="font-size: 50px;">{{ this.focusedTask.shortdescr }}</h2>

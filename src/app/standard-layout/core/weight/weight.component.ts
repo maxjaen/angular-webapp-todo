@@ -3,8 +3,8 @@ import { Weight } from "./model/weight";
 import { WeightService } from "./services/weight.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material";
-import { StringDistributorService } from "../sharedservices/string-distributor.service";
-import { UtilityService } from "../sharedservices/utility.service";
+import { StringDistributorService } from "../../shared/services/string-distributor.service";
+import { UtilityService } from "../../shared/services/utility.service";
 
 @Component({
   selector: "app-weight",

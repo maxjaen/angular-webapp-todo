@@ -1,14 +1,14 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { TrainingComponent } from "./training/exercise.component";
-import { TrainingViewComponent } from "./training/components/training-view/training-view.component";
-import { TimeTaskComponent } from "./timetask/timetask.component";
-import { WeightComponent } from "./weight/weight.component";
-import { TasksComponent } from "./tasks/tasks.component";
+import { TrainingComponent } from "./core/training/exercise.component";
+import { TrainingViewComponent } from "./core/training/components/training-view/training-view.component";
+import { TimeTaskComponent } from "./core/timetask/timetask.component";
+import { WeightComponent } from "./core/weight/weight.component";
+import { TasksComponent } from "./core/tasks/tasks.component";
 import { HttpClientModule } from "@angular/common/http";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { InsertTaskDialog } from "./tasks/dialogs/insert-task-dialog";
-import { InsertTaskDialogTime } from "./timetask/dialogs/insert-task-dialog";
+import { InsertTaskDialog } from "./core/tasks/dialogs/insert-task-dialog";
+import { InsertTaskDialogTime } from "./core/timetask/dialogs/insert-task-dialog";
 import { NgxTimerModule } from "ngx-timer";
 import { AmazingTimePickerModule } from "amazing-time-picker";
 import {
@@ -40,11 +40,11 @@ import {
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
-  MatTooltipModule
+  MatTooltipModule,
 } from "@angular/material";
-import { SettingsComponent } from './settings/settings.component';
-import { SessionComponent } from './session/session.component';
-import { LandingPageComponent } from './landing-page/landing-page.component';
+import { SettingsComponent } from "./core/settings/settings.component";
+import { SessionComponent } from "./core/session/session.component";
+import { DashboardComponent } from "./core/dashboard/dashboard.component";
 
 @NgModule({
   declarations: [
@@ -57,7 +57,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
     TrainingViewComponent,
     SettingsComponent,
     SessionComponent,
-    LandingPageComponent
+    DashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -96,15 +96,15 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatNativeDateModule
+    MatNativeDateModule,
   ],
   exports: [
     TrainingComponent,
     TasksComponent,
     TimeTaskComponent,
     WeightComponent,
-    TrainingViewComponent
+    TrainingViewComponent,
   ],
-  entryComponents: [InsertTaskDialog, InsertTaskDialogTime]
+  entryComponents: [InsertTaskDialog, InsertTaskDialogTime],
 })
 export class StandardLayoutModule {}

@@ -1,23 +1,22 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { TasksComponent } from "./standard-layout/tasks/tasks.component";
-import { TrainingComponent } from "./standard-layout/training/exercise.component";
-import { DashboardComponent } from "./basic-layout/dashboard/dashboard.component";
-import { TimeTaskComponent } from "./standard-layout/timetask/timetask.component";
-import { TrainingViewComponent } from "./standard-layout/training/components/training-view/training-view.component";
-import { WeightComponent } from "./standard-layout/weight/weight.component";
-import { LandingPageComponent } from "./standard-layout/landing-page/landing-page.component";
-import { SessionComponent } from "./standard-layout/session/session.component";
-import { SettingsComponent } from "./standard-layout/settings/settings.component";
+import { TasksComponent } from "./standard-layout/core/tasks/tasks.component";
+import { TrainingComponent } from "./standard-layout/core/training/exercise.component";
+import { TimeTaskComponent } from "./standard-layout/core/timetask/timetask.component";
+import { TrainingViewComponent } from "./standard-layout/core/training/components/training-view/training-view.component";
+import { WeightComponent } from "./standard-layout/core/weight/weight.component";
+import { DashboardComponent } from "./standard-layout/core/dashboard/dashboard.component";
+import { SessionComponent } from "./standard-layout/core/session/session.component";
+import { SettingsComponent } from "./standard-layout/core/settings/settings.component";
 
 const routes: Routes = [
   {
     path: "",
-    component: LandingPageComponent,
+    component: DashboardComponent,
   },
   {
-    path: "startpage",
-    component: LandingPageComponent,
+    path: "dashboard",
+    component: DashboardComponent,
   },
   {
     path: "settings",
@@ -46,10 +45,6 @@ const routes: Routes = [
   {
     path: "session",
     component: SessionComponent,
-  },
-  {
-    path: "overview",
-    component: DashboardComponent,
   },
 ];
 

@@ -6,8 +6,8 @@ import { InsertTaskDialogTime } from "./dialogs/insert-task-dialog";
 import { countUpTimerConfigModel, timerTexts } from "ngx-timer";
 import { CountupTimerService } from "ngx-timer";
 import { Title } from "@angular/platform-browser";
-import { StringDistributorService } from "../sharedservices/string-distributor.service";
-import { UtilityService } from "../sharedservices/utility.service";
+import { StringDistributorService } from "../../shared/services/string-distributor.service";
+import { UtilityService } from "../../shared/services/utility.service";
 import { AmazingTimePickerService } from "amazing-time-picker";
 
 const START_DATE_STRING = "startdate";

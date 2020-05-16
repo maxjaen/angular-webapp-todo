@@ -5,7 +5,7 @@ import { StartPageSetting } from "../settings/model/start-page-setting";
 import { Router } from "@angular/router";
 import { TaskService } from "../tasks/services/task.service";
 import { TimeTaskService } from "../timetask/services/timetask.service";
-import { UtilityService } from "../sharedservices/utility.service";
+import { UtilityService } from "../../shared/services/utility.service";
 import { TrainingService } from "../training/services/training.service";
 import { WeightService } from "../weight/services/weight.service";
 import { Title } from "@angular/platform-browser";
@@ -16,11 +16,11 @@ interface KeyValuePair {
 }
 
 @Component({
-  selector: "app-landing-page",
-  templateUrl: "./landing-page.component.html",
-  styleUrls: ["./landing-page.component.scss"],
+  selector: "app-dashboard.",
+  templateUrl: "./dashboard.component.html",
+  styleUrls: ["./dashboard.component.scss"],
 })
-export class LandingPageComponent implements OnInit {
+export class DashboardComponent implements OnInit {
   settings: Settings[] = [];
   placeHolderArray: KeyValuePair[] = [];
   ignoreModules: string[] = ["settings", "training"];

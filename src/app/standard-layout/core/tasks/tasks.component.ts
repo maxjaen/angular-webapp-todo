@@ -5,8 +5,8 @@ import { InsertTaskDialog } from "./dialogs/insert-task-dialog";
 import { Task } from "./model/task";
 import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
 import { Title } from "@angular/platform-browser";
-import { StringDistributorService } from "../sharedservices/string-distributor.service";
-import { UtilityService } from "../sharedservices/utility.service";
+import { StringDistributorService } from "../../shared/services/string-distributor.service";
+import { UtilityService } from "../../shared/services/utility.service";
 import { Settings } from "../settings/model/settings";
 import { SettingsService } from "../settings/services/settings.service";
 
@@ -171,7 +171,7 @@ export class TasksComponent implements OnInit {
 
   // Change pin property of a task in the database
   focusTask(task: Task) {
-    if (this.focusedTask == null || this.focusedTask == undefined){
+    if (this.focusedTask == null || this.focusedTask == undefined) {
       this.focusedTask = task;
     } else {
       this.focusedTask = null;

@@ -2,8 +2,8 @@ import { Component } from "@angular/core";
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
 import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
-import { SettingsService } from "src/app/standard-layout/settings/services/settings.service";
-import { Settings } from "src/app/standard-layout/settings/model/settings";
+import { SettingsService } from "src/app/standard-layout/core/settings/services/settings.service";
+import { Settings } from "src/app/standard-layout/core/settings/model/settings";
 
 @Component({
   selector: "app-nav",

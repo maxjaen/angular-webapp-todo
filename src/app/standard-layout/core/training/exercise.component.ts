@@ -22,7 +22,7 @@ import { ConditionalPattern2d } from "./model/conditional-pattern2d";
 import { FreePattern } from "./model/free-pattern";
 import { Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
-import { UtilityService } from "../sharedservices/utility.service";
+import { UtilityService } from "../../shared/services/utility.service";
 
 const LAST_TRAININGS = 10;
 @Component({

@@ -109,11 +109,13 @@ export class DashboardComponent implements OnInit {
   getSessionPlaceholderFromService() {
     this.trainingService.getAllTrainings().subscribe((trainings) => {
       if (trainings.length > 0) {
-        let training = trainings.filter((training) =>
+        let timetrainings = trainings.filter((training) =>
           training.exercices.every(
             (exercise) => exercise.category == "conditionalpattern1d"
           )
-        )[0];
+        );
+
+        let training = timetrainings[timetrainings.length - 1];
 
         let element: KeyValuePair = {
           key: "session",

@@ -3,7 +3,8 @@
    <mat-tab label="Tasks">
       <div class="content">
          <div class="block">
-            <div *ngIf="unpinnedTasks.length == 0 && pinnedTasks.length == 0" style="margin-bottom: 100px;">
+            <div *ngIf="unpinnedTasks && pinnedTasks && unpinnedTasks.length == 0 && pinnedTasks.length == 0"
+               style="margin-bottom: 100px;">
                <p>Can't find any tasks</p>
                <br>
                <mat-progress-bar mode="indeterminate"></mat-progress-bar>

@@ -1,5 +1,15 @@
 # Presence
 
+
+
+##  Inspiration
+
+The following links gave a quick overview about some websites that give insparation to create this app
+* https://www.youtube.com/watch?v=nH0oO1aWpSs
+* https://symmetricstrength.com/
+* https://www.reddit.com/r/productivity/comments/eg9tf9/is_there_a_goal_tracking_app_which_allows_marking/
+
+
 <br>
 
 To use this project, the first step is to clone the project.

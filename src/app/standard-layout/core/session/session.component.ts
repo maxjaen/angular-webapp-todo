@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Exercise } from "../training/model/exercise";
 import { Training } from "../training/model/training";
 import { TrainingService } from "../training/services/training.service";
+import { SoundService } from "../../shared/services/sound.service";
 
 @Component({
   selector: "app-session",
@@ -19,7 +20,10 @@ export class SessionComponent implements OnInit {
   exerciseIntervalId: number;
   getReadyCountdown: number;
 
-  constructor(private trainingService: TrainingService) {}
+  constructor(
+    private trainingService: TrainingService,
+    private soundService: SoundService
+  ) {}
 
   ngOnInit(): void {
     this.getTrainingsFromService();
@@ -81,7 +85,7 @@ export class SessionComponent implements OnInit {
   startWorkout(i: number) {
     this.getReadyCountdown = 5;
     (async () => {
-      this.playSound("snapshat");
+      this.soundService.playSound("snapchat");
       await this.delay(2000);
 
       let endSound = true;
@@ -95,7 +99,7 @@ export class SessionComponent implements OnInit {
         this.workoutCountdown = this.workoutCountdown - 1;
 
         if (this.workoutCountdown == 1 && endSound) {
-          this.playSound("iphone");
+          this.soundService.playSound("iphone");
           endSound = false;
         }
         if (this.workoutCountdown >= 0) {
@@ -138,10 +142,4 @@ export class SessionComponent implements OnInit {
    * SOUND FUNCTIONS
    * ===================================================================================
    */
-
-  playSound(soundIdentifier) {
-    let src = "assets/mp3/" + soundIdentifier + ".mp3";
-    let audio = new Audio(src);
-    audio.play();
-  }
 }

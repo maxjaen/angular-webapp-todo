@@ -4,7 +4,8 @@
 
 ### Grundsätzliches
 
-* Dokumentation
+* Dokumentation (npm install in readme)
+* Angular Version in Project updaten
 * Vereinfachte Installation der App
 * `Import- und Export (z.B. PDF) von Daten`
 * Authentifizierung [Benutzerverwaltung (erstellen, bearbeiten, löschen, ...) und Generierung von Token, Login Maske]
@@ -51,6 +52,7 @@
 * Übersicht in Wochen bei Trainings
 * Intelligente Trainingsvorschläge
 * Grafiken
+* Mit Namen versehen
 
 ## New?
 

@@ -5,7 +5,7 @@ import { InsertTaskDialog } from "./dialogs/insert-task-dialog";
 import { Task } from "./model/task";
 import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
 import { Title } from "@angular/platform-browser";
-import { StringDistributorService } from "../../shared/services/string-distributor.service";
+import { KeyService } from "../../shared/services/key.service";
 import { UtilityService } from "../../shared/services/utility.service";
 import { Settings } from "../settings/model/settings";
 import { SettingsService } from "../settings/services/settings.service";
@@ -36,7 +36,7 @@ export class TasksComponent implements OnInit {
   constructor(
     private settingsService: SettingsService,
     private taskService: TaskService,
-    public stringDistributorService: StringDistributorService,
+    public keysService: KeyService,
     public utilityService: UtilityService,
     private _tabTitle: Title,
     public _dialog: MatDialog,
@@ -351,17 +351,17 @@ export class TasksComponent implements OnInit {
       this.selectedTask !== null &&
       this.selectedTask.id == task.id
     ) {
-      return this.stringDistributorService.COLORS.BLUE;
+      return this.keysService.getColor("blue");
     }
 
     // More than 30 days
     if (actualDate.getTime() < tempTaskDate.getTime() - dayMilliseconds * 30) {
-      return this.stringDistributorService.COLORS.CYAN;
+      return this.keysService.getColor("cyan");
     }
 
     // More than one day
     if (actualDate.getTime() > tempTaskDate.getTime() + dayMilliseconds) {
-      return this.stringDistributorService.COLORS.RED;
+      return this.keysService.getColor("red");
     }
 
     // Today
@@ -370,16 +370,16 @@ export class TasksComponent implements OnInit {
       tempTaskDate.getMonth() == actualDate.getMonth() &&
       tempTaskDate.getFullYear() == actualDate.getFullYear()
     ) {
-      return this.stringDistributorService.COLORS.YELLOW;
+      return this.keysService.getColor("yellow");
     }
 
     // Standard colour
-    return this.stringDistributorService.COLORS.DARKGREEN;
+    return this.keysService.getColor("darkgreen");
   }
 
   // Change all abbreviations to text in the task description (based on ngModelChange)
   replaceWithShortcut(task: Task) {
-    this.stringDistributorService.SHORTCUTS.forEach((replacePair) => {
+    this.keysService.SHORTCUTS.forEach((replacePair) => {
       task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
     });
   }

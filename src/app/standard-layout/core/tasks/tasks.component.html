@@ -190,8 +190,7 @@
          <div *ngFor="let task of hidedElements">
             <mat-card style="margin: 2%; display: block; overflow: auto;" class="example-card">
                <div style="width: 30px; height: 30px; float:inline-start;" [style.background-color]="
-              this.stringDistributorService.COLORS.DARKGRAY
-            "></div>
+              this.keysService.getColor('yellow')"></div>
                <div style="width: 70%; display: inline-block;">
                   <mat-card-header>
                      <mat-card-title>

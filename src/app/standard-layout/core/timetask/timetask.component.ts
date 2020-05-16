@@ -6,9 +6,9 @@ import { InsertTaskDialogTime } from "./dialogs/insert-task-dialog";
 import { countUpTimerConfigModel, timerTexts } from "ngx-timer";
 import { CountupTimerService } from "ngx-timer";
 import { Title } from "@angular/platform-browser";
-import { StringDistributorService } from "../../shared/services/string-distributor.service";
 import { UtilityService } from "../../shared/services/utility.service";
 import { AmazingTimePickerService } from "amazing-time-picker";
+import { KeyService } from "../../shared/services/key.service";
 
 const START_DATE_STRING = "startdate";
 const END_DATE_STRING = "enddate";
@@ -51,8 +51,8 @@ export class TimeTaskComponent implements OnInit {
     private _tabTitle: Title,
     private _snackBar: MatSnackBar,
     public _dialog: MatDialog,
-    public _stringService: StringDistributorService,
-    public _utilityService: UtilityService
+    public _utilityService: UtilityService,
+    public _keyService: KeyService
   ) {
     this._tabTitle.setTitle("Time Management");
   }
@@ -532,7 +532,7 @@ export class TimeTaskComponent implements OnInit {
       this.runningTimeElement !== null &&
       this.runningTimeElement.id == timeTask.id
     ) {
-      return this._stringService.COLORS.YELLOW;
+      return this._keyService.getColor("yellow");
     }
 
     if (
@@ -540,14 +540,14 @@ export class TimeTaskComponent implements OnInit {
       this.selectedTimeElement !== null &&
       this.selectedTimeElement.id == timeTask.id
     ) {
-      return this._stringService.COLORS.BLUE;
+      return this._keyService.getColor("blue");
     }
 
     if (timeTask !== undefined && timeTask !== null && !timeTask.enddate) {
-      return this._stringService.COLORS.RED;
+      return this._keyService.getColor("red");
     }
 
-    return this._stringService.COLORS.DARKGREEN;
+    return this._keyService.getColor("darkgreen");
   }
 
   // Get distinct dates of all TimeTasks
@@ -611,7 +611,7 @@ export class TimeTaskComponent implements OnInit {
 
   // Change all abbreviations to text in the task description (based on ngModelChange)
   replaceWithShortcut(task: TimeTask) {
-    this._stringService.SHORTCUTS.forEach((replacePair) => {
+    this._keyService.SHORTCUTS.forEach((replacePair) => {
       task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
     });
   }

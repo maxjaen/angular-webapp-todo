@@ -3,8 +3,8 @@ import { Weight } from "./model/weight";
 import { WeightService } from "./services/weight.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material";
-import { StringDistributorService } from "../../shared/services/string-distributor.service";
 import { UtilityService } from "../../shared/services/utility.service";
+import { KeyService } from "../../shared/services/key.service";
 
 @Component({
   selector: "app-weight",
@@ -20,7 +20,7 @@ export class WeightComponent implements OnInit {
 
   constructor(
     private weightService: WeightService,
-    private stringDistributorService: StringDistributorService,
+    private keyService: KeyService,
     private _utilityService: UtilityService,
     private _snackBar: MatSnackBar
   ) {}
@@ -168,27 +168,27 @@ export class WeightComponent implements OnInit {
   getBackgroundColorValue(weight: Weight): string {
     let highestValue: number = this.getHighestWeightValue();
     if (weight.value == highestValue) {
-      return this.stringDistributorService.COLORS.DARKGREEN;
+      return this.keyService.getColor("darkgreen");
     }
 
     let lowestValue: number = this.getLowestWeightValue();
     if (weight.value == lowestValue) {
-      return this.stringDistributorService.COLORS.RED;
+      return this.keyService.getColor("red");
     }
 
     let averageValue: number = this.getAverageWeightValue();
     if (weight.value <= averageValue + 1 && weight.value >= averageValue - 1) {
-      return this.stringDistributorService.COLORS.YELLOW;
+      return this.keyService.getColor("yellow");
     }
 
     if (weight.value < averageValue - 1) {
-      return this.stringDistributorService.COLORS.ORANGE;
+      return this.keyService.getColor("orange");
     }
 
     if (weight.value > averageValue + 1) {
-      return this.stringDistributorService.COLORS.LIGHTGREEN;
+      return this.keyService.getColor("lightgreen");
     }
 
-    return this.stringDistributorService.COLORS.DARKGRAY;
+    return this.keyService.getColor("darkgray");
   }
 }

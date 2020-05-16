@@ -17,18 +17,18 @@
                   <!-- TODO check when elements length 0 or elements object null -->
                   <p>
                      <span>Time week: </span>
-                     <span [style.color]="this._stringService.COLORS.WHITE">
+                     <span [style.color]="this._keyService.getColor('white')">
                         {{ this.millisecondsToTimestring(calculateOverallTime(allTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Time today: </span>
-                     <span [style.color]="this._stringService.COLORS.WHITE">
+                     <span [style.color]="this._keyService.getColor('white')">
                         {{ this.millisecondsToTimestring(calculateTodayTime(todayTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Week: </span>
                      <span
-                        [style.color]="this._stringService.COLORS.WHITE">{{ this._utilityService.formatToTwoDigits(calculateWeekNumber()) }}</span>
+                        [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(calculateWeekNumber()) }}</span>
                   </p>
                </div>
                <div *ngIf="accumulatedElements && accumulatedElements.length>1">
@@ -143,7 +143,7 @@
                <br>
             </div>
             <div *ngFor="let timeElement of historyElements">
-               <mat-card [style.background-color]="this._stringService.COLORS.DARKGRAY"
+               <mat-card [style.background-color]="this._keyService.getColor('darkgray')"
                   style="margin: 2%; display: block; overflow: auto;" class="example-card">
                   <mat-card-header style="float:left;">
                      <mat-card-title>

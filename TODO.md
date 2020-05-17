@@ -53,6 +53,12 @@
 * Intelligente Trainingsvorschläge
 * Grafiken
 * Mit Namen versehen
+* mark workout types in trainings colorful
+
+### Sessions
+
+* show training when clicking session
+* start with exercise in session
 
 ## New?
 

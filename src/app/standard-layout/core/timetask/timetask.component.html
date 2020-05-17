@@ -91,10 +91,10 @@
                                  <div *ngIf="timeElement.enddate" style="display: inline;">
                                     {{ timeElementToTimestring(timeElement) }} >>
                                  </div>
-                                 {{ this._timeTaskService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
+                                 {{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
                                  <div *ngIf="timeElement.enddate" style="display: inline;">
                                     ,
-                                    {{this._timeTaskService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
+                                    {{this._timeService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
                                  </div>
                               </div>
                            </mat-card-title>
@@ -157,9 +157,9 @@
                            <div *ngIf="timeElement.enddate" style="display: inline;">
                               {{ timeElementToTimestring(timeElement) }} >>
                            </div>
-                           {{ this._timeTaskService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
+                           {{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
                            <div *ngIf="timeElement.enddate" style="display: inline;">
-                              , {{this._timeTaskService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
+                              , {{this._timeService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
                            </div>
                         </div>
                      </mat-card-title>

@@ -9,6 +9,7 @@ import { UtilityService } from "../../shared/services/utility.service";
 import { TrainingService } from "../training/services/training.service";
 import { WeightService } from "../weight/services/weight.service";
 import { Title } from "@angular/platform-browser";
+import { TimeService } from "../../shared/services/time.service";
 
 interface KeyValuePair {
   key: string;
@@ -32,7 +33,7 @@ export class DashboardComponent implements OnInit {
     private trainingService: TrainingService,
     private weightService: WeightService,
     private _tabTitle: Title,
-    private _utilityService: UtilityService,
+    private _timeService: TimeService,
     private _router: Router
   ) {
     this._tabTitle.setTitle("Home");
@@ -99,7 +100,7 @@ export class DashboardComponent implements OnInit {
 
       let element: KeyValuePair = {
         key: "timetask",
-        value: this.millisecondsToTimestring(tempValue).toString(),
+        value: this._timeService.millisecondsToString(tempValue).toString(),
       };
 
       this.placeHolderArray.push(element);
@@ -158,16 +159,5 @@ export class DashboardComponent implements OnInit {
 
   replacePlaceholder(word: string, from: string, to: string) {
     return word.replace(from, to);
-  }
-
-  // Create time view string from milliseconds
-  millisecondsToTimestring(milliseconds: number): string {
-    let seconds: any = Math.floor((milliseconds / 1000) % 60);
-    let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
-    let hours: any = Math.floor(milliseconds / (1000 * 60 * 60));
-    hours = hours < 10 ? "0" + hours : hours;
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-    return hours + ":" + minutes + ":" + seconds;
   }
 }

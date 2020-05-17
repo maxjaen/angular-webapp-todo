@@ -18,17 +18,17 @@
                   <p>
                      <span>Time week: </span>
                      <span [style.color]="this._keyService.getColor('white')">
-                        {{ this.millisecondsToTimestring(calculateOverallTime(allTimeElements)) }}</span>
+                        {{ this._timeService.millisecondsToString(calculateOverallTime(allTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Time today: </span>
                      <span [style.color]="this._keyService.getColor('white')">
-                        {{ this.millisecondsToTimestring(calculateTodayTime(todayTimeElements)) }}</span>
+                        {{ this._timeService.millisecondsToString(calculateTodayTime(todayTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Week: </span>
                      <span
-                        [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(this._timeService.calculateWeekNumber()) }}</span>
+                        [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(this._timeService.calculateCurrentWeekNumber()) }}</span>
                   </p>
                </div>
                <div *ngIf="accumulatedElements && accumulatedElements.length>1">
@@ -132,7 +132,7 @@
             <div *ngIf="historyElements.length > 0">
                <p>
                   Time: <span
-                     style="color: coral;">{{ millisecondsToTimestring(calculateTodayTime(historyElements)) }}</span>
+                     style="color: coral;">{{ this._timeService.millisecondsToString(calculateTodayTime(historyElements)) }}</span>
                </p>
             </div>
             <div *ngIf="historyAccumulatedElements">

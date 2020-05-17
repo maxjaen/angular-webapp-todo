@@ -14,8 +14,6 @@ import { TimeService } from "../../shared/services/time.service";
 const START_DATE_STRING = "startdate";
 const END_DATE_STRING = "enddate";
 const EMPTY_STRING = "";
-const SUMMER_TIME = 1;
-// CHANGE to "const WINTER_TIME = 0;" if necessary
 
 interface KeyValuePair {
   key: string;
@@ -167,10 +165,10 @@ export class TimeTaskComponent implements OnInit {
   getAccumulatedTimeTaskPairs(data: TimeTask[]): KeyValuePair[] {
     let array: KeyValuePair[] = [];
 
-    data.map((key) => {
+    data.forEach((key) => {
       let element: KeyValuePair = {
         key: key.shortdescr, // name of timetask as string
-        value: this.millisecondsToTimestring(
+        value: this._timeService.millisecondsToString(
           // time as string
           data
             .filter((e) => e.shortdescr == key.shortdescr)
@@ -223,8 +221,8 @@ export class TimeTaskComponent implements OnInit {
             data,
             END_DATE_STRING
           ) &&
-          this._timeService.calculateWeekNumber() ==
-            this._timeService.calculateWeekNumberFromDate(
+          this._timeService.calculateCurrentWeekNumber() ==
+            this._timeService.calculateWeekNumberForDate(
               new Date(data.startdate)
             )
       )
@@ -258,7 +256,7 @@ export class TimeTaskComponent implements OnInit {
       title: timeElement.title,
       shortdescr: timeElement.shortdescr,
       longdescr: timeElement.longdescr,
-      startdate: this.createDateWithTimeOffset(),
+      startdate: this._timeService.createNewDate(),
       enddate: null,
       task: timeElement.task,
     };
@@ -348,7 +346,7 @@ export class TimeTaskComponent implements OnInit {
   finishTimer() {
     if (this._timerService.isTimerStart) {
       this.resetTimer();
-      this.runningTimeElement.enddate = this.createDateWithTimeOffset();
+      this.runningTimeElement.enddate = this._timeService.createNewDate();
       this._timeTaskService
         .putTimeElement(this.runningTimeElement)
         .subscribe(() => {
@@ -378,7 +376,7 @@ export class TimeTaskComponent implements OnInit {
   // Add new TimeElement to the database
   openInsertDialog(): void {
     if (this._timerService.isTimerStart) {
-      this.runningTimeElement.enddate = this.createDateWithTimeOffset();
+      this.runningTimeElement.enddate = this._timeService.createNewDate();
       this._timeTaskService
         .putTimeElement(this.runningTimeElement)
         .subscribe(() => {
@@ -401,7 +399,7 @@ export class TimeTaskComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((resultFromDialog) => {
       if (resultFromDialog !== undefined) {
-        resultFromDialog.startdate = this.createDateWithTimeOffset();
+        resultFromDialog.startdate = this._timeService.createNewDate();
         this.selectRunningTimeElement(resultFromDialog);
 
         if (this.shortdescr != EMPTY_STRING && this.longdescr != EMPTY_STRING) {
@@ -480,21 +478,10 @@ export class TimeTaskComponent implements OnInit {
 
   // Create time view string from TimeTask
   timeElementToTimestring(timeElement: TimeTask): string {
-    return this.millisecondsToTimestring(
+    return this._timeService.millisecondsToString(
       new Date(timeElement.enddate).getTime() -
         new Date(timeElement.startdate).getTime()
     );
-  }
-
-  // Create time view string from milliseconds
-  millisecondsToTimestring(milliseconds: number): string {
-    let seconds: any = Math.floor((milliseconds / 1000) % 60);
-    let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
-    let hours: any = Math.floor(milliseconds / (1000 * 60 * 60));
-    hours = hours < 10 ? "0" + hours : hours;
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-    return hours + ":" + minutes + ":" + seconds;
   }
 
   // Formate date to string
@@ -508,14 +495,6 @@ export class TimeTaskComponent implements OnInit {
       ":" +
       this._utilityService.formatToTwoDigits(temp.getMinutes())
     );
-  }
-
-  // Create new Date with correct time
-  // Returns current date
-  createDateWithTimeOffset(): Date {
-    let date: Date = new Date();
-    date.setHours(date.getHours() + 1 + SUMMER_TIME);
-    return date;
   }
 
   // Remove selected TimeElement
@@ -585,7 +564,7 @@ export class TimeTaskComponent implements OnInit {
           "." +
           this._utilityService.formatToTwoDigits(date.getFullYear()) +
           ", " +
-          this._utilityService.getDayString(date.getDay())
+          this._timeService.getDayString(date.getDay())
         );
       });
   }

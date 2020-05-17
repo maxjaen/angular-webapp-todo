@@ -14,52 +14,22 @@ export class UtilityService {
     return string.split(NEW_LINE);
   }
 
-  // Formate one digit numbers to two digit numbers
-  // Returns two digit numbers
-  formatToTwoDigits(number: number) {
-    return number < 10 ? "0" + number : number;
-  }
-
-  // Get specific day of the week
-  // Returns week day based on input number
-  getDayString(number: number): string {
-    return [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ][number];
-  }
-
-  // Create random number based on intervall parameters
-  // Returns random number
-  randomIntFromInterval(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
   // Checks if input parameter is a number
   // Returns true, when parameter is a number, otherwise false
   isNumber(input: any): boolean {
     return !isNaN(Number(input));
   }
 
-  // Checks if an input parameters date is the actual date
-  // Returns true, when it's the actual date, otherwise false
-  isToday(unknownDate: Date): boolean {
-    let actualDate = new Date();
+  // Formate one digit numbers to two digit numbers
+  // Returns two digit numbers
+  formatToTwoDigits(number: number) {
+    return number < 10 ? "0" + number : number;
+  }
 
-    if (
-      unknownDate.getDate() == actualDate.getDate() &&
-      unknownDate.getMonth() == actualDate.getMonth() &&
-      unknownDate.getFullYear() == actualDate.getFullYear()
-    ) {
-      return true;
-    }
-
-    return false;
+  // Create random number based on intervall parameters
+  // Returns random number
+  randomIntFromInterval(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   // Sort function for numerical values

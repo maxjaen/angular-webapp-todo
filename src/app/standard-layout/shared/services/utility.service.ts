@@ -8,44 +8,22 @@ const NEW_LINE = "\n";
 export class UtilityService {
   constructor() {}
 
-  // Seperates string by a specific character
-  // Return an array of strings
   split(string: string) {
     return string.split(NEW_LINE);
   }
 
-  // Checks if input parameter is a number
-  // Returns true, when parameter is a number, otherwise false
   isNumber(input: any): boolean {
     return !isNaN(Number(input));
   }
 
-  // Formate one digit numbers to two digit numbers
-  // Returns two digit numbers
   formatToTwoDigits(number: number) {
     return number < 10 ? "0" + number : number;
   }
 
-  // Create random number based on intervall parameters
-  // Returns random number
   randomIntFromInterval(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  // Sort function for numerical values
-  // otherwise standard sort would be alphabetical
-  sortNumerical(a: number, b: number) {
-    if (a > b) return -1;
-    if (a < b) return 1;
-    else return 0;
-  }
-
-  sortDistinct(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
-  // Checks if an object has the a specific property
-  // Return true if object has property, otherwise false
   objectHasPropertyWithValue(object: any, property: string): boolean {
     if (
       object.hasOwnProperty(property) &&
@@ -58,17 +36,32 @@ export class UtilityService {
     return false;
   }
 
-  // Removes the element on a specific position from the array
+  // ==================================================
+  // SORTING
+  // ==================================================
+
+  sortNumerical(a: number, b: number) {
+    if (a > b) return -1;
+    if (a < b) return 1;
+    else return 0;
+  }
+
+  sortDistinct(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
+  // ==================================================
+  // ARRAY
+  // ==================================================
+
   removePositionFromArray(elementPosition: number, array: any[]) {
     array.splice(elementPosition, 1);
   }
 
-  // Removes specific element from array
   removeElementFromArray(element: any, array: any[]) {
     array.splice(array.indexOf(element), 1);
   }
 
-  // Changes the index of an element in a array
   changeElementOrderInArray(array: any[], direction: string, index: number) {
     let actualElement: number = index;
     let lastElement: number = index - 1;

@@ -168,7 +168,7 @@ export class TimeTaskComponent implements OnInit {
     data.forEach((key) => {
       let element: KeyValuePair = {
         key: key.shortdescr, // name of timetask as string
-        value: this._timeService.millisecondsToString(
+        value: this._timeService.formatMillisecondsToString(
           // time as string
           data
             .filter((e) => e.shortdescr == key.shortdescr)
@@ -300,11 +300,10 @@ export class TimeTaskComponent implements OnInit {
 
   // Remove selected TimeTask from the database
   removeTimeElement(timeElement: TimeTask) {
-    if (timeElement === undefined) {
-      return;
-    }
-
-    if (!this._utilityService.isNumber(timeElement.id)) {
+    if (
+      timeElement === undefined ||
+      !this._utilityService.isNumber(timeElement.id)
+    ) {
       return;
     }
 
@@ -478,22 +477,9 @@ export class TimeTaskComponent implements OnInit {
 
   // Create time view string from TimeTask
   timeElementToTimestring(timeElement: TimeTask): string {
-    return this._timeService.millisecondsToString(
+    return this._timeService.formatMillisecondsToString(
       new Date(timeElement.enddate).getTime() -
         new Date(timeElement.startdate).getTime()
-    );
-  }
-
-  // Formate date to string
-  // Return formated string
-  formatDateToString(date: Date, str: string): string {
-    let temp: Date = new Date(date);
-    return (
-      str +
-      ": " +
-      this._utilityService.formatToTwoDigits(temp.getHours()) +
-      ":" +
-      this._utilityService.formatToTwoDigits(temp.getMinutes())
     );
   }
 

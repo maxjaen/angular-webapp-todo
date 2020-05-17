@@ -18,12 +18,12 @@
                   <p>
                      <span>Time week: </span>
                      <span [style.color]="this._keyService.getColor('white')">
-                        {{ this._timeService.millisecondsToString(calculateOverallTime(allTimeElements)) }}</span>
+                        {{ this._timeService.formatMillisecondsToString(calculateOverallTime(allTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Time today: </span>
                      <span [style.color]="this._keyService.getColor('white')">
-                        {{ this._timeService.millisecondsToString(calculateTodayTime(todayTimeElements)) }}</span>
+                        {{ this._timeService.formatMillisecondsToString(calculateTodayTime(todayTimeElements)) }}</span>
                   </p>
                   <p>
                      <span>Week: </span>
@@ -91,9 +91,10 @@
                                  <div *ngIf="timeElement.enddate" style="display: inline;">
                                     {{ timeElementToTimestring(timeElement) }} >>
                                  </div>
-                                 {{ formatDateToString(timeElement.startdate, "Start")}}
+                                 {{ this._timeTaskService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
                                  <div *ngIf="timeElement.enddate" style="display: inline;">
-                                    , {{formatDateToString(timeElement.enddate, "End") }}
+                                    ,
+                                    {{this._timeTaskService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
                                  </div>
                               </div>
                            </mat-card-title>
@@ -132,7 +133,7 @@
             <div *ngIf="historyElements.length > 0">
                <p>
                   Time: <span
-                     style="color: coral;">{{ this._timeService.millisecondsToString(calculateTodayTime(historyElements)) }}</span>
+                     style="color: coral;">{{ this._timeService.formatMillisecondsToString(calculateTodayTime(historyElements)) }}</span>
                </p>
             </div>
             <div *ngIf="historyAccumulatedElements">
@@ -156,9 +157,9 @@
                            <div *ngIf="timeElement.enddate" style="display: inline;">
                               {{ timeElementToTimestring(timeElement) }} >>
                            </div>
-                           {{ formatDateToString(timeElement.startdate, "Start")}}
+                           {{ this._timeTaskService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
                            <div *ngIf="timeElement.enddate" style="display: inline;">
-                              , {{formatDateToString(timeElement.enddate, "End") }}
+                              , {{this._timeTaskService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
                            </div>
                         </div>
                      </mat-card-title>

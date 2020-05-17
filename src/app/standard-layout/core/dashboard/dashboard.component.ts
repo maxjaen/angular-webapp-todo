@@ -100,7 +100,9 @@ export class DashboardComponent implements OnInit {
 
       let element: KeyValuePair = {
         key: "timetask",
-        value: this._timeService.millisecondsToString(tempValue).toString(),
+        value: this._timeService
+          .formatMillisecondsToString(tempValue)
+          .toString(),
       };
 
       this.placeHolderArray.push(element);

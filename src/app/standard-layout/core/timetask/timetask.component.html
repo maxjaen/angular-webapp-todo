@@ -28,7 +28,7 @@
                   <p>
                      <span>Week: </span>
                      <span
-                        [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(calculateWeekNumber()) }}</span>
+                        [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(this._timeService.calculateWeekNumber()) }}</span>
                   </p>
                </div>
                <div *ngIf="accumulatedElements && accumulatedElements.length>1">

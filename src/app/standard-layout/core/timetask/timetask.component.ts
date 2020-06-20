@@ -10,6 +10,8 @@ import { UtilityService } from "../../shared/services/utility.service";
 import { AmazingTimePickerService } from "amazing-time-picker";
 import { KeyService } from "../../shared/services/key.service";
 import { TimeService } from "../../shared/services/time.service";
+import { SettingsService } from "../settings/services/settings.service";
+import { Settings } from "../settings/model/settings";
 
 const START_DATE_STRING = "startdate";
 const END_DATE_STRING = "enddate";
@@ -35,6 +37,8 @@ export class TimeTaskComponent implements OnInit {
   accumulatedElements: KeyValuePair[];
   historyAccumulatedElements: KeyValuePair[];
 
+  settings: Settings[] = [];
+
   id: number;
   shortdescr: string;
   longdescr: string;
@@ -44,6 +48,7 @@ export class TimeTaskComponent implements OnInit {
 
   // TODO timerservice doesn't show correct time in google chrome, when tab inactive
   constructor(
+    public settingsService: SettingsService,
     private _timeTaskService: TimeTaskService,
     private _timerService: CountupTimerService,
     private _timePickerService: AmazingTimePickerService,
@@ -58,6 +63,7 @@ export class TimeTaskComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getSettingsFromService();
     this.getTimeElementsFromService();
     this.setTimerConfig();
   }
@@ -95,6 +101,13 @@ export class TimeTaskComponent implements OnInit {
    * TIMEELEMENT METHODS
    * ===================================================================================
    */
+
+  // Get all settings from service
+  getSettingsFromService() {
+    this.settingsService.getAllSettings().subscribe((settings) => {
+      this.settings = settings;
+    });
+  }
 
   // Selected current TimeElement if not already set,
   // otherwise hide current selected TimeElement
@@ -325,6 +338,23 @@ export class TimeTaskComponent implements OnInit {
       this.getTimeElementsFromService();
       this.hideSelectedTimeElement();
     });
+  }
+
+  deleteAllAvailableTimeTasks() {
+    if (!window.confirm("Are sure you want to delete this item?")) {
+      return;
+    }
+
+    this.historyElements.forEach((e) => {
+      this._timeTaskService.deleteTimeElement(e.id).subscribe(() => {
+        this.openSnackBar("TimeTask removed!", null);
+        this.getTimeElementsFromService();
+        this.hideSelectedTimeElement();
+      });
+    });
+
+    this.historyElements = null;
+    this.historyAccumulatedElements = null;
   }
 
   /*

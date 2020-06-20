@@ -2,8 +2,8 @@
     <div *ngIf="settings && settings.length > 0">
         <h1 class="mat-h1">Dashboard</h1>
         <div *ngIf="this.settings && this.settings.length > 0">
-            <div *ngFor="let component of this.settings[0].startpage">
-                <div *ngIf="this.settings[0]['settingsmenu'][0]['settings'][0]['value'] && component.type=='task'">
+            <div *ngFor="let component of this.settingsService.getStartPageHeaders(this.settings);">
+                <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show Tasks module') && component.type=='task'">
                     <mat-card (click)="goToUrl(component)" class="dashboard-card"
                         style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #4a4141;">
                         <!--<mat-card-header style="float: right;">
@@ -36,7 +36,7 @@
                         </mat-card-content>
                     </mat-card>
                 </div>
-                <div *ngIf="this.settings[0]['settingsmenu'][0]['settings'][1]['value'] && component.type=='fitness'">
+                <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show Fitness module') && component.type=='fitness'">
                     <mat-card (click)=" goToUrl(component)" class="dashboard-card"
                         style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #49414a;">
                         <!--<mat-card-header style="float: right;">

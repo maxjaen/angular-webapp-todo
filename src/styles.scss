@@ -26,3 +26,18 @@ body {
   display: block;
   overflow: auto;
 }
+
+/* element blocks */
+
+.card {
+  margin: 2%;
+  display: block;
+  overflow: hidden;
+}
+
+.card-status {
+  width: 100%;
+  float: inline-start;
+  height: 1px;
+  margin-bottom: 20px;
+}

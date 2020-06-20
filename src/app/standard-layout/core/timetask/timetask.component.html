@@ -15,21 +15,27 @@
                </countup-timer>
                <div>
                   <!-- TODO check when elements length 0 or elements object null -->
-                  <p>
+                 <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total this week')">
+                     <p>
                      <span>Time week: </span>
                      <span [style.color]="this._keyService.getColor('white')">
                         {{ this._timeService.formatMillisecondsToString(calculateOverallTime(allTimeElements)) }}</span>
                   </p>
-                  <p>
+                 </div>
+                 <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total today')">
+                     <p>
                      <span>Time today: </span>
                      <span [style.color]="this._keyService.getColor('white')">
                         {{ this._timeService.formatMillisecondsToString(calculateTodayTime(todayTimeElements)) }}</span>
                   </p>
-                  <p>
+                 </div>
+                 <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show week number')">
+                     <p>
                      <span>Week: </span>
                      <span
                         [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(this._timeService.calculateCurrentWeekNumber()) }}</span>
                   </p>
+                 </div>
                </div>
                <div *ngIf="accumulatedElements && accumulatedElements.length>1">
                   <br>
@@ -76,9 +82,10 @@
                      </form>
                   </div>
                   <mat-card (click)="selectTimeElement(timeElement);"
-                     style="margin: 2%; display: block; overflow: auto;" class="example-card">
-                     <div style="width: 30px; float: inline-start; height: 30px;"
-                        [style.background-color]="getBackgroundColorValue(timeElement)"></div>
+                      class="example-card card">
+                     <div *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show status color')">
+                        <div class="card-status" [style.background-color]="getBackgroundColorValue(timeElement)"></div>
+                     </div>
                      <div style="width: 70%; display: inline-block;">
                         <mat-card-header style="float: left;">
                            <mat-card-title>
@@ -131,6 +138,7 @@
          </mat-form-field>
          <div *ngIf="historyElements">
             <div *ngIf="historyElements.length > 0">
+           <button (click)="this.deleteAllAvailableTimeTasks();" mat-raised-button>Delete all</button>
                <p>
                   Time: <span
                      style="color: coral;">{{ this._timeService.formatMillisecondsToString(calculateTodayTime(historyElements)) }}</span>
@@ -144,8 +152,7 @@
                <br>
             </div>
             <div *ngFor="let timeElement of historyElements">
-               <mat-card [style.background-color]="this._keyService.getColor('darkgray')"
-                  style="margin: 2%; display: block; overflow: auto;" class="example-card">
+               <mat-card [style.background-color]="this._keyService.getColor('darkgray')" class="example-card card">
                   <mat-card-header style="float:left;">
                      <mat-card-title>
                         {{ timeElement.shortdescr }}

@@ -34,7 +34,7 @@ export class TasksComponent implements OnInit {
   dateString: string;
 
   constructor(
-    private settingsService: SettingsService,
+    public settingsService: SettingsService,
     private taskService: TaskService,
     public keysService: KeyService,
     public utilityService: UtilityService,

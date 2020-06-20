@@ -13,7 +13,7 @@ export class SettingsComponent implements OnInit {
   settings: Settings[] = [];
 
   constructor(
-    private settingsService: SettingsService,
+    public settingsService: SettingsService,
     private _tabTitle: Title,
     private _snackBar: MatSnackBar
   ) {
@@ -24,15 +24,10 @@ export class SettingsComponent implements OnInit {
     this.getSettingsFromService();
   }
 
-  // Get all settings from service
   getSettingsFromService() {
     this.settingsService.getAllSettings().subscribe((settings) => {
       this.settings = settings;
     });
-  }
-
-  getSettingTitles() {
-    return this.settings[0]["settingsmenu"];
   }
 
   saveSettings() {
@@ -43,7 +38,7 @@ export class SettingsComponent implements OnInit {
   }
 
   toogleSlider(setting: any, event: any) {
-    this.getSettingTitles()
+    this.settings[0]["settingsmenu"]
       .map((e) => e["settings"])
       .forEach((element) => {
         element.forEach((e) => {

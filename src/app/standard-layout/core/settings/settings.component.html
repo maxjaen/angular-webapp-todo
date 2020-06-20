@@ -1,6 +1,6 @@
 <div class="content">
     <div *ngIf="this.settings && this.settings.length > 0">
-        <div *ngFor="let component of this.getSettingTitles()" style="margin-bottom:  60px;">
+        <div *ngFor="let component of settingsService.getSettingsHeaders(settings)" style="margin-bottom:  60px;">
             <div style="margin-bottom: 30px;">
                 <h2>{{component["name"]}}</h2>
                 <hr />

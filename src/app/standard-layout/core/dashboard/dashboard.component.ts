@@ -23,11 +23,12 @@ interface KeyValuePair {
 })
 export class DashboardComponent implements OnInit {
   settings: Settings[] = [];
+
   placeHolderArray: KeyValuePair[] = [];
   ignoreModules: string[] = ["settings", "training"];
 
   constructor(
-    private settingsService: SettingsService,
+    public settingsService: SettingsService,
     private taskService: TaskService,
     private timeTaskService: TimeTaskService,
     private trainingService: TrainingService,

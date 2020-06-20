@@ -23,8 +23,8 @@ import { FreePattern } from "./model/free-pattern";
 import { Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { UtilityService } from "../../shared/services/utility.service";
+import { KeyService } from "../../shared/services/key.service";
 
-const LAST_TRAININGS = 10;
 @Component({
   selector: "app-exercise",
   templateUrl: "./exercise.component.html",
@@ -39,6 +39,7 @@ export class TrainingComponent implements OnInit {
     "freepattern",
   ];
 
+  displayedTrainings: number = 10;
   sessionMode = ["Normal Session", "Time Session"];
   selectedMode: string;
 
@@ -62,6 +63,7 @@ export class TrainingComponent implements OnInit {
   formGroupToInsert: FormGroup;
 
   constructor(
+    private keyService: KeyService,
     private exerciseService: ExerciseService,
     private trainingService: TrainingService,
     private utilityService: UtilityService,
@@ -239,8 +241,7 @@ export class TrainingComponent implements OnInit {
         });
       }
 
-      // Show the last x trainings
-      this.trainings = trainings.slice(0, LAST_TRAININGS);
+      this.trainings = trainings;
     });
   }
 
@@ -260,6 +261,67 @@ export class TrainingComponent implements OnInit {
       day: "numeric",
     };
     return tempDate.toLocaleDateString("de-DE", options);
+  }
+
+  isRunningOrBicycle(training: Training): boolean {
+    if (training.exercices.length == 1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  isGym(training: Training): boolean {
+    if (
+      training.exercices.find(
+        (e) =>
+          e.name == "Bankdrücken" ||
+          e.name == "Rudern sitzend am Kabelzug" ||
+          e.name == "Latzug Obergriff" ||
+          e.name == "Butterfly" ||
+          e.name == "Kastensteigen"
+      )
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  getBackgroundColorValue(training: Training): string {
+    if (this.isRunningOrBicycle(training)) {
+      return this.keyService.getColor("red");
+    }
+
+    if (this.isGym(training)) {
+      return this.keyService.getColor("lightgreen");
+    }
+
+    return this.keyService.getColor("darkgray");
+  }
+
+  showMoreTrainings() {
+    if (this.moreTrainingsThanDisplayed()) {
+      this.displayedTrainings += 10;
+    } else {
+      console.log("Failed to enhance displayed trainings number.");
+    }
+  }
+
+  showLessTrainings() {
+    if (this.displayedTrainings > 10) {
+      this.displayedTrainings -= 10;
+    } else {
+      console.log("Failed to reduce displayed trainings number.");
+    }
+  }
+
+  moreTrainingsThanDisplayed() {
+    if (this.trainings.length - this.displayedTrainings > 0) {
+      return true;
+    }
+
+    return false;
   }
 
   /*

@@ -5,7 +5,7 @@
    </div>
    <div class="content">
       <div class="block">
-         <div *ngIf="trainings.length==0" style="margin-bottom: 100px;">
+         <div *ngIf="!trainings" style="margin-bottom: 100px;">
             <p>Can't find any trainings</p>
             <br>
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
@@ -14,16 +14,25 @@
       <div class="selection" *ngIf="trainings">
          <div class="tab" #overviewtraining>
             <h2> Overview Training</h2>
-            <div *ngIf="trainings.length>0">
-               <div *ngFor="let training of trainings">
-                  <mat-card (click)="viewTraining(training)"
-                     style="width: 300px; min-width: 300px; max-width: 300px; margin: 2%; float: left"
+            <div *ngIf="trainings.length>0" style="display: flow-root;">
+               <div *ngFor="let training of trainings.slice(0, displayedTrainings)">
+                  <mat-card [style.background-color]="getBackgroundColorValue(training)"
+                     (click)="viewTraining(training)"
+                     style="width: 300px; min-width: 300px; max-width: 300px; margin: 2%; float: left;"
                      class="example-card">
                      <mat-card-header style="float:left;">
                         <mat-card-title>{{ showDatestring(training.date) }}</mat-card-title>
                      </mat-card-header>
                   </mat-card>
                </div>
+            </div>
+            <div style="margin: 2%;">
+               <button style="margin-right: 20px;" type="button" mat-raised-button (click)="showMoreTrainings()"
+                  [disabled]="!moreTrainingsThanDisplayed()">Show
+                  more</button>
+               <button style="margin-right: 20px;" type="button" mat-raised-button (click)="showLessTrainings()"
+                  [disabled]="this.trainings.slice(0, displayedTrainings).length<=10">Show
+                  less</button>
             </div>
             <div *ngIf="trainings.length==0" style="color: #484747;">
                <p>No trainings available</p>

@@ -9,7 +9,30 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-/* USER GLOBAL settings */
+// ==================================================================
+// USER GLOBAL settings
+// ==================================================================
+
+@mixin cursor-pointer {
+  cursor: pointer;
+}
+
+@mixin float-left {
+  float: left;
+}
+
+@mixin low-margin {
+  margin: 2px;
+}
+
+@mixin block {
+  display: block;
+  overflow: hidden;
+}
+
+/*
+GENERAL
+*/
 
 .content {
   margin-top: 3%;
@@ -18,16 +41,9 @@ body {
   margin-right: 15%;
 }
 
-.mat-card-header .mat-card-title {
-  margin-bottom: 0px;
-}
-
-.block {
-  display: block;
-  overflow: auto;
-}
-
-/* element blocks */
+/*
+MATCARDS
+*/
 
 .card {
   margin: 2%;
@@ -40,4 +56,83 @@ body {
   float: inline-start;
   height: 1px;
   margin-bottom: 20px;
+}
+
+.card-costum {
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+  float: left;
+}
+
+.mat-card-header .mat-card-title {
+  margin-bottom: 0px;
+}
+
+/*
+COLORS
+*/
+
+.gray {
+  color: #484747;
+}
+
+/*
+DISTANCE
+*/
+
+.indenting {
+  margin-left: 2%;
+}
+
+.enormeToBottom {
+  margin-bottom: 100px;
+}
+
+.largeToBottom {
+  margin-bottom: 50px;
+}
+
+.smallToBottom {
+  margin-bottom: 20px;
+}
+
+.largeToRight {
+  margin-right: 50px;
+}
+
+.smallToRight {
+  margin-right: 20px;
+}
+
+.smallToTop {
+  margin-top: 20px;
+}
+
+/*
+DISPLAY
+*/
+
+.flow-root {
+  display: flow-root;
+}
+
+.inline {
+  display: inline;
+}
+
+/*
+ELEMENTS
+*/
+
+.tab {
+  margin-bottom: 40px;
+  @include block;
+}
+
+.text-container {
+  width: 50%;
+  @include low-margin;
+  @include float-left;
+  @include block;
 }

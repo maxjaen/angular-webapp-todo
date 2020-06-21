@@ -1,1 +1,17 @@
 @import "../../../../styles.scss";
+
+.statistics {
+  width: 15%;
+}
+
+.tab {
+  .card-left {
+    float: left;
+  }
+  .card-right {
+    float: right;
+  }
+  .dateFontSize {
+    font-size: 12px;
+  }
+}

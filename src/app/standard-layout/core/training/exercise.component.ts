@@ -294,7 +294,7 @@ export class TrainingComponent implements OnInit {
     }
 
     if (this.isGym(training)) {
-      return this.keyService.getColor("lightgreen");
+      return this.keyService.getColor("blue");
     }
 
     return this.keyService.getColor("darkgray");

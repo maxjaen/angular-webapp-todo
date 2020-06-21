@@ -13,6 +13,7 @@ import { KeyService } from "../../shared/services/key.service";
 })
 export class WeightComponent implements OnInit {
   weights: Weight[];
+  displayedWeights: number = 15;
 
   form = new FormGroup({
     weight: new FormControl("", [Validators.required]),
@@ -98,6 +99,30 @@ export class WeightComponent implements OnInit {
     this._snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  showMoreWeights() {
+    if (this.moreWeightsThanDisplayed()) {
+      this.displayedWeights += 10;
+    } else {
+      console.log("Failed to enhance displayed trainings number.");
+    }
+  }
+
+  showLessWeights() {
+    if (this.displayedWeights > 10) {
+      this.displayedWeights -= 10;
+    } else {
+      console.log("Failed to reduce displayed trainings number.");
+    }
+  }
+
+  moreWeightsThanDisplayed() {
+    if (this.weights.length - this.displayedWeights > 0) {
+      return true;
+    }
+
+    return false;
   }
 
   /*

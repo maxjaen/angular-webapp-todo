@@ -1,6 +1,12 @@
 @import "../../../../styles.scss";
 
-@media (max-width: 379.767px) {
+/*
+PAGE DESIGN
+*/
+
+$container-width: 300px;
+
+@media (max-width: $container-width) {
   .categories,
   .selection {
     width: 100%;
@@ -8,33 +14,29 @@
 }
 
 .categories {
-  float: left;
-  min-width: 379.767px;
-  margin: 2%;
-  margin-bottom: 40px;
+  min-width: $container-width;
+  @include low-margin;
+  @include float-left;
 }
 
 .exercises {
-  display: block;
-  overflow: auto;
-  margin: 2%;
-  float: left;
+  @include low-margin;
+  @include float-left;
+  @include block;
 }
 
 .selection {
-  min-width: 379.767px;
-  float: left;
+  min-width: $container-width;
   width: 100%;
-
-  .tab {
-    margin-bottom: 60px;
-    display: block;
-    overflow: auto;
-  }
+  @include float-left;
 }
 
-.names {
-  margin-left: 3%;
+/*
+ELEMENTS
+*/
+
+#block {
+  @include block;
 }
 
 .buttons {
@@ -44,33 +46,27 @@
   margin-bottom: 2%;
 }
 
-.calc {
-  margin-top: 30px;
+.positionbuttons {
+  margin: 6px;
 }
 
-.selectionitem {
-  display: block;
-  overflow: auto;
-  margin-bottom: 20px;
+.text-width {
+  width: 376px;
 }
 
-.selectionitem:hover {
-  background-color: #464545;
-  cursor: pointer;
-}
-
-.sticky {
-  display: block;
-  overflow: auto;
-  position: fixed;
-  bottom: 0px;
-}
-
-.errormessage {
-  color: #484747;
+#errormessage {
   width: 245px;
 }
 
-.posbuttons {
-  margin: 6px;
+/*
+STICKY
+*/
+
+.fixedButtons {
+  display: grid;
+  overflow: visible;
+  z-index: 999;
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
 }

@@ -13,13 +13,13 @@
          <div *ngIf="!focusedTask">
             <div class="insert"></div>
             <div>
-               <button id="changeEventButton" title="Create new task" (click)="openInsertTaskDialog()" mat-fab
+               <button id="createNewTask" title="Create new task" (click)="openInsertTaskDialog()" mat-fab
                   color="primary">
                   +
                </button>
             </div>
             <div *ngIf="unpinnedTasks && pinnedTasks">
-               <div *ngIf="pinnedTasks.length > 0" class="pinnedtasks">
+               <div class="largeToBottom" *ngIf="pinnedTasks.length > 0">
                   <h3>Pinned Tasks</h3>
                   <div *ngFor="let task of pinnedTasks; let i = index">
                      <div *ngIf="task == selectedTask" class="changeField"
@@ -51,7 +51,7 @@
                         </form>
                      </div>
                      <!-- <mat-card [style.background-color]="task==selectedTask ? '#47556c' : '#424242'" (click)="selectTask(task);" style="margin: 2%; display: block; overflow: auto;" class="example-card"> -->
-                     <mat-card class="example-card card"  (click)="selectTask(task)">
+                     <mat-card class="example-card" (click)="selectTask(task)"> 
                         <div *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show status color')">
                            <div class="card-status" [style.background-color]="getBackgroundColorValue(task)">
                            </div>
@@ -90,7 +90,7 @@
                      </mat-card>
                   </div>
                </div>
-               <div *ngIf="unpinnedTasks.length > 0" class="unpinnedtasks">
+               <div *ngIf="unpinnedTasks.length > 0">
                   <h3>Unpinned Tasks</h3>
                   <div *ngFor="let task of unpinnedTasks; let i = index">
                      <div *ngIf="task == selectedTask" class="changeField"
@@ -121,8 +121,7 @@
                            </button>
                         </form>
                      </div>
-                     <mat-card (click)="selectTask(task)" style="margin: 2%; display: block; overflow: hidden;"
-                        class="example-card">
+                     <mat-card class="example-card" (click)="selectTask(task)"> 
                         <div *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show status color')">
                            <div class="card-status"
                               [style.background-color]="getBackgroundColorValue(task)"></div>

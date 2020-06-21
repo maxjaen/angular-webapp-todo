@@ -3,18 +3,17 @@
    <mat-tab label="Today">
       <div class="content">
          <div class="block">
-            <div *ngIf="todayTimeElements.length==0" style="margin-bottom: 100px;">
+            <div class="enormeToBottom" *ngIf="todayTimeElements.length==0">
                <p>Can't find any timetasks</p>
                <br>
                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
             </div>
          </div>
-         <div class="show" style="display: block; width: 100%;">
-            <div style="margin: 2%; font-size: 18px; ">
-               <countup-timer style="font-size: 42px;" [countUpTimerConfig]="testConfig">
+         <div class="show-wrapper">
+            <div class="show">
+               <countup-timer [countUpTimerConfig]="testConfig">
                </countup-timer>
                <div>
-                  <!-- TODO check when elements length 0 or elements object null -->
                  <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total this week')">
                      <p>
                      <span>Time week: </span>
@@ -45,17 +44,16 @@
                   <br>
                </div>
             </div>
-            <div style="margin: 2%;" class="insert">
+            <div class="insert low-margin;">
                <div>
-                  <button id="changeEventButton" (click)="openInsertDialog()" mat-flat-button color="primary"
+                  <button (click)="openInsertDialog()" mat-flat-button color="primary"
                      style="margin-right: 1%;">Start</button>
-                  <button id="changeEventButton" (click)="finishTimer()" mat-flat-button color="primary">Finish</button>
+                  <button (click)="finishTimer()" mat-flat-button color="primary">Finish</button>
                </div>
             </div>
             <div *ngIf="todayTimeElements">
                <div *ngFor="let timeElement of todayTimeElements">
-                  <div *ngIf="selectedTimeElement==timeElement" class="changeField"
-                     style="margin: 2%; display: block; overflow: auto;">
+                  <div class="block low-margin changeField" *ngIf="selectedTimeElement==timeElement">
                      <form class="example-form">
                         <mat-form-field class="example-full-width" style="margin-right: 2%;">
                            <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
@@ -82,7 +80,7 @@
                      </form>
                   </div>
                   <mat-card (click)="selectTimeElement(timeElement);"
-                      class="example-card card">
+                      class="example-card block">
                      <div *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show status color')">
                         <div class="card-status" [style.background-color]="getBackgroundColorValue(timeElement)"></div>
                      </div>
@@ -90,11 +88,11 @@
                         <mat-card-header style="float: left;">
                            <mat-card-title>
                               {{ timeElement.shortdescr }}
-                              <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
-                                 style="margin-top: 20px; font-size: 12px;">
+                              <div class="fontSizeTwelve" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
+                                 style="margin-top: 20px;">
                                  No measurement enddate available...
                               </div>
-                              <div style="margin-top: 20px; font-size: 12px;">
+                              <div class="fontSizeTwelve" style="margin-top: 20px;">
                                  <div *ngIf="timeElement.enddate" style="display: inline;">
                                     {{ timeElementToTimestring(timeElement) }} >>
                                  </div>
@@ -152,15 +150,15 @@
                <br>
             </div>
             <div *ngFor="let timeElement of historyElements">
-               <mat-card [style.background-color]="this._keyService.getColor('darkgray')" class="example-card card">
+               <mat-card [style.background-color]="this._keyService.getColor('darkgray')" class="example-card block">
                   <mat-card-header style="float:left;">
                      <mat-card-title>
                         {{ timeElement.shortdescr }}
-                        <div *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
-                           style="margin-top: 20px; font-size: 12px;">
+                        <div class="fontSizeTwelve" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
+                           style="margin-top: 20px;">
                            No measurement enddate available...
                         </div>
-                        <div style="margin-top: 20px; font-size: 12px;">
+                        <div class="fontSizeTwelve" style="margin-top: 20px;">
                            <div *ngIf="timeElement.enddate" style="display: inline;">
                               {{ timeElementToTimestring(timeElement) }} >>
                            </div>

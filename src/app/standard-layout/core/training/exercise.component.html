@@ -132,7 +132,7 @@
                      <mat-datepicker #picker></mat-datepicker>
                   </mat-form-field>
                </div>
-               <div id="block" *ngFor="let exercise of exercisesToInsert; let i=index">
+               <div class="block" *ngFor="let exercise of exercisesToInsert; let i=index">
                   <div *ngIf="!compareExercisetoElementBefore(exercise, i)">
                      <p>{{ exercise['name'] }}</p>
                      <button class="buttons" (click)="toggleCheckboxEvent(exercise, {checked : true})" mat-mini-fab

@@ -1,19 +1,21 @@
 @import "../../../../styles.scss";
 
-.pinnedtasks {
-  margin-bottom: 60px;
-}
-
 table {
   width: 100%;
 }
 
-mat-card:hover {
-  background-color: #464545;
-  cursor: pointer;
+mat-card {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 3%;
 }
 
-#changeEventButton {
+mat-card:hover {
+  background-color: #464545;
+  @include cursor-pointer;
+}
+
+#createNewTask {
   margin-right: 20px;
   margin-left: 20px;
   margin-bottom: 20px;

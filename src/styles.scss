@@ -45,17 +45,11 @@ GENERAL
 MATCARDS
 */
 
-.card {
-  margin: 2%;
-  display: block;
-  overflow: hidden;
-}
-
 .card-status {
   width: 100%;
   float: inline-start;
-  height: 1px;
-  margin-bottom: 20px;
+  height: 4px;
+  margin-bottom: 22px;
 }
 
 .card-costum {
@@ -125,9 +119,13 @@ DISPLAY
 ELEMENTS
 */
 
+.block {
+  @include block;
+}
+
 .tab {
   margin-bottom: 40px;
-  @include block;
+  @extend .block;
 }
 
 .text-container {
@@ -135,4 +133,12 @@ ELEMENTS
   @include low-margin;
   @include float-left;
   @include block;
+}
+
+/*
+FONTS
+*/
+
+.fontSizeTwelve {
+  font-size: 12px;
 }

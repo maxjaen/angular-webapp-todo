@@ -4,3 +4,27 @@ mat-card:hover {
   background-color: #464545;
   cursor: pointer;
 }
+
+mat-card {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 3%;
+}
+
+.show-wrapper {
+  width: 100%;
+  @include block;
+
+  .show {
+    font-size: 18px;
+    margin-top: 2%;
+
+    countup-timer {
+      font-size: 42px;
+    }
+  }
+}
+
+.insert {
+  margin-bottom: 2%;
+}

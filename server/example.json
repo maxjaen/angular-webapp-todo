@@ -10,37 +10,37 @@
       "startpage": [
         {
           "name": "tasks",
-          "symbol": "📚",
+          "symbol": "post_add",
           "displaytext": "You have _ pinned task/s",
           "type": "task"
         },
         {
           "name": "timetask",
-          "symbol": "⏰",
+          "symbol": "timer",
           "displaytext": "You have worked _ today",
           "type": "task"
         },
         {
           "name": "training",
-          "symbol": "🏆",
+          "symbol": "emoji_events",
           "displaytext": "Create or view your trainings",
           "type": "fitness"
         },
         {
           "name": "session",
-          "symbol": "🏅",
+          "symbol": "fitness_center",
           "displaytext": "Your previous workout session lasts _ seconds",
           "type": "fitness"
         },
         {
           "name": "weight",
-          "symbol": "⚖️",
+          "symbol": "point_of_sale",
           "displaytext": "Your weight is currently _ kilograms",
           "type": "fitness"
         },
         {
           "name": "settings",
-          "symbol": "⚙️",
+          "symbol": "settings",
           "displaytext": "Change whatever you want",
           "type": "general"
         }
@@ -64,15 +64,15 @@
           "settings": [
             {
               "displaytext": "Show status color",
-              "value": false
+              "value": true
             },
             {
               "displaytext": "Show creation date",
-              "value": "false"
+              "value": false
             },
             {
-              "displaytext": "Enable history",
-              "value": true
+              "displaytext": "Enable task history",
+              "value": false
             }
           ]
         },
@@ -81,19 +81,19 @@
           "settings": [
             {
               "displaytext": "Show total this week",
-              "value": "false"
+              "value": true
             },
             {
               "displaytext": "Show total today",
-              "value": "false"
+              "value": true
             },
             {
               "displaytext": "Show week number",
-              "value": "false"
+              "value": false
             },
             {
-              "displaytext": "Enable history",
-              "value": true
+              "displaytext": "Enable timetask history",
+              "value": false
             }
           ]
         },

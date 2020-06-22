@@ -48,7 +48,7 @@ MATCARDS
 .card-status {
   width: 100%;
   float: inline-start;
-  height: 4px;
+  height: 2px;
   margin-bottom: 22px;
 }
 
@@ -119,6 +119,11 @@ DISPLAY
 ELEMENTS
 */
 
+textarea,
+.mat-input-element {
+  caret-color: white;
+}
+
 .block {
   @include block;
 }
@@ -135,10 +140,33 @@ ELEMENTS
   @include block;
 }
 
+.control-buttons-white {
+  background-color: white;
+  color: black;
+}
+
+.control-buttons-gray {
+  background-color: #424242;
+  color: white;
+}
+
 /*
 FONTS
 */
 
 .fontSizeTwelve {
   font-size: 12px;
+}
+
+/*
+STICKY
+*/
+
+.fixedButtons {
+  display: grid;
+  overflow: visible;
+  z-index: 999;
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
 }

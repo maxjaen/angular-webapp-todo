@@ -44,11 +44,15 @@
                   <br>
                </div>
             </div>
-            <div class="insert low-margin;">
-               <div>
-                  <button (click)="openInsertDialog()" mat-flat-button color="primary"
-                     style="margin-right: 1%;">Start</button>
-                  <button (click)="finishTimer()" mat-flat-button color="primary">Finish</button>
+            <div>
+               <div class="fixedButtons">
+                  <button class="control-buttons-gray smallToBottom" (click)="openInsertDialog()" color="primary"
+                mat-mini-fab>
+                     <mat-icon>create</mat-icon>
+                  </button>
+                  <button class="control-buttons-gray" (click)="finishTimer()" color="primary" mat-mini-fab>
+                     <mat-icon>close</mat-icon>
+                  </button>
                </div>
             </div>
             <div *ngIf="todayTimeElements">
@@ -114,8 +118,12 @@
                         </mat-card-header>
                      </div>
                      <div style="display: flex; justify-content: flex-end; float: right;">
-                        <button (click)="continueTimeElement(timeElement);" mat-button>Continue</button>
-                        <button (click)="removeTimeElement(timeElement)" mat-button>Delete</button>
+                        <button title="Continue" (click)="continueTimeElement(timeElement);" mat-button>
+                           <mat-icon>play_arrow</mat-icon>
+                        </button>
+                        <button title="Delete" (click)="removeTimeElement(timeElement)" mat-button>
+                           <mat-icon>delete</mat-icon>
+                        </button>
                      </div>
                   </mat-card>
                </div>

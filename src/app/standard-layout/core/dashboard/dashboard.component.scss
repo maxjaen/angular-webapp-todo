@@ -5,3 +5,9 @@ mat-card:hover {
   background-color: #464545;
   cursor: pointer;
 }
+
+.material-icons {
+  vertical-align: sub;
+  font-size: 60px;
+  @extend .smallToRight;
+}

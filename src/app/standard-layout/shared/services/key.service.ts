@@ -19,4 +19,8 @@ export class KeyService {
   getColor(color: string): string {
     return colors[color];
   }
+
+  getColors(): any {
+    return colors;
+  }
 }

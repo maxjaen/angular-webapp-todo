@@ -53,16 +53,3 @@ ELEMENTS
 #errormessage {
   width: 245px;
 }
-
-/*
-STICKY
-*/
-
-.fixedButtons {
-  display: grid;
-  overflow: visible;
-  z-index: 999;
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-}

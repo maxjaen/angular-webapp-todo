@@ -5,7 +5,7 @@
             <div *ngFor="let component of this.settingsService.getStartPageHeaders(this.settings);">
                 <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show Tasks module') && component.type=='task'">
                     <mat-card (click)="goToUrl(component)" class="dashboard-card"
-                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #4a4141;">
+                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #5a606f;">
                         <!--<mat-card-header style="float: right;">
                             <mat-card-title>
                                 <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
@@ -17,9 +17,9 @@
                             </mat-card-title>
                         </mat-card-header>-->
                         <mat-card-content class="dashboard-card-content">
-                            <div
+                            <div 
                                 style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
-                                {{component.symbol}}
+                                <mat-icon>{{component.symbol}}</mat-icon>
                             </div>
                             <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
                                 <div
@@ -38,7 +38,7 @@
                 </div>
                 <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show Fitness module') && component.type=='fitness'">
                     <mat-card (click)=" goToUrl(component)" class="dashboard-card"
-                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #49414a;">
+                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #6b5a6f;">
                         <!--<mat-card-header style="float: right;">
                                             <mat-card-title>
                                                 <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
@@ -52,7 +52,7 @@
                         <mat-card-content class="dashboard-card-content">
                             <div
                                 style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
-                                {{component.symbol}}
+                                <mat-icon>{{component.symbol}}</mat-icon>
                             </div>
                             <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
                                 <div
@@ -73,19 +73,19 @@
                     <mat-card (click)=" goToUrl(component)" class="dashboard-card"
                         style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px;">
                         <!--<mat-card-header style="float: right;">
-                                                            <mat-card-title>
-                                                                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                                                                    <mat-icon>more_vert</mat-icon>
-                                                                </button>
-                                                                <mat-menu #menu="matMenu" xPosition="before">
-                                                                    <button mat-menu-item>Remove</button>
-                                                                </mat-menu>
-                                                            </mat-card-title>
-                                                        </mat-card-header>-->
+                        <mat-card-title>
+                            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu" xPosition="before">
+                                <button mat-menu-item>Remove</button>
+                            </mat-menu>
+                        </mat-card-title>
+                        </mat-card-header>-->
                         <mat-card-content class="dashboard-card-content">
                             <div
                                 style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
-                                {{component.symbol}}
+                                <mat-icon>{{component.symbol}}</mat-icon>
                             </div>
                             <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
                                 <div

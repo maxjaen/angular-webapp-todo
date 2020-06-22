@@ -11,13 +11,9 @@
             </div>
          </div>
          <div *ngIf="!focusedTask">
-            <div class="insert"></div>
-            <div>
-               <button id="createNewTask" title="Create new task" (click)="openInsertTaskDialog()" mat-fab
-                  color="primary">
-                  +
-               </button>
-            </div>
+            <button class="fixedButtons control-buttons-gray" title="Create new task" (click)="openInsertTaskDialog()" mat-mini-fab>
+               <mat-icon>create</mat-icon>
+            </button>
             <div *ngIf="unpinnedTasks && pinnedTasks">
                <div class="largeToBottom" *ngIf="pinnedTasks.length > 0">
                   <h3>Pinned Tasks</h3>
@@ -80,12 +76,20 @@
                            </mat-card-header>
                         </div>
                         <div style="display: flex; justify-content: flex-end; float: right;">
-                           <button (click)="focusTask(task)" mat-button>Focus</button>
-                           <button (click)="pinTask(task)" mat-button>Unpin</button>
-                           <button (click)="hideTask(task)" mat-button>Archive</button>
-                           <button (click)="removeTask(task)" mat-button>Delete</button>
+                           <button title="Focus" (click)="focusTask(task)" mat-button>
+                              <mat-icon>center_focus_strong</mat-icon>
+                           </button>   
+                           <button title="Unpin" (click)="pinTask(task)" mat-button>
+                              <mat-icon>public_off</mat-icon>
+                           </button>
+                           <button title="Archive" (click)="hideTask(task)" mat-button>
+                              <mat-icon>move_to_inbox</mat-icon>
+                           </button>
+                           <button title="Delete" (click)="removeTask(task)" mat-button>
+                              <mat-icon>delete</mat-icon>
+                           </button>
                            <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
-                                       <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
+                           <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
                         </div>
                      </mat-card>
                   </div>
@@ -150,11 +154,17 @@
                            </mat-card-header>
                         </div>
                         <div style="display: flex; justify-content: flex-end; float: right;">
-                           <button (click)="pinTask(task)" mat-button>Pin</button>
-                           <button (click)="hideTask(task)" mat-button>Archive</button>
-                           <button (click)="removeTask(task)" mat-button>Delete</button>
+                           <button title="Pin task" (click)="pinTask(task)" mat-button>
+                              <mat-icon>push_pin</mat-icon>
+                           </button>
+                           <button title="Archive task" (click)="hideTask(task)" mat-button>
+                              <mat-icon>move_to_inbox</mat-icon>
+                           </button>
+                           <button title="Delete task" (click)="removeTask(task)" mat-button>
+                              <mat-icon>delete</mat-icon>
+                           </button>                           
                            <!-- <button (click)="changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
-                                    <button (click)="changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
+                           <button (click)="changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
                         </div>
 
                      </mat-card>
@@ -237,9 +247,13 @@
                   </mat-card-header>
                </div>
                <div style="display: flex; justify-content: flex-end; float: right;">
-                  <button (click)="hideTask(task)" mat-button>Unarchive</button>
-                  <button (click)="removeTask(task)" mat-button>Delete</button>
-                  <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
+                  <button title="Unarchive" (click)="hideTask(task)" mat-button>
+                     <mat-icon>move_to_inbox</mat-icon>
+                  </button>
+                  <button title="Delete" (click)="removeTask(task)" mat-button>
+                     <mat-icon>delete</mat-icon>
+                  </button>
+                           <!-- <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'unten', i)" mat-stroked-button>Down</button>
                            <button (click)="this.utilityService.changeTasksOrder(unpinnedTasks, 'oben', i)" mat-stroked-button>Up</button> -->
                </div>
             </mat-card>

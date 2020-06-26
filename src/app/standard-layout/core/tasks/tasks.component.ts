@@ -16,15 +16,16 @@ import { SettingsService } from "../settings/services/settings.service";
   styleUrls: ["./tasks.component.scss"],
 })
 export class TasksComponent implements OnInit {
-  settings: Settings[] = [];
+  settings: Settings[];
+  displayUnpinned: boolean;
 
-  displayedColumns: string[] = ["id", "shortdescr", "longdescr"];
-  unpinnedTasks: Task[];
+  tasks: Task[];
   pinnedTasks: Task[];
+  unpinnedTasks: Task[];
   hidedElements: Task[];
 
-  focusedTask: Task;
   selectedTask: Task;
+  focusedTask: Task;
   lastChangedTask: Task;
 
   id: number;
@@ -32,30 +33,6 @@ export class TasksComponent implements OnInit {
   longdescr: string;
   date: Date;
   dateString: string;
-
-  constructor(
-    public settingsService: SettingsService,
-    private taskService: TaskService,
-    public keysService: KeyService,
-    public utilityService: UtilityService,
-    private _tabTitle: Title,
-    public _dialog: MatDialog,
-    private _snackBar: MatSnackBar
-  ) {
-    this._tabTitle.setTitle("Tasklist");
-  }
-
-  // TODO unsubscribe from services
-  ngOnInit() {
-    this.getSettingsFromService();
-    this.getTasksFromService();
-  }
-
-  /*
-   * ===================================================================================
-   * HOSTLISTENER
-   * ===================================================================================
-   */
 
   @HostListener("click", ["$event"])
   onShiftMouseClick(event: MouseEvent) {
@@ -66,70 +43,76 @@ export class TasksComponent implements OnInit {
 
   @HostListener("window:beforeunload")
   onBeforeUnload() {
-    return false;
+    return this.taskService.allSaved(this.tasks) ? true : false;
+  }
+
+  constructor(
+    public settingsService: SettingsService,
+    public taskService: TaskService,
+    public keyService: KeyService,
+    public utilityService: UtilityService,
+    private _tabTitle: Title,
+    public _dialog: MatDialog,
+    private _snackBar: MatSnackBar
+  ) {}
+
+  // TODO when to unsubscribe from services?
+  ngOnInit() {
+    this.getTasksFromService();
+    this.getSettingsFromService();
+  }
+
+  /*
+   * ===================================================================================
+   * GET DATA
+   * ===================================================================================
+   */
+
+  // Get all Tasks from service
+  // Fill three lists with a subset of these TimeElements
+  getTasksFromService() {
+    this.taskService.getAllTasks().subscribe((e) => {
+      this.tasks = e;
+
+      this.tasks.forEach((e) => {
+        e.templongdescr = e.longdescr;
+      });
+
+      this.unpinnedTasks = this.taskService.getUnpinnedTasks(this.tasks);
+      this.pinnedTasks = this.taskService.getPinnedTasks(this.tasks);
+      this.hidedElements = this.taskService.getHidedTasks(this.tasks);
+
+      this.setTabTitle();
+    });
   }
 
   // Get all settings from service
   getSettingsFromService() {
     this.settingsService.getAllSettings().subscribe((settings) => {
       this.settings = settings;
+
+      this.displayUnpinned = this.settingsService.getSettingsValue(
+        settings,
+        "Show unpinned Tasks"
+      );
     });
   }
 
   /*
    * ===================================================================================
-   * TASK METHODS
+   * CRUD OPERATIONS
    * ===================================================================================
    */
-
-  // Selected current Task if not already set,
-  // otherwise hide current selected Task
-  selectTask(task: Task) {
-    if (this.selectedTask === undefined || this.selectedTask === null) {
-      this.selectedTask = task;
-    } else {
-      this.hideSelectedTask();
-    }
-  }
-
-  // Get all Tasks from service
-  // Fill three lists with a subset of these TimeElements
-  getTasksFromService() {
-    this.taskService.getAllTasks().subscribe((data) => {
-      this.unpinnedTasks = data
-        .filter((e) => !e.pinned && !e.hided)
-        .sort(function (a, b) {
-          return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
-        });
-
-      this.pinnedTasks = data
-        .filter((e) => e.pinned && !e.hided)
-        .sort(function (a, b) {
-          return Date.parse(a.date.toString()) - Date.parse(b.date.toString());
-        });
-
-      this.hidedElements = data
-        .filter((e) => e.hided)
-        .sort(function (a, b) {
-          return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
-        });
-
-      // set tab title
-      if (this.pinnedTasks.length > 0) {
-        this._tabTitle.setTitle(
-          "Tasklist" + " (" + this.pinnedTasks.length.toString() + ")"
-        );
-      } else {
-        this._tabTitle.setTitle("Tasklist");
-      }
-      // --------------
-    });
-  }
 
   // Save task in the database
   saveTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
+        if (this.taskService.isSaved(task)) {
+          this.openSnackBar("Nothing changed...", null);
+          this.hideSelectedTask();
+          return;
+        }
         this.taskService.putTask(task).subscribe(() => {
           this.openSnackBar("Task saved!", null);
           this.getTasksFromService();
@@ -144,17 +127,14 @@ export class TasksComponent implements OnInit {
     this.hideSelectedTask();
   }
 
-  // Save all Tasks in the database
+  // Save all tasks in the database
   saveAllTasks() {
-    this.unpinnedTasks.forEach((element) => {
-      this.saveTask(element);
-    });
-    this.pinnedTasks.forEach((element) => {
+    this.tasks.forEach((element) => {
       this.saveTask(element);
     });
   }
 
-  // Change pin property of a task in the database
+  // Change pinned property of a task in the database
   pinTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
@@ -169,41 +149,19 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  // Change pin property of a task in the database
-  focusTask(task: Task) {
-    if (this.focusedTask == null || this.focusedTask == undefined) {
-      this.focusedTask = task;
-    } else {
-      this.focusedTask = null;
-    }
-  }
-
   // Change hide property of a task in the database
   hideTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.hided = !task.hided;
+        task.pinned = false;
         this.changeTask(task, "Task hided!", "Reset");
       } else {
         console.warn("hideTask(): ID: " + task.id + ", expected number");
       }
     } else {
       console.warn("hideTask(): ID: " + task.id + ", expected ID");
-    }
-  }
-
-  // Reset the task and save the last changed task with all properties back to the database
-  // Triggered when undo a task action in a notification
-  resetTask(task: Task) {
-    if (task !== undefined) {
-      if (this.utilityService.isNumber(task.id)) {
-        this.changeTask(task, "Task reseted!", null);
-      } else {
-        console.warn("resetTask(): ID: " + task.id + ", expected number");
-      }
-    } else {
-      console.warn("resetTask(): ID: " + task.id + ", expected ID");
     }
   }
 
@@ -226,6 +184,20 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  // Reset the task and save the last changed task with all properties back to the database
+  // Triggered when undo a task action in a notification
+  resetTask(task: Task) {
+    if (task !== undefined) {
+      if (this.utilityService.isNumber(task.id)) {
+        this.changeTask(task, "Task reseted!", null);
+      } else {
+        console.warn("resetTask(): ID: " + task.id + ", expected number");
+      }
+    } else {
+      console.warn("resetTask(): ID: " + task.id + ", expected ID");
+    }
+  }
+
   // Execute put action on task and following commands
   changeTask(
     task: Task,
@@ -234,16 +206,141 @@ export class TasksComponent implements OnInit {
   ) {
     this.taskService.putTask(task).subscribe(() => {
       this.openSnackBar(notificationMessage, notificationAction);
-      this.getTasksFromService(); // TODO
+      this.getTasksFromService();
       this.hideSelectedTask();
     });
   }
 
   /*
    * ===================================================================================
-   * DIALOGS/POPUPS
+   * OTHER TASK OPERATIONS
    * ===================================================================================
    */
+
+  // Selected current Task if not already set,
+  // otherwise hide current selected Task
+  selectTask(task: Task) {
+    if (this.selectedTask === undefined || this.selectedTask === null) {
+      this.selectedTask = task;
+    } else {
+      this.hideSelectedTask();
+    }
+  }
+
+  // Change pin property of a task in the database
+  focusTask(task: Task) {
+    if (this.focusedTask == null || this.focusedTask == undefined) {
+      this.focusedTask = task;
+    } else {
+      this.focusedTask = null;
+    }
+  }
+
+  // Remove selected Task
+  hideSelectedTask() {
+    this.selectedTask = null;
+  }
+
+  // Change target date of the selected task
+  changeDateFromTask(event: MatDatepickerInputEvent<Date>) {
+    this.selectedTask.date = event.value;
+  }
+
+  // Copy all properties from the current task to the last changed task
+  // Can be used to "undo" an action like delete, put, ..
+  // TODO check if necessary
+  copyTaskPropertiesToLastChangedTask(fromTask: Task) {
+    this.lastChangedTask = {
+      id: fromTask.id,
+      date: fromTask.date,
+      hided: fromTask.hided,
+      pinned: fromTask.pinned,
+      shortdescr: fromTask.shortdescr,
+      longdescr: fromTask.longdescr,
+      templongdescr: fromTask.templongdescr,
+    };
+  }
+
+  // Let browser display unpinned tasks or not
+  displayUnpinnedTasks() {
+    this.displayUnpinned = !this.displayUnpinned;
+  }
+
+  // Change all abbreviations to text in the task description (based on ngModelChange)
+  // TODO how can you use this function better?
+  replaceWithShortcut(task: Task) {
+    this.keyService.SHORTCUTS.forEach((replacePair) => {
+      task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
+    });
+  }
+
+  // Get backround color for different types of tasks
+  // Return backround color
+  getStatusColorValue(task: Task): string {
+    let actualDate: Date = new Date();
+    let tempTaskDate: Date = new Date(task.date);
+    let dayMilliseconds: number = 1000 * 60 * 60 * 24;
+
+    // Selected task
+    if (
+      this.selectedTask !== undefined &&
+      this.selectedTask !== null &&
+      this.selectedTask.id == task.id
+    ) {
+      return this.keyService.getColor("blue");
+    }
+
+    // More than 30 days
+    if (actualDate.getTime() < tempTaskDate.getTime() - dayMilliseconds * 30) {
+      return this.keyService.getColor("cyan");
+    }
+
+    // More than one day
+    if (actualDate.getTime() > tempTaskDate.getTime() + dayMilliseconds) {
+      return this.keyService.getColor("red");
+    }
+
+    // Today
+    if (
+      tempTaskDate.getDate() == actualDate.getDate() &&
+      tempTaskDate.getMonth() == actualDate.getMonth() &&
+      tempTaskDate.getFullYear() == actualDate.getFullYear()
+    ) {
+      return this.keyService.getColor("yellow");
+    }
+
+    // Standard colour
+    return this.keyService.getColor("darkgreen");
+  }
+
+  /*
+   * ===================================================================================
+   * DIALOGS/POPUPS/HELPER_FUNCTIONS
+   * ===================================================================================
+   */
+
+  // Opens popup menu for notifications
+  openSnackBar(message: string, action: string) {
+    this._snackBar
+      .open(message, action, {
+        duration: 4000,
+      })
+      .onAction()
+      .subscribe(() => {
+        this.resetTask(this.lastChangedTask);
+      });
+  }
+
+  // Set title for apllication window in browser
+  setTabTitle(): void {
+    if (this.pinnedTasks.length > 0) {
+      this._tabTitle.setTitle(
+        "Tasklist" + " (" + this.pinnedTasks.length.toString() + ")"
+      );
+    } else {
+      this._tabTitle.setTitle("Tasklist");
+    }
+  }
 
   // Open popup dialog to create a new Task
   // Hide selected task
@@ -288,99 +385,6 @@ export class TasksComponent implements OnInit {
             ", expected postResult"
         );
       }
-    });
-  }
-
-  /*
-   * ===================================================================================
-   * HELPER FUNCTIONS
-   * ===================================================================================
-   */
-
-  // Opens popup menu for notifications
-  openSnackBar(message: string, action: string) {
-    this._snackBar
-      .open(message, action, {
-        duration: 4000,
-      })
-      .onAction()
-      .subscribe(() => {
-        this.resetTask(this.lastChangedTask);
-      });
-  }
-
-  // Change target date of the selected task
-  changeDateFromTask(event: MatDatepickerInputEvent<Date>) {
-    this.selectedTask.date = event.value;
-  }
-
-  // Remove selected Task
-  hideSelectedTask() {
-    this.selectedTask = null;
-  }
-
-  // Get utc date format from Task
-  // Return utc date string
-  getUTCStringFromTask(task: Task) {
-    return new Date(task.date).toUTCString();
-  }
-
-  // Copy all properties from the current task to the last changed task
-  // Can be used to "undo" an action like delete, put, ..
-  copyTaskPropertiesToLastChangedTask(fromTask: Task) {
-    this.lastChangedTask = {
-      id: fromTask.id,
-      date: fromTask.date,
-      hided: fromTask.hided,
-      pinned: fromTask.pinned,
-      shortdescr: fromTask.shortdescr,
-      longdescr: fromTask.longdescr,
-    };
-  }
-
-  // Get backround color for different types of TimeTasks
-  // Return backround color
-  getBackgroundColorValue(task: Task): string {
-    let actualDate: Date = new Date();
-    let tempTaskDate: Date = new Date(task.date);
-    let dayMilliseconds: number = 1000 * 60 * 60 * 24;
-
-    // Selected task
-    if (
-      this.selectedTask !== undefined &&
-      this.selectedTask !== null &&
-      this.selectedTask.id == task.id
-    ) {
-      return this.keysService.getColor("blue");
-    }
-
-    // More than 30 days
-    if (actualDate.getTime() < tempTaskDate.getTime() - dayMilliseconds * 30) {
-      return this.keysService.getColor("cyan");
-    }
-
-    // More than one day
-    if (actualDate.getTime() > tempTaskDate.getTime() + dayMilliseconds) {
-      return this.keysService.getColor("red");
-    }
-
-    // Today
-    if (
-      tempTaskDate.getDate() == actualDate.getDate() &&
-      tempTaskDate.getMonth() == actualDate.getMonth() &&
-      tempTaskDate.getFullYear() == actualDate.getFullYear()
-    ) {
-      return this.keysService.getColor("yellow");
-    }
-
-    // Standard colour
-    return this.keysService.getColor("darkgreen");
-  }
-
-  // Change all abbreviations to text in the task description (based on ngModelChange)
-  replaceWithShortcut(task: Task) {
-    this.keysService.SHORTCUTS.forEach((replacePair) => {
-      task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
     });
   }
 }

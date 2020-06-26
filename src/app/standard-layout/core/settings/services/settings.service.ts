@@ -30,7 +30,7 @@ export class SettingsService {
     return settings[0]["settingsmenu"];
   }
 
-  getSettingsValue(settings: Settings[], key: string): string {
+  getSettingsValue(settings: Settings[], key: string): any {
     let array = [];
 
     this.getSettingsHeaders(settings).forEach((header) => {

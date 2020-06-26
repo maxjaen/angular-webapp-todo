@@ -13,7 +13,7 @@
             <div class="show">
                <countup-timer [countUpTimerConfig]="testConfig">
                </countup-timer>
-               <div>
+               <div *ngIf="this.settings.length > 0">
                  <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total this week')">
                      <p>
                      <span>Time week: </span>
@@ -45,12 +45,12 @@
                </div>
             </div>
             <div>
-               <div class="fixedButtons">
+               <div class="fixedButtons-rightbottom">
                   <button class="control-buttons-gray smallToBottom" (click)="openInsertDialog()" color="primary"
                 mat-mini-fab>
                      <mat-icon>create</mat-icon>
                   </button>
-                  <button class="control-buttons-gray" (click)="finishTimer()" color="primary" mat-mini-fab>
+                  <button class="control-buttons-gray" title="Finish" (click)="finishTimer()" color="primary" mat-mini-fab>
                      <mat-icon>close</mat-icon>
                   </button>
                </div>
@@ -85,8 +85,8 @@
                   </div>
                   <mat-card (click)="selectTimeElement(timeElement);"
                       class="example-card block">
-                     <div *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show status color')">
-                        <div class="card-status" [style.background-color]="getBackgroundColorValue(timeElement)"></div>
+                     <div *ngIf="this.settings && this.settings.length > 0 && settingsService.getSettingsValue(this.settings, 'Show status color')">
+                        <div class="card-status" [style.background-color]="getStatusColorValue(timeElement)"></div>
                      </div>
                      <div style="width: 70%; display: inline-block;">
                         <mat-card-header style="float: left;">
@@ -144,7 +144,11 @@
          </mat-form-field>
          <div *ngIf="historyElements">
             <div *ngIf="historyElements.length > 0">
-           <button (click)="this.deleteAllAvailableTimeTasks();" mat-raised-button>Delete all</button>
+               <div class="fixedButtons-rightbottom">
+                  <button class="control-buttons-gray" title="Delete all" (click)="this.deleteAllAvailableTimeTasks()" color="primary" mat-mini-fab>
+                     <mat-icon>close</mat-icon>
+                  </button>
+               </div>
                <p>
                   Time: <span
                      style="color: coral;">{{ this._timeService.formatMillisecondsToString(calculateTodayTime(historyElements)) }}</span>

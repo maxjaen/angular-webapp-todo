@@ -5,4 +5,5 @@ export class Task {
   hided: boolean;
   pinned: boolean;
   date: Date;
+  templongdescr: string;
 }

@@ -190,7 +190,7 @@ export class WeightComponent implements OnInit {
 
   // Get backround color for different weight intervals
   // Return backround color
-  getBackgroundColorValue(weight: Weight): string {
+  getStatusColorValue(weight: Weight): string {
     let highestValue: number = this.getHighestWeightValue();
     if (weight.value == highestValue) {
       return this.keyService.getColor("darkgreen");

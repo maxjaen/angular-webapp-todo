@@ -1,5 +1,5 @@
 <div *ngIf="exercises">
-   <div class="fixedButtons">
+   <div class="fixedButtons-rightbottom">
       <button class="control-buttons-gray smallToBottom" (click)="scroll('overviewtraining')" mat-mini-fab>
          <mat-icon>home</mat-icon>
       </button>
@@ -20,7 +20,7 @@
             <div class="flow-root" *ngIf="trainings.length>0">
                <div *ngFor="let training of trainings.slice(0, displayedTrainings)">
                   <mat-card class="indenting smallToBottom card-costum example-card"
-                     [style.background-color]="getBackgroundColorValue(training)" (click)="viewTraining(training)">
+                     [style.background-color]="getStatusColorValue(training)" (click)="viewTraining(training)">
                      <mat-card-header>
                         <mat-card-title>{{ showDatestring(training.date) }}</mat-card-title>
                      </mat-card-header>

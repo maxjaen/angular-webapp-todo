@@ -525,7 +525,7 @@ export class TimeTaskComponent implements OnInit {
 
   // Get backround color for different types of TimeTasks
   // Return backround color
-  getBackgroundColorValue(timeTask: TimeTask): string {
+  getStatusColorValue(timeTask: TimeTask): string {
     if (
       this.runningTimeElement !== undefined &&
       this.runningTimeElement !== null &&

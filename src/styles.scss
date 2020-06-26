@@ -150,6 +150,18 @@ textarea,
   color: white;
 }
 
+.circle {
+  height: 75px;
+  width: 75px;
+  background-color: #424242;
+  border-radius: 50%;
+  display: inline-block;
+  text-align: center;
+  line-height: 77px;
+  font-size: 28px;
+  color: #f4f4f4;
+}
+
 /*
 FONTS
 */
@@ -162,11 +174,20 @@ FONTS
 STICKY
 */
 
-.fixedButtons {
+.fixedButtons-rightbottom {
   display: grid;
   overflow: visible;
   z-index: 999;
   position: fixed;
   bottom: 40px;
+  right: 40px;
+}
+
+.fixedButtons-righttop {
+  display: grid;
+  overflow: visible;
+  z-index: 999;
+  position: fixed;
+  top: 150px;
   right: 40px;
 }

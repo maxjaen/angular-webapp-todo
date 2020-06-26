@@ -6,7 +6,7 @@ import { TimeTask } from "../model/timetask";
 
 @Component({
   selector: "insert-task-dialog",
-  templateUrl: "insert-task-dialog.html"
+  templateUrl: "insert-task-dialog.html",
 })
 export class InsertTaskDialogTime {
   tasks: Task[];
@@ -16,9 +16,9 @@ export class InsertTaskDialogTime {
     public dialogRef: MatDialogRef<InsertTaskDialogTime>,
     @Inject(MAT_DIALOG_DATA) public data: TimeTask
   ) {
-    this.taskService.getAllTasks().subscribe(tasks => {
+    this.taskService.getAllTasks().subscribe((tasks) => {
       this.tasks = tasks
-        .filter(e => !e.hided)
+        .filter((e) => !e.hided)
         .sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
         );
@@ -28,7 +28,8 @@ export class InsertTaskDialogTime {
         longdescr: "",
         date: new Date(),
         hided: false,
-        pinned: true
+        pinned: true,
+        templongdescr: "",
       });
     });
   }

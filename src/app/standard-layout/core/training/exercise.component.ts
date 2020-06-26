@@ -167,7 +167,6 @@ export class TrainingComponent implements OnInit {
   // Choose olf training as template for new training
   selectMode(event: { value: string }) {
     this.selectedMode = event.value;
-    console.log(event);
   }
 
   // Routes to url with detail view of of a training
@@ -288,7 +287,7 @@ export class TrainingComponent implements OnInit {
     return false;
   }
 
-  getBackgroundColorValue(training: Training): string {
+  getStatusColorValue(training: Training): string {
     if (this.isRunningOrBicycle(training)) {
       return this.keyService.getColor("red");
     }
@@ -341,8 +340,6 @@ export class TrainingComponent implements OnInit {
       repetitions: 0,
       unit: "s",
     };
-
-    console.log(this.selectedMode);
 
     if (this.selectedMode == "Time Session") {
       exercise.pattern = pattern;

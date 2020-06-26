@@ -46,8 +46,6 @@ export class DashboardComponent implements OnInit {
     this.getTimeTaskPlaceholderFromService();
     this.getSessionPlaceholderFromService();
     this.getWeightPlaceholderFromService();
-
-    console.log(this.placeHolderArray);
   }
 
   goToUrl(component: StartPageSetting) {

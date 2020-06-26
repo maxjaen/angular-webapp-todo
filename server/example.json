@@ -55,7 +55,7 @@
             },
             {
               "displaytext": "Show Fitness module",
-              "value": true
+              "value": false
             }
           ]
         },
@@ -72,6 +72,10 @@
             },
             {
               "displaytext": "Enable task history",
+              "value": false
+            },
+            {
+              "displaytext": "Show unpinned Tasks",
               "value": false
             }
           ]

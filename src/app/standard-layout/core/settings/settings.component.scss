@@ -1,1 +1,11 @@
 @import "../../../../styles.scss";
+
+.content {
+  .left {
+    @include float-left;
+  }
+
+  .right {
+    @include float-right;
+  }
+}

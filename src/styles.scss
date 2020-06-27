@@ -21,6 +21,10 @@ body {
   float: left;
 }
 
+@mixin float-right {
+  float: right;
+}
+
 @mixin low-margin {
   margin: 2px;
 }
@@ -60,7 +64,7 @@ MATCARDS
   width: 300px;
   min-width: 300px;
   max-width: 300px;
-  float: left;
+  @include float-left;
 }
 
 .mat-card-header .mat-card-title {

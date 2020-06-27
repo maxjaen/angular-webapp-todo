@@ -30,6 +30,10 @@ body {
   overflow: hidden;
 }
 
+@mixin height300px {
+  height: 300px;
+}
+
 /*
 GENERAL
 */
@@ -63,6 +67,11 @@ MATCARDS
   margin-bottom: 0px;
 }
 
+mat-card:hover {
+  background-color: #464545;
+  @include cursor-pointer;
+}
+
 /*
 COLORS
 */
@@ -79,6 +88,18 @@ DISTANCE
   margin-left: 2%;
 }
 
+.indentingFromRight {
+  margin-right: 2%;
+}
+
+.indentingFromTop {
+  margin-top: 2%;
+}
+
+.indentingFromBottom {
+  margin-bottom: 2%;
+}
+
 .enormeToBottom {
   margin-bottom: 100px;
 }
@@ -89,6 +110,10 @@ DISTANCE
 
 .smallToBottom {
   margin-bottom: 20px;
+}
+
+.minorToBottom {
+  margin-bottom: 10px;
 }
 
 .largeToRight {
@@ -115,6 +140,10 @@ DISPLAY
   display: inline;
 }
 
+.inlineblock {
+  display: inline-block;
+}
+
 /*
 ELEMENTS
 */
@@ -138,6 +167,10 @@ textarea,
   @include low-margin;
   @include float-left;
   @include block;
+}
+
+.textarea-container {
+  width: 100%;
 }
 
 .control-buttons-white {
@@ -166,8 +199,12 @@ textarea,
 FONTS
 */
 
-.fontSizeTwelve {
+.fontSize12 {
   font-size: 12px;
+}
+
+.fontSize50 {
+  font-size: 50px;
 }
 
 /*
@@ -190,4 +227,14 @@ STICKY
   position: fixed;
   top: 150px;
   right: 40px;
+}
+
+/*
+INLINE BUTTONS
+*/
+
+.inlineButtons {
+  display: flex;
+  justify-content: flex-end;
+  float: right;
 }

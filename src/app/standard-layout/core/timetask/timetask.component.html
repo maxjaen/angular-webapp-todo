@@ -69,7 +69,7 @@
                               [(ngModel)]="selectedTimeElement.longdescr"
                               (ngModelChange)="replaceWithShortcut(selectedTimeElement);"></textarea>
                         </mat-form-field>
-                        <div style="display: flex; justify-content: flex-end; float: right;">
+                        <div class="inlineButtons">
                            <button (click)="changeStartDate(selectedTimeElement)" style="float:right" mat-button
                               color="accent">Start
                            </button>
@@ -92,11 +92,11 @@
                         <mat-card-header style="float: left;">
                            <mat-card-title>
                               {{ timeElement.shortdescr }}
-                              <div class="fontSizeTwelve" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
+                              <div class="fontSize12" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
                                  style="margin-top: 20px;">
                                  No measurement enddate available...
                               </div>
-                              <div class="fontSizeTwelve" style="margin-top: 20px;">
+                              <div class="fontSize12" style="margin-top: 20px;">
                                  <div *ngIf="timeElement.enddate" style="display: inline;">
                                     {{ timeElementToTimestring(timeElement) }} >>
                                  </div>
@@ -117,7 +117,7 @@
                            </mat-card-subtitle>
                         </mat-card-header>
                      </div>
-                     <div style="display: flex; justify-content: flex-end; float: right;">
+                     <div class="inlineButtons">
                         <button title="Continue" (click)="continueTimeElement(timeElement);" mat-button>
                            <mat-icon>play_arrow</mat-icon>
                         </button>
@@ -166,11 +166,11 @@
                   <mat-card-header style="float:left;">
                      <mat-card-title>
                         {{ timeElement.shortdescr }}
-                        <div class="fontSizeTwelve" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
+                        <div class="fontSize12" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
                            style="margin-top: 20px;">
                            No measurement enddate available...
                         </div>
-                        <div class="fontSizeTwelve" style="margin-top: 20px;">
+                        <div class="fontSize12" style="margin-top: 20px;">
                            <div *ngIf="timeElement.enddate" style="display: inline;">
                               {{ timeElementToTimestring(timeElement) }} >>
                            </div>
@@ -186,7 +186,7 @@
                         </ul>
                      </mat-card-subtitle>
                   </mat-card-header>
-                  <div style="display: flex; justify-content: flex-end; float: right;">
+                  <div class="inlineButtons">
                      <button (click)="removeTimeElement(timeElement)" mat-button>Delete</button>
                   </div>
                </mat-card>

@@ -1,18 +1,12 @@
 @import "../../../../styles.scss";
 
-table {
-  width: 100%;
-}
-
 mat-card {
-  display: block;
-  overflow: hidden;
-  margin-bottom: 3%;
+  @include block;
+  @extend .indentingFromBottom;
 }
 
-mat-card:hover {
-  background-color: #464545;
-  @include cursor-pointer;
+textarea {
+  @include height300px;
 }
 
 #createNewTask {

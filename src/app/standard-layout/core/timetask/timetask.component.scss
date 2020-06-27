@@ -1,14 +1,8 @@
 @import "../../../../styles.scss";
 
-mat-card:hover {
-  background-color: #464545;
-  cursor: pointer;
-}
-
 mat-card {
-  display: block;
-  overflow: hidden;
-  margin-bottom: 3%;
+  @include block;
+  @extend .indentingFromBottom;
 }
 
 .show-wrapper {

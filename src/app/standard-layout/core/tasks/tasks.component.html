@@ -3,10 +3,11 @@
    <mat-tab label="Tasks">
       <div class="content">
          <div class="block">
-            <div class="enormeToBottom" *ngIf="unpinnedTasks && unpinnedTasks.length == 0 && pinnedTasks && pinnedTasks.length == 0">
+            <div class="enormeToBottom"
+               *ngIf="unpinnedTasks && unpinnedTasks.length == 0 && pinnedTasks && pinnedTasks.length == 0">
                <p>Can't find any tasks</p>
                <br>
-               <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+               <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
             </div>
          </div>
          <div *ngIf="!focusedTask">
@@ -18,9 +19,16 @@
                   <button class="control-buttons-gray smallToBottom" (click)="displayUnpinnedTasks()" mat-mini-fab>
                      <mat-icon>reorder</mat-icon>
                   </button>
-                  <button class="control-buttons-gray" title="Create new task" (click)="openInsertTaskDialog()" mat-mini-fab>
+                  <button class="control-buttons-gray" title="Create new task" (click)="openInsertTaskDialog()"
+                     mat-mini-fab>
                      <mat-icon>create</mat-icon>
                   </button>
+               </div>
+               <div class="input-bottom" [ngClass]="fastCreation ? '' : 'hidden'">
+                  <mat-form-field class="example-form-field">
+                     <mat-label>Let's do it!</mat-label>
+                     <input matInput type="text" (keyup.enter)="newTask($event)" #fast>
+                  </mat-form-field>
                </div>
                <div class="largeToBottom" *ngIf="pinnedTasks.length > 0">
                   <h3>Pinned Tasks</h3>
@@ -29,12 +37,12 @@
                         <form class="example-form">
                            <mat-form-field class="example-full-width indentingFromRight">
                               <input #message maxlength="50" placeholder="titel" name="shortdescr"
-                                 [(ngModel)]="selectedTask.shortdescr" matInput/>
+                                 [(ngModel)]="selectedTask.shortdescr" matInput />
                               <mat-hint>{{ message.value.length }} / 50</mat-hint>
                            </mat-form-field>
                            <mat-form-field>
                               <input (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
-                                 placeholder="Choose a date" matInput/>
+                                 placeholder="Choose a date" matInput />
                               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                               <mat-datepicker #picker></mat-datepicker>
                            </mat-form-field>
@@ -44,17 +52,18 @@
                                  (ngModelChange)="replaceWithShortcut(selectedTask)"></textarea>
                            </mat-form-field>
                            <div class="inlineButtons">
-                              <button (click)="saveAllTasks()" mat-button>
-                                 Save all
-                              </button>
                               <button (click)="saveTask(selectedTask)" mat-button>
                                  Save task
+                              </button>
+                              <button (click)="saveAllTasks()" mat-button>
+                                 Save all
                               </button>
                            </div>
                         </form>
                      </div>
-                     <mat-card class="example-card" (click)="selectTask(task)"> 
-                        <div *ngIf="this.settings && this.settings.length > 0 && settingsService.getSettingsValue(this.settings, 'Show status color')">
+                     <mat-card class="example-card" (click)="selectTask(task)">
+                        <div
+                           *ngIf="this.settings && this.settings.length > 0 && settingsService.getSettingsValue(this.settings, 'Show status color')">
                            <div class="card-status" [style.background-color]="getStatusColorValue(task)">
                            </div>
                         </div>
@@ -62,7 +71,7 @@
                            <mat-card-header>
                               <mat-card-title>
                                  {{ task.shortdescr }}
-                                 <div 
+                                 <div
                                     *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show creation date')">
                                     <div class="smallToTop fontSize12">
                                        {{ taskService.strFromTask(task) }}
@@ -70,26 +79,27 @@
                                  </div>
                               </mat-card-title>
                               <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
-                              <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
-                                 <div *ngIf="point.length > 0 && !point.includes('!') && !point.includes('#') && !(point == ' ') && !(point.includes('$'))">
-                                    <li>{{ point }}</li>
-                                 </div>
-                                 <div *ngIf="point.length == 0">
-                                    <hr/>
-                                 </div>
-                                 <div *ngIf="point == ' '">
-                                    <br/>
-                                 </div>
-                                 <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
-                                    {{ point }}
-                                 </div>
-                                 <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
-                                    {{ point }}
-                                 </div>
-                                 <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
-                                    <h3>{{ point }}</h3>
-                                 </div>
-                              </ul>
+                                 <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
+                                    <div
+                                       *ngIf="point.length > 0 && !point.includes('!') && !point.includes('#') && !(point == ' ') && !(point.includes('$'))">
+                                       <li>{{ point }}</li>
+                                    </div>
+                                    <div *ngIf="point.length == 0">
+                                       <hr />
+                                    </div>
+                                    <div *ngIf="point == ' '">
+                                       <br />
+                                    </div>
+                                    <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
+                                       {{ point }}
+                                    </div>
+                                    <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
+                                       {{ point }}
+                                    </div>
+                                    <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
+                                       <h3>{{ point }}</h3>
+                                    </div>
+                                 </ul>
                               </mat-card-subtitle>
                            </mat-card-header>
                         </div>
@@ -99,7 +109,7 @@
                            </p>
                            <button title="Focus" (click)="focusTask(task)" mat-button>
                               <mat-icon>center_focus_strong</mat-icon>
-                           </button>   
+                           </button>
                            <button title="Unpin" (click)="pinTask(task)" mat-button>
                               <mat-icon>push_pin</mat-icon>
                            </button>
@@ -113,8 +123,8 @@
                      </mat-card>
                   </div>
                </div>
-               <div *ngIf="(unpinnedTasks.length > 0 && this.displayUnpinned) || this.pinnedTasks.length == 0">
-                  <br/>
+               <div *ngIf="unpinnedTasks.length > 0 && (this.displayUnpinned || this.pinnedTasks.length == 0)">
+                  <br />
                   <h3>Unpinned Tasks</h3>
                   <div *ngFor="let task of unpinnedTasks; let i = index">
                      <div class="block changeField minorToBottom" *ngIf="task == selectedTask">
@@ -131,24 +141,23 @@
                               <mat-datepicker #picker></mat-datepicker>
                            </mat-form-field>
                            <mat-form-field class="example-full-width textarea-container indentingFromTop">
-                              <textarea placeholder="description" name="longdescr"
-                                 [(ngModel)]="selectedTask.longdescr"
+                              <textarea placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr"
                                  (ngModelChange)="replaceWithShortcut(selectedTask)" matInput></textarea>
                            </mat-form-field>
                            <div class="inlineButtons">
-                              <button (click)="saveAllTasks()" mat-button>
-                                 Save all
-                              </button>
                               <button (click)="saveTask(selectedTask)" mat-button>
                                  Save task
+                              </button>
+                              <button (click)="saveAllTasks()" mat-button>
+                                 Save all
                               </button>
                            </div>
                         </form>
                      </div>
-                     <mat-card class="example-card" (click)="selectTask(task)"> 
-                        <div *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show status color')">
-                           <div class="card-status"
-                              [style.background-color]="getStatusColorValue(task)"></div>
+                     <mat-card class="example-card" (click)="selectTask(task)">
+                        <div
+                           *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show status color')">
+                           <div class="card-status" [style.background-color]="getStatusColorValue(task)"></div>
                         </div>
                         <div class="inlineblock">
                            <mat-card-header>
@@ -162,26 +171,27 @@
                                  </div>
                               </mat-card-title>
                               <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
-                             <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
-                                 <div *ngIf="point.length > 0 && !point.includes('!') && !point.includes('#') && !(point == ' ') && !(point.includes('$'))">
-                                    <li>{{ point }}</li>
-                                 </div>
-                                 <div *ngIf="point.length == 0">
-                                    <hr/>
-                                 </div>
-                                 <div *ngIf="point == ' '">
-                                    <br/>
-                                 </div>
-                                 <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
-                                    {{ point }}
-                                 </div>
-                                 <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
-                                    {{ point }}
-                                 </div>
-                                 <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
-                                    <h3>{{ point }}</h3>
-                                 </div>
-                              </ul>
+                                 <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
+                                    <div
+                                       *ngIf="point.length > 0 && !point.includes('!') && !point.includes('#') && !(point == ' ') && !(point.includes('$'))">
+                                       <li>{{ point }}</li>
+                                    </div>
+                                    <div *ngIf="point.length == 0">
+                                       <hr />
+                                    </div>
+                                    <div *ngIf="point == ' '">
+                                       <br />
+                                    </div>
+                                    <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
+                                       {{ point }}
+                                    </div>
+                                    <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
+                                       {{ point }}
+                                    </div>
+                                    <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
+                                       <h3>{{ point }}</h3>
+                                    </div>
+                                 </ul>
                               </mat-card-subtitle>
                            </mat-card-header>
                         </div>
@@ -197,7 +207,7 @@
                            </button>
                            <button title="Delete task" (click)="removeTask(task)" mat-button>
                               <mat-icon>delete</mat-icon>
-                           </button>                           
+                           </button>
                         </div>
                      </mat-card>
                   </div>
@@ -226,11 +236,11 @@
    </mat-tab>
    <mat-tab label="Archive">
       <div class="content" *ngIf="hidedElements">
-          <div class="fixedButtons-righttop">
+         <div class="fixedButtons-righttop">
             <div class="circle">{{ taskService.countUnsavedTasks(tasks) }}</div>
-          </div>
+         </div>
          <div *ngFor="let task of hidedElements">
-             <div *ngIf="task == selectedTask" class="block changeField minorToBottom">
+            <div *ngIf="task == selectedTask" class="block changeField minorToBottom">
                <form class="example-form">
                   <mat-form-field class="example-full-width indentingFromRight">
                      <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
@@ -244,16 +254,15 @@
                      <mat-datepicker #picker></mat-datepicker>
                   </mat-form-field>
                   <mat-form-field class="example-full-width textarea-container indentingFromTop">
-                     <textarea placeholder="description" name="longdescr"
-                        [(ngModel)]="selectedTask.longdescr"
+                     <textarea placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr"
                         (ngModelChange)="replaceWithShortcut(selectedTask)" matInput></textarea>
                   </mat-form-field>
                   <div class="inlineButtons">
-                     <button (click)="saveAllTasks()" mat-button>
-                     Save all
-                     </button>
                      <button (click)="saveTask(selectedTask)" mat-button>
                         Save task
+                     </button>
+                     <button (click)="saveAllTasks()" mat-button>
+                        Save all
                      </button>
                   </div>
                </form>
@@ -263,33 +272,35 @@
                   <mat-card-header>
                      <mat-card-title>
                         {{ task.shortdescr }}
-                         <div *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show creation date')">
+                        <div
+                           *ngIf="this.settings && settingsService.getSettingsValue(this.settings, 'Show creation date')">
                            <div class="smallToTop fontSize12">
                               {{ taskService.strFromTask(task) }}
                            </div>
                         </div>
                      </mat-card-title>
                      <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
-                     <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
-                        <div *ngIf="point.length > 0 && !point.includes('!') && !point.includes('#') && !(point == ' ') && !(point.includes('$'))">
-                           <li>{{ point }}</li>
-                        </div>
-                        <div *ngIf="point.length == 0">
-                           <hr/>
-                        </div>
-                        <div *ngIf="point == ' '">
-                           <br/>
-                        </div>
-                        <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
-                           {{ point }}
-                        </div>
-                        <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
-                           {{ point }}
-                        </div>
-                        <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
-                           <h3>{{ point }}</h3>
-                        </div>
-                     </ul>
+                        <ul *ngFor="let point of this.utilityService.split(task.longdescr)">
+                           <div
+                              *ngIf="point.length > 0 && !point.includes('!') && !point.includes('#') && !(point == ' ') && !(point.includes('$'))">
+                              <li>{{ point }}</li>
+                           </div>
+                           <div *ngIf="point.length == 0">
+                              <hr />
+                           </div>
+                           <div *ngIf="point == ' '">
+                              <br />
+                           </div>
+                           <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
+                              {{ point }}
+                           </div>
+                           <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
+                              {{ point }}
+                           </div>
+                           <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
+                              <h3>{{ point }}</h3>
+                           </div>
+                        </ul>
                      </mat-card-subtitle>
                   </mat-card-header>
                </div>

@@ -4,12 +4,18 @@ import { Observable } from "rxjs";
 import { TimeTask } from "../model/timetask";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class TimeTaskService {
   url = "http://localhost:3000/timetasks";
 
   constructor(private httpClient: HttpClient) {}
+
+  /*
+   * ===================================================================================
+   * CRUD TIMETASK OPERATIONS
+   * ===================================================================================
+   */
 
   getAllTimeElements(): Observable<TimeTask[]> {
     return this.httpClient.get<Array<TimeTask>>(this.url);
@@ -32,5 +38,21 @@ export class TimeTaskService {
 
   deleteTimeElement(zeitElement: number): Observable<TimeTask> {
     return this.httpClient.delete<TimeTask>(this.url + "/" + zeitElement);
+  }
+
+  /*
+   * ===================================================================================
+   * OTHER TIMETASK OPERATIONS
+   * ===================================================================================
+   */
+
+  isValid(timetask: TimeTask) {
+    // TODO more accceptance criteria
+    return timetask.startdate !== undefined &&
+      timetask.enddate !== undefined &&
+      new Date(timetask.enddate).getTime() >
+        new Date(timetask.startdate).getTime()
+      ? true
+      : false;
   }
 }

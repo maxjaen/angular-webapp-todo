@@ -27,6 +27,8 @@ export class SessionComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTrainingsFromService();
+
+    // TODO set tab title
   }
 
   /*
@@ -136,10 +138,4 @@ export class SessionComponent implements OnInit {
   delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-
-  /*
-   * ===================================================================================
-   * SOUND FUNCTIONS
-   * ===================================================================================
-   */
 }

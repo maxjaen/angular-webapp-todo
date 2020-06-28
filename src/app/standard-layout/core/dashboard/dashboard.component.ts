@@ -78,17 +78,18 @@ export class DashboardComponent implements OnInit {
         tempValue = timetasks
           .filter((e) => {
             let startdate: Date = new Date(e.startdate);
-            let now: Date = new Date();
+            let today: Date = new Date();
 
             if (
-              startdate.getDate() == now.getDate() &&
-              startdate.getMonth() == now.getMonth() &&
-              startdate.getFullYear() == now.getFullYear()
+              startdate.getDate() == today.getDate() &&
+              startdate.getMonth() == today.getMonth() &&
+              startdate.getFullYear() == today.getFullYear()
             ) {
               return true;
             }
             return false;
           })
+          .filter((e) => this.timeTaskService.isValid(e))
           .map(
             (filteredData) =>
               new Date(filteredData.enddate).getTime() -

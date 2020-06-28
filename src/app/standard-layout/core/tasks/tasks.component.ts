@@ -1,4 +1,10 @@
-import { Component, OnInit, HostListener } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ElementRef,
+  ViewChild,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TaskService } from "./services/task.service";
 import { InsertTaskDialog } from "./dialogs/insert-task-dialog";
@@ -9,6 +15,8 @@ import { KeyService } from "../../shared/services/key.service";
 import { UtilityService } from "../../shared/services/utility.service";
 import { Settings } from "../settings/model/settings";
 import { SettingsService } from "../settings/services/settings.service";
+import { TimeService } from "../../shared/services/time.service";
+import { Router, NavigationEnd } from "@angular/router";
 
 @Component({
   selector: "app-tasks",
@@ -18,6 +26,7 @@ import { SettingsService } from "../settings/services/settings.service";
 export class TasksComponent implements OnInit {
   settings: Settings[];
   displayUnpinned: boolean;
+  fastCreation: boolean = false;
 
   tasks: Task[];
   pinnedTasks: Task[];
@@ -34,6 +43,8 @@ export class TasksComponent implements OnInit {
   date: Date;
   dateString: string;
 
+  @ViewChild("fast") inputElement: ElementRef;
+
   @HostListener("click", ["$event"])
   onShiftMouseClick(event: MouseEvent) {
     if (event.shiftKey) {
@@ -46,7 +57,14 @@ export class TasksComponent implements OnInit {
     return this.taskService.allSaved(this.tasks) ? true : false;
   }
 
+  @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(
+    event: KeyboardEvent
+  ) {
+    this.manageFastCreation();
+  }
+
   constructor(
+    private timeService: TimeService,
     public settingsService: SettingsService,
     public taskService: TaskService,
     public keyService: KeyService,
@@ -74,8 +92,8 @@ export class TasksComponent implements OnInit {
     this.taskService.getAllTasks().subscribe((e) => {
       this.tasks = e;
 
-      this.tasks.forEach((e) => {
-        e.templongdescr = e.longdescr;
+      this.tasks.forEach((f) => {
+        f.templongdescr = f.longdescr;
       });
 
       this.unpinnedTasks = this.taskService.getUnpinnedTasks(this.tasks);
@@ -104,17 +122,36 @@ export class TasksComponent implements OnInit {
    * ===================================================================================
    */
 
+  newTask(event: any) {
+    let task: Task = {
+      id: 0,
+      shortdescr: event.target.value,
+      longdescr: "",
+      templongdescr: "",
+      hided: false,
+      pinned: true,
+      date: this.timeService.createNewDate(),
+    };
+
+    if (this.shortdescr != "" && this.longdescr != "") {
+      this.taskService.postTask(task).subscribe(() => {
+        this.openSnackBar(this.keyService.getString("ta2"), null);
+        this.getTasksFromService();
+      });
+    }
+  }
+
   // Save task in the database
   saveTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         if (this.taskService.isSaved(task)) {
-          this.openSnackBar("Nothing changed...", null);
+          this.openSnackBar(this.keyService.getString("a4"), null);
           this.hideSelectedTask();
           return;
         }
         this.taskService.putTask(task).subscribe(() => {
-          this.openSnackBar("Task saved!", null);
+          this.openSnackBar(this.keyService.getString("ta7"), null);
           this.getTasksFromService();
         });
       } else {
@@ -140,7 +177,7 @@ export class TasksComponent implements OnInit {
       if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.pinned = !task.pinned;
-        this.changeTask(task, "Task (un)pinned!", "Reset");
+        this.changeTask(task, this.keyService.getString("ta6"), "Reset");
       } else {
         console.warn("pinTask(): ID: " + task.id + ", expected number");
       }
@@ -156,7 +193,7 @@ export class TasksComponent implements OnInit {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.hided = !task.hided;
         task.pinned = false;
-        this.changeTask(task, "Task hided!", "Reset");
+        this.changeTask(task, this.keyService.getString("ta5"), "Reset");
       } else {
         console.warn("hideTask(): ID: " + task.id + ", expected number");
       }
@@ -169,11 +206,11 @@ export class TasksComponent implements OnInit {
   removeTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
-        if (!window.confirm("Are sure you want to delete this item ?")) {
+        if (!window.confirm(this.keyService.getString("a1"))) {
           return;
         }
         this.taskService.deleteTask(task.id).subscribe(() => {
-          this.openSnackBar("Task removed!", null);
+          this.openSnackBar(this.keyService.getString("ta3"), null);
           this.getTasksFromService();
         });
       } else {
@@ -189,7 +226,7 @@ export class TasksComponent implements OnInit {
   resetTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
-        this.changeTask(task, "Task reseted!", null);
+        this.changeTask(task, this.keyService.getString("ta4"), null);
       } else {
         console.warn("resetTask(): ID: " + task.id + ", expected number");
       }
@@ -313,6 +350,15 @@ export class TasksComponent implements OnInit {
     return this.keyService.getColor("darkgreen");
   }
 
+  manageFastCreation() {
+    this.fastCreation = !this.fastCreation;
+
+    setTimeout(() => {
+      // this will make the execution after the above boolean has changed
+      this.inputElement.nativeElement.focus();
+    }, 0);
+  }
+
   /*
    * ===================================================================================
    * DIALOGS/POPUPS/HELPER_FUNCTIONS
@@ -335,10 +381,13 @@ export class TasksComponent implements OnInit {
   setTabTitle(): void {
     if (this.pinnedTasks.length > 0) {
       this._tabTitle.setTitle(
-        "Tasklist" + " (" + this.pinnedTasks.length.toString() + ")"
+        this.keyService.getString("ta1") +
+          " (" +
+          this.pinnedTasks.length.toString() +
+          ")"
       );
     } else {
-      this._tabTitle.setTitle("Tasklist");
+      this._tabTitle.setTitle(this.keyService.getString("ta1"));
     }
   }
 
@@ -360,7 +409,7 @@ export class TasksComponent implements OnInit {
     dialogRef.afterClosed().subscribe((postResult) => {
       if (postResult !== undefined) {
         if (postResult.date === undefined) {
-          postResult.date = new Date();
+          postResult.date = this.timeService.createNewDate();
         }
 
         postResult.hide = false;
@@ -368,7 +417,7 @@ export class TasksComponent implements OnInit {
 
         if (this.shortdescr != "" && this.longdescr != "") {
           this.taskService.postTask(postResult).subscribe(() => {
-            this.openSnackBar("Task created!", null);
+            this.openSnackBar(this.keyService.getString("ta2"), null);
             this.getTasksFromService();
           });
         } else {

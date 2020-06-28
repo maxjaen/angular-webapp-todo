@@ -28,4 +28,10 @@ export class NavComponent {
       this.settings = settings[0];
     });
   }
+
+  unfocusAfterClick() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
 }

@@ -10,11 +10,7 @@ import { Exercise } from "./model/exercise";
 import { Training } from "./model/training";
 import { ExerciseService } from "./services/exercise.service";
 import { TrainingService } from "./services/training.service";
-import {
-  MatDatepickerInputEvent,
-  MatSnackBar,
-  transformPanel,
-} from "@angular/material";
+import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
 import { WeightPattern } from "./model/weight-pattern";
 import { ConditionalPattern } from "./model/conditional-pattern";
 import { CountablePattern } from "./model/countable-pattern";
@@ -71,7 +67,7 @@ export class TrainingComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private _router: Router
   ) {
-    this._tabTitle.setTitle("Training");
+    this._tabTitle.setTitle(this.keyService.getString("t1"));
   }
 
   ngOnInit() {
@@ -118,7 +114,7 @@ export class TrainingComponent implements OnInit {
     this.setExerciseName(this.exerciseCreateForm.getRawValue().name);
 
     this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
-      this.openSnackBar("Exercise created!", null);
+      this.openSnackBar(this.keyService.getString("t4"), null);
       this.getExercisesFromService();
     });
   }
@@ -132,7 +128,7 @@ export class TrainingComponent implements OnInit {
   // Opens popup window to display notification
   deleteExercise() {
     this.exerciseService.deleteExercise(this.exerciseToDelete).subscribe(() => {
-      this.openSnackBar("Exercise deleted!", null);
+      this.openSnackBar(this.keyService.getString("t5"), null);
       this.getExercisesFromService(); // TODO remove exercise from array
     });
   }
@@ -195,7 +191,7 @@ export class TrainingComponent implements OnInit {
     });
 
     this.trainingService.postTraining(this.training).subscribe(() => {
-      this.openSnackBar("Training created!", null);
+      this.openSnackBar(this.keyService.getString("t2"), null);
       this.getTrainingsFromService();
       this.resetForm();
     });
@@ -303,7 +299,7 @@ export class TrainingComponent implements OnInit {
     if (this.moreTrainingsThanDisplayed()) {
       this.displayedTrainings += 10;
     } else {
-      console.log("Failed to enhance displayed trainings number.");
+      console.log(this.keyService.getString("a21"));
     }
   }
 
@@ -311,7 +307,7 @@ export class TrainingComponent implements OnInit {
     if (this.displayedTrainings > 10) {
       this.displayedTrainings -= 10;
     } else {
-      console.log("Failed to reduce displayed trainings number.");
+      console.log(this.keyService.getString("a22"));
     }
   }
 
@@ -455,10 +451,7 @@ export class TrainingComponent implements OnInit {
   // Checks if a form is valid
   // Returns true, if the form is valid, otherwise false
   formIsValid(): boolean {
-    if (
-      !(this.formGroups.length > 0) ||
-      this.formGroups.find((e) => e.invalid)
-    ) {
+    if (this.formGroups.length <= 0 || this.formGroups.find((e) => e.invalid)) {
       return false;
     }
 

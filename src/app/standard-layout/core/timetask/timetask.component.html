@@ -6,7 +6,7 @@
             <div class="enormeToBottom" *ngIf="todayTimeElements.length==0">
                <p>Can't find any timetasks</p>
                <br>
-               <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+               <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
             </div>
          </div>
          <div class="show-wrapper">
@@ -14,27 +14,27 @@
                <countup-timer [countUpTimerConfig]="testConfig">
                </countup-timer>
                <div *ngIf="this.settings.length > 0">
-                 <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total this week')">
+                  <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total this week')">
                      <p>
-                     <span>Time week: </span>
-                     <span [style.color]="this._keyService.getColor('white')">
-                        {{ this._timeService.formatMillisecondsToString(calculateOverallTime(allTimeElements)) }}</span>
-                  </p>
-                 </div>
-                 <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total today')">
+                        <span>Time week: </span>
+                        <span [style.color]="this._keyService.getColor('white')">
+                           {{ this._timeService.formatMillisecondsToString(calculateOverallTime(allTimeElements)) }}</span>
+                     </p>
+                  </div>
+                  <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total today')">
                      <p>
-                     <span>Time today: </span>
-                     <span [style.color]="this._keyService.getColor('white')">
-                        {{ this._timeService.formatMillisecondsToString(calculateTodayTime(todayTimeElements)) }}</span>
-                  </p>
-                 </div>
-                 <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show week number')">
+                        <span>Time today: </span>
+                        <span [style.color]="this._keyService.getColor('white')">
+                           {{ this._timeService.formatMillisecondsToString(calculateTodayTime(todayTimeElements)) }}</span>
+                     </p>
+                  </div>
+                  <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show week number')">
                      <p>
-                     <span>Week: </span>
-                     <span
-                        [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(this._timeService.calculateCurrentWeekNumber()) }}</span>
-                  </p>
-                 </div>
+                        <span>Week: </span>
+                        <span
+                           [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(this._timeService.calculateCurrentWeekNumber()) }}</span>
+                     </p>
+                  </div>
                </div>
                <div *ngIf="accumulatedElements && accumulatedElements.length>1">
                   <br>
@@ -47,10 +47,11 @@
             <div>
                <div class="fixedButtons-rightbottom">
                   <button class="control-buttons-gray smallToBottom" (click)="openInsertDialog()" color="primary"
-                mat-mini-fab>
+                     mat-mini-fab>
                      <mat-icon>create</mat-icon>
                   </button>
-                  <button class="control-buttons-gray" title="Finish" (click)="finishTimer()" color="primary" mat-mini-fab>
+                  <button class="control-buttons-gray" title="Finish" (click)="finishTimer()" color="primary"
+                     mat-mini-fab>
                      <mat-icon>close</mat-icon>
                   </button>
                </div>
@@ -83,25 +84,32 @@
                         </div>
                      </form>
                   </div>
-                  <mat-card (click)="selectTimeElement(timeElement);"
-                      class="example-card block">
-                     <div *ngIf="this.settings && this.settings.length > 0 && settingsService.getSettingsValue(this.settings, 'Show status color')">
+                  <mat-card (click)="selectTimeElement(timeElement);" class="example-card block">
+                     <div
+                        *ngIf="this.settings && this.settings.length > 0 && settingsService.getSettingsValue(this.settings, 'Show status color')">
                         <div class="card-status" [style.background-color]="getStatusColorValue(timeElement)"></div>
                      </div>
                      <div style="width: 70%; display: inline-block;">
                         <mat-card-header style="float: left;">
                            <mat-card-title>
                               {{ timeElement.shortdescr }}
-                              <div class="fontSize12" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
-                                 style="margin-top: 20px;">
-                                 No measurement enddate available...
+                              <div class="fontSize12"
+                                 *ngIf="!_timeTaskService.isValid(timeElement) && timeElement == runningTimeElement"
+                                 [style.color]="'#ffffff'" style=" margin-top: 20px;">
+                                 Measurement is running
                               </div>
-                              <div class="fontSize12" style="margin-top: 20px;">
-                                 <div *ngIf="timeElement.enddate" style="display: inline;">
+                              <div class="fontSize12"
+                                 *ngIf="!_timeTaskService.isValid(timeElement) && timeElement != runningTimeElement"
+                                 [style.color]="'#ffffff'" style=" margin-top: 20px;">
+                                 Measurement is invalid
+                              </div>
+                              <div class="fontSize12" style="margin-top: 20px;"
+                                 *ngIf="_timeTaskService.isValid(timeElement)">
+                                 <div class="inline">
                                     {{ timeElementToTimestring(timeElement) }} >>
                                  </div>
                                  {{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
-                                 <div *ngIf="timeElement.enddate" style="display: inline;">
+                                 <div class="inline">
                                     ,
                                     {{this._timeService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
                                  </div>
@@ -145,7 +153,8 @@
          <div *ngIf="historyElements">
             <div *ngIf="historyElements.length > 0">
                <div class="fixedButtons-rightbottom">
-                  <button class="control-buttons-gray" title="Delete all" (click)="this.deleteAllAvailableTimeTasks()" color="primary" mat-mini-fab>
+                  <button class="control-buttons-gray" title="Delete all" (click)="this.deleteAllAvailableTimeTasks()"
+                     color="primary" mat-mini-fab>
                      <mat-icon>close</mat-icon>
                   </button>
                </div>

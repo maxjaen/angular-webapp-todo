@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material";
 import { UtilityService } from "../../shared/services/utility.service";
 import { KeyService } from "../../shared/services/key.service";
+import { TimeService } from "../../shared/services/time.service";
 
 @Component({
   selector: "app-weight",
@@ -13,13 +14,14 @@ import { KeyService } from "../../shared/services/key.service";
 })
 export class WeightComponent implements OnInit {
   weights: Weight[];
-  displayedWeights: number = 15;
 
+  displayedWeights: number = 15;
   form = new FormGroup({
     weight: new FormControl("", [Validators.required]),
   });
 
   constructor(
+    private timeService: TimeService,
     private weightService: WeightService,
     private keyService: KeyService,
     private _utilityService: UtilityService,
@@ -28,7 +30,15 @@ export class WeightComponent implements OnInit {
 
   ngOnInit() {
     this.getWeightsFromService();
+
+    // TODO set tab title
   }
+
+  /*
+   * ===================================================================================
+   * GET DATA
+   * ===================================================================================
+   */
 
   // Get all Weights (sorted) from service
   getWeightsFromService() {
@@ -43,23 +53,27 @@ export class WeightComponent implements OnInit {
     });
   }
 
-  // Save Weight in the database
+  /*
+   * ===================================================================================
+   * CRUD OPERATIONS
+   * ===================================================================================
+   */
+
+  // Save weight into the database
   saveWeight() {
     if (this.form.getRawValue().weight != "") {
-      let weightValue: number = this.form.getRawValue().weight;
-      let temp: Date = new Date();
-      temp.setHours(temp.getHours() + 1);
-      let tempWeight: Weight = { id: 0, value: weightValue, date: temp };
+      const weightValue: number = this.form.getRawValue().weight;
+      const dateValue: Date = this.timeService.createNewDate();
 
-      if (this._utilityService.isNumber(tempWeight.value)) {
-        this.weightService.postWeight(tempWeight).subscribe(() => {
-          this.openSnackBar("Weight created!", null);
+      const weight: Weight = { id: 0, value: weightValue, date: dateValue };
+
+      if (this._utilityService.isNumber(weight.value)) {
+        this.weightService.postWeight(weight).subscribe(() => {
+          this.openSnackBar(this.keyService.getString("w2"), null);
           this.getWeightsFromService();
         });
       } else {
-        console.warn(
-          "saveWeight(): ID: " + tempWeight.value + ", expected number"
-        );
+        console.warn("saveWeight(): ID: " + weight.value + ", expected number");
       }
     } else {
       console.warn(
@@ -70,13 +84,13 @@ export class WeightComponent implements OnInit {
     }
   }
 
-  // Remove selected Weight from the database
+  // Remove selected weight from the database
   removeWeight(weight: Weight) {
     if (weight !== undefined) {
       if (this._utilityService.isNumber(weight.id)) {
-        if (window.confirm("Are sure you want to delete this item ?")) {
+        if (window.confirm(this.keyService.getString("a1"))) {
           this.weightService.deleteWeight(weight.id).subscribe(() => {
-            this.openSnackBar("Weight removed!", null);
+            this.openSnackBar(this.keyService.getString("w3"), null);
             this.getWeightsFromService();
           });
         }
@@ -90,22 +104,15 @@ export class WeightComponent implements OnInit {
 
   /*
    * ===================================================================================
-   * HELPER FUNCTIONS
+   * OTHER WEIGHT OPERATIONS
    * ===================================================================================
    */
-
-  // Opens popup menu for notifications
-  openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {
-      duration: 2000,
-    });
-  }
 
   showMoreWeights() {
     if (this.moreWeightsThanDisplayed()) {
       this.displayedWeights += 10;
     } else {
-      console.log("Failed to enhance displayed trainings number.");
+      console.log(this.keyService.getString("a21"));
     }
   }
 
@@ -113,7 +120,7 @@ export class WeightComponent implements OnInit {
     if (this.displayedWeights > 10) {
       this.displayedWeights -= 10;
     } else {
-      console.log("Failed to reduce displayed trainings number.");
+      console.log(this.keyService.getString("a22"));
     }
   }
 
@@ -143,18 +150,11 @@ export class WeightComponent implements OnInit {
 
   // Get the number of days since last training session
   getDaysSinceLastWeight(): number {
-    let weight: Weight = this.getLatestWeight();
+    let tempDate: Date = this.timeService.createNewDate();
+    let milliseconds: number =
+      tempDate.getTime() - new Date(this.getLatestWeight().date).getTime();
 
-    if (weight !== undefined) {
-      let tempDate: Date = new Date();
-      tempDate.setHours(tempDate.getHours() + 1);
-      let milliseconds: number =
-        tempDate.getTime() - new Date(weight.date).getTime();
-
-      return Math.floor(milliseconds / (1000 * 60 * 60 * 24));
-    }
-
-    return -1;
+    return Math.floor(milliseconds / (1000 * 60 * 60 * 24));
   }
 
   // Calculate BMI index
@@ -215,5 +215,18 @@ export class WeightComponent implements OnInit {
     }
 
     return this.keyService.getColor("darkgray");
+  }
+
+  /*
+   * ===================================================================================
+   * HELPER FUNCTIONS
+   * ===================================================================================
+   */
+
+  // Opens popup menu for notifications
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 }

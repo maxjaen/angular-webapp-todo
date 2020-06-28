@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import { UtilityService } from "./utility.service";
 
-const SUMMER_TIME = 1;
-// CHANGE to "const WINTER_TIME = 0;" if necessary
+const GER_UTC_PLUS_TWO = 2;
 
 @Injectable({
   providedIn: "root",
@@ -29,7 +28,7 @@ export class TimeService {
 
   createNewDate(): Date {
     let date: Date = new Date();
-    date.setHours(date.getHours() + 1 + SUMMER_TIME);
+    date.setHours(date.getUTCHours() + GER_UTC_PLUS_TWO);
 
     return date;
   }
@@ -58,6 +57,10 @@ export class TimeService {
     }
 
     return false;
+  }
+
+  isValid(date: Date): boolean {
+    return date !== null || date !== undefined ? true : false;
   }
 
   formatMillisecondsToString(milliseconds: number): string {

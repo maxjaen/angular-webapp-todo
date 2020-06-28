@@ -3,21 +3,12 @@
         <h1 class="mat-h1">Dashboard</h1>
         <div *ngIf="this.settings && this.settings.length > 0">
             <div *ngFor="let component of this.settingsService.getStartPageHeaders(this.settings);">
-                <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show Tasks module') && component.type=='task'">
+                <div
+                    *ngIf="settingsService.getSettingsValue(this.settings, 'Show Tasks module') && component.type=='task'">
                     <mat-card (click)="goToUrl(component)" class="dashboard-card"
                         style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #5a606f;">
-                        <!--<mat-card-header style="float: right;">
-                            <mat-card-title>
-                                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #menu="matMenu" xPosition="before">
-                                    <button mat-menu-item>Remove</button>
-                                </mat-menu>
-                            </mat-card-title>
-                        </mat-card-header>-->
                         <mat-card-content class="dashboard-card-content">
-                            <div 
+                            <div
                                 style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
                                 <mat-icon>{{component.symbol}}</mat-icon>
                             </div>
@@ -36,19 +27,10 @@
                         </mat-card-content>
                     </mat-card>
                 </div>
-                <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show Fitness module') && component.type=='fitness'">
+                <div
+                    *ngIf="settingsService.getSettingsValue(this.settings, 'Show Fitness module') && component.type=='fitness'">
                     <mat-card (click)=" goToUrl(component)" class="dashboard-card"
                         style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #6b5a6f;">
-                        <!--<mat-card-header style="float: right;">
-                                            <mat-card-title>
-                                                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                                                    <mat-icon>more_vert</mat-icon>
-                                                </button>
-                                                <mat-menu #menu="matMenu" xPosition="before">
-                                                    <button mat-menu-item>Remove</button>
-                                                </mat-menu>
-                                            </mat-card-title>
-                                        </mat-card-header>-->
                         <mat-card-content class="dashboard-card-content">
                             <div
                                 style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
@@ -72,16 +54,6 @@
                 <div *ngIf="component.type=='general'">
                     <mat-card (click)=" goToUrl(component)" class="dashboard-card"
                         style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px;">
-                        <!--<mat-card-header style="float: right;">
-                        <mat-card-title>
-                            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #menu="matMenu" xPosition="before">
-                                <button mat-menu-item>Remove</button>
-                            </mat-menu>
-                        </mat-card-title>
-                        </mat-card-header>-->
                         <mat-card-content class="dashboard-card-content">
                             <div
                                 style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">

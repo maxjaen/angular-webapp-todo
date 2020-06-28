@@ -3,11 +3,12 @@ import { TrainingService } from "../../services/training.service";
 import { Training } from "../../model/training";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Exercise } from "../../model/exercise";
+import { KeyService } from "src/app/standard-layout/shared/services/key.service";
 
 @Component({
   selector: "app-training-view",
   templateUrl: "./training-view.component.html",
-  styleUrls: ["./training-view.component.scss"]
+  styleUrls: ["./training-view.component.scss"],
 })
 export class TrainingViewComponent implements OnInit {
   actualTraining: Training;
@@ -15,6 +16,7 @@ export class TrainingViewComponent implements OnInit {
   displayedColumns: string[] = ["name", "category", "string"];
 
   constructor(
+    private keyService: KeyService,
     private trainingService: TrainingService,
     private route: ActivatedRoute,
     private router: Router
@@ -25,10 +27,10 @@ export class TrainingViewComponent implements OnInit {
   }
 
   getTrainingFromService() {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.trainingService
         .getTrainingByID(+params["id"])
-        .subscribe(training => {
+        .subscribe((training) => {
           this.actualTraining = training;
           this.dataSource = this.actualTraining.exercices;
         });
@@ -36,8 +38,8 @@ export class TrainingViewComponent implements OnInit {
   }
 
   removeTraining() {
-    if (window.confirm("Are sure you want to delete this item ?")) {
-      this.route.params.subscribe(params => {
+    if (window.confirm(this.keyService.getString("a1"))) {
+      this.route.params.subscribe((params) => {
         this.trainingService.deleteTrainingByID(+params["id"]).subscribe(() => {
           this.viewTraining();
         });
@@ -55,7 +57,7 @@ export class TrainingViewComponent implements OnInit {
       weekday: "long",
       year: "numeric",
       month: "long",
-      day: "numeric"
+      day: "numeric",
     };
     return tempDate.toLocaleDateString("de-DE", options);
   }

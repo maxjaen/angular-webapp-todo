@@ -97,11 +97,15 @@
                                  *ngIf="!_timeTaskService.isValid(timeElement) && timeElement == runningTimeElement"
                                  [style.color]="'#ffffff'" style=" margin-top: 20px;">
                                  Measurement is running
+                                 <p>@{{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
+                                 </p>
                               </div>
                               <div class="fontSize12"
                                  *ngIf="!_timeTaskService.isValid(timeElement) && timeElement != runningTimeElement"
                                  [style.color]="'#ffffff'" style=" margin-top: 20px;">
                                  Measurement is invalid
+                                 <p>@{{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
+                                 </p>
                               </div>
                               <div class="fontSize12" style="margin-top: 20px;"
                                  *ngIf="_timeTaskService.isValid(timeElement)">

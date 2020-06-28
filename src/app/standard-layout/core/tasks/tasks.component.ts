@@ -16,7 +16,6 @@ import { UtilityService } from "../../shared/services/utility.service";
 import { Settings } from "../settings/model/settings";
 import { SettingsService } from "../settings/services/settings.service";
 import { TimeService } from "../../shared/services/time.service";
-import { Router, NavigationEnd } from "@angular/router";
 
 @Component({
   selector: "app-tasks",

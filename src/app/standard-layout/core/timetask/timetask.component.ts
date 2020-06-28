@@ -614,9 +614,12 @@ export class TimeTaskComponent implements OnInit {
   }
 
   // Change all abbreviations to text in the task description (based on ngModelChange)
-  replaceWithShortcut(task: TimeTask) {
-    this._keyService.SHORTCUTS.forEach((replacePair) => {
-      task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
+  replaceWithShortcut(timeTask: TimeTask) {
+    Object.keys(this._keyService.getShortcuts()).forEach((key) => {
+      timeTask.longdescr = timeTask.longdescr.replace(
+        key,
+        this._keyService.getShortcut(key)
+      );
     });
   }
 }

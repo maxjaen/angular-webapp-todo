@@ -93,7 +93,9 @@ export class TasksComponent implements OnInit {
       this.tasks = e;
 
       this.tasks.forEach((f) => {
+        f.tempshortdescr = f.shortdescr;
         f.templongdescr = f.longdescr;
+        f.tempDate = f.date;
       });
 
       this.unpinnedTasks = this.taskService.getUnpinnedTasks(this.tasks);
@@ -123,14 +125,20 @@ export class TasksComponent implements OnInit {
    */
 
   newTask(event: any) {
-    let task: Task = {
+    const date = this.timeService.createNewDate();
+    const shortDescr = event.target.value;
+    const longDescr = "";
+
+    const task: Task = {
       id: 0,
-      shortdescr: event.target.value,
-      longdescr: "",
-      templongdescr: "",
+      shortdescr: shortDescr,
+      tempshortdescr: shortDescr,
+      longdescr: longDescr,
+      templongdescr: longDescr,
+      date: date,
+      tempDate: date,
       hided: false,
       pinned: true,
-      date: this.timeService.createNewDate(),
     };
 
     if (this.shortdescr != "" && this.longdescr != "") {
@@ -295,6 +303,8 @@ export class TasksComponent implements OnInit {
       shortdescr: fromTask.shortdescr,
       longdescr: fromTask.longdescr,
       templongdescr: fromTask.templongdescr,
+      tempshortdescr: fromTask.tempshortdescr,
+      tempDate: fromTask.tempDate,
     };
   }
 

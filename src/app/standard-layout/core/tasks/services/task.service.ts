@@ -85,7 +85,11 @@ export class TaskService {
   }
 
   isSaved(task: Task): boolean {
-    return task.longdescr === task.templongdescr ? true : false;
+    return task.shortdescr === task.tempshortdescr &&
+      task.longdescr === task.templongdescr &&
+      task.date === task.tempDate
+      ? true
+      : false;
   }
 
   allSaved(tasks: Task[]): boolean {

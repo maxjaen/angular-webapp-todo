@@ -6,4 +6,6 @@ export class Task {
   pinned: boolean;
   date: Date;
   templongdescr: string;
+  tempshortdescr: string;
+  tempDate: Date;
 }

@@ -369,6 +369,10 @@ export class TasksComponent implements OnInit {
       // this will make the execution after the above boolean has changed
       this.inputElement.nativeElement.focus();
     }, 0);
+
+    if (!this.fastCreation) {
+      this.unfocusAfterClick();
+    }
   }
 
   /*
@@ -400,6 +404,12 @@ export class TasksComponent implements OnInit {
       );
     } else {
       this._tabTitle.setTitle(this.keyService.getString("ta1"));
+    }
+  }
+
+  unfocusAfterClick() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
     }
   }
 

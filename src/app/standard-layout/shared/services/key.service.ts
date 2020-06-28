@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import colors from "../../../../assets/json/colors.json";
+import strings from "../../../../assets/json/strings.json";
 
 @Injectable({
   providedIn: "root",
@@ -7,6 +8,7 @@ import colors from "../../../../assets/json/colors.json";
 export class KeyService {
   constructor() {}
 
+  // TODO work on shortcuts
   SHORTCUTS = [
     ["<pr>", "PROBLEM: "],
     ["<SO>", "SOLUTION: "],
@@ -22,5 +24,13 @@ export class KeyService {
 
   getColors(): any {
     return colors;
+  }
+
+  getString(string: string): string {
+    return strings[string];
+  }
+
+  getStrings(): any {
+    return strings;
   }
 }

@@ -304,10 +304,12 @@ export class TasksComponent implements OnInit {
   }
 
   // Change all abbreviations to text in the task description (based on ngModelChange)
-  // TODO how can you use this function better?
   replaceWithShortcut(task: Task) {
-    this.keyService.SHORTCUTS.forEach((replacePair) => {
-      task.longdescr = task.longdescr.replace(replacePair[0], replacePair[1]);
+    Object.keys(this.keyService.getShortcuts()).forEach((key) => {
+      task.longdescr = task.longdescr.replace(
+        key,
+        this.keyService.getShortcut(key)
+      );
     });
   }
 

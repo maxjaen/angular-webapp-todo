@@ -371,6 +371,7 @@ export class TasksComponent implements OnInit {
     }, 0);
 
     if (!this.fastCreation) {
+      this.inputElement.nativeElement.value = "";
       this.unfocusAfterClick();
     }
   }

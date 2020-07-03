@@ -85,10 +85,10 @@
                                        <li>{{ point }}</li>
                                     </div>
                                     <div *ngIf="point.length == 0">
-                                       <hr />
+                                       <br />
                                     </div>
                                     <div *ngIf="point == ' '">
-                                       <br />
+                                       <hr />
                                     </div>
                                     <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
                                        {{ point }}
@@ -177,10 +177,10 @@
                                        <li>{{ point }}</li>
                                     </div>
                                     <div *ngIf="point.length == 0">
-                                       <hr />
+                                       <br />
                                     </div>
                                     <div *ngIf="point == ' '">
-                                       <br />
+                                       <hr />
                                     </div>
                                     <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
                                        {{ point }}
@@ -286,10 +286,10 @@
                               <li>{{ point }}</li>
                            </div>
                            <div *ngIf="point.length == 0">
-                              <hr />
+                              <br />
                            </div>
                            <div *ngIf="point == ' '">
-                              <br />
+                              <hr />
                            </div>
                            <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
                               {{ point }}

@@ -5,6 +5,10 @@ mat-card {
   @extend .indentingFromBottom;
 }
 
+ul {
+  list-style-type: none;
+}
+
 textarea {
   @include height300px;
 }

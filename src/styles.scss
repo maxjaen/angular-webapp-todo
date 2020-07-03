@@ -168,9 +168,9 @@ textarea,
 
 .text-container {
   width: 50%;
-  @include low-margin;
   @include float-left;
   @include block;
+  @extend .indenting;
 }
 
 .textarea-container {

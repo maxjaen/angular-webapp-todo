@@ -6,16 +6,16 @@ import {
   HostListener,
 } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Exercise } from "./model/exercise";
+import { Exercise } from "../exercise/model/exercise";
 import { Training } from "./model/training";
-import { ExerciseService } from "./services/exercise.service";
+import { ExerciseService } from "../exercise/services/exercise.service";
 import { TrainingService } from "./services/training.service";
 import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
-import { WeightPattern } from "./model/weight-pattern";
-import { ConditionalPattern } from "./model/conditional-pattern";
-import { CountablePattern } from "./model/countable-pattern";
-import { ConditionalPattern2d } from "./model/conditional-pattern2d";
-import { FreePattern } from "./model/free-pattern";
+import { WeightPattern } from "../exercise/model/pattern/weight-pattern";
+import { ConditionalPattern } from "../exercise/model/pattern/conditional-pattern";
+import { CountablePattern } from "../exercise/model/pattern/countable-pattern";
+import { ConditionalPattern2d } from "../exercise/model/pattern/conditional-pattern2d";
+import { FreePattern } from "../exercise/model/pattern/free-pattern";
 import { Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { UtilityService } from "../../shared/services/utility.service";
@@ -27,14 +27,6 @@ import { KeyService } from "../../shared/services/key.service";
   styleUrls: ["./training-overview.component.scss"],
 })
 export class TrainingOverViewComponent implements OnInit {
-  patterns = [
-    "conditionalpattern1d",
-    "conditionalpattern2d",
-    "countablepattern",
-    "weightpattern",
-    "freepattern",
-  ];
-
   displayedTrainings: number = 10;
   sessionMode = ["Normal Session", "Time Session"];
   selectedMode: string;
@@ -43,14 +35,6 @@ export class TrainingOverViewComponent implements OnInit {
   trainingsDate: Date = new Date();
   training: Training;
   trainingDescription: string = "";
-
-  exerciseToCreate: Exercise = new Exercise();
-  exerciseCreateForm = new FormGroup({
-    name: new FormControl("", [Validators.required]),
-    category: new FormControl("", [Validators.required]),
-  });
-
-  exerciseToDelete: Exercise = new Exercise();
 
   exercises: Exercise[];
   exercisesToInsert: Exercise[] = [];
@@ -96,40 +80,6 @@ export class TrainingOverViewComponent implements OnInit {
   getExercisesFromService() {
     this.exerciseService.getAllExercises().subscribe((exercises) => {
       this.exercises = exercises;
-    });
-  }
-
-  // Set category of new exercise
-  setExerciseCategory(event: { value: string }) {
-    this.exerciseToCreate.category = event.value;
-  }
-
-  // Set name of new exercise
-  setExerciseName(name: string) {
-    this.exerciseToCreate.name = name;
-  }
-
-  // Creates a new exercise based on the name and category of the input fields
-  saveExercise() {
-    this.setExerciseName(this.exerciseCreateForm.getRawValue().name);
-
-    this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
-      this.openSnackBar(this.keyService.getString("t4"), null);
-      this.getExercisesFromService();
-    });
-  }
-
-  // Set the exercise which should be deleted
-  selectExerciseToDetele(event: { value: Exercise }) {
-    this.exerciseToDelete = event.value;
-  }
-
-  // Deletes exercise from server
-  // Opens popup window to display notification
-  deleteExercise() {
-    this.exerciseService.deleteExercise(this.exerciseToDelete).subscribe(() => {
-      this.openSnackBar(this.keyService.getString("t5"), null);
-      this.getExercisesFromService(); // TODO remove exercise from array
     });
   }
 

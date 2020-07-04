@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { Exercise } from "../model/exercise";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ExerciseService {
   url = "http://localhost:3000/exercises";

@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit {
   settings: Settings[] = [];
 
   placeHolderArray: KeyValuePair[] = [];
-  ignoreModules: string[] = ["settings", "training"];
+  ignoreModules: string[] = ["settings", "training", "exercise"];
 
   constructor(
     public settingsService: SettingsService,

@@ -1,0 +1,52 @@
+<div *ngIf="exercises">
+    <div class="content">
+        <div class="selection">
+            <div #createexercise class="tab">
+                <h2>Create Exercise</h2>
+                <div class="text-container">
+                    <form [formGroup]="exerciseCreateForm" class="inline example-form">
+                        <mat-form-field>
+                            <input matInput placeholder="exercise name" name="exercisename" formControlName="name">
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Choose pattern</mat-label>
+                            <mat-select (selectionChange)="setExerciseCategory($event)">
+                                <mat-option *ngFor="let patternString of patterns" [value]="patternString">
+                                    {{patternString}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </form>
+                    <button class="indenting" (click)="saveExercise();" mat-stroked-button>Insert</button>
+                </div>
+            </div>
+            <div class="tab" #deleteexercise>
+                <h2>Delete Exercise</h2>
+                <div class="text-container">
+                    <form class="inline example-form">
+                        <mat-form-field>
+                            <mat-label>Choose pattern</mat-label>
+                            <mat-select (selectionChange)="selectExerciseToDelete($event)">
+                                <mat-option *ngFor="let exercise of exercises" [value]="exercise">
+                                    {{exercise.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </form>
+                    <button class="indenting" (click)="deleteExercise();" mat-stroked-button>Delete</button>
+                </div>
+            </div>
+            <div class="tab" #overviewexercise>
+                <h2>Exercises</h2>
+                <div>
+                    <div class="side leftside">
+
+                    </div>
+                    <div class="side rightside">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -27,6 +27,12 @@
           "type": "fitness"
         },
         {
+          "name": "exercise",
+          "symbol": "pool",
+          "displaytext": "Create or view your exercises",
+          "type": "fitness"
+        },
+        {
           "name": "session",
           "symbol": "fitness_center",
           "displaytext": "Your previous workout session lasts _ seconds",

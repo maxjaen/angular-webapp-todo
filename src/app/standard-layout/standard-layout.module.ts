@@ -45,6 +45,7 @@ import {
 import { SettingsComponent } from "./core/settings/settings.component";
 import { SessionComponent } from "./core/session/session.component";
 import { DashboardComponent } from "./core/dashboard/dashboard.component";
+import { ExerciseOverViewComponent } from "./core/exercise/exercise-overview.component";
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { DashboardComponent } from "./core/dashboard/dashboard.component";
     SettingsComponent,
     SessionComponent,
     DashboardComponent,
+    ExerciseOverViewComponent,
   ],
   imports: [
     CommonModule,
@@ -99,11 +101,12 @@ import { DashboardComponent } from "./core/dashboard/dashboard.component";
     MatNativeDateModule,
   ],
   exports: [
-    TrainingOverViewComponent,
     TasksComponent,
     TimeTaskComponent,
     WeightComponent,
+    TrainingOverViewComponent,
     TrainingDetailViewComponent,
+    ExerciseOverViewComponent,
   ],
   entryComponents: [InsertTaskDialog, InsertTaskDialogTime],
 })

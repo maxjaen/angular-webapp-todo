@@ -1,4 +1,4 @@
-import { ExercisePattern } from "./exercise-pattern";
+import { ExercisePattern } from "./pattern/exercise-pattern";
 
 export class Exercise {
   id: number;

@@ -8,6 +8,7 @@ import { WeightComponent } from "./standard-layout/core/weight/weight.component"
 import { DashboardComponent } from "./standard-layout/core/dashboard/dashboard.component";
 import { SessionComponent } from "./standard-layout/core/session/session.component";
 import { SettingsComponent } from "./standard-layout/core/settings/settings.component";
+import { ExerciseOverViewComponent } from "./standard-layout/core/exercise/exercise-overview.component";
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
   {
     path: "training/:id",
     component: TrainingDetailViewComponent,
+  },
+  {
+    path: "exercise",
+    component: ExerciseOverViewComponent,
   },
   {
     path: "timetask",

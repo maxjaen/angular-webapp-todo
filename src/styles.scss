@@ -261,3 +261,9 @@ INLINE BUTTONS
   justify-content: flex-end;
   float: right;
 }
+
+/*
+NGX-CHARTS
+*/
+
+ ::ng-deep .ngx-charts { text { fill: #fff !important; } }

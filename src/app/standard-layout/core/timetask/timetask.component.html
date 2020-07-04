@@ -36,15 +36,15 @@
                      </p>
                   </div>
                </div>
-               <div *ngIf="accumulatedElements && accumulatedElements.length>1">
-                  <div class="block">
+                <div class="block" *ngIf="todayTimeElements.length>1">
                      <ngx-charts-pie-chart [results]="graphData" [legend]="true" [legendTitle]="'Zeiterfassung'"
-                        [view]="[1000,300]" [labels]="true">
+                        [view]="[900,300]" [labels]="true">
                      </ngx-charts-pie-chart>
                   </div>
+               <div *ngIf="accumulatedElements && accumulatedElements.length>1">
                   <br>
                   <div *ngFor="let element of accumulatedElements">
-                     {{element.value}}: {{element.key}}
+                     {{element.value}}: {{element.name}}
                   </div>
                   <br>
                </div>
@@ -175,7 +175,7 @@
             <div *ngIf="historyAccumulatedElements">
                <br>
                <div *ngFor="let element of historyAccumulatedElements">
-                  {{element.value}}: {{element.key}}
+                  {{element.value}}: {{element.name}}
                </div>
                <br>
             </div>

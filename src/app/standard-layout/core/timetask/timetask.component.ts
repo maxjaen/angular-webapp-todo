@@ -155,7 +155,7 @@ export class TimeTaskComponent implements OnInit {
 
   private initAccumulationProcess() {
     this.accumulatedSecondsPerTask = this.getAccumulatedTimeTaskAndSecondsPairs(
-      this.todayTimeElements
+      this.todayTimeElements.filter(e => this._timeTaskService.isValid(e))
     );
 
     this.initAccumulatedTaskData();
@@ -181,7 +181,7 @@ export class TimeTaskComponent implements OnInit {
     this.accumulatedSecondsPerTask.forEach((e) => {
       let element: NameAndNumberValuePair = {
         name: e.name,
-        value: +(e.value / 60 / 60).toFixed(0),
+        value: +(e.value / 60 / 60 / 1000 ).toFixed(3),
       };
       arr.push(element);
     });
@@ -214,10 +214,11 @@ export class TimeTaskComponent implements OnInit {
   // Get all TimeTasks that have today as startdate
   // Return sorted TimeTask array
   getTodayTimeTasks(data: TimeTask[]): TimeTask[] {
+    debugger;
     return data
       .filter((e) => {
         let startdate: Date = new Date(e.startdate);
-        let now: Date = new Date();
+        let now: Date = this._timeService.createNewDate();
 
         if (
           startdate.getDate() == now.getDate() &&

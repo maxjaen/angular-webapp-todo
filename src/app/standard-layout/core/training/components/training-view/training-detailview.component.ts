@@ -6,11 +6,11 @@ import { Exercise } from "../../model/exercise";
 import { KeyService } from "src/app/standard-layout/shared/services/key.service";
 
 @Component({
-  selector: "app-training-view",
-  templateUrl: "./training-view.component.html",
-  styleUrls: ["./training-view.component.scss"],
+  selector: "app-training-detailview",
+  templateUrl: "./training-detailview.component.html",
+  styleUrls: ["./training-detailview.component.scss"],
 })
-export class TrainingViewComponent implements OnInit {
+export class TrainingDetailViewComponent implements OnInit {
   actualTraining: Training;
   dataSource: Exercise[] = [];
   displayedColumns: string[] = ["name", "category", "string"];

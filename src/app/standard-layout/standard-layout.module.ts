@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { TrainingComponent } from "./core/training/exercise.component";
-import { TrainingViewComponent } from "./core/training/components/training-view/training-view.component";
+import { TrainingOverViewComponent } from "./core/training/training-overview.component";
+import { TrainingDetailViewComponent } from "./core/training/components/training-view/training-detailview.component";
 import { TimeTaskComponent } from "./core/timetask/timetask.component";
 import { WeightComponent } from "./core/weight/weight.component";
 import { TasksComponent } from "./core/tasks/tasks.component";
@@ -48,13 +48,13 @@ import { DashboardComponent } from "./core/dashboard/dashboard.component";
 
 @NgModule({
   declarations: [
-    TrainingComponent,
+    TrainingOverViewComponent,
     TasksComponent,
     TimeTaskComponent,
     WeightComponent,
     InsertTaskDialog,
     InsertTaskDialogTime,
-    TrainingViewComponent,
+    TrainingDetailViewComponent,
     SettingsComponent,
     SessionComponent,
     DashboardComponent,
@@ -99,11 +99,11 @@ import { DashboardComponent } from "./core/dashboard/dashboard.component";
     MatNativeDateModule,
   ],
   exports: [
-    TrainingComponent,
+    TrainingOverViewComponent,
     TasksComponent,
     TimeTaskComponent,
     WeightComponent,
-    TrainingViewComponent,
+    TrainingDetailViewComponent,
   ],
   entryComponents: [InsertTaskDialog, InsertTaskDialogTime],
 })

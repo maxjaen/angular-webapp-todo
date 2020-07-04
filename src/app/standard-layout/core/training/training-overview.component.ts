@@ -22,11 +22,11 @@ import { UtilityService } from "../../shared/services/utility.service";
 import { KeyService } from "../../shared/services/key.service";
 
 @Component({
-  selector: "app-exercise",
-  templateUrl: "./exercise.component.html",
-  styleUrls: ["./exercise.component.scss"],
+  selector: "app-training-overview",
+  templateUrl: "./training-overview.component.html",
+  styleUrls: ["./training-overview.component.scss"],
 })
-export class TrainingComponent implements OnInit {
+export class TrainingOverViewComponent implements OnInit {
   patterns = [
     "conditionalpattern1d",
     "conditionalpattern2d",

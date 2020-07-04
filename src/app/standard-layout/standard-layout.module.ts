@@ -47,6 +47,8 @@ import { SessionComponent } from "./core/session/session.component";
 import { DashboardComponent } from "./core/dashboard/dashboard.component";
 import { ExerciseOverViewComponent } from "./core/exercise/exercise-overview.component";
 import { ExerciseDetailviewComponent } from "./core/exercise/components/exercise-detailview/exercise-detailview.component";
+import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -101,6 +103,10 @@ import { ExerciseDetailviewComponent } from "./core/exercise/components/exercise
     MatToolbarModule,
     MatTooltipModule,
     MatNativeDateModule,
+
+    // ngx-charts
+    BrowserAnimationsModule,
+    NgxChartsModule,
   ],
   exports: [
     TasksComponent,

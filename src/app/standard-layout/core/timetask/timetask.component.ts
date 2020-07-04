@@ -12,14 +12,21 @@ import { KeyService } from "../../shared/services/key.service";
 import { TimeService } from "../../shared/services/time.service";
 import { SettingsService } from "../settings/services/settings.service";
 import { Settings } from "../settings/model/settings";
+import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 const START_DATE_STRING = "startdate";
 const END_DATE_STRING = "enddate";
 const EMPTY_STRING = "";
 
-interface KeyValuePair {
-  key: string;
+interface NameAndStringValuePair {
+  name: string;
   value: string;
+}
+
+interface NameAndNumberValuePair {
+  name: string;
+  value: number;
 }
 
 @Component({
@@ -34,8 +41,11 @@ export class TimeTaskComponent implements OnInit {
   runningTimeElement: TimeTask;
   selectedTimeElement: TimeTask;
   historyElements: TimeTask[];
-  accumulatedElements: KeyValuePair[];
-  historyAccumulatedElements: KeyValuePair[];
+
+  accumulatedSecondsPerTask: NameAndNumberValuePair[] = [];
+  accumulatedElements: NameAndStringValuePair[] = [];
+  historyAccumulatedElements: NameAndStringValuePair[] = [];
+  graphData: NameAndNumberValuePair[] = [];
 
   settings: Settings[] = [];
 
@@ -98,7 +108,7 @@ export class TimeTaskComponent implements OnInit {
 
   /*
    * ===================================================================================
-   * TIMEELEMENT METHODS
+   * CRUD OPERATIONS
    * ===================================================================================
    */
 
@@ -109,6 +119,80 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
+  // Get all TimeTasks from service
+  // Fill particular arrays with a subset of all TimeTasks
+  getTimeElementsFromService() {
+    this.allTimeElements = []; // all TimeTasks from database
+    this.todayTimeElements = []; // all TimeTasks from today
+    this.historyElements = []; // browse your history for prior TimeTasks
+
+    this._timeTaskService.getAllTimeElements().subscribe((data) => {
+      this.allTimeElements = data;
+
+      this.initTodayTimeElements();
+      this.initAccumulationProcess();
+
+      if (this._timerService.isTimerStart) {
+        if (this.todayTimeElements.length > 0) {
+          this.runningTimeElement = this.todayTimeElements[0];
+        }
+      }
+    });
+  }
+
+  /*
+   * ===================================================================================
+   * INIT
+   * ===================================================================================
+   */
+
+  private initTodayTimeElements() {
+    this.todayTimeElements = this.getTodayTimeTasks(
+      //
+      this.allTimeElements
+    );
+  }
+
+  private initAccumulationProcess() {
+    this.accumulatedSecondsPerTask = this.getAccumulatedTimeTaskAndSecondsPairs(
+      this.todayTimeElements
+    );
+
+    this.initAccumulatedTaskData();
+    this.initAccumulatedGraphData();
+  }
+
+  private initAccumulatedTaskData() {
+    let arr: NameAndStringValuePair[] = [];
+
+    this.accumulatedSecondsPerTask.forEach((e) => {
+      let element: NameAndStringValuePair = {
+        name: e.name,
+        value: this._timeService.formatMillisecondsToString(e.value),
+      };
+      arr.push(element);
+    });
+    this.accumulatedElements = arr;
+  }
+
+  private initAccumulatedGraphData() {
+    let arr: NameAndNumberValuePair[] = [];
+
+    this.accumulatedSecondsPerTask.forEach((e) => {
+      let element: NameAndNumberValuePair = {
+        name: e.name,
+        value: +(e.value / 60 / 60).toFixed(0),
+      };
+      arr.push(element);
+    });
+    this.graphData = arr;
+  }
+
+  /*
+   * ===================================================================================
+   * OTHER TIMEELEMENT OPERATIONS
+   * ===================================================================================
+   */
   // Selected current TimeElement if not already set,
   // otherwise hide current selected TimeElement
   selectTimeElement(timeElement: TimeTask) {
@@ -125,32 +209,6 @@ export class TimeTaskComponent implements OnInit {
   // Set the current running timeElement
   selectRunningTimeElement(timeElement: TimeTask) {
     this.runningTimeElement = timeElement;
-  }
-
-  // Get all TimeTasks from service
-  // Fill particular arrays with a subset of all TimeTasks
-  getTimeElementsFromService() {
-    this.allTimeElements = []; // all TimeTasks from database
-    this.todayTimeElements = []; // all TimeTasks from today
-    this.historyElements = []; // browse your history for prior TimeTasks
-
-    this._timeTaskService.getAllTimeElements().subscribe((data) => {
-      this.allTimeElements = data;
-      this.todayTimeElements = this.getTodayTimeTasks(
-        //
-        this.allTimeElements
-      );
-      this.accumulatedElements = this.getAccumulatedTimeTaskPairs(
-        //
-        this.todayTimeElements
-      );
-
-      if (this._timerService.isTimerStart) {
-        if (this.todayTimeElements.length > 0) {
-          this.runningTimeElement = this.todayTimeElements[0];
-        }
-      }
-    });
   }
 
   // Get all TimeTasks that have today as startdate
@@ -173,28 +231,24 @@ export class TimeTaskComponent implements OnInit {
       .sort((a, b) => (a.id > b.id ? -1 : 1));
   }
 
-  // Get all TimeTasks with time accumulated by name
-  // Return sorted KeyValuePair array
-  getAccumulatedTimeTaskPairs(data: TimeTask[]): KeyValuePair[] {
-    let array: KeyValuePair[] = [];
+  getAccumulatedTimeTaskAndSecondsPairs(
+    data: TimeTask[]
+  ): NameAndNumberValuePair[] {
+    let array: NameAndNumberValuePair[] = [];
 
     data.forEach((key) => {
-      let element: KeyValuePair = {
-        key: key.shortdescr, // name of timetask as string
-        value: this._timeService.formatMillisecondsToString(
-          // time as string
-          data
-            .filter((e) => e.shortdescr == key.shortdescr)
-            .reduce(
-              (a, b) =>
-                a +
-                (new Date(b.enddate).getTime() -
-                  new Date(b.startdate).getTime()),
-              0
-            )
-        ),
+      let element: NameAndNumberValuePair = {
+        name: key.shortdescr, // name of timetask as string
+        value: data
+          .filter((e) => e.shortdescr == key.shortdescr)
+          .reduce(
+            (a, b) =>
+              a +
+              (new Date(b.enddate).getTime() - new Date(b.startdate).getTime()),
+            0
+          ),
       };
-      if (array.filter((e) => e.key == element.key).length == 0) {
+      if (array.filter((e) => e.name == element.name).length == 0) {
         array.push(element);
       }
     });
@@ -608,9 +662,20 @@ export class TimeTaskComponent implements OnInit {
         date.getFullYear() == +year
       );
     });
-    this.historyAccumulatedElements = this.getAccumulatedTimeTaskPairs(
+
+    const accumulatedInSeconds = this.getAccumulatedTimeTaskAndSecondsPairs(
       this.historyElements
     );
+
+    let arr: NameAndStringValuePair[] = [];
+    accumulatedInSeconds.forEach((e) => {
+      let element: NameAndStringValuePair = {
+        name: e.name,
+        value: this._timeService.formatMillisecondsToString(e.value),
+      };
+      arr.push(element);
+    });
+    this.historyAccumulatedElements = arr;
   }
 
   // Change all abbreviations to text in the task description (based on ngModelChange)

@@ -214,11 +214,11 @@ export class TrainingOverViewComponent implements OnInit {
     if (
       training.exercices.find(
         (e) =>
-          e.name == "Bankdrücken" ||
-          e.name == "Rudern sitzend am Kabelzug" ||
-          e.name == "Latzug Obergriff" ||
+          e.name == "Bench Press" ||
+          e.name == "Rowing Sitting At The Cable Pull" ||
+          e.name == "Lat Pulldown Crossover" ||
           e.name == "Butterfly" ||
-          e.name == "Kastensteigen"
+          e.name == "Box Climping"
       )
     ) {
       return true;

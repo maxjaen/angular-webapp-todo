@@ -8,6 +8,12 @@
 .leftside {
   width: 25%;
   margin-right: 5%;
+  height: 600px;
+  overflow: hidden;
+}
+
+.leftside:hover {
+  overflow-y: scroll;
 }
 
 .rightside {
@@ -26,7 +32,7 @@
 
 .category {
   @extend .tab-m;
-  border-left: 5px solid #000;
+  border-left: 5px solid #c2673b;
   background-color: #4d4a4a;
 
   .top-category {

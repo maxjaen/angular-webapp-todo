@@ -48,16 +48,16 @@
                             <hr>
                             <div
                                 *ngFor="let exercise of exerciseService.getExercisesFromCategorySorted(exercises, category)">
-                                <div class="list-item" *ngIf="selectedExercise == exercise  && exercise.name != 'Pause'"
+                                <div class="list-item" *ngIf="selectedExercise == exercise  && exercise.name != 'Break'"
                                     title="{{exercise.name}}" (click)="selectExercise(exercise)"
                                     [style.background-color]="'#3b63c2'">
                                     {{ exercise.name }}
                                 </div>
-                                <div class="list-item" *ngIf="selectedExercise != exercise && exercise.name != 'Pause'"
+                                <div class="list-item" *ngIf="selectedExercise != exercise && exercise.name != 'Break'"
                                     title="{{exercise.name}}" (click)="selectExercise(exercise)">
                                     {{ exercise.name }}
                                 </div>
-                                <div class="list-item" *ngIf=" exercise.name == 'Pause'" title="{{exercise.name}}"
+                                <div class="list-item" *ngIf=" exercise.name == 'Break'" title="{{exercise.name}}"
                                     (click)="selectExercise(exercise)" [style.background-color]="'#c23b3b'">
                                     {{ exercise.name }}
                                 </div>

@@ -37,6 +37,11 @@
                   </div>
                </div>
                <div *ngIf="accumulatedElements && accumulatedElements.length>1">
+                  <div class="block">
+                     <ngx-charts-pie-chart [results]="graphData" [legend]="true" [legendTitle]="'Zeiterfassung'"
+                        [view]="[1000,300]" [labels]="true">
+                     </ngx-charts-pie-chart>
+                  </div>
                   <br>
                   <div *ngFor="let element of accumulatedElements">
                      {{element.value}}: {{element.key}}

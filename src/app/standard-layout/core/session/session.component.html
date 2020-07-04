@@ -2,12 +2,10 @@
     <div class="content">
         <div class="insert" style="margin-bottom: 30px;">
             <div>
-                <button (click)="doWorkout(0)" mat-flat-button color="primary"
-                    style="margin-right: 1%;">Start</button>
+                <button (click)="doWorkout(0)" mat-flat-button color="primary" style="margin-right: 1%;">Start</button>
                 <button (click)="continueWorkout()" mat-flat-button color="primary"
                     style="margin-right: 1%;">Continue</button>
-                <button (click)="stopWorkout()" mat-flat-button color="primary"
-                    style="margin-right: 1%;">Stop</button>
+                <button (click)="stopWorkout()" mat-flat-button color="primary" style="margin-right: 1%;">Stop</button>
             </div>
         </div>
         <div class="selection">
@@ -44,11 +42,11 @@
                 <h2> Next Exercises</h2>
                 <div *ngFor="let exercise of this.selectedTimedTraining.exercices" style="margin: 1%; font-size: 30px;">
                     <div
-                        *ngIf="currentExercise.name==exercise.name && currentExercise.name!='Pause' && this.selectedTimedTraining.exercices.indexOf(exercise)==currentExerciseIndex">
+                        *ngIf="currentExercise.name==exercise.name && currentExercise.name!='Break' && this.selectedTimedTraining.exercices.indexOf(exercise)==currentExerciseIndex">
                         <div style="color: #4db2d9;">{{exercise.name}}, {{exercise.repetitions}}</div>
                     </div>
                     <div
-                        *ngIf="exercise.name=='Pause' && this.selectedTimedTraining.exercices.indexOf(exercise)==currentExerciseIndex">
+                        *ngIf="exercise.name=='Break' && this.selectedTimedTraining.exercices.indexOf(exercise)==currentExerciseIndex">
                         <div style="color: #d95d4d;">{{exercise.name}}, {{exercise.repetitions}}</div>
                     </div>
                     <div *ngIf="currentExercise.name!=exercise.name && inListOfNextSteps(exercise)">
@@ -59,10 +57,10 @@
             <div class="block" *ngIf="selectedTimedTraining && !currentExercise">
                 <h2>Aktuelles Training</h2>
                 <div *ngFor="let exercise of this.selectedTimedTraining.exercices" style="margin: 1%; font-size: 30px;">
-                    <div *ngIf="exercise.name!='Pause'">
+                    <div *ngIf="exercise.name!='Break'">
                         <div>{{exercise.name}} ({{exercise.repetitions}} seconds)</div>
                     </div>
-                    <div *ngIf="exercise.name=='Pause'">
+                    <div *ngIf="exercise.name=='Break'">
                         <div style="color: #d95d4d;">{{exercise.name}} ({{exercise.repetitions}} seconds)</div>
                     </div>
                 </div>

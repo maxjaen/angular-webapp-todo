@@ -5,28 +5,29 @@
 }
 
 .notifications {
-  border-left: 5px solid #c23b3b;
   @include basic-block;
+  border-left: 5px solid #c23b3b;
+  padding: 55px 30px 55px 30px;
 }
 
 .header {
-  border-left: 5px solid #3b63c2;
   @include basic-block;
+  border-left: 5px solid #3b63c2;
 }
 
 .stat {
-  border-left: 5px solid #b9c23b;
   @include basic-block;
+  border-left: 5px solid #b9c23b;
 }
 
 .category {
-  border-left: 5px solid #c23ba0;
   @include basic-block;
+  border-left: 5px solid #c23ba0;
 }
 
 .calc {
-  border-left: 5px solid #3bc242;
   @include basic-block;
+  border-left: 5px solid #3bc242;
 }
 
 .flex {

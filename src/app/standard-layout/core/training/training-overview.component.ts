@@ -44,7 +44,7 @@ export class TrainingOverViewComponent implements OnInit {
 
   constructor(
     private keyService: KeyService,
-    private exerciseService: ExerciseService,
+    public exerciseService: ExerciseService,
     private trainingService: TrainingService,
     private utilityService: UtilityService,
     private _tabTitle: Title,
@@ -495,17 +495,6 @@ export class TrainingOverViewComponent implements OnInit {
     this._snackBar.open(message, action, {
       duration: 4000,
     });
-  }
-
-  // Checks if an element is unique in an array
-  onlyUniques(value: string, index: number, self: string[]) {
-    return self.indexOf(value) === index;
-  }
-
-  // Compare exercise categories in an array
-  // Returns unique exercise categories
-  selectDistinctExerciseCategories(): Array<string> {
-    return this.exercises.map((e) => e.category).filter(this.onlyUniques);
   }
 
   // Changes the position of an element in forms group and exercise array at the same time

@@ -45,7 +45,7 @@
                <p>No exercises available</p>
             </div>
             <div class="categories largeToBottom" *ngIf="exercises.length>0">
-               <div *ngFor="let category of selectDistinctExerciseCategories()">
+               <div *ngFor="let category of exerciseService.selectDistinctExerciseCategories(exercises)">
                   <p>{{ category }}</p>
                   <div *ngFor="let exercise of exercises">
                      <div class="indenting" *ngIf="exercise['category'] == category">

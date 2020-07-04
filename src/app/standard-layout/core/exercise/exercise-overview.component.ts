@@ -30,7 +30,7 @@ export class ExerciseOverViewComponent implements OnInit {
   ];
 
   constructor(
-    private exerciseService: ExerciseService,
+    public exerciseService: ExerciseService,
     private keyService: KeyService,
     private _snackBar: MatSnackBar
   ) {}

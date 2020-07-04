@@ -40,14 +40,27 @@
                 <h2>Exercises</h2>
                 <div>
                     <div class="side leftside">
-                        <div *ngFor="let exercise of exercises">
-                            <div class="list-item" *ngIf="selectedExercise == exercise" title="{{exercise.name}}"
-                                (click)="selectExercise(exercise)" [style.background-color]="'#3b63c2'">
-                                {{ exercise.name }}
+                        <div class="category"
+                            *ngFor="let category of exerciseService.selectDistinctExerciseCategories(exercises)">
+                            <div class="top-category">
+                                {{ category }}
                             </div>
-                            <div class="list-item" *ngIf="selectedExercise != exercise" title="{{exercise.name}}"
-                                (click)="selectExercise(exercise)">
-                                {{ exercise.name }}
+                            <hr>
+                            <div
+                                *ngFor="let exercise of exerciseService.getExercisesFromCategorySorted(exercises, category)">
+                                <div class="list-item" *ngIf="selectedExercise == exercise  && exercise.name != 'Pause'"
+                                    title="{{exercise.name}}" (click)="selectExercise(exercise)"
+                                    [style.background-color]="'#3b63c2'">
+                                    {{ exercise.name }}
+                                </div>
+                                <div class="list-item" *ngIf="selectedExercise != exercise && exercise.name != 'Pause'"
+                                    title="{{exercise.name}}" (click)="selectExercise(exercise)">
+                                    {{ exercise.name }}
+                                </div>
+                                <div class="list-item" *ngIf=" exercise.name == 'Pause'" title="{{exercise.name}}"
+                                    (click)="selectExercise(exercise)" [style.background-color]="'#c23b3b'">
+                                    {{ exercise.name }}
+                                </div>
                             </div>
                         </div>
                     </div>

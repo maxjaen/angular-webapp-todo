@@ -11,17 +11,22 @@
     <div class="tab-m stat">
         Number of trainings: {{ trainings.length }}
     </div>
-    <div class="tab-m calc">
-        <div class="flex" *ngFor="let training of trainings">
-            <div class="column-2">
-                {{ getDate(training) }}
-            </div>
-            <div class="column-3">
-                {{ patternAnalysisService.calculateWeightPatternEntry(training, exercise) }}
-            </div>
-            <div class="column-1">
-                {{ patternAnalysisService.calculateWeightPattern(training, exercise) }}
+    <div *ngIf="trainings.length > 0" class="tab-m calc">
+        <div>
+            <div class="flex" *ngFor="let training of trainings">
+                <div class="column-2">
+                    {{ getDate(training) }}
+                </div>
+                <div class="column-3">
+                    {{ patternAnalysisService.calculateWeightPatternEntry(training, exercise) }}
+                </div>
+                <div class="column-1">
+                    {{ patternAnalysisService.calculateWeightPattern(training, exercise) }}
+                </div>
             </div>
         </div>
+    </div>
+    <div class="notifications" *ngIf="trainings.length == 0">
+        No data available!
     </div>
 </div>

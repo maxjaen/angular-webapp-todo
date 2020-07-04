@@ -26,6 +26,16 @@ export class PatternAnalysisService {
         });
         return sum + " kg";
       case "conditionalpattern1d":
+        let unit: string = "";
+        foundExercises.forEach((e) => {
+          const records: number = +e["records"];
+          const repetitions: number = +e["repetitions"];
+          unit = e["unit"];
+
+          sum += records * repetitions;
+        });
+        return sum + unit;
+
       case "countablepattern":
         foundExercises.forEach((e) => {
           const records: number = +e["records"];
@@ -104,6 +114,6 @@ export class PatternAnalysisService {
         break;
     }
 
-    return entry;
+    return entry.substring(0, entry.length - 2);
   }
 }

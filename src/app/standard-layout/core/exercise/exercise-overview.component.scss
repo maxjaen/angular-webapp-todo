@@ -1,21 +1,27 @@
 @import "../../../../styles.scss";
 
 .side {
-  height: 600px;
   float: left;
   box-sizing: border-box;
 }
 
 .leftside {
-  border-style: solid;
-  border-width: thin;
-  border-color: aqua;
-  width: 30%;
+  background-color: #4d4a4a;
+  width: 25%;
+  margin-right: 5%;
+  border-left: 5px solid #000;
 }
 
 .rightside {
-  border-style: solid;
-  border-width: thin;
-  border-color: darkgoldenrod;
   width: 70%;
+}
+
+.list-item {
+  padding: 6px 4px 6px 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-item:hover {
+  background-color: #3b63c2;
 }

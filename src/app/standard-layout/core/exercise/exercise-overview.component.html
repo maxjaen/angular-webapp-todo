@@ -40,10 +40,19 @@
                 <h2>Exercises</h2>
                 <div>
                     <div class="side leftside">
-
+                        <div *ngFor="let exercise of exercises">
+                            <div class="list-item" *ngIf="selectedExercise == exercise" title="{{exercise.name}}"
+                                (click)="selectExercise(exercise)" [style.background-color]="'#3b63c2'">
+                                {{ exercise.name }}
+                            </div>
+                            <div class="list-item" *ngIf="selectedExercise != exercise" title="{{exercise.name}}"
+                                (click)="selectExercise(exercise)">
+                                {{ exercise.name }}
+                            </div>
+                        </div>
                     </div>
                     <div class="side rightside">
-
+                        <app-exercise-detailview [exercise]="selectedExercise"></app-exercise-detailview>
                     </div>
                 </div>
             </div>

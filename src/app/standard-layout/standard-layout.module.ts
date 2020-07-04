@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { TrainingOverViewComponent } from "./core/training/training-overview.component";
-import { TrainingDetailViewComponent } from "./core/training/components/training-view/training-detailview.component";
+import { TrainingDetailViewComponent } from "./core/training/components/training-detailview/training-detailview.component";
 import { TimeTaskComponent } from "./core/timetask/timetask.component";
 import { WeightComponent } from "./core/weight/weight.component";
 import { TasksComponent } from "./core/tasks/tasks.component";
@@ -46,6 +46,7 @@ import { SettingsComponent } from "./core/settings/settings.component";
 import { SessionComponent } from "./core/session/session.component";
 import { DashboardComponent } from "./core/dashboard/dashboard.component";
 import { ExerciseOverViewComponent } from "./core/exercise/exercise-overview.component";
+import { ExerciseDetailviewComponent } from "./core/exercise/components/exercise-detailview/exercise-detailview.component";
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { ExerciseOverViewComponent } from "./core/exercise/exercise-overview.com
     SessionComponent,
     DashboardComponent,
     ExerciseOverViewComponent,
+    ExerciseDetailviewComponent,
   ],
   imports: [
     CommonModule,

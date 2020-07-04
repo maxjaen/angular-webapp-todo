@@ -3,7 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { TasksComponent } from "./standard-layout/core/tasks/tasks.component";
 import { TimeTaskComponent } from "./standard-layout/core/timetask/timetask.component";
 import { TrainingOverViewComponent } from "./standard-layout/core/training/training-overview.component";
-import { TrainingDetailViewComponent } from "./standard-layout/core/training/components/training-view/training-detailview.component";
+import { TrainingDetailViewComponent } from "./standard-layout/core/training/components/training-detailview/training-detailview.component";
 import { WeightComponent } from "./standard-layout/core/weight/weight.component";
 import { DashboardComponent } from "./standard-layout/core/dashboard/dashboard.component";
 import { SessionComponent } from "./standard-layout/core/session/session.component";

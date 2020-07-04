@@ -1,0 +1,46 @@
+@mixin basic-block {
+  padding: 17px 30px 17px 30px;
+  background-color: #4d4a4a;
+  font-size: 18px;
+}
+
+.notifications {
+  border-left: 5px solid #c23b3b;
+  @include basic-block;
+}
+
+.header {
+  border-left: 5px solid #3b63c2;
+  @include basic-block;
+}
+
+.stat {
+  border-left: 5px solid #b9c23b;
+  @include basic-block;
+}
+
+.category {
+  border-left: 5px solid #c23ba0;
+  @include basic-block;
+}
+
+.calc {
+  border-left: 5px solid #3bc242;
+  @include basic-block;
+}
+
+.flex {
+  display: flex;
+}
+
+.column-1 {
+  flex-basis: 25%;
+}
+
+.column-2 {
+  flex-basis: 35%;
+}
+
+.column-3 {
+  flex-basis: 40%;
+}

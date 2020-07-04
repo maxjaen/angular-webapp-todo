@@ -166,6 +166,11 @@ textarea,
   @extend .block;
 }
 
+.tab-m {
+  margin-bottom: 20px;
+  @extend .block;
+}
+
 .text-container {
   width: 50%;
   @include float-left;

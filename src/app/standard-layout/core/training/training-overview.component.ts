@@ -180,13 +180,7 @@ export class TrainingOverViewComponent implements OnInit {
   // Get training data from service
   getTrainingsFromService() {
     this.trainingService.getAllTrainings().subscribe((trainings) => {
-      if (trainings.length >= 2) {
-        trainings.sort(function (a, b) {
-          return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
-        });
-      }
-
-      this.trainings = trainings;
+      this.trainings = this.trainingService.getSortedTrainings(trainings);
     });
   }
 

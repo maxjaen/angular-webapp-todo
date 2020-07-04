@@ -1,0 +1,27 @@
+<div class="notifications" *ngIf="!exercise || !trainings">
+    Please select exercise!
+</div>
+<div *ngIf="exercise && trainings">
+    <div class="tab-m header">
+        Name of exercise: {{ exercise.name }}
+    </div>
+    <div class="tab-m category">
+        Name of exercise category: {{ exercise.category }}
+    </div>
+    <div class="tab-m stat">
+        Number of trainings: {{ trainings.length }}
+    </div>
+    <div class="tab-m calc">
+        <div class="flex" *ngFor="let training of trainings">
+            <div class="column-2">
+                {{ getDate(training) }}
+            </div>
+            <div class="column-3">
+                {{ patternAnalysisService.calculateWeightPatternEntry(training, exercise) }}
+            </div>
+            <div class="column-1">
+                {{ patternAnalysisService.calculateWeightPattern(training, exercise) }}
+            </div>
+        </div>
+    </div>
+</div>

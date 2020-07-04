@@ -19,6 +19,8 @@ export class ExerciseOverViewComponent implements OnInit {
   });
   exerciseToDelete: Exercise = new Exercise();
 
+  selectedExercise: Exercise;
+
   patterns = [
     "conditionalpattern1d",
     "conditionalpattern2d",
@@ -48,6 +50,10 @@ export class ExerciseOverViewComponent implements OnInit {
     this.exerciseService.getAllExercises().subscribe((exercises) => {
       this.exercises = exercises;
     });
+  }
+
+  selectExercise(exercise: Exercise): void {
+    this.selectedExercise = exercise;
   }
 
   // Set category of new exercise

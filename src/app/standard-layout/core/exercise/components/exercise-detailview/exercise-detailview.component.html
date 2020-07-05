@@ -24,13 +24,13 @@
         <div>
             <div class="flex" *ngFor="let training of trainings">
                 <div class="column-2">
-                    {{ getDate(training) }}
+                    {{ trainingService.getDateFromTraining(training) }}
                 </div>
                 <div class="column-3">
-                    {{ patternAnalysisService.calculateWeightPatternEntry(training, exercise) }}
+                    {{ patternAnalysisService.calculateExerciseRecordsForTraining(training, exercise) }}
                 </div>
                 <div class="column-1">
-                    {{ patternAnalysisService.calculateWeightPattern(training, exercise) }}
+                    {{ patternAnalysisService.calculateExerciseResultStringForTraining(training, exercise) }}
                 </div>
             </div>
         </div>

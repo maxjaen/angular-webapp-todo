@@ -24,14 +24,14 @@
                      <p>
                         <span>Time week: </span>
                         <span [style.color]="this._keyService.getColor('white')">
-                           {{ this._timeService.formatMillisecondsToString(calculateOverallTime(allTimeElements)) }}</span>
+                           {{ _timeService.formatMillisecondsToString(_timeTaskService.calculateOverallTime(allTimeElements)) }}</span>
                      </p>
                   </div>
                   <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total today')">
                      <p>
                         <span>Time today: </span>
                         <span [style.color]="this._keyService.getColor('white')">
-                           {{ this._timeService.formatMillisecondsToString(calculateTodayTime(todayTimeElements)) }}</span>
+                           {{ this._timeService.formatMillisecondsToString(_timeTaskService.calculateTodayTime(todayTimeElements)) }}</span>
                      </p>
                   </div>
                   <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show week number')">
@@ -175,7 +175,7 @@
                </div>
                <p>
                   Time: <span
-                     style="color: coral;">{{ this._timeService.formatMillisecondsToString(calculateTodayTime(historyElements)) }}</span>
+                     style="color: coral;">{{ this._timeService.formatMillisecondsToString(_timeTaskService.calculateTodayTime(historyElements)) }}</span>
                </p>
             </div>
             <div class="block" *ngIf="historyAccumulatedElements && historyAccumulatedElements.length>0">

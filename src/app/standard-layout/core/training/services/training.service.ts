@@ -40,19 +40,30 @@ export class TrainingService {
    * ===================================================================================
    */
 
+  /*
+   * Get all trainings from given trainings
+   * Sorted by date
+   */
   getSortedTrainings(trainings: Training[]) {
     return trainings.sort(function (a, b) {
       return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
     });
   }
 
+  /*
+   * Get all trainings from given trainings which enlude given exercise
+   * Sorted by date
+   */
   getSortedTrainingFromExercise(trainings: Training[], exercise: Exercise) {
-    return trainings
-      .filter(
-        (e) => e.exercices.filter((e) => e.name == exercise.name).length > 0
-      )
-      .sort(function (a, b) {
-        return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
-      });
+    return this.getSortedTrainings(trainings).filter(
+      (e) => e.exercices.filter((e) => e.name == exercise.name).length > 0
+    );
+  }
+
+  /*
+   * Return formated date string from training
+   */
+  getDateFromTraining(training: Training): string {
+    return new Date(training.date).toLocaleString();
   }
 }

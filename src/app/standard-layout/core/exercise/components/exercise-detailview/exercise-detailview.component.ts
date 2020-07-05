@@ -9,61 +9,44 @@ import { Exercise } from "../../model/exercise";
 import { TrainingService } from "../../../training/services/training.service";
 import { Training } from "../../../training/model/training";
 import { PatternAnalysisService } from "../../services/pattern-analysis.service";
-import { NameAndNumberValuePair } from "src/app/standard-layout/shared/model/NameAndNumberValuePair";
+import { NameAndNumberPair } from "src/app/standard-layout/shared/model/NameAndNumberPair";
+import { GraphDataService } from "src/app/standard-layout/shared/services/graph.service";
 
 @Component({
   selector: "app-exercise-detailview",
   templateUrl: "./exercise-detailview.component.html",
   styleUrls: ["./exercise-detailview.component.scss"],
 })
-export class ExerciseDetailviewComponent implements OnInit, OnChanges {
+export class ExerciseDetailviewComponent implements OnChanges {
   @Input() exercise: Exercise;
 
   trainings: Training[];
-  graphData: NameAndNumberValuePair[] = [];
+  graphData: NameAndNumberPair[] = [];
 
   constructor(
-    private trainingService: TrainingService,
-    public patternAnalysisService: PatternAnalysisService
+    public trainingService: TrainingService,
+    public patternAnalysisService: PatternAnalysisService,
+    private graphDataService: GraphDataService
   ) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes.firstChange) {
-      this.getTrainings();
+      this.initTrainingData();
     }
   }
 
-  ngOnInit(): void {}
-
-  getTrainings() {
+  initTrainingData() {
     this.trainingService.getAllTrainings().subscribe((trainings) => {
       if (this.exercise) {
         this.trainings = this.trainingService.getSortedTrainingFromExercise(
           trainings,
           this.exercise
         );
-        this.initGraphData();
+        this.graphData = this.graphDataService.initGraphDataForExerciseDetails(
+          this.trainings,
+          this.exercise
+        );
       }
     });
-  }
-
-  getDate(training: Training): string {
-    return new Date(training.date).toLocaleString();
-  }
-
-  initGraphData() {
-    let arr: NameAndNumberValuePair[] = [];
-
-    this.trainings
-      .filter((e) =>
-        e.exercices.find((e) => e.category == this.exercise.category)
-      )
-      .forEach((e) => {
-        let element: NameAndNumberValuePair = {
-          name: new Date(e.date).toLocaleString(),
-          value: this.patternAnalysisService.calculateSum(e, this.exercise),
-        };
-        arr.push(element);
-      });
-    this.graphData = arr;
   }
 }

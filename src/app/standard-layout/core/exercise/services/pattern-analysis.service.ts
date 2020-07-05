@@ -8,9 +8,13 @@ import { Training } from "../../training/model/training";
 export class PatternAnalysisService {
   constructor() {}
 
-  calculateWeightPattern(training: Training, exercise: Exercise): string {
-    const foundExercises = training.exercices.filter(
-      (e) => e.name == exercise.name
+  calculateExerciseResultStringForTraining(
+    training: Training,
+    exercise: Exercise
+  ): string {
+    const foundExercises = this.getExercisesInTrainingWithName(
+      training,
+      exercise
     );
 
     let sum: number = 0;
@@ -61,9 +65,13 @@ export class PatternAnalysisService {
     return "";
   }
 
-  calculateSum(training: Training, exercise: Exercise): number {
-    const foundExercises = training.exercices.filter(
-      (e) => e.name == exercise.name
+  calculateExerciseResultForTraining(
+    training: Training,
+    exercise: Exercise
+  ): number {
+    const foundExercises = this.getExercisesInTrainingWithName(
+      training,
+      exercise
     );
 
     let sum: number = 0;
@@ -84,7 +92,6 @@ export class PatternAnalysisService {
         foundExercises.forEach((e) => {
           const records: number = +e["records"];
           const repetitions: number = +e["repetitions"];
-          unit = e["unit"];
 
           sum += records * repetitions;
         });
@@ -115,9 +122,13 @@ export class PatternAnalysisService {
     return sum;
   }
 
-  calculateWeightPatternEntry(training: Training, exercise: Exercise): string {
-    const foundExercises = training.exercices.filter(
-      (e) => e.name == exercise.name
+  calculateExerciseRecordsForTraining(
+    training: Training,
+    exercise: Exercise
+  ): string {
+    const foundExercises = this.getExercisesInTrainingWithName(
+      training,
+      exercise
     );
 
     let entry = "";
@@ -169,5 +180,12 @@ export class PatternAnalysisService {
     }
 
     return entry.substring(0, entry.length - 2);
+  }
+
+  private getExercisesInTrainingWithName(
+    training: Training,
+    exercise: Exercise
+  ) {
+    return training.exercices.filter((e) => e.name == exercise.name);
   }
 }

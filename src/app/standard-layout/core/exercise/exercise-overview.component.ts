@@ -52,6 +52,20 @@ export class ExerciseOverViewComponent implements OnInit {
     });
   }
 
+  getSortedExercises() {
+    return this.exercises.sort((a, b) => {
+      if (a.name > b.name) {
+        return 1;
+      }
+
+      if (a.name < b.name) {
+        return -1;
+      }
+
+      return 0;
+    });
+  }
+
   selectExercise(exercise: Exercise): void {
     this.selectedExercise = exercise;
   }

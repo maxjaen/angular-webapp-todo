@@ -27,7 +27,7 @@
                         <mat-form-field>
                             <mat-label>Choose pattern</mat-label>
                             <mat-select (selectionChange)="selectExerciseToDelete($event)">
-                                <mat-option *ngFor="let exercise of exercises" [value]="exercise">
+                                <mat-option *ngFor="let exercise of getSortedExercises()" [value]="exercise">
                                     {{exercise.name}}
                                 </mat-option>
                             </mat-select>

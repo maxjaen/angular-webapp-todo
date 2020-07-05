@@ -10,11 +10,11 @@
             </div>
          </div>
          <div class="input-bottom" [ngClass]="fastCreation ? '' : 'hidden'">
-                  <mat-form-field class="example-form-field">
-                     <mat-label>Let's do it!</mat-label>
-                     <input matInput type="text" (keyup.enter)="newTimeTask($event)" #fast>
-                  </mat-form-field>
-               </div>
+            <mat-form-field class="example-form-field">
+               <mat-label>Let's do it!</mat-label>
+               <input matInput type="text" (keyup.enter)="newTimeTask($event)" #fast>
+            </mat-form-field>
+         </div>
          <div class="show-wrapper">
             <div class="show">
                <countup-timer [countUpTimerConfig]="testConfig">
@@ -42,11 +42,11 @@
                      </p>
                   </div>
                </div>
-                <div class="block" *ngIf="todayTimeElements.length>1">
-                     <ngx-charts-pie-chart [results]="graphData" [legend]="true" [legendTitle]="'Zeiterfassung'"
-                        [view]="[900,300]" [labels]="true">
-                     </ngx-charts-pie-chart>
-                  </div>
+               <div class="block" *ngIf="todayTimeElements.length>1">
+                  <ngx-charts-pie-chart [results]="graphData" [legend]="true" [legendTitle]="'Zeiterfassung'"
+                     [view]="[900,300]" [labels]="true">
+                  </ngx-charts-pie-chart>
+               </div>
                <div *ngIf="accumulatedElements && accumulatedElements.length>1">
                   <br>
                   <div *ngFor="let element of accumulatedElements">
@@ -177,6 +177,11 @@
                   Time: <span
                      style="color: coral;">{{ this._timeService.formatMillisecondsToString(calculateTodayTime(historyElements)) }}</span>
                </p>
+            </div>
+            <div class="block" *ngIf="historyAccumulatedElements && historyAccumulatedElements.length>0">
+               <ngx-charts-pie-chart [results]="graphDataHistory" [legend]="true" [legendTitle]="'Zeiterfassung'"
+                  [view]="[900,300]" [labels]="true">
+               </ngx-charts-pie-chart>
             </div>
             <div *ngIf="historyAccumulatedElements">
                <br>

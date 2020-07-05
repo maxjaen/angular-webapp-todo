@@ -61,6 +61,60 @@ export class PatternAnalysisService {
     return "";
   }
 
+  calculateSum(training: Training, exercise: Exercise): number {
+    const foundExercises = training.exercices.filter(
+      (e) => e.name == exercise.name
+    );
+
+    let sum: number = 0;
+
+    switch (foundExercises[0].category) {
+      case "weightpattern":
+        foundExercises.forEach((e) => {
+          const records: number = +e["records"];
+          const repetitions: number = +e["repetitions"];
+          const weight: number = +e["weight"];
+
+          sum += records * repetitions * weight;
+        });
+        break;
+
+      case "conditionalpattern1d":
+        let unit: string = "";
+        foundExercises.forEach((e) => {
+          const records: number = +e["records"];
+          const repetitions: number = +e["repetitions"];
+          unit = e["unit"];
+
+          sum += records * repetitions;
+        });
+        break;
+
+      case "countablepattern":
+        foundExercises.forEach((e) => {
+          const records: number = +e["records"];
+          const repetitions: number = +e["repetitions"];
+
+          sum += records * repetitions;
+        });
+        break;
+
+      case "conditionalpattern2d":
+        foundExercises.forEach((e) => {
+          const period: number = +e["period"];
+          const speed: number = +e["speed"];
+
+          sum += (speed / 60) * period;
+        });
+        break;
+
+      default:
+        break;
+    }
+
+    return sum;
+  }
+
   calculateWeightPatternEntry(training: Training, exercise: Exercise): string {
     const foundExercises = training.exercices.filter(
       (e) => e.name == exercise.name

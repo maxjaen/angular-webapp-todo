@@ -20,6 +20,11 @@
   border-left: 5px solid #b9c23b;
 }
 
+.graph {
+  @include basic-block;
+  border-left: 5px solid #3bc2b0;
+}
+
 .category {
   @include basic-block;
   border-left: 5px solid #c23ba0;

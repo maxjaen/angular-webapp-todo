@@ -9,6 +9,7 @@ import { Exercise } from "../../model/exercise";
 import { TrainingService } from "../../../training/services/training.service";
 import { Training } from "../../../training/model/training";
 import { PatternAnalysisService } from "../../services/pattern-analysis.service";
+import { NameAndNumberValuePair } from "src/app/standard-layout/shared/model/NameAndNumberValuePair";
 
 @Component({
   selector: "app-exercise-detailview",
@@ -17,7 +18,9 @@ import { PatternAnalysisService } from "../../services/pattern-analysis.service"
 })
 export class ExerciseDetailviewComponent implements OnInit, OnChanges {
   @Input() exercise: Exercise;
+
   trainings: Training[];
+  graphData: NameAndNumberValuePair[] = [];
 
   constructor(
     private trainingService: TrainingService,
@@ -38,11 +41,29 @@ export class ExerciseDetailviewComponent implements OnInit, OnChanges {
           trainings,
           this.exercise
         );
+        this.initGraphData();
       }
     });
   }
 
   getDate(training: Training): string {
     return new Date(training.date).toLocaleString();
+  }
+
+  initGraphData() {
+    let arr: NameAndNumberValuePair[] = [];
+
+    this.trainings
+      .filter((e) =>
+        e.exercices.find((e) => e.category == this.exercise.category)
+      )
+      .forEach((e) => {
+        let element: NameAndNumberValuePair = {
+          name: new Date(e.date).toLocaleString(),
+          value: this.patternAnalysisService.calculateSum(e, this.exercise),
+        };
+        arr.push(element);
+      });
+    this.graphData = arr;
   }
 }

@@ -1,4 +1,10 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ViewChild,
+  ElementRef,
+} from "@angular/core";
 import { TimeTaskService } from "./services/timetask.service";
 import { MatDialog, MatSnackBar } from "@angular/material";
 import { TimeTask } from "./model/timetask";
@@ -14,20 +20,12 @@ import { SettingsService } from "../settings/services/settings.service";
 import { Settings } from "../settings/model/settings";
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NameAndNumberValuePair } from "../../shared/model/NameAndNumberValuePair";
+import { NameAndStringValuePair } from "../../shared/model/NameAndStringValuePair";
 
 const START_DATE_STRING = "startdate";
 const END_DATE_STRING = "enddate";
 const EMPTY_STRING = "";
-
-interface NameAndStringValuePair {
-  name: string;
-  value: string;
-}
-
-interface NameAndNumberValuePair {
-  name: string;
-  value: number;
-}
 
 @Component({
   selector: "app-timetask",
@@ -51,6 +49,7 @@ export class TimeTaskComponent implements OnInit {
   accumulatedElements: NameAndStringValuePair[] = [];
   historyAccumulatedElements: NameAndStringValuePair[] = [];
   graphData: NameAndNumberValuePair[] = [];
+  graphDataHistory: NameAndNumberValuePair[] = [];
 
   id: number;
   shortdescr: string;
@@ -183,6 +182,20 @@ export class TimeTaskComponent implements OnInit {
     this.accumulatedElements = arr;
   }
 
+  private initAccumulatedTaskDataHistory(
+    accumulatedInSeconds: NameAndNumberValuePair[]
+  ) {
+    let arr: NameAndStringValuePair[] = [];
+    accumulatedInSeconds.forEach((e) => {
+      let element: NameAndStringValuePair = {
+        name: e.name,
+        value: this._timeService.formatMillisecondsToString(e.value),
+      };
+      arr.push(element);
+    });
+    this.historyAccumulatedElements = arr;
+  }
+
   private initAccumulatedGraphData() {
     let arr: NameAndNumberValuePair[] = [];
 
@@ -194,6 +207,21 @@ export class TimeTaskComponent implements OnInit {
       arr.push(element);
     });
     this.graphData = arr;
+  }
+
+  private initAccumulatedGraphDataHistory(
+    accumulatedInSeconds: NameAndNumberValuePair[]
+  ) {
+    let arr: NameAndNumberValuePair[] = [];
+
+    accumulatedInSeconds.forEach((e) => {
+      let element: NameAndNumberValuePair = {
+        name: e.name,
+        value: +(e.value / 60 / 60 / 1000).toFixed(3),
+      };
+      arr.push(element);
+    });
+    this.graphDataHistory = arr;
   }
 
   /*
@@ -208,31 +236,31 @@ export class TimeTaskComponent implements OnInit {
     const empty = "";
 
     debugger;
-     if (this._timerService.isTimerStart) {
-       this.runningTimeElement.enddate = this._timeService.createNewDate();
-       this._timeTaskService
-         .putTimeElement(this.runningTimeElement)
-         .subscribe(() => {
-           this.getTimeElementsFromService();
-         });
-     }
-     this.resetTimer();
+    if (this._timerService.isTimerStart) {
+      this.runningTimeElement.enddate = this._timeService.createNewDate();
+      this._timeTaskService
+        .putTimeElement(this.runningTimeElement)
+        .subscribe(() => {
+          this.getTimeElementsFromService();
+        });
+    }
+    this.resetTimer();
 
-     const timeTask: TimeTask = {
-       id: 0,
-       title: title,
-       shortdescr: title,
-       longdescr: empty,
-       startdate: date,
-       enddate: null,
-     };
+    const timeTask: TimeTask = {
+      id: 0,
+      title: title,
+      shortdescr: title,
+      longdescr: empty,
+      startdate: date,
+      enddate: null,
+    };
 
-     this._timeTaskService.postTimeElement(timeTask).subscribe((data) => {
-       this.getTimeElementsFromService();
-       this.runningTimeElement = data;
-       this.hideSelectedTimeElement();
-       this.startTimer();
-     });
+    this._timeTaskService.postTimeElement(timeTask).subscribe((data) => {
+      this.getTimeElementsFromService();
+      this.runningTimeElement = data;
+      this.hideSelectedTimeElement();
+      this.startTimer();
+    });
   }
   // Selected current TimeElement if not already set,
   // otherwise hide current selected TimeElement
@@ -708,15 +736,9 @@ export class TimeTaskComponent implements OnInit {
       this.historyElements
     );
 
-    let arr: NameAndStringValuePair[] = [];
-    accumulatedInSeconds.forEach((e) => {
-      let element: NameAndStringValuePair = {
-        name: e.name,
-        value: this._timeService.formatMillisecondsToString(e.value),
-      };
-      arr.push(element);
-    });
-    this.historyAccumulatedElements = arr;
+    this.initAccumulatedTaskDataHistory(accumulatedInSeconds);
+
+    this.initAccumulatedGraphDataHistory(accumulatedInSeconds);
   }
 
   // Change all abbreviations to text in the task description (based on ngModelChange)

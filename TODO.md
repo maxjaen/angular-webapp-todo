@@ -40,7 +40,6 @@
 - Bestimmte Tasks aus Overalltime herausstreichen, z.B. Standups
 - `Random Taskchooser mit Animation - zufällige Auswahl eines Tasks zur Abarbeitung`
 - Anzahl der erledigten Task von heute
-- Errechnung der urchschnittlichen Dauer von TimeTasks
 - Task Attribut aus Timetask löschen?
 - Sortieren der Timetasks
 
@@ -55,7 +54,6 @@
 - Zeige je nach Auswahl für eine Übung, bei welchen Trainings ich das gemacht habe (= CompareView)
 - Übersicht in Wochen bei Trainings
 - Intelligente Trainingsvorschläge
-- Grafiken
 - Mit Namen versehen
 - mark workout types in trainings colorful
 
@@ -98,3 +96,4 @@ Next Line Icon to placeholder for text
 Klick soll folgen , wenn der Finger vom Tastendruck genommen wird, nicht wenn er drauf geht
 Erstelle Task aus anderem task
 Compare von Trainings
+Verändern der Gewichtszeit

@@ -7,15 +7,16 @@
          <mat-icon>menu</mat-icon>
       </button>
    </div>
-   <div class="content">
-      <div class="tab">
-         <div class="enormeToBottom" *ngIf="!trainings">
-            <p class="smallToBottom">Can't find any trainings</p>
-            <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+   <div class="content" *ngIf="trainings">
+      <div class="selection">
+         
+         <div class="notifications" *ngIf="trainings.length == 0">
+            No trainings created! 
          </div>
-      </div>
-      <div class="selection" *ngIf="trainings">
-         <div class="tab" #overviewtraining>
+         <div class="notifications" *ngIf="exercises.length == 0">
+            No exercise created! Can't create training without exercises...
+         </div>
+         <div class="tab"  *ngIf="trainings.length > 0" #overviewtraining>
             <h2> Overview Training</h2>
             <div class="flow-root" *ngIf="trainings.length>0">
                <div *ngFor="let training of trainings.slice(0, displayedTrainings)">
@@ -27,7 +28,7 @@
                   </mat-card>
                </div>
             </div>
-            <div class="indenting">
+            <div class="indenting" *ngIf="trainings.length > 0">
                <button class="smallToRight" type="button" (click)="showMoreTrainings()"
                   [disabled]="!moreTrainingsThanDisplayed()" mat-raised-button>Show
                   more</button>
@@ -35,15 +36,9 @@
                   [disabled]="this.trainings.slice(0, displayedTrainings).length<=10" mat-raised-button>Show
                   less</button>
             </div>
-            <div class="gray" *ngIf="trainings.length==0">
-               <p>No trainings available</p>
-            </div>
          </div>
          <div class="tab" #createtraining>
             <h2>Create Training</h2>
-            <div class="gray" *ngIf="exercises.length==0">
-               <p>No exercises available</p>
-            </div>
             <div class="categories largeToBottom" *ngIf="exercises.length>0">
                <div *ngFor="let category of exerciseService.selectDistinctExerciseCategories(exercises)">
                   <p>{{ category }}</p>

@@ -3,6 +3,7 @@ import { Training } from "../../core/training/model/training";
 import { NameAndNumberPair } from "../model/NameAndNumberPair";
 import { Exercise } from "../../core/exercise/model/exercise";
 import { PatternAnalysisService } from "../../core/exercise/services/pattern-analysis.service";
+import { Weight } from '../../core/weight/model/weight';
 
 @Injectable({
   providedIn: "root",
@@ -46,6 +47,19 @@ export class GraphDataService {
       let element: NameAndNumberPair = {
         name: e.name,
         value: +(e.value / 60 / 60 / 1000).toFixed(3),
+      };
+      arr.push(element);
+    });
+    return arr;
+  }
+
+  initGraphDataForWeights(weights: Weight[]): NameAndNumberPair[] {
+      let arr: NameAndNumberPair[] = [];
+
+    weights.forEach((e) => {
+      let element: NameAndNumberPair = {
+        name: e.date.toString(),
+        value: e.value,
       };
       arr.push(element);
     });

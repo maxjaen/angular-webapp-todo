@@ -6,6 +6,8 @@ import { MatSnackBar } from "@angular/material";
 import { UtilityService } from "../../shared/services/utility.service";
 import { KeyService } from "../../shared/services/key.service";
 import { TimeService } from "../../shared/services/time.service";
+import { NameAndNumberPair } from '../../shared/model/NameAndNumberPair';
+import { GraphDataService } from '../../shared/services/graph.service';
 
 @Component({
   selector: "app-weight",
@@ -14,6 +16,7 @@ import { TimeService } from "../../shared/services/time.service";
 })
 export class WeightComponent implements OnInit {
   weights: Weight[];
+  graphData: NameAndNumberPair[] = [];
 
   displayedWeights: number = 15;
   form = new FormGroup({
@@ -22,6 +25,7 @@ export class WeightComponent implements OnInit {
 
   constructor(
     private timeService: TimeService,
+    private graphDataService: GraphDataService,
     private weightService: WeightService,
     private keyService: KeyService,
     private _utilityService: UtilityService,
@@ -50,6 +54,10 @@ export class WeightComponent implements OnInit {
       });
 
       this.weights = weights;
+          
+      this.graphData = this.graphDataService.initGraphDataForWeights(
+        this.weights
+      );
     });
   }
 

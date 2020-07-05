@@ -1,9 +1,7 @@
 <div class="content">
    <div class="tab">
-      <div class="enormeToBottom" *ngIf="weights.length==0">
-         <p>Can't find any weights</p>
-         <br>
-         <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+      <div class="notifications" *ngIf="weights.length==0">
+         No weights created!
       </div>
       <h2>Insert weight</h2>
       <div class="text-container indenting">
@@ -29,6 +27,12 @@
          <h1>{{ calculateBMI() }}</h1>
          <p>BMI result</p>
       </div>
+   </div>
+   <div class="block" *ngIf="weights.length > 0">
+      <ngx-charts-bar-vertical [view]="[900,400]" [results]="graphData" [xAxisLabel]="x"
+            [legendTitle]="'Weights'" [yAxisLabel]="y" [legend]="true" [showXAxisLabel]="true"
+            [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
+        </ngx-charts-bar-vertical>
    </div>
    <div class="block">
       <div *ngIf="weights.length>0">

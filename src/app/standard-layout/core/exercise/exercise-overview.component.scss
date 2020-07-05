@@ -28,14 +28,16 @@
 
 .list-item:hover {
   background-color: #3b63c2;
+  cursor: pointer;
 }
 
 .category {
   @extend .tab-m;
   border-left: 5px solid #c2673b;
   background-color: #4d4a4a;
+  padding: 5%;
 
   .top-category {
-    padding: 5%;
+    padding: inherit;
   }
 }

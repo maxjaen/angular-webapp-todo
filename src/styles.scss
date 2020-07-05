@@ -204,6 +204,19 @@ textarea,
   color: #f4f4f4;
 }
 
+@mixin basic-block {
+  padding: 17px 30px 17px 30px;
+  background-color: #4d4a4a;
+  font-size: 18px;
+}
+
+.notifications {
+  @extend .largeToBottom;
+  @include basic-block;
+  border-left: 5px solid #c23b3b;
+  padding: 55px 30px 55px 30px;
+}
+
 /*
 FONTS
 */

@@ -1,6 +1,9 @@
 <div *ngIf="exercises">
     <div class="content">
         <div class="selection">
+            <div class="notifications" *ngIf="exercises && exercises.length == 0">
+                No exercises created!
+            </div>
             <div #createexercise class="tab">
                 <h2>Create Exercise</h2>
                 <div class="text-container">
@@ -20,12 +23,12 @@
                     <button class="indenting" (click)="saveExercise();" mat-stroked-button>Insert</button>
                 </div>
             </div>
-            <div class="tab" #deleteexercise>
+            <div class="tab" *ngIf="exercises && exercises.length>0" #deleteexercise>
                 <h2>Delete Exercise</h2>
                 <div class="text-container">
                     <form class="inline example-form">
                         <mat-form-field>
-                            <mat-label>Choose pattern</mat-label>
+                            <mat-label>Choose exercise</mat-label>
                             <mat-select (selectionChange)="selectExerciseToDelete($event)">
                                 <mat-option *ngFor="let exercise of getSortedExercises()" [value]="exercise">
                                     {{exercise.name}}
@@ -36,7 +39,7 @@
                     <button class="indenting" (click)="deleteExercise();" mat-stroked-button>Delete</button>
                 </div>
             </div>
-            <div class="tab" #overviewexercise>
+            <div class="tab" *ngIf="exercises && exercises.length>0" #overviewexercise>
                 <h2>Exercises</h2>
                 <div>
                     <div class="side leftside">

@@ -6,8 +6,8 @@ import { MatSnackBar } from "@angular/material";
 import { UtilityService } from "../../shared/services/utility.service";
 import { KeyService } from "../../shared/services/key.service";
 import { TimeService } from "../../shared/services/time.service";
-import { NameAndNumberPair } from '../../shared/model/NameAndNumberPair';
-import { GraphDataService } from '../../shared/services/graph.service';
+import { NameAndNumberPair } from "../../shared/model/NameAndNumberPair";
+import { GraphDataService } from "../../shared/services/graph.service";
 
 @Component({
   selector: "app-weight",
@@ -54,11 +54,15 @@ export class WeightComponent implements OnInit {
       });
 
       this.weights = weights;
-          
-      this.graphData = this.graphDataService.initGraphDataForWeights(
-        this.weights
-      );
+
+      this.initGraphData();
     });
+  }
+
+  private initGraphData() {
+    this.graphData = this.graphDataService.initGraphDataForWeights(
+      this.weights.slice(0, this.displayedWeights)
+    );
   }
 
   /*
@@ -119,6 +123,7 @@ export class WeightComponent implements OnInit {
   showMoreWeights() {
     if (this.moreWeightsThanDisplayed()) {
       this.displayedWeights += 10;
+      this.initGraphData();
     } else {
       console.log(this.keyService.getString("a21"));
     }
@@ -127,6 +132,7 @@ export class WeightComponent implements OnInit {
   showLessWeights() {
     if (this.displayedWeights > 10) {
       this.displayedWeights -= 10;
+      this.initGraphData();
     } else {
       console.log(this.keyService.getString("a22"));
     }

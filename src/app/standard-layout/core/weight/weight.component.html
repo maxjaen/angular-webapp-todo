@@ -29,10 +29,10 @@
       </div>
    </div>
    <div class="block" *ngIf="weights.length > 0">
-      <ngx-charts-bar-vertical [view]="[900,400]" [results]="graphData" [xAxisLabel]="x"
-            [legendTitle]="'Weights'" [yAxisLabel]="y" [legend]="true" [showXAxisLabel]="true"
-            [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
-        </ngx-charts-bar-vertical>
+      <ngx-charts-bar-vertical [view]="[900,400]" [results]="graphData" [xAxisLabel]="'x'" [legendTitle]="'Weights'"
+         [yAxisLabel]="'y'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true"
+         [yAxis]="true" [gradient]="false">
+      </ngx-charts-bar-vertical>
    </div>
    <div class="block">
       <div *ngIf="weights.length>0">

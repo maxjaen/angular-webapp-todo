@@ -214,7 +214,6 @@ export class TimeTaskComponent implements OnInit {
   // Get all TimeTasks that have today as startdate
   // Return sorted TimeTask array
   getTodayTimeTasks(data: TimeTask[]): TimeTask[] {
-    debugger;
     return data
       .filter((e) => {
         let startdate: Date = new Date(e.startdate);

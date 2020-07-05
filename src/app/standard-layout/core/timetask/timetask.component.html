@@ -9,6 +9,12 @@
                <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
             </div>
          </div>
+         <div class="input-bottom" [ngClass]="fastCreation ? '' : 'hidden'">
+                  <mat-form-field class="example-form-field">
+                     <mat-label>Let's do it!</mat-label>
+                     <input matInput type="text" (keyup.enter)="newTimeTask($event)" #fast>
+                  </mat-form-field>
+               </div>
          <div class="show-wrapper">
             <div class="show">
                <countup-timer [countUpTimerConfig]="testConfig">

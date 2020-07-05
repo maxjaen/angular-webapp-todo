@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from "@angular/core";
+import { Component, OnInit, HostListener, ViewChild, ElementRef } from "@angular/core";
 import { TimeTaskService } from "./services/timetask.service";
 import { MatDialog, MatSnackBar } from "@angular/material";
 import { TimeTask } from "./model/timetask";
@@ -35,9 +35,14 @@ interface NameAndNumberValuePair {
   styleUrls: ["./timetask.component.scss"],
 })
 export class TimeTaskComponent implements OnInit {
+  @ViewChild("fast") inputElement: ElementRef;
+  fastCreation: boolean = false;
+
+  testConfig: countUpTimerConfigModel;
+  settings: Settings[] = [];
+
   todayTimeElements: TimeTask[];
   allTimeElements: TimeTask[];
-
   runningTimeElement: TimeTask;
   selectedTimeElement: TimeTask;
   historyElements: TimeTask[];
@@ -47,14 +52,11 @@ export class TimeTaskComponent implements OnInit {
   historyAccumulatedElements: NameAndStringValuePair[] = [];
   graphData: NameAndNumberValuePair[] = [];
 
-  settings: Settings[] = [];
-
   id: number;
   shortdescr: string;
   longdescr: string;
   startdate: Date;
   enddate: Date;
-  testConfig: countUpTimerConfigModel;
 
   // TODO timerservice doesn't show correct time in google chrome, when tab inactive
   constructor(
@@ -106,6 +108,12 @@ export class TimeTaskComponent implements OnInit {
     return false;
   }
 
+  @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(
+    event: KeyboardEvent
+  ) {
+    this.manageFastCreation();
+  }
+
   /*
    * ===================================================================================
    * CRUD OPERATIONS
@@ -155,7 +163,7 @@ export class TimeTaskComponent implements OnInit {
 
   private initAccumulationProcess() {
     this.accumulatedSecondsPerTask = this.getAccumulatedTimeTaskAndSecondsPairs(
-      this.todayTimeElements.filter(e => this._timeTaskService.isValid(e))
+      this.todayTimeElements.filter((e) => this._timeTaskService.isValid(e))
     );
 
     this.initAccumulatedTaskData();
@@ -181,7 +189,7 @@ export class TimeTaskComponent implements OnInit {
     this.accumulatedSecondsPerTask.forEach((e) => {
       let element: NameAndNumberValuePair = {
         name: e.name,
-        value: +(e.value / 60 / 60 / 1000 ).toFixed(3),
+        value: +(e.value / 60 / 60 / 1000).toFixed(3),
       };
       arr.push(element);
     });
@@ -193,6 +201,39 @@ export class TimeTaskComponent implements OnInit {
    * OTHER TIMEELEMENT OPERATIONS
    * ===================================================================================
    */
+
+  newTimeTask(event: any) {
+    const date = this._timeService.createNewDate();
+    const title = event.target.value;
+    const empty = "";
+
+    debugger;
+     if (this._timerService.isTimerStart) {
+       this.runningTimeElement.enddate = this._timeService.createNewDate();
+       this._timeTaskService
+         .putTimeElement(this.runningTimeElement)
+         .subscribe(() => {
+           this.getTimeElementsFromService();
+         });
+     }
+     this.resetTimer();
+
+     const timeTask: TimeTask = {
+       id: 0,
+       title: title,
+       shortdescr: title,
+       longdescr: empty,
+       startdate: date,
+       enddate: null,
+     };
+
+     this._timeTaskService.postTimeElement(timeTask).subscribe((data) => {
+       this.getTimeElementsFromService();
+       this.runningTimeElement = data;
+       this.hideSelectedTimeElement();
+       this.startTimer();
+     });
+  }
   // Selected current TimeElement if not already set,
   // otherwise hide current selected TimeElement
   selectTimeElement(timeElement: TimeTask) {
@@ -313,7 +354,7 @@ export class TimeTaskComponent implements OnInit {
     }
 
     if (this._timerService.isTimerStart) {
-      this.runningTimeElement.enddate = new Date();
+      this.runningTimeElement.enddate = this._timeService.createNewDate();
       this.enddate.setHours(this.enddate.getHours() + 1);
       this._timeTaskService
         .putTimeElement(this.runningTimeElement)
@@ -686,5 +727,25 @@ export class TimeTaskComponent implements OnInit {
         this._keyService.getShortcut(key)
       );
     });
+  }
+
+  manageFastCreation() {
+    this.fastCreation = !this.fastCreation;
+
+    setTimeout(() => {
+      // this will make the execution after the above boolean has changed
+      this.inputElement.nativeElement.focus();
+    }, 0);
+
+    if (!this.fastCreation) {
+      this.inputElement.nativeElement.value = "";
+      this.unfocusAfterClick();
+    }
+  }
+
+  unfocusAfterClick() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   }
 }

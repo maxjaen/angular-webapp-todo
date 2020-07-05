@@ -23,9 +23,11 @@ import { TimeService } from "../../shared/services/time.service";
   styleUrls: ["./tasks.component.scss"],
 })
 export class TasksComponent implements OnInit {
+  @ViewChild("fast") inputElement: ElementRef;
+  fastCreation: boolean = false;
+
   settings: Settings[];
   displayUnpinned: boolean;
-  fastCreation: boolean = false;
 
   tasks: Task[];
   pinnedTasks: Task[];
@@ -42,7 +44,28 @@ export class TasksComponent implements OnInit {
   date: Date;
   dateString: string;
 
-  @ViewChild("fast") inputElement: ElementRef;
+  constructor(
+    private timeService: TimeService,
+    public settingsService: SettingsService,
+    public taskService: TaskService,
+    public keyService: KeyService,
+    public utilityService: UtilityService,
+    private _tabTitle: Title,
+    public _dialog: MatDialog,
+    private _snackBar: MatSnackBar
+  ) {}
+
+  // TODO when to unsubscribe from services?
+  ngOnInit() {
+    this.getTasksFromService();
+    this.getSettingsFromService();
+  }
+
+  /*
+   * ===================================================================================
+   * HOSTLISTENER
+   * ===================================================================================
+   */
 
   @HostListener("click", ["$event"])
   onShiftMouseClick(event: MouseEvent) {
@@ -60,23 +83,6 @@ export class TasksComponent implements OnInit {
     event: KeyboardEvent
   ) {
     this.manageFastCreation();
-  }
-
-  constructor(
-    private timeService: TimeService,
-    public settingsService: SettingsService,
-    public taskService: TaskService,
-    public keyService: KeyService,
-    public utilityService: UtilityService,
-    private _tabTitle: Title,
-    public _dialog: MatDialog,
-    private _snackBar: MatSnackBar
-  ) {}
-
-  // TODO when to unsubscribe from services?
-  ngOnInit() {
-    this.getTasksFromService();
-    this.getSettingsFromService();
   }
 
   /*

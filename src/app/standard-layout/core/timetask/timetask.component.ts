@@ -708,7 +708,7 @@ export class TimeTaskComponent implements OnInit {
           "." +
           this._utilityService.formatToTwoDigits(date.getFullYear()) +
           ", " +
-          this._timeService.getDayString(date.getDay())
+          this._timeService.createDayString(date.getDay())
         );
       });
   }

@@ -9,21 +9,22 @@ const GER_UTC_PLUS_TWO = 2;
 export class TimeService {
   constructor(private _utilityService: UtilityService) {}
 
-  calculateCurrentWeekNumber(): number {
-    let now = new Date();
-    let onejan = new Date(now.getFullYear(), 0, 1);
+  /*
+   * ===================================================================================
+   * CREATE/CALCULATE OPERATIONS
+   * ===================================================================================
+   */
 
-    return Math.ceil(
-      ((now.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) / 7
-    );
-  }
-
-  calculateWeekNumberForDate(date: Date): number {
-    let onejan = new Date(date.getFullYear(), 0, 1);
-
-    return Math.ceil(
-      ((date.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) / 7
-    );
+  createDayString(i: number): string {
+    return [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ][i];
   }
 
   createNewDate(): Date {
@@ -33,36 +34,59 @@ export class TimeService {
     return date;
   }
 
-  getDayString(number: number): string {
-    return [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ][number];
+  // Calculates week number of the year for todays date
+  calculateCurrentWeekNumber(): number {
+    const now = this.createNewDate();
+    const onejan = new Date(now.getFullYear(), 0, 1);
+
+    return Math.ceil(
+      ((now.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) / 7
+    );
   }
 
-  isToday(unknownDate: Date): boolean {
-    let actualDate = new Date();
+  // Calculates week number of the year from given date
+  calculateWeekNumberForDate(date: Date): number {
+    const onejan = new Date(date.getFullYear(), 0, 1);
 
-    if (
+    return Math.ceil(
+      ((date.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) / 7
+    );
+  }
+
+  /*
+   * ===================================================================================
+   * TEST OPERATIONS
+   * ===================================================================================
+   */
+
+  // Test if the given date equals today's date
+  isToday(unknownDate: Date): boolean {
+    const actualDate = this.createNewDate();
+
+    return (
       unknownDate.getDate() == actualDate.getDate() &&
       unknownDate.getMonth() == actualDate.getMonth() &&
       unknownDate.getFullYear() == actualDate.getFullYear()
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   }
 
+  // Test if the given date is in the current week
+  isThisWeek(unknownDate: Date) {
+    // TODO
+  }
+
+  // Test if the fiven date is valid
   isValid(date: Date): boolean {
     return date !== null || date !== undefined ? true : false;
   }
 
+  /*
+   * ===================================================================================
+   * FORMATTER OPERATIONS
+   * ===================================================================================
+   */
+
+  // Get string  with format 'h:m:s' from given milliseconds
   formatMillisecondsToString(milliseconds: number): string {
     let seconds: any = Math.floor((milliseconds / 1000) % 60);
     let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
@@ -74,8 +98,9 @@ export class TimeService {
     return hours + ":" + minutes + ":" + seconds;
   }
 
+  // Get string with format 'description: h:m' from given date and description
   formatDateToStringWithDescription(date: Date, description: string): string {
-    let temp: Date = new Date(date);
+    const temp: Date = new Date(date);
 
     return (
       description +

@@ -3,11 +3,9 @@
    <mat-tab label="Tasks">
       <div class="content">
          <div class="block">
-            <div class="enormeToBottom"
+            <div class="notifications"
                *ngIf="unpinnedTasks && unpinnedTasks.length == 0 && pinnedTasks && pinnedTasks.length == 0">
-               <p>Can't find any tasks</p>
-               <br>
-               <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+               Can't find any tasks!
             </div>
          </div>
          <div *ngIf="!focusedTask">

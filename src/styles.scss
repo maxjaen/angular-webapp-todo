@@ -210,6 +210,11 @@ textarea,
   font-size: 18px;
 }
 
+.basic-block-advance {
+  @include basic-block;
+  border-left: 5px solid;
+}
+
 .notifications {
   @extend .largeToBottom;
   @include basic-block;
@@ -279,4 +284,8 @@ INLINE BUTTONS
 NGX-CHARTS
 */
 
- ::ng-deep .ngx-charts { text { fill: #fff !important; } }
+::ng-deep .ngx-charts {
+  text {
+    fill: #fff !important;
+  }
+}

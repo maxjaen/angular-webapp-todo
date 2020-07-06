@@ -9,19 +9,19 @@
    </div>
    <div class="content" *ngIf="trainings">
       <div class="selection">
-         
+
          <div class="notifications" *ngIf="trainings.length == 0">
-            No trainings created! 
+            No trainings created!
          </div>
          <div class="notifications" *ngIf="exercises.length == 0">
             No exercise created! Can't create training without exercises...
          </div>
-         <div class="tab"  *ngIf="trainings.length > 0" #overviewtraining>
+         <div class="tab" *ngIf="trainings.length > 0" #overviewtraining>
             <h2> Overview Training</h2>
             <div class="flow-root" *ngIf="trainings.length>0">
                <div *ngFor="let training of trainings.slice(0, displayedTrainings)">
-                  <mat-card class="indenting smallToBottom card-costum example-card"
-                     [style.background-color]="getStatusColorValue(training)" (click)="viewTraining(training)">
+                  <mat-card class="indenting smallToBottom basic-block-advance card-costum example-card"
+                     [style.border-color]="getStatusColorValue(training)" (click)="viewTraining(training)">
                      <mat-card-header>
                         <mat-card-title>{{ showDatestring(training.date) }}</mat-card-title>
                      </mat-card-header>

@@ -67,7 +67,7 @@
             </div>
             <div *ngIf="todayTimeElements">
                <div *ngFor="let timeElement of todayTimeElements">
-                  <div class="block low-margin changeField" *ngIf="selectedTimeElement==timeElement">
+                  <div class="block low-margin smallToBottom changeField" *ngIf="selectedTimeElement==timeElement">
                      <form class="example-form">
                         <mat-form-field class="example-full-width" style="margin-right: 2%;">
                            <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"

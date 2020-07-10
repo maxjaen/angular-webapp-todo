@@ -4,26 +4,58 @@
 
 ##  Inspiration
 
-The following links gave a quick overview about some websites that give insparation to create this app
-* https://www.youtube.com/watch?v=nH0oO1aWpSs
-* https://symmetricstrength.com/
-* https://www.reddit.com/r/productivity/comments/eg9tf9/is_there_a_goal_tracking_app_which_allows_marking/
+The current application was developed in order to accomplish tasks and obligations in everyday life as easily, quickly and efficiently as possible. 
 
+The range of functions therefore goes from the simple creation of a task, through personal time recording to the presentation and analysis of data from the fitness sector. If necessary, this information is provided by means of appropriate visualization options. 
 
 <br>
 
-To use this project, the first step is to clone the project.
+Note on the project
+- The technology stack moves only in the areas of Typescript, HTML, SCSS. Other technologies were deliberately not used in the current system. 
+- Since this is a pure hobby project of mine, commit messages and the code quality were not always put into focus by me - this lies mainly in the generation of new functions. 
+  - If, on the other hand, I work professionally in a project, then the code quality and a strong project team are in the foreground, where everyone contributes his or her share for the common higher goal. 
+- I was particularly inspired by [here](https://symmetricstrength.com/), [here](https://www.reddit.com/r/productivity/comments/eg9tf9/) and [here](https://www.youtube.com/watch?v=nH0oO1aWpSs) in this project. 
+- The use of code snippets is not permitted for commercial use.
+
+<br>
+
+Installation (step by step)
+
+1. Install npm
+```
+Available for linux, windows, mac...
+```
+
+2. Install Angular
+```
+npm install -g @angular/cli
+```
+
+
+3. Install json-server
+
+```
+npm install -g json-server
+```
+4. Clone the project to your local directory
+
+```
+git clone https://github.com/maxjaen/project_presence.git
+```
+
+5. Install dependencies in directory
+
+```
+npm install
+```
+
 The development server and the JSON server must now be executed in separate terminals (see below). 
 
+<br>
 
-<br/>
+<hr>
 
------------------
-
-<br/>
-
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.17.
+<br>
 
 ## Development server
 

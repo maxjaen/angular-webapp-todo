@@ -1,99 +1,109 @@
 # TODO
 
-## Funktionen
+<br>
 
-### Grundsätzliches
+<br>
 
-- Dokumentation (npm install in readme)
-- Angular Version in Project updaten
-- Vereinfachte Installation der App
-- `Import- und Export (z.B. PDF) von Daten`
-- Authentifizierung [Benutzerverwaltung (erstellen, bearbeiten, löschen, ...) und Generierung von Token, Login Maske]
-- Todos aus Code
-- Reset-Option bei bestimmten CRUD-Operationen
-- Icons statt Text als Buttonbeschreibung
-- Konzept für BulletPoints und sonstige Vorangestellte Zeichen bei Task/Timetask
-- Scroll to Element with space key
-- Toooltip
-- Services werden gebunden, obwohl nicht geshared
+## General
 
-### Einstellungen
+### Angular
 
-- Wechsel zwischen Dark Theme und White Theme
+- Update Angular Version
+- Simplified installation of the app
+
+### New Features
+
+- Notification System with reoccuring tasks
+- New Shortcuts, f.e. Enter or Space for scrolling or other use cases
+- Tooltip to help user with shortcuts, etc.
+- Import and export (e. g. B. PDF) of data
+- Authentication [User management (create, edit, delete, . . . ) and generation of tokens, login mask]
+- Switch between Dark Theme and White Theme
+- Time limits with points and trophy system (productively more points and thus unlock new things)
+
+### Code Refactoring
+
+- remove styles from html
+- use more 'const' instead of 'let'
+- use more typescript interfaces
+- private/public for methods and servcies
+- no real naming convention for services
+- put services into own folder
+
+### Fix
+
+- Reduce "get" queries
+- Reset the input field when creating new Exercise
+- Error in "enable history" settings
+- Services are bound although not shared
+- Adjust timer
+
+<br>
+
+<br>
+
+## For each area
+
+### Settings
+
+- There are still functions not working
 
 ### Services
 
-- Neuer DayTimeService
-  - parallel läuft neben der Application und je nach Tageszeit unterschiedliche Dinge anzeigt
+- DayTimeService
+  - runs parallel to the application and displays different things depending on the time of day
 - MotivationService
-  - posten motivierender Sprüche
+  - post motivating sayings
+- MeditationService
 
 ### Tasks/Timetasks
 
-- Kopieren eines Tasks
-- Favoriten markieren aus Tasks/Timetasks
-- Farbliche Markierung von Tasks durch Auswahl in Menü (Npm Colorpicker für Tasks)
-- Dateien/Bilder an Task anhängen
-- Drag- and Drop von Tasks
-- Persistierung der Task-Reihenfolge (Sortieren nach ID?)
-- Zusammenfassung von Tasks
-- Bestimmte Tasks aus Overalltime herausstreichen, z.B. Standups
-- `Random Taskchooser mit Animation - zufällige Auswahl eines Tasks zur Abarbeitung`
-- Anzahl der erledigten Task von heute
-- Task Attribut aus Timetask löschen?
-- Sortieren der Timetasks
+- Copy a task
+- Mark favorites from Tasks/Timetasks
+- Color marking of tasks by selection in menu (Npm Colorpicker for Tasks)
+- Append files/images to task
+- Drag and drop of tasks
+- Persistence of the task order (sorting by ID?) - Summary of tasks
+- Delete certain tasks from Overalltime, e. g. B. Standups
+- 'Random taskchooser with animation - random selection of a task for processing'
+- Number of completed task today
+- Delete task attribute from Timetask? - Sorting the timetasks
+- Delete all archived tasks
+- Subcategories for Tasks
+- New button for edit task
+- `Delete all` button for "history elements"
 
-### Trainings
+### Training
 
-- Trainings bearbeiten
-- Reihenfolge der Trainings verändern
-- Statistik: Anzahl der Trainings anzeigen (z.B. insgesamt, für Zeitspanne)
-- Statistik, wie lange das letzte Training her ist
-- Statistik: Anzahl der Exercises innerhalb eines Trainings
-- Auswahl einer Übung, die dann anschließend für jedes mögliche Training überprüft wird und eine Liste ergibt für den Vergleich
-- Zeige je nach Auswahl für eine Übung, bei welchen Trainings ich das gemacht habe (= CompareView)
-- Übersicht in Wochen bei Trainings
-- Intelligente Trainingsvorschläge
-- Mit Namen versehen
-- mark workout types in trainings colorful
+- Statistics
+  - Show number of trainings (e. g. (e. g. total, for a period of time)
+  - Statistics on how long it's been since the last training
+  - Number of exercises within a training (diversification)
+
+- Others
+  - Change the order of training
+  - `CompareView` for trainings
+  - Overview in weeks of training
+  - Intelligent training suggestions
+  - Name for trainings
+
+### Exercises
+
+- `CompareView` for exercises
 
 ### Sessions
 
-- show training when clicking session
-- start with exercise in session
-
-## New?
-
-- Zeitlimits mit Punkten und Trophysystem (Produktiv mehr Punkte und damit neue Sachen freischalten)
-- `"Delete all" Button für "history elements`
-- Ziel-Module
-- Meditation-Module
-- `Setze TabName wenn "focus" und "unfocus"`
-- `Neuer Button, um zwischen "pinned tasks" im Focus Mode zu wechseln`
-
-## Fix
-
-- Reduziere "get" Abfragen
-- Zurücksetzen des Inputfeldes, wenn neue Exercise erstellt wird
-- Fehler in "enable history" Einstellung
+- Start with exercise in session
+- Create new Training from selected Session
+- Show training when clicking session
 
 
-Enter für Beenden von TimeTask
-Diagramm für Gewicht
-private/public
+### Weigts
 
-html
-const instead of let
-Notifikationssystem
-Unterschied Gewicht +-
-Timer anpassen
-Unterschiedlich farbige Notifikationen
-Typescript Interfaces
-Alle archivierten Tasks löschen
-Unterkategorien für Tasks
-Neuer Button für edit Task
-Next Line Icon to placeholder for text
-Klick soll folgen , wenn der Finger vom Tastendruck genommen wird, nicht wenn er drauf geht
-Erstelle Task aus anderem task
-Compare von Trainings
-Verändern der Gewichtszeit
+- Difference in weight +-
+- Changing the weight time
+
+
+
+
+

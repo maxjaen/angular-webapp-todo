@@ -12,7 +12,7 @@ export class GraphDataService {
   constructor(private patternAnalysisService: PatternAnalysisService) {}
 
   /*
-   * Get graph data for exercise details
+   * Get graph data format for exercise details
    */
   initGraphDataForExerciseDetails(
     trainings: Training[],
@@ -36,7 +36,7 @@ export class GraphDataService {
   }
 
   /*
-   * Get graph data for time tasks
+   * Get graph data format for time tasks
    */
   initGraphDataForAccumulatedNameAndNumberValuePair(
     pair: NameAndNumberPair[]
@@ -53,8 +53,11 @@ export class GraphDataService {
     return arr;
   }
 
+  /*
+   * Get graph data format for weights
+   */
   initGraphDataForWeights(weights: Weight[]): NameAndNumberPair[] {
-      let arr: NameAndNumberPair[] = [];
+    let arr: NameAndNumberPair[] = [];
 
     weights.forEach((e) => {
       let element: NameAndNumberPair = {

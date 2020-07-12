@@ -22,6 +22,7 @@ export class ExerciseDetailviewComponent implements OnChanges {
 
   trainings: Training[];
   graphData: NameAndNumberPair[] = [];
+  graphDataPercent: NameAndNumberPair[] = [];
 
   constructor(
     public trainingService: TrainingService,
@@ -46,7 +47,30 @@ export class ExerciseDetailviewComponent implements OnChanges {
           this.trainings,
           this.exercise
         );
+
+        this.graphDataPercent = this.calculateGraphDataPercent();
       }
     });
+  }
+
+  private calculateGraphDataPercent() {
+    const graphData = this.graphData;
+    let graphDataPercent = [];
+
+    graphData.forEach((currentElem, i) => {
+      const lastElem = graphData[i + 1];
+      const endOfArray = graphData[graphData.length - 1];
+
+      if (currentElem !== endOfArray) {
+        const entry: NameAndNumberPair = {
+          name: "From " + lastElem.name + " to " + currentElem.name,
+          value:
+            ((+currentElem.value - +lastElem.value) / +currentElem.value) * 100,
+        };
+        graphDataPercent.push(entry);
+      }
+    });
+
+    return graphDataPercent;
   }
 }

@@ -20,6 +20,12 @@
             [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
         </ngx-charts-bar-vertical>
     </div>
+    <div class="tab-m graph" *ngIf="trainings.length > 0 && exercise.category != 'freepattern'">
+        <ngx-charts-bar-vertical [view]="[700,400]" [results]="graphDataPercent" [xAxisLabel]="'Date'"
+            [legendTitle]="'Trainings'" [yAxisLabel]="'%'" [legend]="true" [showXAxisLabel]="true"
+            [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
+        </ngx-charts-bar-vertical>
+    </div>
     <div class="tab-m calc" *ngIf="trainings.length > 0">
         <div>
             <div class="flex" *ngFor="let training of trainings">

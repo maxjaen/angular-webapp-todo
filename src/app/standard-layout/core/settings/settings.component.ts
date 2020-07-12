@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { SettingsService } from "./services/settings.service";
+import { SettingsService } from "../../shared/services/core/settings.service";
 import { Settings } from "./model/settings";
 import { MatSnackBar } from "@angular/material";
-import { KeyService } from "../../shared/services/key.service";
+import { KeyService } from "../../shared/services/utils/key.service";
 
 @Component({
   selector: "app-settings",

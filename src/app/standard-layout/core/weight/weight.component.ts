@@ -1,13 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { Weight } from "./model/weight";
-import { WeightService } from "./services/weight.service";
+import { WeightService } from "../../shared/services/core/weight.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material";
-import { UtilityService } from "../../shared/services/utility.service";
-import { KeyService } from "../../shared/services/key.service";
-import { TimeService } from "../../shared/services/time.service";
+import { UtilityService } from "../../shared/services/utils/utility.service";
+import { KeyService } from "../../shared/services/utils/key.service";
+import { TimeService } from "../../shared/services/utils/time.service";
 import { NameAndNumberPair } from "../../shared/model/NameAndNumberPair";
-import { GraphDataService } from "../../shared/services/graph.service";
+import { GraphDataService } from "../../shared/services/utils/graph.service";
 
 @Component({
   selector: "app-weight",

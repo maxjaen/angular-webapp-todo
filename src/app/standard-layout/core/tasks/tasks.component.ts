@@ -6,16 +6,16 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { TaskService } from "./services/task.service";
+import { TaskService } from "../../shared/services/core/task.service";
 import { InsertTaskDialog } from "./dialogs/insert-task-dialog";
 import { Task } from "./model/task";
 import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
 import { Title } from "@angular/platform-browser";
-import { KeyService } from "../../shared/services/key.service";
-import { UtilityService } from "../../shared/services/utility.service";
+import { KeyService } from "../../shared/services/utils/key.service";
+import { UtilityService } from "../../shared/services/utils/utility.service";
 import { Settings } from "../settings/model/settings";
-import { SettingsService } from "../settings/services/settings.service";
-import { TimeService } from "../../shared/services/time.service";
+import { SettingsService } from "../../shared/services/core/settings.service";
+import { TimeService } from "../../shared/services/utils/time.service";
 
 @Component({
   selector: "app-tasks",

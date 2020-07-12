@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { TrainingService } from "../../services/training.service";
+import { TrainingService } from "../../../../shared/services/core/training.service";
 import { Training } from "../../model/training";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Exercise } from "../../../exercise/model/exercise";
-import { KeyService } from "src/app/standard-layout/shared/services/key.service";
+import { KeyService } from "src/app/standard-layout/shared/services/utils/key.service";
 
 @Component({
   selector: "app-training-detailview",

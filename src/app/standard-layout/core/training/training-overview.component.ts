@@ -8,8 +8,8 @@ import {
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Exercise } from "../exercise/model/exercise";
 import { Training } from "./model/training";
-import { ExerciseService } from "../exercise/services/exercise.service";
-import { TrainingService } from "./services/training.service";
+import { ExerciseService } from "../../shared/services/core/exercise.service";
+import { TrainingService } from "../../shared/services/core/training.service";
 import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
 import { WeightPattern } from "../exercise/model/pattern/weight-pattern";
 import { ConditionalPattern } from "../exercise/model/pattern/conditional-pattern";
@@ -18,8 +18,8 @@ import { ConditionalPattern2d } from "../exercise/model/pattern/conditional-patt
 import { FreePattern } from "../exercise/model/pattern/free-pattern";
 import { Title } from "@angular/platform-browser";
 import { Router } from "@angular/router";
-import { UtilityService } from "../../shared/services/utility.service";
-import { KeyService } from "../../shared/services/key.service";
+import { UtilityService } from "../../shared/services/utils/utility.service";
+import { KeyService } from "../../shared/services/utils/key.service";
 
 @Component({
   selector: "app-training-overview",

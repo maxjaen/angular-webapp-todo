@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { Training } from "../../core/training/model/training";
-import { NameAndNumberPair } from "../model/NameAndNumberPair";
-import { Exercise } from "../../core/exercise/model/exercise";
-import { PatternAnalysisService } from "../../core/exercise/services/pattern-analysis.service";
-import { Weight } from '../../core/weight/model/weight';
+import { Training } from "../../../core/training/model/training";
+import { NameAndNumberPair } from "../../model/NameAndNumberPair";
+import { Exercise } from "../../../core/exercise/model/exercise";
+import { PatternAnalysisService } from "./pattern-analysis.service";
+import { Weight } from "../../../core/weight/model/weight";
 
 @Injectable({
   providedIn: "root",

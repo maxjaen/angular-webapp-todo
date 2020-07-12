@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { TimeTask } from "../model/timetask";
-import { UtilityService } from "src/app/standard-layout/shared/services/utility.service";
-import { TimeService } from "src/app/standard-layout/shared/services/time.service";
+import { TimeTask } from "../../../core/timetask/model/timetask";
+import { UtilityService } from "src/app/standard-layout/shared/services/utils/utility.service";
+import { TimeService } from "src/app/standard-layout/shared/services/utils/time.service";
 import { NameAndNumberPair } from "src/app/standard-layout/shared/model/NameAndNumberPair";
 
 @Injectable({

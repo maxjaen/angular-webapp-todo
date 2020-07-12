@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Exercise } from "../model/exercise";
-import { Training } from "../../training/model/training";
+import { Exercise } from "../../../core/exercise/model/exercise";
+import { Training } from "../../../core/training/model/training";
 
 @Injectable({
   providedIn: "root",

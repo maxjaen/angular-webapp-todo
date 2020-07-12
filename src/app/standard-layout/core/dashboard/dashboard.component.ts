@@ -1,15 +1,14 @@
 import { Component, OnInit } from "@angular/core";
-import { SettingsService } from "../settings/services/settings.service";
+import { SettingsService } from "../../shared/services/core/settings.service";
 import { Settings } from "../settings/model/settings";
 import { StartPageSetting } from "../settings/model/start-page-setting";
 import { Router } from "@angular/router";
-import { TaskService } from "../tasks/services/task.service";
-import { TimeTaskService } from "../timetask/services/timetask.service";
-import { UtilityService } from "../../shared/services/utility.service";
-import { TrainingService } from "../training/services/training.service";
-import { WeightService } from "../weight/services/weight.service";
+import { TaskService } from "../../shared/services/core/task.service";
+import { TimeTaskService } from "../../shared/services/core/timetask.service";
+import { TrainingService } from "../../shared/services/core/training.service";
+import { WeightService } from "../../shared/services/core/weight.service";
 import { Title } from "@angular/platform-browser";
-import { TimeService } from "../../shared/services/time.service";
+import { TimeService } from "../../shared/services/utils/time.service";
 
 interface KeyValuePair {
   key: string;

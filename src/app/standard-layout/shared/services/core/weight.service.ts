@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Weight } from "../model/weight";
+import { Weight } from "../../../core/weight/model/weight";
 import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class WeightService {
   url = "http://localhost:3000/weights";

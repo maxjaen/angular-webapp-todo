@@ -1,16 +1,10 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from "@angular/core";
+import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { Exercise } from "../../model/exercise";
-import { TrainingService } from "../../../training/services/training.service";
+import { TrainingService } from "../../../../shared/services/core/training.service";
 import { Training } from "../../../training/model/training";
-import { PatternAnalysisService } from "../../services/pattern-analysis.service";
+import { PatternAnalysisService } from "../../../../shared/services/utils/pattern-analysis.service";
 import { NameAndNumberPair } from "src/app/standard-layout/shared/model/NameAndNumberPair";
-import { GraphDataService } from "src/app/standard-layout/shared/services/graph.service";
+import { GraphDataService } from "src/app/standard-layout/shared/services/utils/graph.service";
 
 @Component({
   selector: "app-exercise-detailview",

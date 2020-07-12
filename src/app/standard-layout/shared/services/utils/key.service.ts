@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import colors from "../../../../assets/json/colors.json";
-import strings from "../../../../assets/json/strings.json";
-import shortcuts from "../../../../assets/json/shortcuts.json";
+import colors from "../../../../../assets/json/colors.json";
+import strings from "../../../../../assets/json/strings.json";
+import shortcuts from "../../../../../assets/json/shortcuts.json";
 
 @Injectable({
   providedIn: "root",

@@ -1,9 +1,9 @@
 import { Component, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 import { Task } from "../../tasks/model/task";
-import { TaskService } from "../../tasks/services/task.service";
+import { TaskService } from "../../../shared/services/core/task.service";
 import { TimeTask } from "../model/timetask";
-import { TimeService } from "src/app/standard-layout/shared/services/time.service";
+import { TimeService } from "src/app/standard-layout/shared/services/utils/time.service";
 
 @Component({
   selector: "insert-task-dialog",

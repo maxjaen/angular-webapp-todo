@@ -5,22 +5,22 @@ import {
   ViewChild,
   ElementRef,
 } from "@angular/core";
-import { TimeTaskService } from "./services/timetask.service";
+import { TimeTaskService } from "../../shared/services/core/timetask.service";
 import { MatDialog, MatSnackBar } from "@angular/material";
 import { TimeTask } from "./model/timetask";
 import { InsertTaskDialogTime } from "./dialogs/insert-task-dialog";
 import { countUpTimerConfigModel, timerTexts } from "ngx-timer";
 import { CountupTimerService } from "ngx-timer";
 import { Title } from "@angular/platform-browser";
-import { UtilityService } from "../../shared/services/utility.service";
+import { UtilityService } from "../../shared/services/utils/utility.service";
 import { AmazingTimePickerService } from "amazing-time-picker";
-import { KeyService } from "../../shared/services/key.service";
-import { TimeService } from "../../shared/services/time.service";
-import { SettingsService } from "../settings/services/settings.service";
+import { KeyService } from "../../shared/services/utils/key.service";
+import { TimeService } from "../../shared/services/utils/time.service";
+import { SettingsService } from "../../shared/services/core/settings.service";
 import { Settings } from "../settings/model/settings";
 import { NameAndNumberPair } from "../../shared/model/NameAndNumberPair";
 import { NameAndStringPair } from "../../shared/model/NameAndStringPair";
-import { GraphDataService } from "../../shared/services/graph.service";
+import { GraphDataService } from "../../shared/services/utils/graph.service";
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 

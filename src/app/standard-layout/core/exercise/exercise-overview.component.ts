@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { ExerciseService } from "./services/exercise.service";
+import { ExerciseService } from "../../shared/services/core/exercise.service";
 import { Exercise } from "./model/exercise";
 import { MatSnackBar } from "@angular/material";
-import { KeyService } from "../../shared/services/key.service";
+import { KeyService } from "../../shared/services/utils/key.service";
 import { FormControl, Validators, FormGroup } from "@angular/forms";
 
 @Component({

@@ -1,5 +1,6 @@
 {
-  "a1": "Are sure you want to delete this item?",
+  "a11": "Are you sure you want to delete this item?",
+  "a12": "Are you sure you want to continue this item?",
   "a21": "Failed to enhance displayed items.",
   "a22": "Failed to reduce displayed items.",
   "a23": "Can't delete current running item!",
@@ -15,6 +16,8 @@
   "ti3": "TimeTask removed!",
   "ti4": "TimeTask finished!",
   "ti5": "TimeTask created!",
+  "ti61": "Please start your Timer before you stop him.",
+  "ti62": "Saved the running TimeTask and and started a new Timer.",
   "ta1": "Tasklist",
   "ta2": "Task created!",
   "ta3": "Task removed!",

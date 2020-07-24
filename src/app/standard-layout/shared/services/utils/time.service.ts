@@ -53,6 +53,17 @@ export class TimeService {
     );
   }
 
+  retrieveDeadlineMessage(date: Date): string {
+    const currentDate = this.createNewDate();
+    const diff = new Date(date).getTime() - currentDate.getTime();
+
+    let days: any = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    return days < 0
+      ? "(~ " + days * -1 + " day/s behind your goal)"
+      : "(~ " + days + " day/s until your deadline)";
+  }
+
   /*
    * ===================================================================================
    * TEST OPERATIONS

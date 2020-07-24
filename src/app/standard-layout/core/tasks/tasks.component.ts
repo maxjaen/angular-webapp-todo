@@ -16,6 +16,13 @@ import { UtilityService } from "../../shared/services/utils/utility.service";
 import { Settings } from "../settings/model/settings";
 import { SettingsService } from "../../shared/services/core/settings.service";
 import { TimeService } from "../../shared/services/utils/time.service";
+import { TimeTaskService } from "../../shared/services/core/timetask.service";
+import {
+  CountupTimerService,
+  countUpTimerConfigModel,
+  timerTexts,
+} from "ngx-timer";
+import { TimeTask } from "../timetask/model/timetask";
 
 @Component({
   selector: "app-tasks",
@@ -38,6 +45,9 @@ export class TasksComponent implements OnInit {
   focusedTask: Task;
   lastChangedTask: Task;
 
+  runningTimeElement: TimeTask;
+  testConfig: countUpTimerConfigModel;
+
   id: number;
   shortdescr: string;
   longdescr: string;
@@ -45,9 +55,11 @@ export class TasksComponent implements OnInit {
   dateString: string;
 
   constructor(
-    private timeService: TimeService,
+    public timeService: TimeService,
     public settingsService: SettingsService,
     public taskService: TaskService,
+    private timeTaskService: TimeTaskService,
+    public _timerService: CountupTimerService,
     public keyService: KeyService,
     public utilityService: UtilityService,
     private _tabTitle: Title,
@@ -57,10 +69,19 @@ export class TasksComponent implements OnInit {
 
   // TODO when to unsubscribe from services?
   ngOnInit() {
-    this.getTasksFromService();
-    this.getSettingsFromService();
+    this.initTasksFromService();
+    this.initSettingsFromService();
+    this.initRunningTimeElement();
+    this.setTimerConfig();
   }
-
+  setTimerConfig() {
+    this.testConfig = new countUpTimerConfigModel();
+    this.testConfig.timerClass = "test_Timer_class";
+    this.testConfig.timerTexts = new timerTexts();
+    this.testConfig.timerTexts.hourText = " h -";
+    this.testConfig.timerTexts.minuteText = " min -";
+    this.testConfig.timerTexts.secondsText = " s";
+  }
   /*
    * ===================================================================================
    * HOSTLISTENER
@@ -76,7 +97,10 @@ export class TasksComponent implements OnInit {
 
   @HostListener("window:beforeunload")
   onBeforeUnload() {
-    return this.taskService.allSaved(this.tasks) ? true : false;
+    return this.taskService.allSaved(this.tasks) &&
+      !this._timerService.isTimerStart
+      ? true
+      : false;
   }
 
   @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(
@@ -91,9 +115,9 @@ export class TasksComponent implements OnInit {
    * ===================================================================================
    */
 
-  // Get all Tasks from service
+  // Init all Tasks from service
   // Fill three lists with a subset of these TimeElements
-  getTasksFromService() {
+  initTasksFromService() {
     this.taskService.getAllTasks().subscribe((e) => {
       this.tasks = e;
 
@@ -111,8 +135,8 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  // Get all settings from service
-  getSettingsFromService() {
+  // Init all settings from service
+  initSettingsFromService() {
     this.settingsService.getAllSettings().subscribe((settings) => {
       this.settings = settings;
 
@@ -120,6 +144,16 @@ export class TasksComponent implements OnInit {
         settings,
         "Show unpinned Tasks"
       );
+    });
+  }
+
+  initRunningTimeElement() {
+    this.timeTaskService.getAllTimeElements().subscribe((data) => {
+      const timeTask = data.filter((e) => e.running === true)[0];
+
+      if (this._timerService.isTimerStart && !timeTask.enddate) {
+        this.runningTimeElement = timeTask;
+      }
     });
   }
 
@@ -149,7 +183,7 @@ export class TasksComponent implements OnInit {
     if (this.shortdescr != "" && this.longdescr != "") {
       this.taskService.postTask(task).subscribe(() => {
         this.openSnackBar(this.keyService.getString("ta2"), null);
-        this.getTasksFromService();
+        this.initTasksFromService();
       });
     }
   }
@@ -165,7 +199,7 @@ export class TasksComponent implements OnInit {
         }
         this.taskService.putTask(task).subscribe(() => {
           this.openSnackBar(this.keyService.getString("ta7"), null);
-          this.getTasksFromService();
+          this.initTasksFromService();
         });
       } else {
         console.warn("saveTask(): ID: " + task.id + ", expected number");
@@ -219,12 +253,12 @@ export class TasksComponent implements OnInit {
   removeTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
-        if (!window.confirm(this.keyService.getString("a1"))) {
+        if (!window.confirm(this.keyService.getString("a11"))) {
           return;
         }
         this.taskService.deleteTask(task.id).subscribe(() => {
           this.openSnackBar(this.keyService.getString("ta3"), null);
-          this.getTasksFromService();
+          this.initTasksFromService();
         });
       } else {
         console.warn("removeTask(): ID: " + task.id + ", expected number");
@@ -256,7 +290,7 @@ export class TasksComponent implements OnInit {
   ) {
     this.taskService.putTask(task).subscribe(() => {
       this.openSnackBar(notificationMessage, notificationAction);
-      this.getTasksFromService();
+      this.initTasksFromService();
       this.hideSelectedTask();
     });
   }
@@ -331,7 +365,7 @@ export class TasksComponent implements OnInit {
   // Get backround color for different types of tasks
   // Return backround color
   getStatusColorValue(task: Task): string {
-    let actualDate: Date = new Date();
+    let actualDate: Date = this.timeService.createNewDate();
     let tempTaskDate: Date = new Date(task.date);
     let dayMilliseconds: number = 1000 * 60 * 60 * 24;
 
@@ -379,6 +413,70 @@ export class TasksComponent implements OnInit {
       this.inputElement.nativeElement.value = "";
       this.unfocusAfterClick();
     }
+  }
+
+  /*
+   * ===================================================================================
+   * FASTER ACCESS TO CREATE TIMETASKS FROM TASKS
+   * ===================================================================================
+   */
+
+  /* TODO insert to timetask service */
+  startTimeTask(task: Task): void {
+    if (this.runningTimeElement) {
+      this.runningTimeElement.enddate = this.timeService.createNewDate();
+      this.runningTimeElement.running = false;
+
+      this.timeTaskService
+        .putTimeElement(this.runningTimeElement)
+        .subscribe(() => {
+          this.openSnackBar(this.keyService.getString("ti62"), null);
+        });
+
+      this.resetTimer();
+    }
+
+    const date = this.timeService.createNewDate();
+    const title = task.shortdescr;
+    const empty = "";
+
+    const timeTask: TimeTask = {
+      id: 0,
+      title: title,
+      shortdescr: title,
+      longdescr: empty,
+      startdate: date,
+      enddate: null,
+      running: true,
+    };
+
+    this.timeTaskService.postTimeElement(timeTask).subscribe((data) => {
+      this._timerService.startTimer();
+      this.runningTimeElement = data;
+    });
+  }
+
+  stopTimeTask(): void {
+    if (this._timerService.isTimerStart) {
+      this.resetTimer();
+
+      this.runningTimeElement.enddate = this.timeService.createNewDate();
+      this.runningTimeElement.running = false;
+
+      this.timeTaskService
+        .putTimeElement(this.runningTimeElement)
+        .subscribe(() => {
+          this.openSnackBar(this.keyService.getString("ti4"), null);
+          this.runningTimeElement = null;
+        });
+    } else {
+      this.openSnackBar(this.keyService.getString("ti61"), null);
+    }
+  }
+
+  private resetTimer() {
+    this._timerService.stopTimer();
+    this._timerService.setTimervalue(0);
   }
 
   /*
@@ -446,7 +544,7 @@ export class TasksComponent implements OnInit {
         if (this.shortdescr != "" && this.longdescr != "") {
           this.taskService.postTask(postResult).subscribe(() => {
             this.openSnackBar(this.keyService.getString("ta2"), null);
-            this.getTasksFromService();
+            this.initTasksFromService();
           });
         } else {
           console.warn(

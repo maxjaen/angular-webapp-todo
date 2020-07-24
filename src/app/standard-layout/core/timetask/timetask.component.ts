@@ -94,7 +94,7 @@ export class TimeTaskComponent implements OnInit {
 
   @HostListener("window:beforeunload")
   onBeforeUnload() {
-    return false;
+    return !this._timerService.isTimerStart ? true : false;
   }
 
   @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(
@@ -209,7 +209,6 @@ export class TimeTaskComponent implements OnInit {
     const title = event.target.value;
     const empty = "";
 
-    debugger;
     if (this._timerService.isTimerStart) {
       this.runningTimeElement.enddate = this._timeService.createNewDate();
       this._timeTaskService
@@ -241,7 +240,7 @@ export class TimeTaskComponent implements OnInit {
    * Create a new TimeTask from an already finished TimeTask
    */
   continueTimeElement(timeElement: TimeTask) {
-    if (!window.confirm(this._keyService.getString("a1"))) {
+    if (!window.confirm(this._keyService.getString("a12"))) {
       return;
     }
 
@@ -318,7 +317,7 @@ export class TimeTaskComponent implements OnInit {
       return;
     }
 
-    if (!window.confirm(this._keyService.getString("a1"))) {
+    if (!window.confirm(this._keyService.getString("a11"))) {
       return;
     }
 
@@ -342,7 +341,7 @@ export class TimeTaskComponent implements OnInit {
    * Delete all elements from choosen Date
    */
   deleteAllAvailableTimeTasks() {
-    if (!window.confirm(this._keyService.getString("a1"))) {
+    if (!window.confirm(this._keyService.getString("a11"))) {
       return;
     }
 

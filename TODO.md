@@ -4,6 +4,10 @@
 
 <br>
 
+## High priority: Attention!
+
+- 'category'
+
 ## General
 
 ### Angular
@@ -76,6 +80,7 @@
 ### Training
 
 - Statistics
+
   - Show number of trainings (e. g. (e. g. total, for a period of time)
   - Statistics on how long it's been since the last training
   - Number of exercises within a training (diversification)
@@ -97,13 +102,7 @@
 - Create new Training from selected Session
 - Show training when clicking session
 
-
 ### Weigts
 
 - Difference in weight +-
 - Changing the weight time
-
-
-
-
-

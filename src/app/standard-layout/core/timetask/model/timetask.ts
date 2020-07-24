@@ -7,5 +7,6 @@ export class TimeTask {
   longdescr: string;
   startdate: Date;
   enddate: Date;
+  running?: boolean;
   task?: Task;
 }

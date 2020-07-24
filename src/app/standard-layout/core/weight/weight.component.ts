@@ -100,7 +100,7 @@ export class WeightComponent implements OnInit {
   removeWeight(weight: Weight) {
     if (weight !== undefined) {
       if (this._utilityService.isNumber(weight.id)) {
-        if (window.confirm(this.keyService.getString("a1"))) {
+        if (window.confirm(this.keyService.getString("a11"))) {
           this.weightService.deleteWeight(weight.id).subscribe(() => {
             this.openSnackBar(this.keyService.getString("w3"), null);
             this.getWeightsFromService();

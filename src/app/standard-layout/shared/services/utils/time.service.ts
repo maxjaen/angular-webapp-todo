@@ -65,8 +65,11 @@ export class TimeService {
 
     let days: any = Math.floor(diff / (1000 * 60 * 60 * 24));
 
+    if (this.isToday(date)) {
+      return "(Your deadline is today!)";
+    }
     // string interpolation
-    return !beforeDeadline && !this.isToday(date)
+    return !beforeDeadline
       ? `(~ ${days} day/s behind your goal)`
       : `(~ ${days} day/s until your deadline)`;
   }
@@ -110,9 +113,9 @@ export class TimeService {
     let seconds: any = Math.floor((milliseconds / 1000) % 60);
     let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
     let hours: any = Math.floor(milliseconds / (1000 * 60 * 60));
-    hours = hours < 10 ? "0" + hours : hours;
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
+    hours = hours < 10 ? `0${hours}` : hours;
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    seconds = seconds < 10 ? `0${seconds}` : seconds;
 
     return `${hours}:${minutes}:${seconds}`;
   }

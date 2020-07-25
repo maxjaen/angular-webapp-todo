@@ -55,13 +55,20 @@ export class TimeService {
 
   retrieveDeadlineMessage(date: Date): string {
     const currentDate = this.createNewDate();
-    const diff = new Date(date).getTime() - currentDate.getTime();
+    let diff = new Date(date).getTime() - currentDate.getTime();
+
+    let beforeDeadline: boolean = diff >= 0;
+
+    if (!beforeDeadline) {
+      diff *= -1;
+    }
 
     let days: any = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-    return days < 0
-      ? "(~ " + days * -1 + " day/s behind your goal)"
-      : "(~ " + days + " day/s until your deadline)";
+    // string interpolation
+    return !beforeDeadline && !this.isToday(date)
+      ? `(~ ${days} day/s behind your goal)`
+      : `(~ ${days} day/s until your deadline)`;
   }
 
   /*
@@ -71,8 +78,9 @@ export class TimeService {
    */
 
   // Test if the given date equals today's date
-  isToday(unknownDate: Date): boolean {
+  isToday(date: Date): boolean {
     const actualDate = this.createNewDate();
+    const unknownDate = new Date(date);
 
     return (
       unknownDate.getDate() == actualDate.getDate() &&
@@ -106,19 +114,15 @@ export class TimeService {
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
 
-    return hours + ":" + minutes + ":" + seconds;
+    return `${hours}:${minutes}:${seconds}`;
   }
 
   // Get string with format 'description: h:m' from given date and description
   formatDateToStringWithDescription(date: Date, description: string): string {
     const temp: Date = new Date(date);
 
-    return (
-      description +
-      ": " +
-      this._utilityService.formatToTwoDigits(temp.getHours()) +
-      ":" +
-      this._utilityService.formatToTwoDigits(temp.getMinutes())
-    );
+    return `${description}: ${this._utilityService.formatToTwoDigits(
+      temp.getHours()
+    )}:${this._utilityService.formatToTwoDigits(temp.getMinutes())}`;
   }
 }

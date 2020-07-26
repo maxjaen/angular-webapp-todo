@@ -8,22 +8,58 @@ const NEW_LINE = "\n";
 export class UtilityService {
   constructor() {}
 
-  split(string: string) {
+  /*
+   * Split string based on new line
+   */
+  split(string: string): string[] {
     return string.split(NEW_LINE);
   }
 
+  /*
+   * Checks if the input parameter is a number
+   */
   isNumber(input: any): boolean {
     return !isNaN(Number(input));
   }
 
+  /*
+   * When number has only one digit
+   * then add a 0 in front
+   */
   formatToTwoDigits(number: number) {
-    return number < 10 ? "0" + number : number;
+    return number < 10 ? `0${number}` : number;
   }
 
-  randomIntFromInterval(min: number, max: number) {
+  /*
+   * Create random interval with min and max values
+   */
+  randomIntFromInterval(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
+  // ==================================================
+  // SORTING
+  // ==================================================
+
+  /*
+   * Sort items numerically
+   */
+  sortNumerical(a: number, b: number): number {
+    if (a > b) return -1;
+    if (a < b) return 1;
+    else return 0;
+  }
+
+  /*
+   * Only show distinct elements
+   */
+  sortDistinct(value, index, self): boolean {
+    return self.indexOf(value) === index;
+  }
+
+  /*
+   * Checks if an object has the specified property
+   */
   objectHasPropertyWithValue(object: any, property: string): boolean {
     if (
       object.hasOwnProperty(property) &&
@@ -37,31 +73,26 @@ export class UtilityService {
   }
 
   // ==================================================
-  // SORTING
-  // ==================================================
-
-  sortNumerical(a: number, b: number) {
-    if (a > b) return -1;
-    if (a < b) return 1;
-    else return 0;
-  }
-
-  sortDistinct(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
-  // ==================================================
   // ARRAY
   // ==================================================
 
+  /*
+   * Remove element in array with position
+   */
   removePositionFromArray(elementPosition: number, array: any[]) {
     array.splice(elementPosition, 1);
   }
 
+  /*
+   * Remove element in array with element
+   */
   removeElementFromArray(element: any, array: any[]) {
     array.splice(array.indexOf(element), 1);
   }
 
+  /*
+   * Change element order in array with direction and index
+   */
   changeElementOrderInArray(array: any[], direction: string, index: number) {
     let actualElement: number = index;
     let lastElement: number = index - 1;
@@ -75,12 +106,10 @@ export class UtilityService {
           array[actualElement] = tempLast;
         } else {
           console.warn(
-            "First element in array " +
-              array +
-              " cannot be moved further up to index " +
-              (index - 1) +
-              ". Array from 0 to " +
-              (array.length - 1)
+            `First element in array ${array} cannot be moved further up to index ${
+              index - 1
+            }. Array from 0 to ${array.length - 1}
+            `
           );
         }
         break;
@@ -91,12 +120,10 @@ export class UtilityService {
           array[actualElement] = tempNext;
         } else {
           console.warn(
-            "Last element in array " +
-              array +
-              "cannot be moved further down to index " +
-              (index + 1) +
-              ". Array from 0 to " +
-              (array.length - 1)
+            `Last element in array ${array} cannot be moved further down to index ${
+              index + 1
+            }. Array from 0 to ${array.length + 1}
+            `
           );
         }
         break;

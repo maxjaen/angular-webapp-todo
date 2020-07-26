@@ -8,6 +8,20 @@ import { Training } from "../../../core/training/model/training";
 export class PatternAnalysisService {
   constructor() {}
 
+  refactoring;
+  /*
+   * Get all Exercises in a training that have the same name value as the input exercise
+   */
+  private getExercisesInTrainingWithName(
+    training: Training,
+    exercise: Exercise
+  ): Exercise[] {
+    return training.exercices.filter((e) => e.name == exercise.name);
+  }
+
+  /*
+   * Get all Exercises in a training that have the same name value as the input exercise
+   */
   calculateExerciseResultStringForTraining(
     training: Training,
     exercise: Exercise
@@ -28,7 +42,7 @@ export class PatternAnalysisService {
 
           sum += records * repetitions * weight;
         });
-        return sum + " kg";
+        return `${sum} kg`;
       case "conditionalpattern1d":
         let unit: string = "";
         foundExercises.forEach((e) => {
@@ -38,7 +52,7 @@ export class PatternAnalysisService {
 
           sum += records * repetitions;
         });
-        return sum + unit;
+        return `${sum}${unit}`;
 
       case "countablepattern":
         foundExercises.forEach((e) => {
@@ -47,7 +61,7 @@ export class PatternAnalysisService {
 
           sum += records * repetitions;
         });
-        return sum + "";
+        return `${sum}`;
 
       case "conditionalpattern2d":
         foundExercises.forEach((e) => {
@@ -56,7 +70,7 @@ export class PatternAnalysisService {
 
           sum += (speed / 60) * period;
         });
-        return sum.toFixed(2) + "km";
+        return `${sum.toFixed(2)}km`;
 
       default:
         break;
@@ -140,7 +154,7 @@ export class PatternAnalysisService {
           const repetitions: number = +e["repetitions"];
           const weight: number = +e["weight"];
 
-          entry += records + "/" + repetitions + "/" + weight + ", ";
+          entry += `${records}/${repetitions}/${weight}, `;
         });
         break;
 
@@ -150,7 +164,7 @@ export class PatternAnalysisService {
           const repetitions: number = +e["repetitions"];
           const unit: string = e["unit"];
 
-          entry += records + "/" + repetitions + unit + ", ";
+          entry += `${records}/${repetitions}${unit}, `;
         });
         break;
 
@@ -161,8 +175,7 @@ export class PatternAnalysisService {
           const speed: number = +e["speed"];
           const unitspeed: string = e["unitspeed"];
 
-          entry +=
-            period + " " + unitperiod + "/" + speed + " " + unitspeed + ", ";
+          entry += `${period} ${unitperiod}/${speed} ${unitspeed}, `;
         });
         break;
 
@@ -171,7 +184,7 @@ export class PatternAnalysisService {
           const records: number = +e["records"];
           const repetitions: number = +e["repetitions"];
 
-          entry += records + "/" + repetitions + ", ";
+          entry += `${records}/${repetitions}, `;
         });
         break;
 
@@ -179,13 +192,7 @@ export class PatternAnalysisService {
         break;
     }
 
+    // cut the last comma and space in the result string
     return entry.substring(0, entry.length - 2);
-  }
-
-  private getExercisesInTrainingWithName(
-    training: Training,
-    exercise: Exercise
-  ) {
-    return training.exercices.filter((e) => e.name == exercise.name);
   }
 }

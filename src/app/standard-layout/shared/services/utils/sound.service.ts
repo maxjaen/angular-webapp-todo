@@ -9,7 +9,10 @@ const MP3_EXTENSION: string = ".mp3";
 export class SoundService {
   constructor() {}
 
-  playSound(fileName: string) {
+  /*
+   * Create and play soundtrack file from name of the file as input
+   */
+  playSound(fileName: string): void {
     new Audio(MP3_DIR + fileName + MP3_EXTENSION).play();
   }
 }

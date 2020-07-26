@@ -4,15 +4,15 @@ import { Task } from "../model/task";
 
 @Component({
   selector: "insert-task-dialog",
-  templateUrl: "insert-task-dialog.html"
+  templateUrl: "insert-task-dialog.html",
 })
 export class InsertTaskDialog {
   constructor(
-    public dialogRef: MatDialogRef<InsertTaskDialog>,
+    public dialogRefService: MatDialogRef<InsertTaskDialog>,
     @Inject(MAT_DIALOG_DATA) public data: Task
   ) {}
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRefService.close();
   }
 }

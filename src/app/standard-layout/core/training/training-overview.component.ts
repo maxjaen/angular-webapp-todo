@@ -43,15 +43,15 @@ export class TrainingOverViewComponent implements OnInit {
   formGroupToInsert: FormGroup;
 
   constructor(
-    private keyService: KeyService,
     public exerciseService: ExerciseService,
+    private keyService: KeyService,
     private trainingService: TrainingService,
     private utilityService: UtilityService,
-    private _tabTitle: Title,
-    private _snackBar: MatSnackBar,
-    private _router: Router
+    private tabTitleService: Title,
+    private snackBarService: MatSnackBar,
+    private routerService: Router
   ) {
-    this._tabTitle.setTitle(this.keyService.getString("t1"));
+    this.tabTitleService.setTitle(this.keyService.getString("t1"));
   }
 
   ngOnInit() {
@@ -117,7 +117,7 @@ export class TrainingOverViewComponent implements OnInit {
 
   // Routes to url with detail view of of a training
   viewTraining(training: Training) {
-    this._router.navigate(["/training/" + training.id]);
+    this.routerService.navigate(["/training/" + training.id]);
   }
 
   // Creates new training data based on choosen exercises
@@ -153,27 +153,28 @@ export class TrainingOverViewComponent implements OnInit {
     let stringArray: string[] = Object.getOwnPropertyNames(exercise).filter(
       (e) => e != "name" && e != "category"
     );
-    let tempString = "Exercise [";
+    let tempString = "Exercise ";
 
     stringArray.forEach((element, index) => {
-      // only one element
-      if (index == 0 && stringArray.length == 1) {
-        tempString += element + ": " + exercise[element];
-        // more than one element - start
-      } else if (index == 0) {
-        tempString += element + ": " + exercise[element] + ", ";
-        // more than one element - finish
-      } else if (index == stringArray.length - 1) {
-        tempString += element + ": " + exercise[element];
-        // more than one element - middle
-      } else {
-        tempString += element + ": " + exercise[element] + ", ";
-      }
+      const hasExactlyOneElement = stringArray.length == 1;
+      const isFirstElement = index === 0;
+      const isLastElement = index === stringArray.length - 1;
 
-      if (index == stringArray.length - 1) {
-        tempString += "]";
+      if (isFirstElement && hasExactlyOneElement) {
+        // only one element in array
+        tempString += `[${element}: ${exercise[element]}]`;
+      } else if (isFirstElement) {
+        // more than one element - start
+        tempString += `[${element}: ${exercise[element]}, `;
+      } else if (isLastElement) {
+        // more than one element - finish
+        tempString += `${element}: ${exercise[element]}]`;
+      } else {
+        // more than one element - middle
+        tempString += `${element}: ${exercise[element]}, `;
       }
     });
+
     return tempString;
   }
 
@@ -203,11 +204,7 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   isRunningOrBicycle(training: Training): boolean {
-    if (training.exercices.length == 1) {
-      return true;
-    }
-
-    return false;
+    return training.exercices.length == 1;
   }
 
   isGym(training: Training): boolean {
@@ -256,11 +253,7 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   moreTrainingsThanDisplayed() {
-    if (this.trainings.length - this.displayedTrainings > 0) {
-      return true;
-    }
-
-    return false;
+    return this.trainings.length - this.displayedTrainings > 0;
   }
 
   /*
@@ -492,7 +485,7 @@ export class TrainingOverViewComponent implements OnInit {
 
   // Opens popup menu for notifications
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {
+    this.snackBarService.open(message, action, {
       duration: 4000,
     });
   }

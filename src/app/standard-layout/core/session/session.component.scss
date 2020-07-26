@@ -1,6 +1,65 @@
 @import "../../../../styles.scss";
 
-.block {
-  display: block;
-  overflow: auto;
+.content {
+  .insert {
+    margin-bottom: 30px;
+
+    .session-button {
+      margin-right: 1%;
+    }
+  }
+
+  .selection {
+    .block {
+      display: block;
+      overflow: auto;
+
+      &.session {
+        height: 500px;
+      }
+
+      .session-header-text {
+        margin: 1%;
+        display: block;
+        overflow: auto;
+        float: left;
+        width: 12%;
+      }
+
+      .exercise-start {
+        margin: 1%;
+        font-size: 30px;
+
+        .current {
+          color: #4db2d9;
+        }
+
+        .break {
+          color: #d95d4d;
+        }
+
+        .text {
+          display: flex;
+          padding: 1%;
+
+          .start-here-icon {
+            margin-left: 15px;
+            display: none;
+            cursor: pointer;
+          }
+        }
+
+        .text:hover {
+          background-color: indianred;
+          
+          .break {
+            color: #ffffff;
+          }
+          .start-here-icon {
+            display: inline;
+          } 
+        }
+      }
+    }
+  }
 }

@@ -6,7 +6,8 @@
 
 ## High priority: Attention!
 
-- 'category'
+- Projects as categories to sort (different sort options)
+- Remove `style=...` from html
 
 ## General
 

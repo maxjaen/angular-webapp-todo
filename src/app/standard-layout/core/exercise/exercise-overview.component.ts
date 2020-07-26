@@ -4,6 +4,8 @@ import { Exercise } from "./model/exercise";
 import { MatSnackBar } from "@angular/material";
 import { KeyService } from "../../shared/services/utils/key.service";
 import { FormControl, Validators, FormGroup } from "@angular/forms";
+import { UtilityService } from "../../shared/services/utils/utility.service";
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: "app-exercise-overview",
@@ -30,13 +32,17 @@ export class ExerciseOverViewComponent implements OnInit {
   ];
 
   constructor(
+    private utilityService: UtilityService,
     public exerciseService: ExerciseService,
     private keyService: KeyService,
-    private _snackBar: MatSnackBar
+    private tabTitleService: Title,
+    private snackBarService: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.getExercisesFromService();
+
+    this.tabTitleService.setTitle(this.keyService.getString("e1"));
   }
 
   /*
@@ -53,17 +59,9 @@ export class ExerciseOverViewComponent implements OnInit {
   }
 
   getSortedExercises() {
-    return this.exercises.sort((a, b) => {
-      if (a.name > b.name) {
-        return 1;
-      }
-
-      if (a.name < b.name) {
-        return -1;
-      }
-
-      return 0;
-    });
+    return this.exercises.sort((a, b) =>
+      this.utilityService.sortAlphabetical(a.name, b.name)
+    );
   }
 
   selectExercise(exercise: Exercise): void {
@@ -112,7 +110,7 @@ export class ExerciseOverViewComponent implements OnInit {
 
   // Opens popup menu for notifications
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {
+    this.snackBarService.open(message, action, {
       duration: 4000,
     });
   }

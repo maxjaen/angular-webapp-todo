@@ -1,224 +1,433 @@
 <mat-tab-group>
-   <!-- ###################### TODAY TAB ###################### -->
-   <mat-tab label="Today">
-      <div class="content">
-         <div class="block">
-            <div class="notifications" *ngIf="todayTimeElements.length==0">
-               Start a new timer now!
-            </div>
-         </div>
-         <div class="input-bottom" [ngClass]="fastCreation ? '' : 'hidden'">
-            <mat-form-field class="example-form-field">
-               <mat-label>Let's do it!</mat-label>
-               <input matInput type="text" (keyup.enter)="newTimeTask($event)" #fast>
-            </mat-form-field>
-         </div>
-         <div class="show-wrapper">
-            <div class="show">
-               <countup-timer [countUpTimerConfig]="testConfig">
-               </countup-timer>
-               <div *ngIf="this.settings.length > 0">
-                  <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total this week')">
-                     <p>
-                        <span>Time week: </span>
-                        <span [style.color]="this._keyService.getColor('white')">
-                           {{ _timeService.formatMillisecondsToString(_timeTaskService.calculateOverallTime(allTimeElements)) }}</span>
-                     </p>
-                  </div>
-                  <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show total today')">
-                     <p>
-                        <span>Time today: </span>
-                        <span [style.color]="this._keyService.getColor('white')">
-                           {{ this._timeService.formatMillisecondsToString(_timeTaskService.calculateTodayTime(todayTimeElements)) }}</span>
-                     </p>
-                  </div>
-                  <div *ngIf="settingsService.getSettingsValue(this.settings, 'Show week number')">
-                     <p>
-                        <span>Week: </span>
-                        <span
-                           [style.color]="this._keyService.getColor('white')">{{ this._utilityService.formatToTwoDigits(this._timeService.calculateCurrentWeekNumber()) }}</span>
-                     </p>
-                  </div>
-               </div>
-               <div class="block" *ngIf="todayTimeElements.length>1">
-                  <ngx-charts-pie-chart [results]="graphData" [legend]="true" [legendTitle]="'Zeiterfassung'"
-                     [view]="[900,300]" [labels]="true">
-                  </ngx-charts-pie-chart>
-               </div>
-               <div *ngIf="accumulatedElements && accumulatedElements.length>1">
-                  <br>
-                  <div *ngFor="let element of accumulatedElements">
-                     {{element.value}}: {{element.name}}
-                  </div>
-                  <br>
-               </div>
-            </div>
-            <div>
-               <div class="fixedButtons-rightbottom">
-                  <button class="control-buttons-gray smallToBottom" (click)="openInsertDialog()" color="primary"
-                     mat-mini-fab>
-                     <mat-icon>create</mat-icon>
-                  </button>
-                  <button class="control-buttons-gray" title="Finish" (click)="finishTimer()" color="primary"
-                     mat-mini-fab>
-                     <mat-icon>close</mat-icon>
-                  </button>
-               </div>
-            </div>
-            <div *ngIf="todayTimeElements">
-               <div *ngFor="let timeElement of todayTimeElements">
-                  <div class="block low-margin smallToBottom changeField" *ngIf="selectedTimeElement==timeElement">
-                     <form class="example-form">
-                        <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                           <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
-                              [(ngModel)]="selectedTimeElement.shortdescr">
-                           <mat-hint>{{ message.value.length }} / 50</mat-hint>
-                        </mat-form-field>
-                        <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                           <textarea matInput placeholder="description" name="longdescr"
-                              [(ngModel)]="selectedTimeElement.longdescr"
-                              (ngModelChange)="replaceWithShortcut(selectedTimeElement);"></textarea>
-                        </mat-form-field>
-                        <div class="inlineButtons">
-                           <button (click)="changeStartDate(selectedTimeElement)" style="float:right" mat-button
-                              color="accent">Start
-                           </button>
-                           <button (click)="changeEndDate(selectedTimeElement)" style="float:right" mat-button
-                              color="accent">End
-                           </button>
-                           <button (click)="saveTimeElement(selectedTimeElement)" style="float:right" mat-button>Save
-                           </button>
-                           <button (click)="saveAllTimeElements()" style="float:right" mat-button>Save all
-                           </button>
-                        </div>
-                     </form>
-                  </div>
-                  <mat-card (click)="selectTimeElement(timeElement);" class="example-card block">
-                     <div
-                        *ngIf="this.settings && this.settings.length > 0 && settingsService.getSettingsValue(this.settings, 'Show status color')">
-                        <div class="card-status" [style.background-color]="getStatusColorValue(timeElement)"></div>
-                     </div>
-                     <div style="width: 70%; display: inline-block;">
-                        <mat-card-header style="float: left;">
-                           <mat-card-title>
-                              {{ timeElement.shortdescr }}
-                              <div class="fontSize12"
-                                 *ngIf="!_timeTaskService.isValid(timeElement) && timeElement == runningTimeElement"
-                                 [style.color]="'#ffffff'" style=" margin-top: 20px;">
-                                 Measurement is running
-                                 <p>@{{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
-                                 </p>
-                              </div>
-                              <div class="fontSize12"
-                                 *ngIf="!_timeTaskService.isValid(timeElement) && timeElement != runningTimeElement"
-                                 [style.color]="'#ffffff'" style=" margin-top: 20px;">
-                                 Measurement is invalid
-                                 <p>@{{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
-                                 </p>
-                              </div>
-                              <div class="fontSize12" style="margin-top: 20px;"
-                                 *ngIf="_timeTaskService.isValid(timeElement)">
-                                 <div class="inline">
-                                    {{ timeElementToTimestring(timeElement) }} >>
-                                 </div>
-                                 {{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
-                                 <div class="inline">
-                                    ,
-                                    {{this._timeService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
-                                 </div>
-                              </div>
-                           </mat-card-title>
-                           <mat-card-subtitle *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
-                              <ul *ngFor="let point of this._utilityService.split(timeElement.longdescr);">
-                                 <div *ngIf="point.length>0">
-                                    <li>{{ point }}</li>
-                                 </div>
-                                 <div *ngIf="point.length==0">{{ point }}</div>
-                              </ul>
-                           </mat-card-subtitle>
-                        </mat-card-header>
-                     </div>
-                     <div class="inlineButtons">
-                        <button title="Continue" (click)="continueTimeElement(timeElement);" mat-button>
-                           <mat-icon>play_arrow</mat-icon>
-                        </button>
-                        <button title="Delete" (click)="removeTimeElement(timeElement)" mat-button>
-                           <mat-icon>delete</mat-icon>
-                        </button>
-                     </div>
-                  </mat-card>
-               </div>
-            </div>
-         </div>
+  <!-- ###################### TODAY TAB ###################### -->
+  <mat-tab label="Today">
+    <div class="content">
+      <div class="block">
+        <div class="notifications" *ngIf="todayTimeElements.length == 0">
+          Start a new timer now!
+        </div>
       </div>
-   </mat-tab>
-   <!-- ###################### HISTORY TAB ###################### -->
-   <mat-tab label="History">
-      <div class="content">
-         <mat-form-field>
-            <mat-label>Recorded dates</mat-label>
-            <mat-select (selectionChange)="selectDate($event)">
-               <mat-option *ngFor="let date of selectDistinctDates();" [value]="date">
-                  {{ date }}
-               </mat-option>
-            </mat-select>
-         </mat-form-field>
-         <div *ngIf="historyElements">
-            <div *ngIf="historyElements.length > 0">
-               <div class="fixedButtons-rightbottom">
-                  <button class="control-buttons-gray" title="Delete all" (click)="this.deleteAllAvailableTimeTasks()"
-                     color="primary" mat-mini-fab>
-                     <mat-icon>close</mat-icon>
-                  </button>
-               </div>
-               <p>
-                  Time: <span
-                     style="color: coral;">{{ this._timeService.formatMillisecondsToString(_timeTaskService.calculateTodayTime(historyElements)) }}</span>
-               </p>
-            </div>
-            <div class="block" *ngIf="historyAccumulatedElements && historyAccumulatedElements.length>0">
-               <ngx-charts-pie-chart [results]="graphDataHistory" [legend]="true" [legendTitle]="'Zeiterfassung'"
-                  [view]="[900,300]" [labels]="true">
-               </ngx-charts-pie-chart>
-            </div>
-            <div *ngIf="historyAccumulatedElements">
-               <br>
-               <div *ngFor="let element of historyAccumulatedElements">
-                  {{element.value}}: {{element.name}}
-               </div>
-               <br>
-            </div>
-            <div *ngFor="let timeElement of historyElements">
-               <mat-card [style.background-color]="this._keyService.getColor('darkgray')" class="example-card block">
-                  <mat-card-header style="float:left;">
-                     <mat-card-title>
-                        {{ timeElement.shortdescr }}
-                        <div class="fontSize12" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
-                           style="margin-top: 20px;">
-                           No measurement enddate available...
-                        </div>
-                        <div class="fontSize12" style="margin-top: 20px;">
-                           <div *ngIf="timeElement.enddate" style="display: inline;">
-                              {{ timeElementToTimestring(timeElement) }} >>
-                           </div>
-                           {{ this._timeService.formatDateToStringWithDescription(timeElement.startdate, "Start")}}
-                           <div *ngIf="timeElement.enddate" style="display: inline;">
-                              , {{this._timeService.formatDateToStringWithDescription(timeElement.enddate, "End") }}
-                           </div>
-                        </div>
-                     </mat-card-title>
-                     <mat-card-subtitle *ngIf="timeElement.longdescr && timeElement.longdescr.length>0">
-                        <ul *ngFor="let point of this._utilityService.split(timeElement.longdescr);">
-                           <li>{{ point }}</li>
-                        </ul>
-                     </mat-card-subtitle>
-                  </mat-card-header>
-                  <div class="inlineButtons">
-                     <button (click)="removeTimeElement(timeElement)" mat-button>Delete</button>
-                  </div>
-               </mat-card>
-            </div>
-         </div>
+      <div class="input-bottom" [ngClass]="fastCreation ? '' : 'hidden'">
+        <mat-form-field class="example-form-field">
+          <mat-label>Let's do it!</mat-label>
+          <input
+            matInput
+            type="text"
+            (keyup.enter)="newTimeTask($event)"
+            #fast
+          />
+        </mat-form-field>
       </div>
-   </mat-tab>
+      <div class="show-wrapper">
+        <div class="show">
+          <countup-timer [countUpTimerConfig]="testConfig"> </countup-timer>
+          <div *ngIf="this.settings.length > 0">
+            <div
+              *ngIf="
+                settingsService.getSettingsValue(
+                  this.settings,
+                  'Show total this week'
+                )
+              "
+            >
+              <p>
+                <span>Time week: </span>
+                <span [style.color]="this.keyService.getColor('white')">
+                  {{
+                    timeService.formatMillisecondsToString(
+                      timeTaskService.calculateOverallTime(allTimeElements)
+                    )
+                  }}</span
+                >
+              </p>
+            </div>
+            <div
+              *ngIf="
+                settingsService.getSettingsValue(
+                  this.settings,
+                  'Show total today'
+                )
+              "
+            >
+              <p>
+                <span>Time today: </span>
+                <span [style.color]="this.keyService.getColor('white')">
+                  {{
+                    this.timeService.formatMillisecondsToString(
+                      timeTaskService.calculateTodayTime(todayTimeElements)
+                    )
+                  }}</span
+                >
+              </p>
+            </div>
+            <div
+              *ngIf="
+                settingsService.getSettingsValue(
+                  this.settings,
+                  'Show week number'
+                )
+              "
+            >
+              <p>
+                <span>Week: </span>
+                <span [style.color]="this.keyService.getColor('white')">{{
+                  this.utilityService.formatToTwoDigits(
+                    this.timeService.calculateCurrentWeekNumber()
+                  )
+                }}</span>
+              </p>
+            </div>
+          </div>
+          <div class="block" *ngIf="todayTimeElements.length > 1">
+            <ngx-charts-pie-chart
+              [results]="graphData"
+              [legend]="true"
+              [legendTitle]="'Zeiterfassung'"
+              [view]="[900, 300]"
+              [labels]="true"
+            >
+            </ngx-charts-pie-chart>
+          </div>
+          <div *ngIf="accumulatedElements && accumulatedElements.length > 1">
+            <br />
+            <div *ngFor="let element of accumulatedElements">
+              {{ element.value }}: {{ element.name }}
+            </div>
+            <br />
+          </div>
+        </div>
+        <div>
+          <div class="fixedButtons-rightbottom">
+            <button
+              class="control-buttons-gray smallToBottom"
+              (click)="openInsertDialog()"
+              color="primary"
+              mat-mini-fab
+            >
+              <mat-icon>create</mat-icon>
+            </button>
+            <button
+              class="control-buttons-gray"
+              title="Finish"
+              (click)="finishTimer()"
+              color="primary"
+              mat-mini-fab
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="todayTimeElements">
+          <div *ngFor="let timeElement of todayTimeElements">
+            <div
+              class="block low-margin smallToBottom changeField"
+              *ngIf="selectedTimeElement == timeElement"
+            >
+              <form class="example-form">
+                <mat-form-field
+                  class="example-full-width"
+                  style="margin-right: 2%;"
+                >
+                  <input
+                    matInput
+                    #message
+                    maxlength="50"
+                    placeholder="titel"
+                    name="shortdescr"
+                    [(ngModel)]="selectedTimeElement.shortdescr"
+                  />
+                  <mat-hint>{{ message.value.length }} / 50</mat-hint>
+                </mat-form-field>
+                <mat-form-field
+                  class="example-full-width"
+                  style="margin-right: 2%; min-width: 500px;"
+                >
+                  <textarea
+                    matInput
+                    placeholder="description"
+                    name="longdescr"
+                    [(ngModel)]="selectedTimeElement.longdescr"
+                    (ngModelChange)="replaceWithShortcut(selectedTimeElement)"
+                  ></textarea>
+                </mat-form-field>
+                <div class="inlineButtons">
+                  <button
+                    (click)="changeStartDate(selectedTimeElement)"
+                    style="float: right;"
+                    mat-button
+                    color="accent"
+                  >
+                    Start
+                  </button>
+                  <button
+                    (click)="changeEndDate(selectedTimeElement)"
+                    style="float: right;"
+                    mat-button
+                    color="accent"
+                  >
+                    End
+                  </button>
+                  <button
+                    (click)="saveTimeElement(selectedTimeElement)"
+                    style="float: right;"
+                    mat-button
+                  >
+                    Save
+                  </button>
+                  <button
+                    (click)="saveAllTimeElements()"
+                    style="float: right;"
+                    mat-button
+                  >
+                    Save all
+                  </button>
+                </div>
+              </form>
+            </div>
+            <mat-card
+              (click)="selectTimeElement(timeElement)"
+              class="example-card block"
+            >
+              <div
+                *ngIf="
+                  this.settings &&
+                  this.settings.length > 0 &&
+                  settingsService.getSettingsValue(
+                    this.settings,
+                    'Show status color'
+                  )
+                "
+              >
+                <div
+                  class="card-status"
+                  [style.background-color]="getStatusColorValue(timeElement)"
+                ></div>
+              </div>
+              <div style="width: 70%; display: inline-block;">
+                <mat-card-header style="float: left;">
+                  <mat-card-title>
+                    {{ timeElement.shortdescr }}
+                    <div
+                      class="fontSize12"
+                      *ngIf="
+                        !timeTaskService.isValid(timeElement) &&
+                        timeElement == runningTimeElement
+                      "
+                      [style.color]="'#ffffff'"
+                      style="margin-top: 20px;"
+                    >
+                      Measurement is running
+                      <p>
+                        @{{
+                          this.timeService.formatDateToStringWithDescription(
+                            timeElement.startdate,
+                            "Start"
+                          )
+                        }}
+                      </p>
+                    </div>
+                    <div
+                      class="fontSize12"
+                      *ngIf="
+                        !timeTaskService.isValid(timeElement) &&
+                        timeElement != runningTimeElement
+                      "
+                      [style.color]="'#ffffff'"
+                      style="margin-top: 20px;"
+                    >
+                      Measurement is invalid
+                      <p>
+                        @{{
+                          this.timeService.formatDateToStringWithDescription(
+                            timeElement.startdate,
+                            "Start"
+                          )
+                        }}
+                      </p>
+                    </div>
+                    <div
+                      class="fontSize12"
+                      style="margin-top: 20px;"
+                      *ngIf="timeTaskService.isValid(timeElement)"
+                    >
+                      <div class="inline">
+                        {{ timeElementToTimestring(timeElement) }} >>
+                      </div>
+                      {{
+                        this.timeService.formatDateToStringWithDescription(
+                          timeElement.startdate,
+                          "Start"
+                        )
+                      }}
+                      <div class="inline">
+                        ,
+                        {{
+                          this.timeService.formatDateToStringWithDescription(
+                            timeElement.enddate,
+                            "End"
+                          )
+                        }}
+                      </div>
+                    </div>
+                  </mat-card-title>
+                  <mat-card-subtitle
+                    *ngIf="
+                      timeElement.longdescr && timeElement.longdescr.length > 0
+                    "
+                  >
+                    <ul
+                      *ngFor="
+                        let point of this.utilityService.split(
+                          timeElement.longdescr
+                        )
+                      "
+                    >
+                      <div *ngIf="point.length > 0">
+                        <li>{{ point }}</li>
+                      </div>
+                      <div *ngIf="point.length == 0">{{ point }}</div>
+                    </ul>
+                  </mat-card-subtitle>
+                </mat-card-header>
+              </div>
+              <div class="inlineButtons">
+                <button
+                  title="Continue"
+                  (click)="continueTimeElement(timeElement)"
+                  mat-button
+                >
+                  <mat-icon>play_arrow</mat-icon>
+                </button>
+                <button
+                  title="Delete"
+                  (click)="removeTimeElement(timeElement)"
+                  mat-button
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+  <!-- ###################### HISTORY TAB ###################### -->
+  <mat-tab label="History">
+    <div class="content">
+      <mat-form-field>
+        <mat-label>Recorded dates</mat-label>
+        <mat-select (selectionChange)="selectDate($event)">
+          <mat-option *ngFor="let date of selectDistinctDates()" [value]="date">
+            {{ date }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div *ngIf="historyElements">
+        <div *ngIf="historyElements.length > 0">
+          <div class="fixedButtons-rightbottom">
+            <button
+              class="control-buttons-gray"
+              title="Delete all"
+              (click)="this.deleteAllAvailableTimeTasks()"
+              color="primary"
+              mat-mini-fab
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <p>
+            Time:
+            <span style="color: coral;">{{
+              this.timeService.formatMillisecondsToString(
+                timeTaskService.calculateTodayTime(historyElements)
+              )
+            }}</span>
+          </p>
+        </div>
+        <div
+          class="block"
+          *ngIf="
+            historyAccumulatedElements && historyAccumulatedElements.length > 0
+          "
+        >
+          <ngx-charts-pie-chart
+            [results]="graphDataHistory"
+            [legend]="true"
+            [legendTitle]="'Zeiterfassung'"
+            [view]="[900, 300]"
+            [labels]="true"
+          >
+          </ngx-charts-pie-chart>
+        </div>
+        <div *ngIf="historyAccumulatedElements">
+          <br />
+          <div *ngFor="let element of historyAccumulatedElements">
+            {{ element.value }}: {{ element.name }}
+          </div>
+          <br />
+        </div>
+        <div *ngFor="let timeElement of historyElements">
+          <mat-card
+            [style.background-color]="this.keyService.getColor('darkgray')"
+            class="example-card block"
+          >
+            <mat-card-header style="float: left;">
+              <mat-card-title>
+                {{ timeElement.shortdescr }}
+                <div
+                  class="fontSize12"
+                  *ngIf="!timeElement.enddate"
+                  [style.color]="'#ffffff'"
+                  style="margin-top: 20px;"
+                >
+                  No measurement enddate available...
+                </div>
+                <div class="fontSize12" style="margin-top: 20px;">
+                  <div *ngIf="timeElement.enddate" style="display: inline;">
+                    {{ timeElementToTimestring(timeElement) }} >>
+                  </div>
+                  {{
+                    this.timeService.formatDateToStringWithDescription(
+                      timeElement.startdate,
+                      "Start"
+                    )
+                  }}
+                  <div *ngIf="timeElement.enddate" style="display: inline;">
+                    ,
+                    {{
+                      this.timeService.formatDateToStringWithDescription(
+                        timeElement.enddate,
+                        "End"
+                      )
+                    }}
+                  </div>
+                </div>
+              </mat-card-title>
+              <mat-card-subtitle
+                *ngIf="
+                  timeElement.longdescr && timeElement.longdescr.length > 0
+                "
+              >
+                <ul
+                  *ngFor="
+                    let point of this.utilityService.split(
+                      timeElement.longdescr
+                    )
+                  "
+                >
+                  <li>{{ point }}</li>
+                </ul>
+              </mat-card-subtitle>
+            </mat-card-header>
+            <div class="inlineButtons">
+              <button (click)="removeTimeElement(timeElement)" mat-button>
+                Delete
+              </button>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
 </mat-tab-group>

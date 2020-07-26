@@ -1,15 +1,15 @@
 <div *ngIf="timedTrainings">
     <div class="content">
-        <div class="insert" style="margin-bottom: 30px;">
+        <div class="insert">
             <div>
-                <button (click)="doWorkout(0)" mat-flat-button color="primary" style="margin-right: 1%;">Start</button>
-                <button (click)="continueWorkout()" mat-flat-button color="primary"
-                    style="margin-right: 1%;">Continue</button>
-                <button (click)="stopWorkout()" mat-flat-button color="primary" style="margin-right: 1%;">Stop</button>
+                <button class="session-button" (click)="doWorkout(0)" mat-flat-button color="primary">Start</button>
+                <button class="session-button" (click)="continueWorkout()" mat-flat-button color="primary">Continue</button>
+                <button class="session-button" (click)="stopWorkout()" mat-flat-button color="primary">Stop</button>
+                <button class="session-button" (click)="resetWorkout()" mat-flat-button color="primary">Reset</button>
             </div>
         </div>
         <div class="selection">
-            <div class="tab" #selecttraining>
+            <div class="block" #selecttraining>
                 <mat-form-field>
                     <mat-label>Choose workout template</mat-label>
                     <mat-select (selectionChange)="selectTraining($event)">
@@ -21,47 +21,53 @@
             </div>
             <div class="block" *ngIf="currentExercise">
                 <h2>Statistics</h2>
-                <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
+                <div class="session-header-text" >
                     <h1>{{ currentExercise.name }}</h1>
                     <p>Current exercise</p>
                 </div>
-                <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
+                <div class="session-header-text">
                     <h1>{{ currentExerciseCountdown }}</h1>
                     <p>current counter</p>
                 </div>
-                <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
+                <div class="session-header-text">
                     <h1>{{ generalExerciseCountdown }}</h1>
                     <p>general counter</p>
                 </div>
-                <div style="margin: 1%; display: block; overflow: auto; float: left; width: 12%;">
+                <div class="session-header-text">
                     <h1>{{ getReadyCountdown }}</h1>
                     <p>get ready</p>
                 </div>
             </div>
             <div class="block" *ngIf="selectedTimedTraining && currentExercise">
                 <h2> Next Exercises</h2>
-                <div *ngFor="let exercise of this.selectedTimedTraining.exercices" style="margin: 1%; font-size: 30px;">
+                <div class="exercise-start" *ngFor="let exercise of this.selectedTimedTraining.exercices; let i = index;">
                     <div
                         *ngIf="currentExercise.name==exercise.name && currentExercise.name!='Break' && this.selectedTimedTraining.exercices.indexOf(exercise)==currentExerciseIndex">
-                        <div style="color: #4db2d9;">{{exercise.name}}, {{exercise.repetitions}}</div>
+                        <div class="current">{{ i+1 }}: {{exercise.name}}, {{exercise.repetitions}}</div>
                     </div>
                     <div
                         *ngIf="exercise.name=='Break' && this.selectedTimedTraining.exercices.indexOf(exercise)==currentExerciseIndex">
-                        <div style="color: #d95d4d;">{{exercise.name}}, {{exercise.repetitions}}</div>
+                        <div class="break">{{ i+1 }}: {{exercise.name}}, {{exercise.repetitions}}</div>
                     </div>
                     <div *ngIf="currentExercise.name!=exercise.name && inListOfNextSteps(exercise)">
-                        <div>{{exercise.name}} ({{exercise.repetitions}} seconds)</div>
+                        <div>{{ i+1 }}: {{exercise.name}} ({{exercise.repetitions}} seconds)</div>
                     </div>
                 </div>
             </div>
-            <div class="block" *ngIf="selectedTimedTraining && !currentExercise">
+            <div class="block session" *ngIf="selectedTimedTraining && !currentExercise">
                 <h2>Aktuelles Training</h2>
-                <div *ngFor="let exercise of this.selectedTimedTraining.exercices" style="margin: 1%; font-size: 30px;">
-                    <div *ngIf="exercise.name!='Break'">
-                        <div>{{exercise.name}} ({{exercise.repetitions}} seconds)</div>
+                <div class="exercise-start" *ngFor="let exercise of this.selectedTimedTraining.exercices; let i = index;">
+                    <div class="text" *ngIf="exercise.name!='Break'">
+                        <div>{{ i+1 }}: {{exercise.name}} ({{exercise.repetitions}} seconds)</div>
+                        <span class="start-here-icon" (click)="doWorkout(i)">
+                            <mat-icon>forward</mat-icon>
+                        </span>
                     </div>
-                    <div *ngIf="exercise.name=='Break'">
-                        <div style="color: #d95d4d;">{{exercise.name}} ({{exercise.repetitions}} seconds)</div>
+                    <div class="text" *ngIf="exercise.name=='Break'">
+                        <div class="break">{{exercise.name}} ({{exercise.repetitions}} seconds)</div>
+                        <span class="start-here-icon" (click)="doWorkout(i)">
+                            <mat-icon>forward</mat-icon>
+                        </span>
                     </div>
                 </div>
             </div>

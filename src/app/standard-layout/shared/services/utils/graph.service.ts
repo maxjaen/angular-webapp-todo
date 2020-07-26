@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Training } from "../../../core/training/model/training";
-import { NameAndNumberPair } from "../../model/NameAndNumberPair";
+import { NameAndNumberPair } from "../../model/GraphData";
 import { Exercise } from "../../../core/exercise/model/exercise";
 import { PatternAnalysisService } from "./pattern-analysis.service";
 import { Weight } from "../../../core/weight/model/weight";

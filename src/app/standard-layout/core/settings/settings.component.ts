@@ -14,12 +14,12 @@ export class SettingsComponent implements OnInit {
   settings: Settings[] = [];
 
   constructor(
-    private keyService: KeyService,
     public settingsService: SettingsService,
-    private _tabTitle: Title,
-    private _snackBar: MatSnackBar
+    private keyService: KeyService,
+    private tabTitleService: Title,
+    private snackBarService: MatSnackBar
   ) {
-    this._tabTitle.setTitle(this.keyService.getString("s1"));
+    this.tabTitleService.setTitle(this.keyService.getString("s1"));
   }
 
   ngOnInit(): void {
@@ -66,7 +66,7 @@ export class SettingsComponent implements OnInit {
 
   // Opens popup menu for notifications
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {
+    this.snackBarService.open(message, action, {
       duration: 4000,
     });
   }

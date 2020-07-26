@@ -3,7 +3,7 @@ import { Exercise } from "../../model/exercise";
 import { TrainingService } from "../../../../shared/services/core/training.service";
 import { Training } from "../../../training/model/training";
 import { PatternAnalysisService } from "../../../../shared/services/utils/pattern-analysis.service";
-import { NameAndNumberPair } from "src/app/standard-layout/shared/model/NameAndNumberPair";
+import { NameAndNumberPair } from "src/app/standard-layout/shared/model/GraphData";
 import { GraphDataService } from "src/app/standard-layout/shared/services/utils/graph.service";
 
 @Component({

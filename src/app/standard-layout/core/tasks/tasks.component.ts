@@ -58,13 +58,13 @@ export class TasksComponent implements OnInit {
     public timeService: TimeService,
     public settingsService: SettingsService,
     public taskService: TaskService,
-    private timeTaskService: TimeTaskService,
-    public _timerService: CountupTimerService,
+    public timerService: CountupTimerService,
     public keyService: KeyService,
     public utilityService: UtilityService,
-    private _tabTitle: Title,
-    public _dialog: MatDialog,
-    private _snackBar: MatSnackBar
+    public dialogService: MatDialog,
+    private tabTitleService: Title,
+    private timeTaskService: TimeTaskService,
+    private snackBarService: MatSnackBar
   ) {}
 
   // TODO when to unsubscribe from services?
@@ -98,7 +98,7 @@ export class TasksComponent implements OnInit {
   @HostListener("window:beforeunload")
   onBeforeUnload() {
     return (
-      this.taskService.allSaved(this.tasks) && !this._timerService.isTimerStart
+      this.taskService.allSaved(this.tasks) && !this.timerService.isTimerStart
     );
   }
 
@@ -154,7 +154,7 @@ export class TasksComponent implements OnInit {
     this.timeTaskService.getAllTimeElements().subscribe((data) => {
       const timeTask = data.filter((e) => e.running === true)[0];
 
-      if (this._timerService.isTimerStart && !timeTask.enddate) {
+      if (this.timerService.isTimerStart && !timeTask.enddate) {
         this.runningTimeElement = timeTask;
       }
     });
@@ -454,13 +454,13 @@ export class TasksComponent implements OnInit {
     };
 
     this.timeTaskService.postTimeElement(timeTask).subscribe((data) => {
-      this._timerService.startTimer();
+      this.timerService.startTimer();
       this.runningTimeElement = data;
     });
   }
 
   stopTimeTask(): void {
-    if (this._timerService.isTimerStart) {
+    if (this.timerService.isTimerStart) {
       this.resetTimer();
 
       this.runningTimeElement.enddate = this.timeService.createNewDate();
@@ -478,8 +478,8 @@ export class TasksComponent implements OnInit {
   }
 
   private resetTimer() {
-    this._timerService.stopTimer();
-    this._timerService.setTimervalue(0);
+    this.timerService.stopTimer();
+    this.timerService.setTimervalue(0);
   }
 
   /*
@@ -490,7 +490,7 @@ export class TasksComponent implements OnInit {
 
   // Opens popup menu for notifications
   openSnackBar(message: string, action: string) {
-    this._snackBar
+    this.snackBarService
       .open(message, action, {
         duration: 4000,
       })
@@ -503,14 +503,14 @@ export class TasksComponent implements OnInit {
   // Set title for apllication window in browser
   setTabTitle(): void {
     if (this.pinnedTasks.length > 0) {
-      this._tabTitle.setTitle(
+      this.tabTitleService.setTitle(
         this.keyService.getString("ta1") +
           " (" +
           this.pinnedTasks.length.toString() +
           ")"
       );
     } else {
-      this._tabTitle.setTitle(this.keyService.getString("ta1"));
+      this.tabTitleService.setTitle(this.keyService.getString("ta1"));
     }
   }
 
@@ -526,7 +526,7 @@ export class TasksComponent implements OnInit {
   openInsertTaskDialog(): void {
     this.hideSelectedTask();
 
-    const dialogRef = this._dialog.open(InsertTaskDialog, {
+    const dialogRef = this.dialogService.open(InsertTaskDialog, {
       width: "250px",
       data: {
         shortdescr: this.shortdescr,

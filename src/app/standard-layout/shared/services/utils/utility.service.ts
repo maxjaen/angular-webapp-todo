@@ -67,6 +67,39 @@ export class UtilityService {
   }
 
   // ==================================================
+  // COLORS
+  // ==================================================
+
+  public generateRandomColor(): string {
+    return (
+      "#" + (0x1000000 + Math.random() * 0xffffff).toString(16).substr(1, 6)
+    );
+  }
+
+  public generateInverseColorFromHex(hex: string): string {
+    return (Number(`0x1${hex}`) ^ 0xffffff)
+      .toString(16)
+      .substr(1)
+      .toUpperCase();
+  }
+
+  public adjustColor(color: string, amount: number) {
+    return (
+      "#" +
+      color
+        .replace(/^#/, "")
+        .replace(/../g, (color) =>
+          (
+            "0" +
+            Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(
+              16
+            )
+          ).substr(-2)
+        )
+    );
+  }
+
+  // ==================================================
   // OBJECTS
   // ==================================================
 

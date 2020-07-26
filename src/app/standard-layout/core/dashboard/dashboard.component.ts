@@ -9,6 +9,7 @@ import { TrainingService } from "../../shared/services/core/training.service";
 import { WeightService } from "../../shared/services/core/weight.service";
 import { Title } from "@angular/platform-browser";
 import { TimeService } from "../../shared/services/utils/time.service";
+import { KeyService } from "../../shared/services/utils/key.service";
 
 interface KeyValuePair {
   key: string;
@@ -32,11 +33,12 @@ export class DashboardComponent implements OnInit {
     private timeTaskService: TimeTaskService,
     private trainingService: TrainingService,
     private weightService: WeightService,
-    private _tabTitle: Title,
-    private _timeService: TimeService,
-    private _router: Router
+    private tabTitleService: Title,
+    private timeService: TimeService,
+    private routerService: Router,
+    private keyService: KeyService
   ) {
-    this._tabTitle.setTitle("Home");
+    this.tabTitleService.setTitle(this.keyService.getString("d1"));
   }
 
   ngOnInit(): void {
@@ -48,7 +50,7 @@ export class DashboardComponent implements OnInit {
   }
 
   goToUrl(component: StartPageSetting) {
-    this._router.navigate(["/" + component.name]);
+    this.routerService.navigate(["/" + component.name]);
   }
 
   // Get all settings from service
@@ -99,7 +101,7 @@ export class DashboardComponent implements OnInit {
 
       let element: KeyValuePair = {
         key: "timetask",
-        value: this._timeService
+        value: this.timeService
           .formatMillisecondsToString(tempValue)
           .toString(),
       };

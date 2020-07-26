@@ -5,17 +5,15 @@
             <div *ngFor="let component of this.settingsService.getStartPageHeaders(this.settings);">
                 <div
                     *ngIf="settingsService.getSettingsValue(this.settings, 'Show Tasks module') && component.type=='task'">
-                    <mat-card (click)="goToUrl(component)" class="dashboard-card"
-                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #5a606f;">
+                    <mat-card class="dashboard-card" (click)="goToUrl(component)">
                         <mat-card-content class="dashboard-card-content">
-                            <div
-                                style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
-                                <mat-icon>{{component.symbol}}</mat-icon>
+                            <div class="tab-symbol">
+                                <mat-icon>{{ component.symbol }}</mat-icon>
                             </div>
-                            <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
+                            <div class="tab-message">
                                 <div
                                     *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
-                                    {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}
+                                    {{ this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name)) }}
                                 </div>
                                 <div *ngIf="!component.displaytext.includes('_')">
                                     {{ component.displaytext }}
@@ -29,14 +27,12 @@
                 </div>
                 <div
                     *ngIf="settingsService.getSettingsValue(this.settings, 'Show Fitness module') && component.type=='fitness'">
-                    <mat-card (click)=" goToUrl(component)" class="dashboard-card"
-                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px; background-color: #6b5a6f;">
+                    <mat-card class="dashboard-card" (click)="goToUrl(component)">
                         <mat-card-content class="dashboard-card-content">
-                            <div
-                                style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
+                            <div class="tab-symbol">
                                 <mat-icon>{{component.symbol}}</mat-icon>
                             </div>
-                            <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
+                            <div class="tab-message">
                                 <div
                                     *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
                                     {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}
@@ -52,14 +48,12 @@
                     </mat-card>
                 </div>
                 <div *ngIf="component.type=='general'">
-                    <mat-card (click)=" goToUrl(component)" class="dashboard-card"
-                        style="display: block; overflow: auto; float: left; width: 88%; margin-bottom: 35px;">
+                    <mat-card (click)=" goToUrl(component)" class="dashboard-card">
                         <mat-card-content class="dashboard-card-content">
-                            <div
-                                style="font-size: 70px; display: inline-block; font-family: 'Caveat', cursive; margin-right: 40px;">
+                            <div class="tab-symbol">
                                 <mat-icon>{{component.symbol}}</mat-icon>
                             </div>
-                            <div style="font-size: 30px; display: inline-block; font-family: 'Caveat', cursive;">
+                            <div class="tab-message">
                                 <div
                                     *ngIf="this.placeHolderArray && this.placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
                                     {{this.replacePlaceholder(component.displaytext, "_", this.getPlaceHolderValueFromKey(component.name))}}

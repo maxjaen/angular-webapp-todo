@@ -8,7 +8,7 @@ const GER_UTC_PLUS_TWO = 2;
   providedIn: "root",
 })
 export class TimeService {
-  constructor(private _utilityService: UtilityService) {}
+  constructor(private utilityService: UtilityService) {}
 
   /*
    * ===================================================================================
@@ -154,9 +154,9 @@ export class TimeService {
   ): string {
     const temp: Date = new Date(date);
 
-    return `${description}: ${this._utilityService.formatToTwoDigits(
+    return `${description}: ${this.utilityService.formatToTwoDigits(
       temp.getHours()
-    )}:${this._utilityService.formatToTwoDigits(temp.getMinutes())}`;
+    )}:${this.utilityService.formatToTwoDigits(temp.getMinutes())}`;
   }
 
   /*

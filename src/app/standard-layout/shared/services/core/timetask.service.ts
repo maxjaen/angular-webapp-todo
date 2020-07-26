@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { TimeTask } from "../../../core/timetask/model/timetask";
 import { UtilityService } from "src/app/standard-layout/shared/services/utils/utility.service";
 import { TimeService } from "src/app/standard-layout/shared/services/utils/time.service";
-import { NameAndNumberPair } from "src/app/standard-layout/shared/model/NameAndNumberPair";
+import { NameAndNumberPair } from "src/app/standard-layout/shared/model/GraphData";
 
 @Injectable({
   providedIn: "root",
@@ -71,16 +71,13 @@ export class TimeTaskService {
         let startdate: Date = new Date(e.startdate);
         let now: Date = this.timeService.createNewDate();
 
-        if (
+        return (
           startdate.getDate() == now.getDate() &&
           startdate.getMonth() == now.getMonth() &&
           startdate.getFullYear() == now.getFullYear()
-        ) {
-          return true;
-        }
-        return false;
+        );
       })
-      .sort((a, b) => (a.id > b.id ? -1 : 1));
+      .sort((a, b) => this.utilityService.sortNumerical(a.id, b.id));
   }
 
   /*
@@ -112,13 +109,11 @@ export class TimeTaskService {
     return data
       .filter((e) => this.isValid(e))
       .filter(
-        (data) =>
-          this.utilityService.objectHasPropertyWithValue(data, "startdate") &&
-          this.utilityService.objectHasPropertyWithValue(data, "enddate") &&
+        (f) =>
+          this.utilityService.objectHasPropertyWithValue(f, "startdate") &&
+          this.utilityService.objectHasPropertyWithValue(f, "enddate") &&
           this.timeService.calculateCurrentWeekNumber() ==
-            this.timeService.calculateWeekNumberForDate(
-              new Date(data.startdate)
-            )
+            this.timeService.calculateWeekNumberForDate(new Date(f.startdate))
       )
       .map(
         (filteredData) =>

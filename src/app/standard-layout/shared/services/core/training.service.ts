@@ -3,6 +3,7 @@ import { Training } from "../../../core/training/model/training";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { Exercise } from "../../../core/exercise/model/exercise";
+import { UtilityService } from "../utils/utility.service";
 
 @Injectable({
   providedIn: "root",
@@ -10,7 +11,10 @@ import { Exercise } from "../../../core/exercise/model/exercise";
 export class TrainingService {
   url = "http://localhost:3000/trainings";
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private utilityService: UtilityService,
+    private httpClient: HttpClient
+  ) {}
 
   // ==================================================
   // CRUD TASK OPERATIONS
@@ -41,9 +45,12 @@ export class TrainingService {
    * Sorted by date
    */
   public getSortedTrainings(trainings: Training[]) {
-    return trainings.sort(function (a, b) {
-      return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
-    });
+    return trainings.sort((a, b) =>
+      this.utilityService.sortNumerical(
+        Date.parse(a.date.toString()),
+        Date.parse(b.date.toString())
+      )
+    );
   }
 
   /*

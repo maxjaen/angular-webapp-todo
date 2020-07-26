@@ -6,8 +6,9 @@ import { MatSnackBar } from "@angular/material";
 import { UtilityService } from "../../shared/services/utils/utility.service";
 import { KeyService } from "../../shared/services/utils/key.service";
 import { TimeService } from "../../shared/services/utils/time.service";
-import { NameAndNumberPair } from "../../shared/model/NameAndNumberPair";
+import { NameAndNumberPair } from "../../shared/model/GraphData";
 import { GraphDataService } from "../../shared/services/utils/graph.service";
+import { Title } from "@angular/platform-browser";
 
 @Component({
   selector: "app-weight",
@@ -24,18 +25,19 @@ export class WeightComponent implements OnInit {
   });
 
   constructor(
+    private utilityService: UtilityService,
     private timeService: TimeService,
     private graphDataService: GraphDataService,
     private weightService: WeightService,
     private keyService: KeyService,
-    private _utilityService: UtilityService,
-    private _snackBar: MatSnackBar
+    private snackBarService: MatSnackBar,
+    private tabTitleService: Title
   ) {}
 
   ngOnInit() {
     this.getWeightsFromService();
 
-    // TODO set tab title
+    this.tabTitleService.setTitle(this.keyService.getString("w1"));
   }
 
   /*
@@ -49,12 +51,14 @@ export class WeightComponent implements OnInit {
     this.weights = [];
 
     this.weightService.getAllWeights().subscribe((weights) => {
-      weights.sort(function (a, b) {
-        return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
-      });
+      weights.sort((a, b) =>
+        this.utilityService.sortNumerical(
+          Date.parse(a.date.toString()),
+          Date.parse(b.date.toString())
+        )
+      );
 
       this.weights = weights;
-
       this.initGraphData();
     });
   }
@@ -79,7 +83,7 @@ export class WeightComponent implements OnInit {
 
       const weight: Weight = { id: 0, value: weightValue, date: dateValue };
 
-      if (this._utilityService.isNumber(weight.value)) {
+      if (this.utilityService.isNumber(weight.value)) {
         this.weightService.postWeight(weight).subscribe(() => {
           this.openSnackBar(this.keyService.getString("w2"), null);
           this.getWeightsFromService();
@@ -99,7 +103,7 @@ export class WeightComponent implements OnInit {
   // Remove selected weight from the database
   removeWeight(weight: Weight) {
     if (weight !== undefined) {
-      if (this._utilityService.isNumber(weight.id)) {
+      if (this.utilityService.isNumber(weight.id)) {
         if (window.confirm(this.keyService.getString("a11"))) {
           this.weightService.deleteWeight(weight.id).subscribe(() => {
             this.openSnackBar(this.keyService.getString("w3"), null);
@@ -154,12 +158,9 @@ export class WeightComponent implements OnInit {
 
   // Get the latest weight measurement
   getLatestWeight(): Weight {
-    let id: number = this.weights
-      .map((e) => e.id)
-      .sort(function (a, b) {
-        return a - b;
-      })[this.weights.length - 1];
-    return this.weights.filter((e) => e.id == id)[0];
+    return this.weights.sort((a, b) =>
+      this.utilityService.sortNumerical(a.id, b.id)
+    )[0];
   }
 
   // Get the number of days since last training session
@@ -184,7 +185,7 @@ export class WeightComponent implements OnInit {
   getLowestWeightValue(): number {
     return this.weights
       .map((weight) => weight.value)
-      .sort(this._utilityService.sortNumerical)[this.weights.length - 1];
+      .sort(this.utilityService.sortNumerical)[this.weights.length - 1];
   }
 
   // Get average data value from all weight data
@@ -199,7 +200,7 @@ export class WeightComponent implements OnInit {
   getHighestWeightValue(): number {
     return this.weights
       .map((weight) => weight.value)
-      .sort(this._utilityService.sortNumerical)[0];
+      .sort(this.utilityService.sortNumerical)[0];
   }
 
   // Get backround color for different weight intervals
@@ -239,7 +240,7 @@ export class WeightComponent implements OnInit {
 
   // Opens popup menu for notifications
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {
+    this.snackBarService.open(message, action, {
       duration: 2000,
     });
   }

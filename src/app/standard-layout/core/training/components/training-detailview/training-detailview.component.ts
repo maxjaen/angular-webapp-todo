@@ -18,8 +18,8 @@ export class TrainingDetailViewComponent implements OnInit {
   constructor(
     private keyService: KeyService,
     private trainingService: TrainingService,
-    private route: ActivatedRoute,
-    private router: Router
+    private activeRouteService: ActivatedRoute,
+    private RouterService: Router
   ) {}
 
   ngOnInit() {
@@ -27,7 +27,7 @@ export class TrainingDetailViewComponent implements OnInit {
   }
 
   getTrainingFromService() {
-    this.route.params.subscribe((params) => {
+    this.activeRouteService.params.subscribe((params) => {
       this.trainingService
         .getTrainingByID(+params["id"])
         .subscribe((training) => {
@@ -39,7 +39,7 @@ export class TrainingDetailViewComponent implements OnInit {
 
   removeTraining() {
     if (window.confirm(this.keyService.getString("a11"))) {
-      this.route.params.subscribe((params) => {
+      this.activeRouteService.params.subscribe((params) => {
         this.trainingService.deleteTrainingByID(+params["id"]).subscribe(() => {
           this.viewTraining();
         });
@@ -48,7 +48,7 @@ export class TrainingDetailViewComponent implements OnInit {
   }
 
   viewTraining() {
-    this.router.navigate(["/training"]);
+    this.RouterService.navigate(["/training"]);
   }
 
   showDatestring(date: Date): string {

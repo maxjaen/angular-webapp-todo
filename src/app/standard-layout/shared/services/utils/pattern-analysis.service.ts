@@ -22,7 +22,7 @@ export class PatternAnalysisService {
   /*
    * Get all Exercises in a training that have the same name value as the input exercise
    */
-  calculateExerciseResultStringForTraining(
+  public calculateExerciseResultStringForTraining(
     training: Training,
     exercise: Exercise
   ): string {
@@ -79,7 +79,7 @@ export class PatternAnalysisService {
     return "";
   }
 
-  calculateExerciseResultForTraining(
+  public calculateExerciseResultForTraining(
     training: Training,
     exercise: Exercise
   ): number {
@@ -136,7 +136,7 @@ export class PatternAnalysisService {
     return sum;
   }
 
-  calculateExerciseRecordsForTraining(
+  public calculateExerciseRecordsForTraining(
     training: Training,
     exercise: Exercise
   ): string {

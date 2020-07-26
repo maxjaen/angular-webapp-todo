@@ -97,10 +97,9 @@ export class TasksComponent implements OnInit {
 
   @HostListener("window:beforeunload")
   onBeforeUnload() {
-    return this.taskService.allSaved(this.tasks) &&
-      !this._timerService.isTimerStart
-      ? true
-      : false;
+    return (
+      this.taskService.allSaved(this.tasks) && !this._timerService.isTimerStart
+    );
   }
 
   @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(
@@ -127,8 +126,12 @@ export class TasksComponent implements OnInit {
         f.tempDate = f.date;
       });
 
-      this.unpinnedTasks = this.taskService.getUnpinnedTasks(this.tasks);
-      this.pinnedTasks = this.taskService.getPinnedTasks(this.tasks);
+      this.unpinnedTasks = this.taskService.filterAndSortToUnpinnedAndUnhidedTasks(
+        this.tasks
+      );
+      this.pinnedTasks = this.taskService.filterAndSortToPinnedTasks(
+        this.tasks
+      );
       this.hidedElements = this.taskService.getHidedTasks(this.tasks);
 
       this.setTabTitle();

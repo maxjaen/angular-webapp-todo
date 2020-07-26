@@ -19,7 +19,7 @@ export class TimeService {
   /*
    * Create a new date with offset for own timezone
    */
-  createNewDate(): Date {
+  public createNewDate(): Date {
     let date: Date = new Date();
     date.setHours(date.getUTCHours() + GER_UTC_PLUS_TWO);
 
@@ -29,7 +29,7 @@ export class TimeService {
   /*
    * Get day of the week from String array
    */
-  createDayString(i: number): string {
+  public createDayString(i: number): string {
     return [
       "Sunday",
       "Monday",
@@ -50,7 +50,7 @@ export class TimeService {
   /*
    * Calculates week number of the year for todays date
    */
-  calculateCurrentWeekNumber(): number {
+  public calculateCurrentWeekNumber(): number {
     const now = this.createNewDate();
     const onejan = new Date(now.getFullYear(), 0, 1);
 
@@ -62,7 +62,7 @@ export class TimeService {
   /*
    * Calculates week number of the year from given date
    */
-  calculateWeekNumberForDate(date: Date): number {
+  public calculateWeekNumberForDate(date: Date): number {
     const onejan = new Date(date.getFullYear(), 0, 1);
 
     return Math.ceil(
@@ -86,7 +86,7 @@ export class TimeService {
   /*
    * Test if the given date equals today's date
    */
-  isToday(date: Date): boolean {
+  public isToday(date: Date): boolean {
     const unknownDate = new Date(date);
     const currentDate = this.createNewDate();
 
@@ -100,29 +100,29 @@ export class TimeService {
   /*
    * Test if the given date is in the current week
    */
-  isThisWeek(unknownDate: Date) {
+  public isThisWeek(unknownDate: Date) {
     // TODO
   }
 
   /*
    * Test if the given date is in the current month
    */
-  isThisMonth(unknownDate: Date) {
+  public isThisMonth(unknownDate: Date) {
     // TODO
   }
 
   /*
    * Test if the given date is in the current year
    */
-  isThisYear(unknownDate: Date) {
+  public isThisYear(unknownDate: Date) {
     // TODO
   }
 
   /*
    * Test if the fiven date is valid
    */
-  isValid(date: Date): boolean {
-    return date !== null || date !== undefined ? true : false;
+  public isValid(date: Date): boolean {
+    return date !== null || date !== undefined;
   }
 
   /*
@@ -134,7 +134,7 @@ export class TimeService {
   /*
    * Get string  with format 'h:m:s' from given milliseconds
    */
-  formatMillisecondsToString(milliseconds: number): string {
+  public formatMillisecondsToString(milliseconds: number): string {
     let seconds: any = Math.floor((milliseconds / 1000) % 60);
     let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
     let hours: any = Math.floor(milliseconds / (1000 * 60 * 60));
@@ -148,7 +148,10 @@ export class TimeService {
   /*
    * Get string with format 'description: h:m' from given date and description
    */
-  formatDateToStringWithDescription(date: Date, description: string): string {
+  public formatDateToStringWithDescription(
+    date: Date,
+    description: string
+  ): string {
     const temp: Date = new Date(date);
 
     return `${description}: ${this._utilityService.formatToTwoDigits(
@@ -159,7 +162,7 @@ export class TimeService {
   /*
    * Get string with message explaining the current date in proportion to the parameter date
    */
-  formatDateToDeadlineMessage(date: Date): string {
+  public formatDateToDeadlineMessage(date: Date): string {
     let diffInMilliseconds = this.calculateTimeDifferenceToCurrentDate(date);
 
     let beforeDeadline: boolean = diffInMilliseconds >= 0;

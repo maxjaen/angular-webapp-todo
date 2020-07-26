@@ -18,43 +18,41 @@ export class TimeTaskService {
     private timeService: TimeService
   ) {}
 
-  /*
-   * ===================================================================================
-   * CRUD TIMETASK OPERATIONS
-   * ===================================================================================
-   */
+  // ==================================================
+  // CRUD TIMETASK OPERATIONS
+  // ==================================================
 
-  getAllTimeElements(): Observable<TimeTask[]> {
+  public getAllTimeElements(): Observable<TimeTask[]> {
     return this.httpClient.get<Array<TimeTask>>(this.url);
   }
 
-  getTimeElementByID(id: number): Observable<TimeTask[]> {
+  public getTimeElementByID(id: number): Observable<TimeTask[]> {
     return this.httpClient.get<Array<TimeTask>>(this.url + "/" + id);
   }
 
-  postTimeElement(zeitElement: TimeTask): Observable<TimeTask> {
+  public postTimeElement(zeitElement: TimeTask): Observable<TimeTask> {
     return this.httpClient.post<TimeTask>(this.url, zeitElement);
   }
 
-  putTimeElement(zeitElement: TimeTask): Observable<TimeTask> {
+  public putTimeElement(zeitElement: TimeTask): Observable<TimeTask> {
     return this.httpClient.put<TimeTask>(
       this.url + "/" + zeitElement.id,
       zeitElement
     );
   }
 
-  deleteTimeElement(zeitElement: number): Observable<TimeTask> {
+  public deleteTimeElement(zeitElement: number): Observable<TimeTask> {
     return this.httpClient.delete<TimeTask>(this.url + "/" + zeitElement);
   }
 
-  /*
-   * ===================================================================================
-   * OTHER TIMETASK OPERATIONS
-   * ===================================================================================
-   */
+  // ==================================================
+  // OTHER TIMETASK OPERATIONS
+  // ==================================================
 
-  isValid(timetask: TimeTask) {
-    // TODO more accceptance criteria
+  /*
+   * Checks if a timetask is valid and can be displayed
+   */
+  public isValid(timetask: TimeTask) {
     return (
       timetask.startdate !== undefined &&
       timetask.enddate !== undefined &&
@@ -67,7 +65,7 @@ export class TimeTaskService {
    * Get all TimeTasks that have today as startdate
    * Return sorted TimeTask array
    */
-  getTodayTimeTasks(data: TimeTask[]): TimeTask[] {
+  public getTodayTimeTasks(data: TimeTask[]): TimeTask[] {
     return data
       .filter((e) => {
         let startdate: Date = new Date(e.startdate);
@@ -88,7 +86,7 @@ export class TimeTaskService {
   /*
    * Calculate the overall work time for the current day
    */
-  calculateTodayTime(data: TimeTask[]): number {
+  public calculateTodayTime(data: TimeTask[]): number {
     return data
       .filter(
         (e) =>
@@ -110,7 +108,7 @@ export class TimeTaskService {
   /*
    * Calculate the overall time for the current week
    */
-  calculateOverallTime(data: TimeTask[]): number {
+  public calculateOverallTime(data: TimeTask[]): number {
     return data
       .filter((e) => this.isValid(e))
       .filter(
@@ -130,7 +128,12 @@ export class TimeTaskService {
       .reduce((a, b) => a + b, 0);
   }
 
-  getAccumulatedTimeTaskAndSecondsPairs(data: TimeTask[]): NameAndNumberPair[] {
+  /*
+   * Calculate the overall time for each timetask that that data can be grouped together
+   */
+  public getAccumulatedTimeTaskAndSecondsPairs(
+    data: TimeTask[]
+  ): NameAndNumberPair[] {
     let array: NameAndNumberPair[] = [];
 
     data.forEach((key) => {

@@ -12,7 +12,7 @@ export class SoundService {
   /*
    * Create and play soundtrack file from name of the file as input
    */
-  playSound(fileName: string): void {
+  public playSound(fileName: string): void {
     new Audio(MP3_DIR + fileName + MP3_EXTENSION).play();
   }
 }

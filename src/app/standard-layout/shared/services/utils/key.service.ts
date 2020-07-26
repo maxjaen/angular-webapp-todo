@@ -9,27 +9,45 @@ import shortcuts from "../../../../../assets/json/shortcuts.json";
 export class KeyService {
   constructor() {}
 
-  getShortcut(shortcut: string): string {
+  /*
+   * Get shortcut from JSON based on input name of shortcut
+   */
+  public getShortcut(shortcut: string): string {
     return shortcuts[shortcut];
   }
 
-  getShortcuts(): any {
+  /*
+   * Get all shortcuts from JSON
+   */
+  public getShortcuts(): any {
     return shortcuts;
   }
 
-  getColor(color: string): string {
+  /*
+   * Get color from JSON based on input name of color
+   */
+  public getColor(color: string): string {
     return colors[color];
   }
 
-  getColors(): any {
+  /*
+   * Get all colors from JSON
+   */
+  public getColors(): any {
     return colors;
   }
 
-  getString(string: string): string {
+  /*
+   * Get key from JSON based on input name of key
+   */
+  public getString(string: string): string {
     return strings[string];
   }
 
-  getStrings(): any {
+  /*
+   * Get all keys from JSON
+   */
+  public getStrings(): any {
     return strings;
   }
 }

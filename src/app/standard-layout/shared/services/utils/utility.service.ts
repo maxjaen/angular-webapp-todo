@@ -11,14 +11,14 @@ export class UtilityService {
   /*
    * Split string based on new line
    */
-  split(string: string): string[] {
+  public split(string: string): string[] {
     return string.split(NEW_LINE);
   }
 
   /*
    * Checks if the input parameter is a number
    */
-  isNumber(input: any): boolean {
+  public isNumber(input: any): boolean {
     return !isNaN(Number(input));
   }
 
@@ -26,14 +26,14 @@ export class UtilityService {
    * When number has only one digit
    * then add a 0 in front
    */
-  formatToTwoDigits(number: number) {
+  public formatToTwoDigits(number: number) {
     return number < 10 ? `0${number}` : number;
   }
 
   /*
    * Create random interval with min and max values
    */
-  randomIntFromInterval(min: number, max: number): number {
+  public randomIntFromInterval(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
@@ -44,23 +44,36 @@ export class UtilityService {
   /*
    * Sort items numerically
    */
-  sortNumerical(a: number, b: number): number {
+  public sortNumerical(a: number, b: number): number {
     if (a > b) return -1;
     if (a < b) return 1;
-    else return 0;
+    return 0;
+  }
+
+  /*
+   * Sort items alphabetically
+   */
+  public sortAlphabetical(a: string, b: string): number {
+    if (a > b) return 1;
+    if (a < b) return -1;
+    return 0;
   }
 
   /*
    * Only show distinct elements
    */
-  sortDistinct(value, index, self): boolean {
+  public sortDistinct(value, index, self): boolean {
     return self.indexOf(value) === index;
   }
+
+  // ==================================================
+  // OBJECTS
+  // ==================================================
 
   /*
    * Checks if an object has the specified property
    */
-  objectHasPropertyWithValue(object: any, property: string): boolean {
+  public objectHasPropertyWithValue(object: any, property: string): boolean {
     if (
       object.hasOwnProperty(property) &&
       object[property] !== null &&
@@ -79,21 +92,25 @@ export class UtilityService {
   /*
    * Remove element in array with position
    */
-  removePositionFromArray(elementPosition: number, array: any[]) {
+  public removePositionFromArray(elementPosition: number, array: any[]) {
     array.splice(elementPosition, 1);
   }
 
   /*
    * Remove element in array with element
    */
-  removeElementFromArray(element: any, array: any[]) {
+  public removeElementFromArray(element: any, array: any[]) {
     array.splice(array.indexOf(element), 1);
   }
 
   /*
    * Change element order in array with direction and index
    */
-  changeElementOrderInArray(array: any[], direction: string, index: number) {
+  public changeElementOrderInArray(
+    array: any[],
+    direction: string,
+    index: number
+  ) {
     let actualElement: number = index;
     let lastElement: number = index - 1;
     let nextElement: number = index + 1;

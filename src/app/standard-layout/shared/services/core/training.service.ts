@@ -12,39 +12,35 @@ export class TrainingService {
 
   constructor(private httpClient: HttpClient) {}
 
-  /*
-   * ===================================================================================
-   * CRUD TASK OPERATIONS
-   * ===================================================================================
-   */
+  // ==================================================
+  // CRUD TASK OPERATIONS
+  // ==================================================
 
-  getAllTrainings(): Observable<Training[]> {
+  public getAllTrainings(): Observable<Training[]> {
     return this.httpClient.get<Array<Training>>(this.url);
   }
 
-  getTrainingByID(id: number): Observable<Training> {
+  public getTrainingByID(id: number): Observable<Training> {
     return this.httpClient.get<Training>(this.url + "/" + id);
   }
 
-  postTraining(training: Training): Observable<Training> {
+  public postTraining(training: Training): Observable<Training> {
     return this.httpClient.post<Training>(this.url, training);
   }
 
-  deleteTrainingByID(id: number): Observable<Training> {
+  public deleteTrainingByID(id: number): Observable<Training> {
     return this.httpClient.delete<Training>(this.url + "/" + id);
   }
 
-  /*
-   * ===================================================================================
-   * OTHER TASK OPERATIONS
-   * ===================================================================================
-   */
+  // ==================================================
+  // OTHER TASK OPERATIONS
+  // ==================================================
 
   /*
    * Get all trainings from given trainings
    * Sorted by date
    */
-  getSortedTrainings(trainings: Training[]) {
+  public getSortedTrainings(trainings: Training[]) {
     return trainings.sort(function (a, b) {
       return Date.parse(b.date.toString()) - Date.parse(a.date.toString());
     });
@@ -54,16 +50,19 @@ export class TrainingService {
    * Get all trainings from given trainings which enlude given exercise
    * Sorted by date
    */
-  getSortedTrainingFromExercise(trainings: Training[], exercise: Exercise) {
+  public getSortedTrainingFromExercise(
+    trainings: Training[],
+    exercise: Exercise
+  ) {
     return this.getSortedTrainings(trainings).filter(
-      (e) => e.exercices.filter((e) => e.name == exercise.name).length > 0
+      (e) => e.exercices.filter((f) => f.name == exercise.name).length > 0
     );
   }
 
   /*
    * Return formated date string from training
    */
-  getDateFromTraining(training: Training): string {
+  public getDateFromTraining(training: Training): string {
     return new Date(training.date).toLocaleString();
   }
 }

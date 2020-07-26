@@ -11,26 +11,43 @@ export class SettingsService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getAllSettings(): Observable<Settings[]> {
+  // ===================================================================================
+  // CRUD SETTINGS OPERATIONS
+  // ===================================================================================
+
+  public getAllSettings(): Observable<Settings[]> {
     return this.httpClient.get<Array<Settings>>(this.url);
   }
 
-  putSettings(settings: Settings): Observable<Settings> {
+  public putSettings(settings: Settings): Observable<Settings> {
     return this.httpClient.put<Settings>(
       this.url + "/" + settings.id,
       settings
     );
   }
 
-  getStartPageHeaders(settings: Settings[]) {
+  // ===================================================================================
+  // OTHER SETTINGS OPERATIONS
+  // ===================================================================================
+
+  /*
+   * Get all startpage headers
+   */
+  public getStartPageHeaders(settings: Settings[]) {
     return settings[0]["startpage"];
   }
 
-  getSettingsHeaders(settings: Settings[]) {
+  /*
+   * Get all Settings headers
+   */
+  public getSettingsHeaders(settings: Settings[]) {
     return settings[0]["settingsmenu"];
   }
 
-  getSettingsValue(settings: Settings[], key: string): any {
+  /*
+   * Get settings value from input key
+   */
+  public getSettingsValue(settings: Settings[], key: string): any {
     let array = [];
 
     this.getSettingsHeaders(settings).forEach((header) => {

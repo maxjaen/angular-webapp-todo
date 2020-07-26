@@ -141,7 +141,7 @@
                         "
                       >
                         <div class="smallToTop fontSize12">
-                          {{ taskService.strFromTask(task) }}
+                          {{ taskService.utcStringFromTask(task) }}
                           {{
                             timeService.formatDateToDeadlineMessage(task.date)
                           }}
@@ -320,7 +320,7 @@
                         "
                       >
                         <div class="smallToTop fontSize12">
-                          {{ taskService.strFromTask(task) }}
+                          {{ taskService.utcStringFromTask(task) }}
                         </div>
                       </div>
                     </mat-card-title>
@@ -510,7 +510,7 @@
                   "
                 >
                   <div class="smallToTop fontSize12">
-                    {{ taskService.strFromTask(task) }}
+                    {{ taskService.utcStringFromTask(task) }}
                   </div>
                 </div>
               </mat-card-title>

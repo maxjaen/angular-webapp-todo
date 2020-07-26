@@ -14,7 +14,7 @@ export class GraphDataService {
   /*
    * Get graph data format for exercise details
    */
-  initGraphDataForExerciseDetails(
+  public initGraphDataForExerciseDetails(
     trainings: Training[],
     exercise: Exercise
   ): NameAndNumberPair[] {
@@ -38,7 +38,7 @@ export class GraphDataService {
   /*
    * Get graph data format for time tasks
    */
-  initGraphDataForAccumulatedNameAndNumberValuePair(
+  public initGraphDataForAccumulatedNameAndNumberValuePair(
     pair: NameAndNumberPair[]
   ): NameAndNumberPair[] {
     let arr: NameAndNumberPair[] = [];
@@ -56,7 +56,7 @@ export class GraphDataService {
   /*
    * Get graph data format for weights
    */
-  initGraphDataForWeights(weights: Weight[]): NameAndNumberPair[] {
+  public initGraphDataForWeights(weights: Weight[]): NameAndNumberPair[] {
     let arr: NameAndNumberPair[] = [];
 
     weights.forEach((e) => {

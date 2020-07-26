@@ -94,7 +94,7 @@ export class TimeTaskComponent implements OnInit {
 
   @HostListener("window:beforeunload")
   onBeforeUnload() {
-    return !this._timerService.isTimerStart ? true : false;
+    return !this._timerService.isTimerStart;
   }
 
   @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(

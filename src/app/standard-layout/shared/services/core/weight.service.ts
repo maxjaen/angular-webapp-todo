@@ -11,23 +11,27 @@ export class WeightService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getAllWeights(): Observable<Weight[]> {
+  // ==================================================
+  // CRUD OPERATIONS
+  // ==================================================
+
+  public getAllWeights(): Observable<Weight[]> {
     return this.httpClient.get<Array<Weight>>(this.url);
   }
 
-  getWeightByID(id: number): Observable<Weight[]> {
+  public getWeightByID(id: number): Observable<Weight[]> {
     return this.httpClient.get<Array<Weight>>(this.url + "/" + id);
   }
 
-  postWeight(weight: Weight): Observable<Weight> {
+  public postWeight(weight: Weight): Observable<Weight> {
     return this.httpClient.post<Weight>(this.url, weight);
   }
 
-  putWeight(weight: Weight): Observable<Weight> {
+  public putWeight(weight: Weight): Observable<Weight> {
     return this.httpClient.put<Weight>(this.url + "/" + weight.id, weight);
   }
 
-  deleteWeight(id: number): Observable<Weight> {
+  public deleteWeight(id: number): Observable<Weight> {
     return this.httpClient.delete<Weight>(this.url + "/" + id);
   }
 }

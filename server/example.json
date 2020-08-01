@@ -116,12 +116,7 @@
             }
           ]
         }
-      ],
-      "theme": {
-        "name": "test",
-        "colorprimary": "",
-        "colorsecundary": ""
-      }
+      ]
     }
   ]
 }

@@ -1,13 +1,13 @@
 # TODO
 
-<br>
-
-<br>
-
 ## High priority: Attention!
 
 - Projects as categories to sort (different sort options)
 - Remove `style=...` from html
+- Sorting Workouts
+- Comments
+- Angular linting
+- TimerComponent (own
 
 ## General
 

@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { Exercise } from "../../../core/exercise/model/exercise";
-import { UtilityService } from "../utils/utility.service";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Exercise } from '../../../core/exercise/model/exercise';
+import { UtilityService } from '../utils/utility.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ExerciseService {
-  url = "http://localhost:3000/exercises";
+  url = 'http://localhost:3000/exercises';
 
   constructor(
     private utilityService: UtilityService,
@@ -28,7 +28,7 @@ export class ExerciseService {
   }
 
   public deleteExercise(exercise: Exercise): Observable<Exercise> {
-    return this.httpClient.delete<Exercise>(this.url + "/" + exercise.id);
+    return this.httpClient.delete<Exercise>(this.url + '/' + exercise.id);
   }
 
   // ===================================================================================
@@ -67,6 +67,6 @@ export class ExerciseService {
    * Checks if the category of an input exercise equals an input category
    */
   private isInCategory(exercise: Exercise, category: string) {
-    return exercise["category"] === category;
+    return exercise['category'] === category;
   }
 }

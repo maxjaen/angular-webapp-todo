@@ -1,34 +1,34 @@
-import { Component, OnInit } from "@angular/core";
-import { ExerciseService } from "../../shared/services/core/exercise.service";
-import { Exercise } from "./model/exercise";
-import { MatSnackBar } from "@angular/material";
-import { KeyService } from "../../shared/services/utils/key.service";
-import { FormControl, Validators, FormGroup } from "@angular/forms";
-import { UtilityService } from "../../shared/services/utils/utility.service";
+import { Component, OnInit } from '@angular/core';
+import { ExerciseService } from '../../shared/services/core/exercise.service';
+import { Exercise } from './model/exercise';
+import { MatSnackBar } from '@angular/material';
+import { KeyService } from '../../shared/services/utils/key.service';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { UtilityService } from '../../shared/services/utils/utility.service';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: "app-exercise-overview",
-  templateUrl: "./exercise-overview.component.html",
-  styleUrls: ["./exercise-overview.component.scss"],
+  selector: 'app-exercise-overview',
+  templateUrl: './exercise-overview.component.html',
+  styleUrls: ['./exercise-overview.component.scss'],
 })
 export class ExerciseOverViewComponent implements OnInit {
   exercises: Exercise[];
   exerciseToCreate: Exercise = new Exercise();
   exerciseCreateForm = new FormGroup({
-    name: new FormControl("", [Validators.required]),
-    category: new FormControl("", [Validators.required]),
+    name: new FormControl('', [Validators.required]),
+    category: new FormControl('', [Validators.required]),
   });
   exerciseToDelete: Exercise = new Exercise();
 
   selectedExercise: Exercise;
 
   patterns = [
-    "conditionalpattern1d",
-    "conditionalpattern2d",
-    "countablepattern",
-    "weightpattern",
-    "freepattern",
+    'conditionalpattern1d',
+    'conditionalpattern2d',
+    'countablepattern',
+    'weightpattern',
+    'freepattern',
   ];
 
   constructor(
@@ -42,7 +42,7 @@ export class ExerciseOverViewComponent implements OnInit {
   ngOnInit(): void {
     this.getExercisesFromService();
 
-    this.tabTitleService.setTitle(this.keyService.getString("e1"));
+    this.tabTitleService.setTitle(this.keyService.getString('e1'));
   }
 
   /*
@@ -83,7 +83,7 @@ export class ExerciseOverViewComponent implements OnInit {
     this.setExerciseName(this.exerciseCreateForm.getRawValue().name);
 
     this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
-      this.openSnackBar(this.keyService.getString("t4"), null);
+      this.openSnackBar(this.keyService.getString('t4'), null);
       this.getExercisesFromService();
     });
   }
@@ -97,7 +97,7 @@ export class ExerciseOverViewComponent implements OnInit {
   // Opens popup window to display notification
   deleteExercise() {
     this.exerciseService.deleteExercise(this.exerciseToDelete).subscribe(() => {
-      this.openSnackBar(this.keyService.getString("t5"), null);
+      this.openSnackBar(this.keyService.getString('t5'), null);
       this.getExercisesFromService(); // TODO remove exercise from array
     });
   }

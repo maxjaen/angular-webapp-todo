@@ -1,54 +1,54 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { TasksComponent } from "./standard-layout/core/tasks/tasks.component";
-import { TimeTaskComponent } from "./standard-layout/core/timetask/timetask.component";
-import { TrainingOverViewComponent } from "./standard-layout/core/training/training-overview.component";
-import { TrainingDetailViewComponent } from "./standard-layout/core/training/components/training-detailview/training-detailview.component";
-import { WeightComponent } from "./standard-layout/core/weight/weight.component";
-import { DashboardComponent } from "./standard-layout/core/dashboard/dashboard.component";
-import { SessionComponent } from "./standard-layout/core/session/session.component";
-import { SettingsComponent } from "./standard-layout/core/settings/settings.component";
-import { ExerciseOverViewComponent } from "./standard-layout/core/exercise/exercise-overview.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { TasksComponent } from './standard-layout/core/tasks/tasks.component';
+import { TimeTaskComponent } from './standard-layout/core/timetask/timetask.component';
+import { TrainingOverViewComponent } from './standard-layout/core/training/training-overview.component';
+import { TrainingDetailViewComponent } from './standard-layout/core/training/components/training-detailview/training-detailview.component';
+import { WeightComponent } from './standard-layout/core/weight/weight.component';
+import { DashboardComponent } from './standard-layout/core/dashboard/dashboard.component';
+import { SessionComponent } from './standard-layout/core/session/session.component';
+import { SettingsComponent } from './standard-layout/core/settings/settings.component';
+import { ExerciseOverViewComponent } from './standard-layout/core/exercise/exercise-overview.component';
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: DashboardComponent,
   },
   {
-    path: "dashboard",
+    path: 'dashboard',
     component: DashboardComponent,
   },
   {
-    path: "settings",
+    path: 'settings',
     component: SettingsComponent,
   },
   {
-    path: "tasks",
+    path: 'tasks',
     component: TasksComponent,
   },
   {
-    path: "training",
+    path: 'training',
     component: TrainingOverViewComponent,
   },
   {
-    path: "training/:id",
+    path: 'training/:id',
     component: TrainingDetailViewComponent,
   },
   {
-    path: "exercise",
+    path: 'exercise',
     component: ExerciseOverViewComponent,
   },
   {
-    path: "timetask",
+    path: 'timetask',
     component: TimeTaskComponent,
   },
   {
-    path: "weight",
+    path: 'weight',
     component: WeightComponent,
   },
   {
-    path: "session",
+    path: 'session',
     component: SessionComponent,
   },
 ];

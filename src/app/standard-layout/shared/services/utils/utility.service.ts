@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-const NEW_LINE = "\n";
+const NEW_LINE = '\n';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class UtilityService {
   constructor() {}
@@ -11,8 +11,8 @@ export class UtilityService {
   /*
    * Split string based on new line
    */
-  public split(string: string): string[] {
-    return string.split(NEW_LINE);
+  public split(str: string): string[] {
+    return str.split(NEW_LINE);
   }
 
   /*
@@ -26,8 +26,8 @@ export class UtilityService {
    * When number has only one digit
    * then add a 0 in front
    */
-  public formatToTwoDigits(number: number) {
-    return number < 10 ? `0${number}` : number;
+  public formatToTwoDigits(num: number) {
+    return num < 10 ? `0${num}` : num;
   }
 
   /*
@@ -45,18 +45,14 @@ export class UtilityService {
    * Sort items numerically
    */
   public sortNumerical(a: number, b: number): number {
-    if (a > b) return -1;
-    if (a < b) return 1;
-    return 0;
+    return a > b ? -1 : 1;
   }
 
   /*
    * Sort items alphabetically
    */
   public sortAlphabetical(a: string, b: string): number {
-    if (a > b) return 1;
-    if (a < b) return -1;
-    return 0;
+    return a > b ? 1 : -1;
   }
 
   /*
@@ -64,39 +60,6 @@ export class UtilityService {
    */
   public sortDistinct(value, index, self): boolean {
     return self.indexOf(value) === index;
-  }
-
-  // ==================================================
-  // COLORS
-  // ==================================================
-
-  public generateRandomColor(): string {
-    return (
-      "#" + (0x1000000 + Math.random() * 0xffffff).toString(16).substr(1, 6)
-    );
-  }
-
-  public generateInverseColorFromHex(hex: string): string {
-    return (Number(`0x1${hex}`) ^ 0xffffff)
-      .toString(16)
-      .substr(1)
-      .toUpperCase();
-  }
-
-  public adjustColor(color: string, amount: number) {
-    return (
-      "#" +
-      color
-        .replace(/^#/, "")
-        .replace(/../g, (color) =>
-          (
-            "0" +
-            Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(
-              16
-            )
-          ).substr(-2)
-        )
-    );
   }
 
   // ==================================================
@@ -144,14 +107,14 @@ export class UtilityService {
     direction: string,
     index: number
   ) {
-    let actualElement: number = index;
-    let lastElement: number = index - 1;
-    let nextElement: number = index + 1;
+    const actualElement: number = index;
+    const lastElement: number = index - 1;
+    const nextElement: number = index + 1;
 
     switch (direction) {
-      case "up":
+      case 'up':
         if (index !== 0) {
-          var tempLast = array[lastElement];
+          const tempLast = array[lastElement];
           array[lastElement] = array[actualElement];
           array[actualElement] = tempLast;
         } else {
@@ -163,9 +126,9 @@ export class UtilityService {
           );
         }
         break;
-      case "down":
+      case 'down':
         if (actualElement < array.length - 1) {
-          var tempNext: any = array[nextElement];
+          const tempNext: any = array[nextElement];
           array[nextElement] = array[actualElement];
           array[actualElement] = tempNext;
         } else {
@@ -178,7 +141,7 @@ export class UtilityService {
         }
         break;
       default:
-        console.warn("Wrong direction selected");
+        console.warn('Wrong direction selected');
     }
   }
 }

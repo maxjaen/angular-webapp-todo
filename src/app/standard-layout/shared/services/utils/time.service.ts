@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { UtilityService } from "./utility.service";
+import { Injectable } from '@angular/core';
+import { UtilityService } from './utility.service';
 
 const GER_UTC_PLUS_ONE = 1; // TODO Not needed right now
 const GER_UTC_PLUS_TWO = 2;
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class TimeService {
   constructor(private utilityService: UtilityService) {}
@@ -20,7 +20,7 @@ export class TimeService {
    * Create a new date with offset for own timezone
    */
   public createNewDate(): Date {
-    let date: Date = new Date();
+    const date: Date = new Date();
     date.setHours(date.getUTCHours() + GER_UTC_PLUS_TWO);
 
     return date;
@@ -31,13 +31,13 @@ export class TimeService {
    */
   public createDayString(i: number): string {
     return [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
     ][i];
   }
 
@@ -91,9 +91,9 @@ export class TimeService {
     const currentDate = this.createNewDate();
 
     return (
-      unknownDate.getDate() == currentDate.getDate() &&
-      unknownDate.getMonth() == currentDate.getMonth() &&
-      unknownDate.getFullYear() == currentDate.getFullYear()
+      unknownDate.getDate() === currentDate.getDate() &&
+      unknownDate.getMonth() === currentDate.getMonth() &&
+      unknownDate.getFullYear() === currentDate.getFullYear()
     );
   }
 
@@ -165,17 +165,17 @@ export class TimeService {
   public formatDateToDeadlineMessage(date: Date): string {
     let diffInMilliseconds = this.calculateTimeDifferenceToCurrentDate(date);
 
-    let beforeDeadline: boolean = diffInMilliseconds >= 0;
+    const beforeDeadline: boolean = diffInMilliseconds >= 0;
 
     if (!beforeDeadline) {
       diffInMilliseconds *= -1;
     }
 
     if (this.isToday(date)) {
-      return "(Your deadline is today!)";
+      return '(Your deadline is today!)';
     }
 
-    let days: any = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
+    const days: any = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
     return !beforeDeadline
       ? `(~ ${days} day/s behind your goal)`
       : `(~ ${days} day/s until your deadline)`;

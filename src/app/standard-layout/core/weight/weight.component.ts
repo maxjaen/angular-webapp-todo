@@ -1,27 +1,27 @@
-import { Component, OnInit } from "@angular/core";
-import { Weight } from "./model/weight";
-import { WeightService } from "../../shared/services/core/weight.service";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { MatSnackBar } from "@angular/material";
-import { UtilityService } from "../../shared/services/utils/utility.service";
-import { KeyService } from "../../shared/services/utils/key.service";
-import { TimeService } from "../../shared/services/utils/time.service";
-import { NameAndNumberPair } from "../../shared/model/GraphData";
-import { GraphDataService } from "../../shared/services/utils/graph.service";
-import { Title } from "@angular/platform-browser";
+import { Component, OnInit } from '@angular/core';
+import { Weight } from './model/weight';
+import { WeightService } from '../../shared/services/core/weight.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
+import { UtilityService } from '../../shared/services/utils/utility.service';
+import { KeyService } from '../../shared/services/utils/key.service';
+import { TimeService } from '../../shared/services/utils/time.service';
+import { NameAndNumberPair } from '../../shared/model/GraphData';
+import { GraphDataService } from '../../shared/services/utils/graph.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: "app-weight",
-  templateUrl: "./weight.component.html",
-  styleUrls: ["./weight.component.scss"],
+  selector: 'app-weight',
+  templateUrl: './weight.component.html',
+  styleUrls: ['./weight.component.scss'],
 })
 export class WeightComponent implements OnInit {
   weights: Weight[];
   graphData: NameAndNumberPair[] = [];
 
-  displayedWeights: number = 15;
+  displayedWeights = 15;
   form = new FormGroup({
-    weight: new FormControl("", [Validators.required]),
+    weight: new FormControl('', [Validators.required]),
   });
 
   constructor(
@@ -37,7 +37,7 @@ export class WeightComponent implements OnInit {
   ngOnInit() {
     this.getWeightsFromService();
 
-    this.tabTitleService.setTitle(this.keyService.getString("w1"));
+    this.tabTitleService.setTitle(this.keyService.getString('w1'));
   }
 
   /*
@@ -77,7 +77,7 @@ export class WeightComponent implements OnInit {
 
   // Save weight into the database
   saveWeight() {
-    if (this.form.getRawValue().weight != "") {
+    if (this.form.getRawValue().weight !== '') {
       const weightValue: number = this.form.getRawValue().weight;
       const dateValue: Date = this.timeService.createNewDate();
 
@@ -85,17 +85,17 @@ export class WeightComponent implements OnInit {
 
       if (this.utilityService.isNumber(weight.value)) {
         this.weightService.postWeight(weight).subscribe(() => {
-          this.openSnackBar(this.keyService.getString("w2"), null);
+          this.openSnackBar(this.keyService.getString('w2'), null);
           this.getWeightsFromService();
         });
       } else {
-        console.warn("saveWeight(): ID: " + weight.value + ", expected number");
+        console.warn('saveWeight(): ID: ' + weight.value + ', expected number');
       }
     } else {
       console.warn(
-        "saveWeight(): Value: " +
+        'saveWeight(): Value: ' +
           this.form.getRawValue().weight +
-          ", expected Value"
+          ', expected Value'
       );
     }
   }
@@ -104,17 +104,17 @@ export class WeightComponent implements OnInit {
   removeWeight(weight: Weight) {
     if (weight !== undefined) {
       if (this.utilityService.isNumber(weight.id)) {
-        if (window.confirm(this.keyService.getString("a11"))) {
+        if (window.confirm(this.keyService.getString('a11'))) {
           this.weightService.deleteWeight(weight.id).subscribe(() => {
-            this.openSnackBar(this.keyService.getString("w3"), null);
+            this.openSnackBar(this.keyService.getString('w3'), null);
             this.getWeightsFromService();
           });
         }
       } else {
-        console.warn("removeTask(): ID: " + weight.id + ", expected number");
+        console.warn(`removeTask(): ID: ${weight.id}, expected number`);
       }
     } else {
-      console.warn("removeTask(): ID: " + weight.id + ", expected ID");
+      console.warn(`removeTask(): ID: ${weight.id}, expected ID`);
     }
   }
 
@@ -129,7 +129,7 @@ export class WeightComponent implements OnInit {
       this.displayedWeights += 10;
       this.initGraphData();
     } else {
-      console.log(this.keyService.getString("a21"));
+      console.log(this.keyService.getString('a21'));
     }
   }
 
@@ -138,7 +138,7 @@ export class WeightComponent implements OnInit {
       this.displayedWeights -= 10;
       this.initGraphData();
     } else {
-      console.log(this.keyService.getString("a22"));
+      console.log(this.keyService.getString('a22'));
     }
   }
 
@@ -165,8 +165,8 @@ export class WeightComponent implements OnInit {
 
   // Get the number of days since last training session
   getDaysSinceLastWeight(): number {
-    let tempDate: Date = this.timeService.createNewDate();
-    let milliseconds: number =
+    const tempDate: Date = this.timeService.createNewDate();
+    const milliseconds: number =
       tempDate.getTime() - new Date(this.getLatestWeight().date).getTime();
 
     return Math.floor(milliseconds / (1000 * 60 * 60 * 24));
@@ -174,7 +174,7 @@ export class WeightComponent implements OnInit {
 
   // Calculate BMI index
   calculateBMI() {
-    if (this.weights.length != 0) {
+    if (this.weights.length !== 0) {
       return (+this.getLatestWeight().value / (1.85 * 1.85)).toFixed(2);
     }
 
@@ -206,30 +206,30 @@ export class WeightComponent implements OnInit {
   // Get backround color for different weight intervals
   // Return backround color
   getStatusColorValue(weight: Weight): string {
-    let highestValue: number = this.getHighestWeightValue();
-    if (weight.value == highestValue) {
-      return this.keyService.getColor("darkgreen");
+    const highestValue: number = this.getHighestWeightValue();
+    if (weight.value === highestValue) {
+      return this.keyService.getColor('darkgreen');
     }
 
-    let lowestValue: number = this.getLowestWeightValue();
-    if (weight.value == lowestValue) {
-      return this.keyService.getColor("red");
+    const lowestValue: number = this.getLowestWeightValue();
+    if (weight.value === lowestValue) {
+      return this.keyService.getColor('red');
     }
 
-    let averageValue: number = this.getAverageWeightValue();
+    const averageValue: number = this.getAverageWeightValue();
     if (weight.value <= averageValue + 1 && weight.value >= averageValue - 1) {
-      return this.keyService.getColor("yellow");
+      return this.keyService.getColor('yellow');
     }
 
     if (weight.value < averageValue - 1) {
-      return this.keyService.getColor("orange");
+      return this.keyService.getColor('orange');
     }
 
     if (weight.value > averageValue + 1) {
-      return this.keyService.getColor("lightgreen");
+      return this.keyService.getColor('lightgreen');
     }
 
-    return this.keyService.getColor("darkgray");
+    return this.keyService.getColor('darkgray');
   }
 
   /*

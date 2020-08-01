@@ -1,14 +1,14 @@
-import { Component } from "@angular/core";
-import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
-import { Observable } from "rxjs";
-import { map, shareReplay } from "rxjs/operators";
-import { SettingsService } from "src/app/standard-layout/shared/services/core/settings.service";
-import { Settings } from "src/app/standard-layout/core/settings/model/settings";
+import { Component } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+import { SettingsService } from 'src/app/standard-layout/shared/services/core/settings.service';
+import { Settings } from 'src/app/standard-layout/core/settings/model/settings';
 
 @Component({
-  selector: "app-nav",
-  templateUrl: "./nav.component.html",
-  styleUrls: ["./nav.component.scss"],
+  selector: 'app-nav',
+  templateUrl: './nav.component.html',
+  styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent {
   settings: Settings;

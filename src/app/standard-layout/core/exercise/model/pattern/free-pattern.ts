@@ -1,6 +1,6 @@
-import { ExercisePattern } from "./exercise-pattern";
+import { ExercisePattern } from './exercise-pattern';
 
 export class FreePattern extends ExercisePattern {
-  name: string = "freepattern";
+  name = 'freepattern';
   text: string;
 }

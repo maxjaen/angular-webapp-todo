@@ -1,4 +1,4 @@
-import { Task } from "../../tasks/model/task";
+import { Task } from '../../tasks/model/task';
 
 export class TimeTask {
   id: number;

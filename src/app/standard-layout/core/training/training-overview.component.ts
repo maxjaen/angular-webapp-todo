@@ -4,37 +4,42 @@ import {
   ViewChild,
   ElementRef,
   HostListener,
-} from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Exercise } from "../exercise/model/exercise";
-import { Training } from "./model/training";
-import { ExerciseService } from "../../shared/services/core/exercise.service";
-import { TrainingService } from "../../shared/services/core/training.service";
-import { MatDatepickerInputEvent, MatSnackBar } from "@angular/material";
-import { WeightPattern } from "../exercise/model/pattern/weight-pattern";
-import { ConditionalPattern } from "../exercise/model/pattern/conditional-pattern";
-import { CountablePattern } from "../exercise/model/pattern/countable-pattern";
-import { ConditionalPattern2d } from "../exercise/model/pattern/conditional-pattern2d";
-import { FreePattern } from "../exercise/model/pattern/free-pattern";
-import { Title } from "@angular/platform-browser";
-import { Router } from "@angular/router";
-import { UtilityService } from "../../shared/services/utils/utility.service";
-import { KeyService } from "../../shared/services/utils/key.service";
+} from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Exercise } from '../exercise/model/exercise';
+import { Training } from './model/training';
+import { ExerciseService } from '../../shared/services/core/exercise.service';
+import { TrainingService } from '../../shared/services/core/training.service';
+import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
+import { WeightPattern } from '../exercise/model/pattern/weight-pattern';
+import { ConditionalPattern } from '../exercise/model/pattern/conditional-pattern';
+import { CountablePattern } from '../exercise/model/pattern/countable-pattern';
+import { ConditionalPattern2d } from '../exercise/model/pattern/conditional-pattern2d';
+import { FreePattern } from '../exercise/model/pattern/free-pattern';
+import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { UtilityService } from '../../shared/services/utils/utility.service';
+import { KeyService } from '../../shared/services/utils/key.service';
 
 @Component({
-  selector: "app-training-overview",
-  templateUrl: "./training-overview.component.html",
-  styleUrls: ["./training-overview.component.scss"],
+  selector: 'app-training-overview',
+  templateUrl: './training-overview.component.html',
+  styleUrls: ['./training-overview.component.scss'],
 })
 export class TrainingOverViewComponent implements OnInit {
-  displayedTrainings: number = 10;
-  sessionMode = ["Normal Session", "Time Session"];
+  @ViewChild('overviewtraining')
+  overviewtraining: ElementRef;
+  @ViewChild('createtraining')
+  createtraining: ElementRef;
+
+  displayedTrainings = 10;
+  sessionMode = ['Normal Session', 'Time Session'];
   selectedMode: string;
 
   trainings: Training[];
   trainingsDate: Date = new Date();
   training: Training;
-  trainingDescription: string = "";
+  trainingDescription = '';
 
   exercises: Exercise[];
   exercisesToInsert: Exercise[] = [];
@@ -51,7 +56,7 @@ export class TrainingOverViewComponent implements OnInit {
     private snackBarService: MatSnackBar,
     private routerService: Router
   ) {
-    this.tabTitleService.setTitle(this.keyService.getString("t1"));
+    this.tabTitleService.setTitle(this.keyService.getString('t1'));
   }
 
   ngOnInit() {
@@ -65,7 +70,7 @@ export class TrainingOverViewComponent implements OnInit {
    * ===================================================================================
    */
 
-  @HostListener("window:beforeunload")
+  @HostListener('window:beforeunload')
   onBeforeUnload() {
     return false;
   }
@@ -87,7 +92,7 @@ export class TrainingOverViewComponent implements OnInit {
   // Returns true, if it's the same exercise name, otherwise false
   compareExercisetoElementBefore(exercise: Exercise, index: number): boolean {
     if (index > 0) {
-      if (this.exercisesToInsert[index - 1].name == exercise.name) {
+      if (this.exercisesToInsert[index - 1].name === exercise.name) {
         return true;
       }
     }
@@ -117,7 +122,7 @@ export class TrainingOverViewComponent implements OnInit {
 
   // Routes to url with detail view of of a training
   viewTraining(training: Training) {
-    this.routerService.navigate(["/training/" + training.id]);
+    this.routerService.navigate(['/training/' + training.id]);
   }
 
   // Creates new training data based on choosen exercises
@@ -130,7 +135,7 @@ export class TrainingOverViewComponent implements OnInit {
       description: this.trainingDescription,
     };
 
-    this.trainingDescription = "";
+    this.trainingDescription = '';
 
     this.formGroups.forEach((formGroup) => {
       this.training.exercices.push(formGroup.getRawValue());
@@ -141,7 +146,7 @@ export class TrainingOverViewComponent implements OnInit {
     });
 
     this.trainingService.postTraining(this.training).subscribe(() => {
-      this.openSnackBar(this.keyService.getString("t2"), null);
+      this.openSnackBar(this.keyService.getString('t2'), null);
       this.getTrainingsFromService();
       this.resetForm();
     });
@@ -150,13 +155,13 @@ export class TrainingOverViewComponent implements OnInit {
   // Creates a exercise string that can be displayed on the website
   // Returns view string
   createExerciseString(exercise: Exercise): string {
-    let stringArray: string[] = Object.getOwnPropertyNames(exercise).filter(
-      (e) => e != "name" && e != "category"
+    const stringArray: string[] = Object.getOwnPropertyNames(exercise).filter(
+      (e) => e !== 'name' && e !== 'category'
     );
-    let tempString = "Exercise ";
+    let tempString = 'Exercise ';
 
     stringArray.forEach((element, index) => {
-      const hasExactlyOneElement = stringArray.length == 1;
+      const hasExactlyOneElement = stringArray.length === 1;
       const isFirstElement = index === 0;
       const isLastElement = index === stringArray.length - 1;
 
@@ -193,29 +198,29 @@ export class TrainingOverViewComponent implements OnInit {
   // Creates human readable String from date object
   // Returns date as string
   showDatestring(date: Date): string {
-    let tempDate: Date = new Date(date);
+    const tempDate: Date = new Date(date);
     const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     };
-    return tempDate.toLocaleDateString("de-DE", options);
+    return tempDate.toLocaleDateString('de-DE', options);
   }
 
   isRunningOrBicycle(training: Training): boolean {
-    return training.exercices.length == 1;
+    return training.exercices.length === 1;
   }
 
   isGym(training: Training): boolean {
     if (
       training.exercices.find(
         (e) =>
-          e.name == "Bench Press" ||
-          e.name == "Rowing Sitting At The Cable Pull" ||
-          e.name == "Lat Pulldown Crossover" ||
-          e.name == "Butterfly" ||
-          e.name == "Box Climping"
+          e.name === 'Bench Press' ||
+          e.name === 'Rowing Sitting At The Cable Pull' ||
+          e.name === 'Lat Pulldown Crossover' ||
+          e.name === 'Butterfly' ||
+          e.name === 'Box Climping'
       )
     ) {
       return true;
@@ -226,21 +231,21 @@ export class TrainingOverViewComponent implements OnInit {
 
   getStatusColorValue(training: Training): string {
     if (this.isRunningOrBicycle(training)) {
-      return this.keyService.getColor("red");
+      return this.keyService.getColor('red');
     }
 
     if (this.isGym(training)) {
-      return this.keyService.getColor("blue");
+      return this.keyService.getColor('blue');
     }
 
-    return this.keyService.getColor("darkgray");
+    return this.keyService.getColor('darkgray');
   }
 
   showMoreTrainings() {
     if (this.moreTrainingsThanDisplayed()) {
       this.displayedTrainings += 10;
     } else {
-      console.log(this.keyService.getString("a21"));
+      console.log(this.keyService.getString('a21'));
     }
   }
 
@@ -248,7 +253,7 @@ export class TrainingOverViewComponent implements OnInit {
     if (this.displayedTrainings > 10) {
       this.displayedTrainings -= 10;
     } else {
-      console.log(this.keyService.getString("a22"));
+      console.log(this.keyService.getString('a22'));
     }
   }
 
@@ -267,35 +272,35 @@ export class TrainingOverViewComponent implements OnInit {
   toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean }) {
     this.setCheckBoxFromExerciseName(exercise.name, true);
 
-    let pattern: ConditionalPattern = {
-      name: "conditionalpattern1d",
+    const pattern: ConditionalPattern = {
+      name: 'conditionalpattern1d',
       records: 0,
       repetitions: 0,
-      unit: "s",
+      unit: 's',
     };
 
-    if (this.selectedMode == "Time Session") {
+    if (this.selectedMode === 'Time Session') {
       exercise.pattern = pattern;
-      exercise.category = "conditionalpattern1d";
+      exercise.category = 'conditionalpattern1d';
     }
 
     if (event.checked === true) {
       this.exercisesToInsert.push(exercise);
       this.createFormGroup(exercise);
     } else {
-      while (this.exercisesToInsert.find((e) => e.name == exercise.name)) {
+      while (this.exercisesToInsert.find((e) => e.name === exercise.name)) {
         this.utilityService.removeElementFromArray(
-          this.exercisesToInsert.filter((e) => e.name == exercise.name)[0],
+          this.exercisesToInsert.filter((e) => e.name === exercise.name)[0],
           this.exercisesToInsert
         );
       }
 
       while (
-        this.formGroups.find((e) => e.getRawValue().name == exercise.name)
+        this.formGroups.find((e) => e.getRawValue().name === exercise.name)
       ) {
         this.utilityService.removeElementFromArray(
           this.formGroups.filter(
-            (e) => e.getRawValue().name == exercise.name
+            (e) => e.getRawValue().name === exercise.name
           )[0],
           this.formGroups
         );
@@ -306,7 +311,7 @@ export class TrainingOverViewComponent implements OnInit {
   // Set checked poperty for each toogled checkbox
   setCheckBoxFromExerciseName(exerciseName: string, checked: boolean) {
     this.exercises
-      .filter((exercise) => exerciseName == exercise.name)
+      .filter((exercise) => exerciseName === exercise.name)
       .forEach((exercise) => {
         exercise.checked = checked;
       });
@@ -328,12 +333,12 @@ export class TrainingOverViewComponent implements OnInit {
   createFormGroup(exercise: Exercise) {
     this.formGroupToInsert = new FormGroup({});
 
-    let patternArray: string[] = this.getPatternKeys(exercise);
+    const patternArray: string[] = this.retrievePatternKeys(exercise);
 
     patternArray.forEach((key) => {
-      if (key == "name") {
+      if (key === 'name') {
         this.formGroupToInsert.addControl(key, new FormControl(exercise.name));
-      } else if (key.includes("unit")) {
+      } else if (key.includes('unit')) {
         this.formGroupToInsert.addControl(
           key,
           new FormControl(exercise.pattern[key])
@@ -347,7 +352,7 @@ export class TrainingOverViewComponent implements OnInit {
     });
 
     this.formGroupToInsert.addControl(
-      "category",
+      'category',
       new FormControl(exercise.category)
     );
 
@@ -358,7 +363,8 @@ export class TrainingOverViewComponent implements OnInit {
   removeElementFromForm(exercise: Exercise, elementPosition: number) {
     if (
       // only toogle exercise checkbox, when exercise only once inserted
-      this.exercisesToInsert.filter((e) => e.name == exercise.name).length == 1
+      this.exercisesToInsert.filter((e) => e.name === exercise.name).length ===
+      1
     ) {
       this.setCheckBoxFromExerciseName(exercise.name, false);
     }
@@ -367,7 +373,7 @@ export class TrainingOverViewComponent implements OnInit {
       if (
         // Remove last element, when more than one element with same name in a row
         elementPosition < this.exercisesToInsert.length - 1 &&
-        this.exercisesToInsert[elementPosition + 1].name == exercise.name
+        this.exercisesToInsert[elementPosition + 1].name === exercise.name
       ) {
         elementPosition++;
       } else {
@@ -385,8 +391,9 @@ export class TrainingOverViewComponent implements OnInit {
     );
   }
 
-  // Checks if a form is valid
-  // Returns true, if the form is valid, otherwise false
+  /**
+   * Returns true, if the current form is valid, otherwise false
+   */
   formIsValid(): boolean {
     if (this.formGroups.length <= 0 || this.formGroups.find((e) => e.invalid)) {
       return false;
@@ -397,8 +404,9 @@ export class TrainingOverViewComponent implements OnInit {
     return true;
   }
 
-  // Reset forms and choosen exercises
-  // Triggered by reset button
+  /**
+   * Reset forms and choosen exercises, triggered by reset button
+   */
   resetForm() {
     this.exercisesToInsert = [];
     this.formGroupToInsert = null;
@@ -415,35 +423,38 @@ export class TrainingOverViewComponent implements OnInit {
    * ===================================================================================
    */
 
-  // Get pattern keys from exercise pattern
-  // Returns string array with keys of a specific pattern
-  getPatternKeys(exercise: Exercise) {
-    if (exercise.category == "conditionalpattern1d") {
-      let pattern: ConditionalPattern = {
-        name: "conditionalpattern1d",
+  /**
+   * Retrieve pattern keys string array from input exercise
+   * @param exercise to get keys from
+   */
+  retrievePatternKeys(exercise: Exercise): string[] {
+    // TODO switch case
+    if (exercise.category === 'conditionalpattern1d') {
+      const pattern: ConditionalPattern = {
+        name: 'conditionalpattern1d',
         records: 0,
         repetitions: 0,
-        unit: "s",
+        unit: 's',
       };
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern);
     }
 
-    if (exercise.category == "conditionalpattern2d") {
-      let pattern: ConditionalPattern2d = {
-        name: "conditionalpattern2d",
+    if (exercise.category === 'conditionalpattern2d') {
+      const pattern: ConditionalPattern2d = {
+        name: 'conditionalpattern2d',
         period: 0,
         speed: 0,
-        unitperiod: "min",
-        unitspeed: "km/h",
+        unitperiod: 'min',
+        unitspeed: 'km/h',
       };
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern);
     }
 
-    if (exercise.category == "countablepattern") {
-      let pattern: CountablePattern = {
-        name: "countablepattern",
+    if (exercise.category === 'countablepattern') {
+      const pattern: CountablePattern = {
+        name: 'countablepattern',
         records: 0,
         repetitions: 0,
       };
@@ -451,22 +462,22 @@ export class TrainingOverViewComponent implements OnInit {
       return Object.getOwnPropertyNames(pattern);
     }
 
-    if (exercise.category == "weightpattern") {
-      let pattern: WeightPattern = {
-        name: "weightpattern",
+    if (exercise.category === 'weightpattern') {
+      const pattern: WeightPattern = {
+        name: 'weightpattern',
         records: 0,
         repetitions: 0,
         weight: 0,
-        unit: "kg",
+        unit: 'kg',
       };
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern);
     }
 
-    if (exercise.category == "freepattern") {
-      let pattern: FreePattern = {
-        name: "freepattern",
-        text: "",
+    if (exercise.category === 'freepattern') {
+      const pattern: FreePattern = {
+        name: 'freepattern',
+        text: '',
       };
       exercise.pattern = pattern;
       return Object.getOwnPropertyNames(pattern);
@@ -476,7 +487,7 @@ export class TrainingOverViewComponent implements OnInit {
   // Checks if exercise has a specific training pattern
   // Return true if is has the pattern, otherwise false
   hasPattern(exercise: Exercise, pattern: string): boolean {
-    if (exercise.pattern.name == pattern) {
+    if (exercise.pattern.name === pattern) {
       return true;
     }
 
@@ -510,23 +521,18 @@ export class TrainingOverViewComponent implements OnInit {
    * ===================================================================================
    */
 
-  @ViewChild("overviewtraining")
-  overviewtraining: ElementRef;
-  @ViewChild("createtraining")
-  createtraining: ElementRef;
-
   scroll(element: string) {
     switch (element) {
-      case "overviewtraining":
+      case 'overviewtraining':
         this.overviewtraining.nativeElement.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
+          behavior: 'smooth',
+          block: 'start',
         });
         break;
-      case "createtraining":
+      case 'createtraining':
         this.createtraining.nativeElement.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
+          behavior: 'smooth',
+          block: 'start',
         });
         break;
     }

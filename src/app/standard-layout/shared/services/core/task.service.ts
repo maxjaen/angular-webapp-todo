@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { Task } from "../../../core/tasks/model/task";
-import { UtilityService } from "../utils/utility.service";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Task } from '../../../core/tasks/model/task';
+import { UtilityService } from '../utils/utility.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class TaskService {
-  url = "http://localhost:3000/tasks";
+  url = 'http://localhost:3000/tasks';
 
   constructor(
     private utilityService: UtilityService,
@@ -24,7 +24,7 @@ export class TaskService {
   }
 
   public getTaskByID(id: number): Observable<Task[]> {
-    return this.httpClient.get<Array<Task>>(this.url + "/" + id);
+    return this.httpClient.get<Array<Task>>(this.url + '/' + id);
   }
 
   public postTask(task: Task): Observable<Task> {
@@ -32,11 +32,11 @@ export class TaskService {
   }
 
   public putTask(task: Task): Observable<Task> {
-    return this.httpClient.put<Task>(this.url + "/" + task.id, task);
+    return this.httpClient.put<Task>(this.url + '/' + task.id, task);
   }
 
   public deleteTask(taskID: number): Observable<Task> {
-    return this.httpClient.delete<Task>(this.url + "/" + taskID);
+    return this.httpClient.delete<Task>(this.url + '/' + taskID);
   }
 
   // ===================================================================================

@@ -8,17 +8,15 @@ import { BasicLayoutModule } from './basic-layout/basic-layout.module';
 import { StandardLayoutModule } from './standard-layout/standard-layout.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     BasicLayoutModule,
-    StandardLayoutModule     
+    StandardLayoutModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,18 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { Exercise } from "../exercise/model/exercise";
-import { Training } from "../training/model/training";
-import { TrainingService } from "../../shared/services/core/training.service";
-import { SoundService } from "../../shared/services/utils/sound.service";
-import { UtilityService } from "../../shared/services/utils/utility.service";
-import { MatSnackBar } from "@angular/material";
-import { Title } from "@angular/platform-browser";
-import { KeyService } from "../../shared/services/utils/key.service";
-import { SessionState } from "../../shared/model/Enums";
+import { Component, OnInit } from '@angular/core';
+import { Exercise } from '../exercise/model/exercise';
+import { Training } from '../training/model/training';
+import { TrainingService } from '../../shared/services/core/training.service';
+import { SoundService } from '../../shared/services/utils/sound.service';
+import { UtilityService } from '../../shared/services/utils/utility.service';
+import { MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
+import { KeyService } from '../../shared/services/utils/key.service';
+import { SessionState } from '../../shared/model/Enums';
 
 @Component({
-  selector: "app-session",
-  templateUrl: "./session.component.html",
-  styleUrls: ["./session.component.scss"],
+  selector: 'app-session',
+  templateUrl: './session.component.html',
+  styleUrls: ['./session.component.scss'],
 })
 export class SessionComponent implements OnInit {
   timedTrainings: Training[];
@@ -41,7 +41,7 @@ export class SessionComponent implements OnInit {
   ngOnInit(): void {
     this.getTrainingsFromService();
 
-    this.tabTitleService.setTitle(this.keyService.getString("wo1"));
+    this.tabTitleService.setTitle(this.keyService.getString('wo1'));
   }
 
   // ===================================================================================
@@ -65,7 +65,7 @@ export class SessionComponent implements OnInit {
       // Show the last x trainings
       this.timedTrainings = trainings.filter((training) =>
         training.exercices.every(
-          (exercise) => exercise.category == "conditionalpattern1d"
+          (exercise) => exercise.category === 'conditionalpattern1d'
         )
       );
     });
@@ -80,11 +80,11 @@ export class SessionComponent implements OnInit {
    */
   public inListOfNextSteps(exercise: Exercise): boolean {
     return (
-      this.selectedTimedTraining.exercices.indexOf(exercise) ==
+      this.selectedTimedTraining.exercices.indexOf(exercise) ===
         this.currentExerciseIndex + 1 ||
-      this.selectedTimedTraining.exercices.indexOf(exercise) ==
+      this.selectedTimedTraining.exercices.indexOf(exercise) ===
         this.currentExerciseIndex + 2 ||
-      this.selectedTimedTraining.exercices.indexOf(exercise) ==
+      this.selectedTimedTraining.exercices.indexOf(exercise) ===
         this.currentExerciseIndex + 3
     );
   }
@@ -98,19 +98,19 @@ export class SessionComponent implements OnInit {
   }
 
   /*
-   * Pause your Workout Session
+   * Break your Workout Session
    */
   public stopWorkout() {
     switch (this.state) {
       case SessionState.Initial:
-        this.openSnackBar(this.keyService.getString("se21"), null);
+        this.openSnackBar(this.keyService.getString('se21'), null);
         return;
       case SessionState.Started:
-        this.openSnackBar(this.keyService.getString("se33"), null);
+        this.openSnackBar(this.keyService.getString('se33'), null);
         this.state = SessionState.Stopped;
         break;
       case SessionState.Stopped:
-        this.openSnackBar(this.keyService.getString("se23"), null);
+        this.openSnackBar(this.keyService.getString('se23'), null);
         return;
       default:
         throw new Error(`State ${this.state} not implemented yet.`);
@@ -125,11 +125,11 @@ export class SessionComponent implements OnInit {
   public resetWorkout(): void {
     switch (this.state) {
       case SessionState.Initial:
-        this.openSnackBar(this.keyService.getString("se21"), null);
+        this.openSnackBar(this.keyService.getString('se21'), null);
         return;
       case SessionState.Started:
       case SessionState.Stopped:
-        this.openSnackBar(this.keyService.getString("se34"), null);
+        this.openSnackBar(this.keyService.getString('se34'), null);
         this.state = SessionState.Initial;
         break;
       default:
@@ -146,20 +146,20 @@ export class SessionComponent implements OnInit {
    */
   public doWorkout(elementIndex: number): void {
     if (!this.selectedTimedTraining) {
-      this.openSnackBar(this.keyService.getString("t6"), null);
+      this.openSnackBar(this.keyService.getString('t6'), null);
       return;
     }
 
     switch (this.state) {
       case SessionState.Initial:
-        this.openSnackBar(this.keyService.getString("se31"), null);
+        this.openSnackBar(this.keyService.getString('se31'), null);
         this.state = SessionState.Started;
         break;
       case SessionState.Started:
-        this.openSnackBar(this.keyService.getString("se21"), null);
+        this.openSnackBar(this.keyService.getString('se21'), null);
         return;
       case SessionState.Stopped:
-        this.openSnackBar(this.keyService.getString("se24"), null);
+        this.openSnackBar(this.keyService.getString('se24'), null);
         return;
       default:
         throw new Error(`State ${this.state} not implemented yet.`);
@@ -168,7 +168,7 @@ export class SessionComponent implements OnInit {
     // set general exercise countdown
     this.generalExerciseCountdown = this.selectedTimedTraining.exercices
       .slice(elementIndex, this.selectedTimedTraining.exercices.length)
-      .map((exercise) => +exercise["repetitions"])
+      .map((exercise) => +exercise['repetitions'])
       .reduce((sum, current) => sum + current, 0);
 
     this.startWorkout(elementIndex);
@@ -180,13 +180,13 @@ export class SessionComponent implements OnInit {
   public continueWorkout(): void {
     switch (this.state) {
       case SessionState.Initial:
-        this.openSnackBar(this.keyService.getString("se21"), null);
+        this.openSnackBar(this.keyService.getString('se21'), null);
         return;
       case SessionState.Started:
-        this.openSnackBar(this.keyService.getString("se22"), null);
+        this.openSnackBar(this.keyService.getString('se22'), null);
         return;
       case SessionState.Stopped:
-        this.openSnackBar(this.keyService.getString("se32"), null);
+        this.openSnackBar(this.keyService.getString('se32'), null);
         this.state = SessionState.Started;
         break;
       default:
@@ -200,7 +200,7 @@ export class SessionComponent implements OnInit {
     // Update current exercise timespan with current exercise countdown
     // Continue exactly where you stopped in an exercise
     this.selectedTimedTraining.exercices[elementIndex][
-      "repetitions"
+      'repetitions'
     ] = this.currentExerciseCountdown;
 
     this.startWorkout(elementIndex);
@@ -214,21 +214,21 @@ export class SessionComponent implements OnInit {
     this.getReadyCountdown = 5;
 
     (async () => {
-      this.soundService.playSound("snapchat");
+      this.soundService.playSound('snapchat');
       await this.delay(2000);
 
       let endSound = true;
 
       this.currentExerciseIndex = i;
       this.currentExercise = this.selectedTimedTraining.exercices[i];
-      this.workoutCountdown = this.currentExercise["repetitions"];
-      this.currentExerciseCountdown = this.currentExercise["repetitions"];
+      this.workoutCountdown = this.currentExercise['repetitions'];
+      this.currentExerciseCountdown = this.currentExercise['repetitions'];
 
       this.exerciseIntervalId = window.setInterval(() => {
         this.workoutCountdown = this.workoutCountdown - 1;
 
-        if (this.workoutCountdown == 1 && endSound) {
-          this.soundService.playSound("iphone");
+        if (this.workoutCountdown === 1 && endSound) {
+          this.soundService.playSound('iphone');
           endSound = false;
         }
         if (this.workoutCountdown >= 0) {

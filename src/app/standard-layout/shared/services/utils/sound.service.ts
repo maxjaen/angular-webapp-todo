@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-const MP3_DIR: string = "assets/mp3/";
-const MP3_EXTENSION: string = ".mp3";
+const MP3_DIR = 'assets/mp3/';
+const MP3_EXTENSION = '.mp3';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class SoundService {
   constructor() {}

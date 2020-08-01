@@ -1,15 +1,15 @@
-import { Component, OnInit } from "@angular/core";
-import { SettingsService } from "../../shared/services/core/settings.service";
-import { Settings } from "../settings/model/settings";
-import { StartPageSetting } from "../settings/model/start-page-setting";
-import { Router } from "@angular/router";
-import { TaskService } from "../../shared/services/core/task.service";
-import { TimeTaskService } from "../../shared/services/core/timetask.service";
-import { TrainingService } from "../../shared/services/core/training.service";
-import { WeightService } from "../../shared/services/core/weight.service";
-import { Title } from "@angular/platform-browser";
-import { TimeService } from "../../shared/services/utils/time.service";
-import { KeyService } from "../../shared/services/utils/key.service";
+import { Component, OnInit } from '@angular/core';
+import { SettingsService } from '../../shared/services/core/settings.service';
+import { Settings } from '../settings/model/settings';
+import { StartPageSetting } from '../settings/model/start-page-setting';
+import { Router } from '@angular/router';
+import { TaskService } from '../../shared/services/core/task.service';
+import { TimeTaskService } from '../../shared/services/core/timetask.service';
+import { TrainingService } from '../../shared/services/core/training.service';
+import { WeightService } from '../../shared/services/core/weight.service';
+import { Title } from '@angular/platform-browser';
+import { TimeService } from '../../shared/services/utils/time.service';
+import { KeyService } from '../../shared/services/utils/key.service';
 
 interface KeyValuePair {
   key: string;
@@ -17,15 +17,15 @@ interface KeyValuePair {
 }
 
 @Component({
-  selector: "app-dashboard.",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.scss"],
+  selector: 'app-dashboard.',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   settings: Settings[] = [];
 
   placeHolderArray: KeyValuePair[] = [];
-  ignoreModules: string[] = ["settings", "training", "exercise"];
+  ignoreModules: string[] = ['settings', 'training', 'exercise'];
 
   constructor(
     public settingsService: SettingsService,
@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
     private routerService: Router,
     private keyService: KeyService
   ) {
-    this.tabTitleService.setTitle(this.keyService.getString("d1"));
+    this.tabTitleService.setTitle(this.keyService.getString('d1'));
   }
 
   ngOnInit(): void {
@@ -50,7 +50,7 @@ export class DashboardComponent implements OnInit {
   }
 
   goToUrl(component: StartPageSetting) {
-    this.routerService.navigate(["/" + component.name]);
+    this.routerService.navigate(['/' + component.name]);
   }
 
   // Get all settings from service
@@ -62,8 +62,8 @@ export class DashboardComponent implements OnInit {
 
   getTaskPlaceholderFromService() {
     this.taskService.getAllTasks().subscribe((tasks) => {
-      let element: KeyValuePair = {
-        key: "tasks",
+      const element: KeyValuePair = {
+        key: 'tasks',
         value: tasks.filter((task) => task.pinned).length.toString(),
       };
 
@@ -78,13 +78,13 @@ export class DashboardComponent implements OnInit {
       if (timetasks.length > 0) {
         tempValue = timetasks
           .filter((e) => {
-            let startdate: Date = new Date(e.startdate);
-            let today: Date = new Date();
+            const startdate: Date = new Date(e.startdate);
+            const today: Date = new Date();
 
             if (
-              startdate.getDate() == today.getDate() &&
-              startdate.getMonth() == today.getMonth() &&
-              startdate.getFullYear() == today.getFullYear()
+              startdate.getDate() === today.getDate() &&
+              startdate.getMonth() === today.getMonth() &&
+              startdate.getFullYear() === today.getFullYear()
             ) {
               return true;
             }
@@ -99,8 +99,8 @@ export class DashboardComponent implements OnInit {
           .reduce((a, b) => a + b, 0);
       }
 
-      let element: KeyValuePair = {
-        key: "timetask",
+      const element: KeyValuePair = {
+        key: 'timetask',
         value: this.timeService
           .formatMillisecondsToString(tempValue)
           .toString(),
@@ -113,19 +113,19 @@ export class DashboardComponent implements OnInit {
   getSessionPlaceholderFromService() {
     this.trainingService.getAllTrainings().subscribe((trainings) => {
       if (trainings.length > 0) {
-        let timetrainings = trainings.filter((training) =>
+        const timetrainings = trainings.filter((training) =>
           training.exercices.every(
-            (exercise) => exercise.category == "conditionalpattern1d"
+            (exercise) => exercise.category === 'conditionalpattern1d'
           )
         );
 
-        let training = timetrainings[timetrainings.length - 1];
+        const training = timetrainings[timetrainings.length - 1];
 
-        let element: KeyValuePair = {
-          key: "session",
+        const element: KeyValuePair = {
+          key: 'session',
           value: (
             training.exercices
-              .map((exercise) => +exercise["repetitions"])
+              .map((exercise) => +exercise['repetitions'])
               .reduce((sum, current) => sum + current, 0) +
             5 * training.exercices.length
           ).toString(),
@@ -138,8 +138,8 @@ export class DashboardComponent implements OnInit {
   getWeightPlaceholderFromService() {
     this.weightService.getAllWeights().subscribe((weights) => {
       if (weights.length > 0) {
-        let element: KeyValuePair = {
-          key: "weight",
+        const element: KeyValuePair = {
+          key: 'weight',
           value: weights[weights.length - 1].value.toString(),
         };
 
@@ -149,11 +149,11 @@ export class DashboardComponent implements OnInit {
   }
 
   getPlaceHolderValueFromKey(key: string) {
-    return this.placeHolderArray.filter((e) => e.key == key)[0].value;
+    return this.placeHolderArray.filter((e) => e.key === key)[0].value;
   }
 
   hasPlaceHolder(key: string) {
-    return this.placeHolderArray.filter((e) => e.key == key)[0] != undefined;
+    return this.placeHolderArray.filter((e) => e.key === key)[0] !== undefined;
   }
 
   isIgnoredModule(str: string) {

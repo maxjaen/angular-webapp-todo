@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
-import { Training } from "../../../core/training/model/training";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { Exercise } from "../../../core/exercise/model/exercise";
-import { UtilityService } from "../utils/utility.service";
+import { Injectable } from '@angular/core';
+import { Training } from '../../../core/training/model/training';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Exercise } from '../../../core/exercise/model/exercise';
+import { UtilityService } from '../utils/utility.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class TrainingService {
-  url = "http://localhost:3000/trainings";
+  url = 'http://localhost:3000/trainings';
 
   constructor(
     private utilityService: UtilityService,
@@ -25,7 +25,7 @@ export class TrainingService {
   }
 
   public getTrainingByID(id: number): Observable<Training> {
-    return this.httpClient.get<Training>(this.url + "/" + id);
+    return this.httpClient.get<Training>(this.url + '/' + id);
   }
 
   public postTraining(training: Training): Observable<Training> {
@@ -33,7 +33,7 @@ export class TrainingService {
   }
 
   public deleteTrainingByID(id: number): Observable<Training> {
-    return this.httpClient.delete<Training>(this.url + "/" + id);
+    return this.httpClient.delete<Training>(this.url + '/' + id);
   }
 
   // ==================================================
@@ -62,7 +62,7 @@ export class TrainingService {
     exercise: Exercise
   ) {
     return this.getSortedTrainings(trainings).filter(
-      (e) => e.exercices.filter((f) => f.name == exercise.name).length > 0
+      (e) => e.exercices.filter((f) => f.name === exercise.name).length > 0
     );
   }
 

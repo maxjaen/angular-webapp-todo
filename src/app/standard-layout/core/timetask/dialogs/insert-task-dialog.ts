@@ -1,14 +1,14 @@
-import { Component, Inject } from "@angular/core";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
-import { Task } from "../../tasks/model/task";
-import { TaskService } from "../../../shared/services/core/task.service";
-import { TimeTask } from "../model/timetask";
-import { TimeService } from "src/app/standard-layout/shared/services/utils/time.service";
-import { UtilityService } from "src/app/standard-layout/shared/services/utils/utility.service";
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Task } from '../../tasks/model/task';
+import { TaskService } from '../../../shared/services/core/task.service';
+import { TimeTask } from '../model/timetask';
+import { TimeService } from 'src/app/standard-layout/shared/services/utils/time.service';
+import { UtilityService } from 'src/app/standard-layout/shared/services/utils/utility.service';
 
 @Component({
-  selector: "insert-task-dialog",
-  templateUrl: "insert-task-dialog.html",
+  selector: 'insert-task-dialog',
+  templateUrl: 'insert-task-dialog.html',
 })
 export class InsertTaskDialogTime {
   tasks: Task[];
@@ -30,8 +30,8 @@ export class InsertTaskDialogTime {
           )
         );
 
-      const shortDescr: string = "Not an existing task";
-      const longDescr: string = "";
+      const shortDescr = 'Not an existing task';
+      const longDescr = '';
       const date = this.timeService.createNewDate();
 
       tasks.push({

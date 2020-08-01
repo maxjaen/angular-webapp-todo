@@ -1,4 +1,4 @@
-import { Exercise } from "../../exercise/model/exercise";
+import { Exercise } from '../../exercise/model/exercise';
 
 export class Training {
   id: number;

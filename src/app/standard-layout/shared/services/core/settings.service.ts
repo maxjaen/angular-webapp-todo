@@ -1,13 +1,13 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Settings } from "../../../core/settings/model/settings";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Settings } from '../../../core/settings/model/settings';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class SettingsService {
-  url = "http://localhost:3000/settings";
+  url = 'http://localhost:3000/settings';
 
   constructor(private httpClient: HttpClient) {}
 
@@ -21,7 +21,7 @@ export class SettingsService {
 
   public putSettings(settings: Settings): Observable<Settings> {
     return this.httpClient.put<Settings>(
-      this.url + "/" + settings.id,
+      this.url + '/' + settings.id,
       settings
     );
   }
@@ -34,14 +34,14 @@ export class SettingsService {
    * Get all startpage headers
    */
   public getStartPageHeaders(settings: Settings[]) {
-    return settings[0]["startpage"];
+    return settings[0]['startpage'];
   }
 
   /*
    * Get all Settings headers
    */
   public getSettingsHeaders(settings: Settings[]) {
-    return settings[0]["settingsmenu"];
+    return settings[0]['settingsmenu'];
   }
 
   /*
@@ -54,7 +54,7 @@ export class SettingsService {
       array = [...array, ...header.settings];
     });
 
-    return array.filter((settingsItem) => settingsItem.displaytext == key)[0]
+    return array.filter((settingsItem) => settingsItem.displaytext === key)[0]
       .value;
   }
 }

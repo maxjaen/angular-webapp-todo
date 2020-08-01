@@ -1,15 +1,15 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
-import { Exercise } from "../../model/exercise";
-import { TrainingService } from "../../../../shared/services/core/training.service";
-import { Training } from "../../../training/model/training";
-import { PatternAnalysisService } from "../../../../shared/services/utils/pattern-analysis.service";
-import { NameAndNumberPair } from "src/app/standard-layout/shared/model/GraphData";
-import { GraphDataService } from "src/app/standard-layout/shared/services/utils/graph.service";
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Exercise } from '../../model/exercise';
+import { TrainingService } from '../../../../shared/services/core/training.service';
+import { Training } from '../../../training/model/training';
+import { PatternAnalysisService } from '../../../../shared/services/utils/pattern-analysis.service';
+import { NameAndNumberPair } from 'src/app/standard-layout/shared/model/GraphData';
+import { GraphDataService } from 'src/app/standard-layout/shared/services/utils/graph.service';
 
 @Component({
-  selector: "app-exercise-detailview",
-  templateUrl: "./exercise-detailview.component.html",
-  styleUrls: ["./exercise-detailview.component.scss"],
+  selector: 'app-exercise-detailview',
+  templateUrl: './exercise-detailview.component.html',
+  styleUrls: ['./exercise-detailview.component.scss'],
 })
 export class ExerciseDetailviewComponent implements OnChanges {
   @Input() exercise: Exercise;
@@ -49,7 +49,7 @@ export class ExerciseDetailviewComponent implements OnChanges {
 
   private calculateGraphDataPercent() {
     const graphData = this.graphData;
-    let graphDataPercent = [];
+    const graphDataPercent = [];
 
     graphData.forEach((currentElem, i) => {
       const lastElem = graphData[i + 1];
@@ -57,7 +57,7 @@ export class ExerciseDetailviewComponent implements OnChanges {
 
       if (currentElem !== endOfArray) {
         const entry: NameAndNumberPair = {
-          name: "From " + lastElem.name + " to " + currentElem.name,
+          name: 'From ' + lastElem.name + ' to ' + currentElem.name,
           value:
             ((+currentElem.value - +lastElem.value) / +currentElem.value) * 100,
         };

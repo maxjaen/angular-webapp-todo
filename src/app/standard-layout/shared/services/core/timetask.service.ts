@@ -1,16 +1,16 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { TimeTask } from "../../../core/timetask/model/timetask";
-import { UtilityService } from "src/app/standard-layout/shared/services/utils/utility.service";
-import { TimeService } from "src/app/standard-layout/shared/services/utils/time.service";
-import { NameAndNumberPair } from "src/app/standard-layout/shared/model/GraphData";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { TimeTask } from '../../../core/timetask/model/timetask';
+import { UtilityService } from 'src/app/standard-layout/shared/services/utils/utility.service';
+import { TimeService } from 'src/app/standard-layout/shared/services/utils/time.service';
+import { NameAndNumberPair } from 'src/app/standard-layout/shared/model/GraphData';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class TimeTaskService {
-  url = "http://localhost:3000/timetasks";
+  url = 'http://localhost:3000/timetasks';
 
   constructor(
     private httpClient: HttpClient,
@@ -27,7 +27,7 @@ export class TimeTaskService {
   }
 
   public getTimeElementByID(id: number): Observable<TimeTask[]> {
-    return this.httpClient.get<Array<TimeTask>>(this.url + "/" + id);
+    return this.httpClient.get<Array<TimeTask>>(this.url + '/' + id);
   }
 
   public postTimeElement(zeitElement: TimeTask): Observable<TimeTask> {
@@ -36,13 +36,13 @@ export class TimeTaskService {
 
   public putTimeElement(zeitElement: TimeTask): Observable<TimeTask> {
     return this.httpClient.put<TimeTask>(
-      this.url + "/" + zeitElement.id,
+      this.url + '/' + zeitElement.id,
       zeitElement
     );
   }
 
   public deleteTimeElement(zeitElement: number): Observable<TimeTask> {
-    return this.httpClient.delete<TimeTask>(this.url + "/" + zeitElement);
+    return this.httpClient.delete<TimeTask>(this.url + '/' + zeitElement);
   }
 
   // ==================================================
@@ -68,13 +68,13 @@ export class TimeTaskService {
   public getTodayTimeTasks(data: TimeTask[]): TimeTask[] {
     return data
       .filter((e) => {
-        let startdate: Date = new Date(e.startdate);
-        let now: Date = this.timeService.createNewDate();
+        const startdate: Date = new Date(e.startdate);
+        const now: Date = this.timeService.createNewDate();
 
         return (
-          startdate.getDate() == now.getDate() &&
-          startdate.getMonth() == now.getMonth() &&
-          startdate.getFullYear() == now.getFullYear()
+          startdate.getDate() === now.getDate() &&
+          startdate.getMonth() === now.getMonth() &&
+          startdate.getFullYear() === now.getFullYear()
         );
       })
       .sort((a, b) => this.utilityService.sortNumerical(a.id, b.id));
@@ -93,8 +93,8 @@ export class TimeTaskService {
       )
       .filter(
         (f) =>
-          this.utilityService.objectHasPropertyWithValue(f, "startdate") &&
-          this.utilityService.objectHasPropertyWithValue(f, "enddate")
+          this.utilityService.objectHasPropertyWithValue(f, 'startdate') &&
+          this.utilityService.objectHasPropertyWithValue(f, 'enddate')
       )
       .map(
         (g) => new Date(g.enddate).getTime() - new Date(g.startdate).getTime()
@@ -110,9 +110,9 @@ export class TimeTaskService {
       .filter((e) => this.isValid(e))
       .filter(
         (f) =>
-          this.utilityService.objectHasPropertyWithValue(f, "startdate") &&
-          this.utilityService.objectHasPropertyWithValue(f, "enddate") &&
-          this.timeService.calculateCurrentWeekNumber() ==
+          this.utilityService.objectHasPropertyWithValue(f, 'startdate') &&
+          this.utilityService.objectHasPropertyWithValue(f, 'enddate') &&
+          this.timeService.calculateCurrentWeekNumber() ===
             this.timeService.calculateWeekNumberForDate(new Date(f.startdate))
       )
       .map(
@@ -129,13 +129,13 @@ export class TimeTaskService {
   public getAccumulatedTimeTaskAndSecondsPairs(
     data: TimeTask[]
   ): NameAndNumberPair[] {
-    let array: NameAndNumberPair[] = [];
+    const array: NameAndNumberPair[] = [];
 
     data.forEach((key) => {
-      let element: NameAndNumberPair = {
+      const element: NameAndNumberPair = {
         name: key.shortdescr, // name of timetask as string
         value: data
-          .filter((e) => e.shortdescr == key.shortdescr)
+          .filter((e) => e.shortdescr === key.shortdescr)
           .reduce(
             (a, b) =>
               a +
@@ -143,7 +143,7 @@ export class TimeTaskService {
             0
           ),
       };
-      if (array.filter((e) => e.name == element.name).length == 0) {
+      if (array.filter((e) => e.name === element.name).length === 0) {
         array.push(element);
       }
     });

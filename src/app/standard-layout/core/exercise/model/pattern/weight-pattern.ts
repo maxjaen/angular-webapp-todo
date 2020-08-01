@@ -1,7 +1,7 @@
-import { ExercisePattern } from "./exercise-pattern";
+import { ExercisePattern } from './exercise-pattern';
 
 export class WeightPattern extends ExercisePattern {
-  name: string = "weightpattern";
+  name = 'weightpattern';
   records: number;
   repetitions: number;
   weight: number;

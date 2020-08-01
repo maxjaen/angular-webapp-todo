@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
-import colors from "../../../../../assets/json/colors.json";
-import strings from "../../../../../assets/json/strings.json";
-import shortcuts from "../../../../../assets/json/shortcuts.json";
+import { Injectable } from '@angular/core';
+import colors from '../../../../../assets/json/colors.json';
+import strings from '../../../../../assets/json/strings.json';
+import shortcuts from '../../../../../assets/json/shortcuts.json';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class KeyService {
   constructor() {}
@@ -40,8 +40,8 @@ export class KeyService {
   /*
    * Get key from JSON based on input name of key
    */
-  public getString(string: string): string {
-    return strings[string];
+  public getString(str: string): string {
+    return strings[str];
   }
 
   /*

@@ -1,7 +1,7 @@
-import { ExercisePattern } from "./exercise-pattern";
+import { ExercisePattern } from './exercise-pattern';
 
 export class CountablePattern extends ExercisePattern {
-  name: string = "conditionalpattern";
+  name = 'conditionalpattern';
   records: number;
   repetitions: number;
 }

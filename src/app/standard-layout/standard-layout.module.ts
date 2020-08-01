@@ -1,16 +1,16 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { TrainingOverViewComponent } from "./core/training/training-overview.component";
-import { TrainingDetailViewComponent } from "./core/training/components/training-detailview/training-detailview.component";
-import { TimeTaskComponent } from "./core/timetask/timetask.component";
-import { WeightComponent } from "./core/weight/weight.component";
-import { TasksComponent } from "./core/tasks/tasks.component";
-import { HttpClientModule } from "@angular/common/http";
-import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { InsertTaskDialog } from "./core/tasks/dialogs/insert-task-dialog";
-import { InsertTaskDialogTime } from "./core/timetask/dialogs/insert-task-dialog";
-import { NgxTimerModule } from "ngx-timer";
-import { AmazingTimePickerModule } from "amazing-time-picker";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TrainingOverViewComponent } from './core/training/training-overview.component';
+import { TrainingDetailViewComponent } from './core/training/components/training-detailview/training-detailview.component';
+import { TimeTaskComponent } from './core/timetask/timetask.component';
+import { WeightComponent } from './core/weight/weight.component';
+import { TasksComponent } from './core/tasks/tasks.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { InsertTaskDialog } from './core/tasks/dialogs/insert-task-dialog';
+import { InsertTaskDialogTime } from './core/timetask/dialogs/insert-task-dialog';
+import { NgxTimerModule } from 'ngx-timer';
+import { AmazingTimePickerModule } from 'amazing-time-picker';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -41,14 +41,14 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-} from "@angular/material";
-import { SettingsComponent } from "./core/settings/settings.component";
-import { SessionComponent } from "./core/session/session.component";
-import { DashboardComponent } from "./core/dashboard/dashboard.component";
-import { ExerciseOverViewComponent } from "./core/exercise/exercise-overview.component";
-import { ExerciseDetailviewComponent } from "./core/exercise/components/exercise-detailview/exercise-detailview.component";
-import { NgxChartsModule } from "@swimlane/ngx-charts";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+} from '@angular/material';
+import { SettingsComponent } from './core/settings/settings.component';
+import { SessionComponent } from './core/session/session.component';
+import { DashboardComponent } from './core/dashboard/dashboard.component';
+import { ExerciseOverViewComponent } from './core/exercise/exercise-overview.component';
+import { ExerciseDetailviewComponent } from './core/exercise/components/exercise-detailview/exercise-detailview.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [

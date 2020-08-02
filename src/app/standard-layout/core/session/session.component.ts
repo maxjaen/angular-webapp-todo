@@ -41,7 +41,7 @@ export class SessionComponent implements OnInit {
   ngOnInit(): void {
     this.getTrainingsFromService();
 
-    this.tabTitleService.setTitle(this.keyService.getString('wo1'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('wo1'));
   }
 
   // ===================================================================================
@@ -103,14 +103,23 @@ export class SessionComponent implements OnInit {
   public stopWorkout() {
     switch (this.state) {
       case SessionState.Initial:
-        this.openSnackBar(this.keyService.getString('se21'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se21'),
+          null
+        );
         return;
       case SessionState.Started:
-        this.openSnackBar(this.keyService.getString('se33'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se33'),
+          null
+        );
         this.state = SessionState.Stopped;
         break;
       case SessionState.Stopped:
-        this.openSnackBar(this.keyService.getString('se23'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se23'),
+          null
+        );
         return;
       default:
         throw new Error(`State ${this.state} not implemented yet.`);
@@ -125,11 +134,17 @@ export class SessionComponent implements OnInit {
   public resetWorkout(): void {
     switch (this.state) {
       case SessionState.Initial:
-        this.openSnackBar(this.keyService.getString('se21'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se21'),
+          null
+        );
         return;
       case SessionState.Started:
       case SessionState.Stopped:
-        this.openSnackBar(this.keyService.getString('se34'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se34'),
+          null
+        );
         this.state = SessionState.Initial;
         break;
       default:
@@ -146,20 +161,29 @@ export class SessionComponent implements OnInit {
    */
   public doWorkout(elementIndex: number): void {
     if (!this.selectedTimedTraining) {
-      this.openSnackBar(this.keyService.getString('t6'), null);
+      this.displayNotification(this.keyService.getKeyTranslation('t6'), null);
       return;
     }
 
     switch (this.state) {
       case SessionState.Initial:
-        this.openSnackBar(this.keyService.getString('se31'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se31'),
+          null
+        );
         this.state = SessionState.Started;
         break;
       case SessionState.Started:
-        this.openSnackBar(this.keyService.getString('se21'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se21'),
+          null
+        );
         return;
       case SessionState.Stopped:
-        this.openSnackBar(this.keyService.getString('se24'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se24'),
+          null
+        );
         return;
       default:
         throw new Error(`State ${this.state} not implemented yet.`);
@@ -180,13 +204,22 @@ export class SessionComponent implements OnInit {
   public continueWorkout(): void {
     switch (this.state) {
       case SessionState.Initial:
-        this.openSnackBar(this.keyService.getString('se21'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se21'),
+          null
+        );
         return;
       case SessionState.Started:
-        this.openSnackBar(this.keyService.getString('se22'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se22'),
+          null
+        );
         return;
       case SessionState.Stopped:
-        this.openSnackBar(this.keyService.getString('se32'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('se32'),
+          null
+        );
         this.state = SessionState.Started;
         break;
       default:
@@ -253,7 +286,7 @@ export class SessionComponent implements OnInit {
   /*
    * Opens popup menu for notifications
    */
-  private openSnackBar(message: string, action: string): void {
+  private displayNotification(message: string, action: string): void {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });

@@ -39,7 +39,7 @@ export class TasksComponent implements OnInit {
   tasks: Task[];
   pinnedTasks: Task[];
   unpinnedTasks: Task[];
-  hidedElements: Task[];
+  hidedTasks: Task[];
 
   selectedTask: Task;
   focusedTask: Task;
@@ -67,13 +67,13 @@ export class TasksComponent implements OnInit {
     private snackBarService: MatSnackBar
   ) {}
 
-  // TODO when to unsubscribe from services?
   ngOnInit() {
     this.initTasksFromService();
     this.initSettingsFromService();
     this.initRunningTimeElement();
     this.setTimerConfig();
   }
+
   setTimerConfig() {
     this.testConfig = new countUpTimerConfigModel();
     this.testConfig.timerClass = 'test_Timer_class';
@@ -82,11 +82,6 @@ export class TasksComponent implements OnInit {
     this.testConfig.timerTexts.minuteText = ' min -';
     this.testConfig.timerTexts.secondsText = ' s';
   }
-  /*
-   * ===================================================================================
-   * HOSTLISTENER
-   * ===================================================================================
-   */
 
   @HostListener('click', ['$event'])
   onShiftMouseClick(event: MouseEvent) {
@@ -108,16 +103,10 @@ export class TasksComponent implements OnInit {
     this.manageFastCreation();
   }
 
-  /*
-   * ===================================================================================
-   * GET DATA
-   * ===================================================================================
-   */
-
   // Init all Tasks from service
   // Fill three lists with a subset of these TimeElements
   initTasksFromService() {
-    this.taskService.getAllTasks().subscribe((e) => {
+    this.taskService.getTasks().subscribe((e) => {
       this.tasks = e;
 
       this.tasks.forEach((f) => {
@@ -126,13 +115,11 @@ export class TasksComponent implements OnInit {
         f.tempDate = f.date;
       });
 
-      this.unpinnedTasks = this.taskService.filterAndSortToUnpinnedAndUnhidedTasks(
+      this.unpinnedTasks = this.taskService.retrieveUnpinnedAndUnhidedTasks(
         this.tasks
       );
-      this.pinnedTasks = this.taskService.filterAndSortToPinnedTasks(
-        this.tasks
-      );
-      this.hidedElements = this.taskService.getHidedTasks(this.tasks);
+      this.pinnedTasks = this.taskService.retrievePinnedTasks(this.tasks);
+      this.hidedTasks = this.taskService.retrieveHidedTasks(this.tasks);
 
       this.setTabTitle();
     });
@@ -151,7 +138,7 @@ export class TasksComponent implements OnInit {
   }
 
   initRunningTimeElement() {
-    this.timeTaskService.getAllTimeElements().subscribe((data) => {
+    this.timeTaskService.getTimeElements().subscribe((data) => {
       const timeTask = data.filter((e) => e.running === true)[0];
 
       if (this.timerService.isTimerStart && !timeTask.enddate) {
@@ -159,12 +146,6 @@ export class TasksComponent implements OnInit {
       }
     });
   }
-
-  /*
-   * ===================================================================================
-   * CRUD OPERATIONS
-   * ===================================================================================
-   */
 
   newTask(event: any) {
     const date = this.timeService.createNewDate();
@@ -185,23 +166,31 @@ export class TasksComponent implements OnInit {
 
     if (this.shortdescr !== '' && this.longdescr !== '') {
       this.taskService.postTask(task).subscribe(() => {
-        this.openSnackBar(this.keyService.getString('ta2'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('ta2'),
+          null
+        );
         this.initTasksFromService();
       });
     }
   }
 
-  // Save task in the database
   saveTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         if (this.taskService.isSaved(task)) {
-          this.openSnackBar(this.keyService.getString('a4'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('a4'),
+            null
+          );
           this.hideSelectedTask();
           return;
         }
         this.taskService.putTask(task).subscribe(() => {
-          this.openSnackBar(this.keyService.getString('ta7'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ta7'),
+            null
+          );
           this.initTasksFromService();
         });
       } else {
@@ -214,20 +203,18 @@ export class TasksComponent implements OnInit {
     this.hideSelectedTask();
   }
 
-  // Save all tasks in the database
   saveAllTasks() {
     this.tasks.forEach((element) => {
       this.saveTask(element);
     });
   }
 
-  // Change pinned property of a task in the database
   pinTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.pinned = !task.pinned;
-        this.changeTask(task, this.keyService.getString('ta6'), 'Reset');
+        this.putTask(task, this.keyService.getKeyTranslation('ta6'), 'Reset');
       } else {
         console.warn('pinTask(): ID: ' + task.id + ', expected number');
       }
@@ -236,14 +223,13 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  // Change hide property of a task in the database
   hideTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
         this.copyTaskPropertiesToLastChangedTask(task);
         task.hided = !task.hided;
         task.pinned = false;
-        this.changeTask(task, this.keyService.getString('ta5'), 'Reset');
+        this.putTask(task, this.keyService.getKeyTranslation('ta5'), 'Reset');
       } else {
         console.warn(`hideTask(): ID: ${task.id}, expected number`);
       }
@@ -252,15 +238,17 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  // Removes task from the database
   removeTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
-        if (!window.confirm(this.keyService.getString('a11'))) {
+        if (!window.confirm(this.keyService.getKeyTranslation('a11'))) {
           return;
         }
         this.taskService.deleteTask(task.id).subscribe(() => {
-          this.openSnackBar(this.keyService.getString('ta3'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ta3'),
+            null
+          );
           this.initTasksFromService();
         });
       } else {
@@ -271,12 +259,10 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  // Reset the task and save the last changed task with all properties back to the database
-  // Triggered when undo a task action in a notification
   resetTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
-        this.changeTask(task, this.keyService.getString('ta4'), null);
+        this.putTask(task, this.keyService.getKeyTranslation('ta4'), null);
       } else {
         console.warn(`resetTask(): ID: ${task.id}, expected number`);
       }
@@ -286,23 +272,13 @@ export class TasksComponent implements OnInit {
   }
 
   // Execute put action on task and following commands
-  changeTask(
-    task: Task,
-    notificationMessage: string,
-    notificationAction: string
-  ) {
+  putTask(task: Task, notificationMessage: string, notificationAction: string) {
     this.taskService.putTask(task).subscribe(() => {
-      this.openSnackBar(notificationMessage, notificationAction);
+      this.displayNotification(notificationMessage, notificationAction);
       this.initTasksFromService();
       this.hideSelectedTask();
     });
   }
-
-  /*
-   * ===================================================================================
-   * OTHER TASK OPERATIONS
-   * ===================================================================================
-   */
 
   // Selected current Task if not already set,
   // otherwise hide current selected Task
@@ -364,8 +340,6 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  // Get backround color for different types of tasks
-  // Return backround color
   getStatusColorValue(task: Task): string {
     const actualDate: Date = this.timeService.createNewDate();
     const tempTaskDate: Date = new Date(task.date);
@@ -407,7 +381,6 @@ export class TasksComponent implements OnInit {
     this.fastCreation = !this.fastCreation;
 
     setTimeout(() => {
-      // this will make the execution after the above boolean has changed
       this.inputElement.nativeElement.focus();
     }, 0);
 
@@ -417,13 +390,6 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  /*
-   * ===================================================================================
-   * FASTER ACCESS TO CREATE TIMETASKS FROM TASKS
-   * ===================================================================================
-   */
-
-  /* TODO insert to timetask service */
   startTimeTask(task: Task): void {
     if (this.runningTimeElement) {
       this.runningTimeElement.enddate = this.timeService.createNewDate();
@@ -432,7 +398,10 @@ export class TasksComponent implements OnInit {
       this.timeTaskService
         .putTimeElement(this.runningTimeElement)
         .subscribe(() => {
-          this.openSnackBar(this.keyService.getString('ti62'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti62'),
+            null
+          );
         });
 
       this.resetTimer();
@@ -468,11 +437,14 @@ export class TasksComponent implements OnInit {
       this.timeTaskService
         .putTimeElement(this.runningTimeElement)
         .subscribe(() => {
-          this.openSnackBar(this.keyService.getString('ti4'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti4'),
+            null
+          );
           this.runningTimeElement = null;
         });
     } else {
-      this.openSnackBar(this.keyService.getString('ti61'), null);
+      this.displayNotification(this.keyService.getKeyTranslation('ti61'), null);
     }
   }
 
@@ -481,14 +453,7 @@ export class TasksComponent implements OnInit {
     this.timerService.setTimervalue(0);
   }
 
-  /*
-   * ===================================================================================
-   * DIALOGS/POPUPS/HELPER_FUNCTIONS
-   * ===================================================================================
-   */
-
-  // Opens popup menu for notifications
-  openSnackBar(message: string, action: string) {
+  private displayNotification(message: string, action: string) {
     this.snackBarService
       .open(message, action, {
         duration: 4000,
@@ -503,13 +468,13 @@ export class TasksComponent implements OnInit {
   setTabTitle(): void {
     if (this.pinnedTasks.length > 0) {
       this.tabTitleService.setTitle(
-        this.keyService.getString('ta1') +
+        this.keyService.getKeyTranslation('ta1') +
           ' (' +
           this.pinnedTasks.length.toString() +
           ')'
       );
     } else {
-      this.tabTitleService.setTitle(this.keyService.getString('ta1'));
+      this.tabTitleService.setTitle(this.keyService.getKeyTranslation('ta1'));
     }
   }
 
@@ -545,7 +510,10 @@ export class TasksComponent implements OnInit {
 
         if (this.shortdescr !== '' && this.longdescr !== '') {
           this.taskService.postTask(postResult).subscribe(() => {
-            this.openSnackBar(this.keyService.getString('ta2'), null);
+            this.displayNotification(
+              this.keyService.getKeyTranslation('ta2'),
+              null
+            );
             this.initTasksFromService();
           });
         } else {

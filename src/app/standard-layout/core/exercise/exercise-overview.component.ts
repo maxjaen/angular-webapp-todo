@@ -42,7 +42,7 @@ export class ExerciseOverViewComponent implements OnInit {
   ngOnInit(): void {
     this.getExercisesFromService();
 
-    this.tabTitleService.setTitle(this.keyService.getString('e1'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('e1'));
   }
 
   /*
@@ -53,7 +53,7 @@ export class ExerciseOverViewComponent implements OnInit {
 
   // Get all exercises from service
   getExercisesFromService() {
-    this.exerciseService.getAllExercises().subscribe((exercises) => {
+    this.exerciseService.getExercises().subscribe((exercises) => {
       this.exercises = exercises;
     });
   }
@@ -83,7 +83,7 @@ export class ExerciseOverViewComponent implements OnInit {
     this.setExerciseName(this.exerciseCreateForm.getRawValue().name);
 
     this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
-      this.openSnackBar(this.keyService.getString('t4'), null);
+      this.displayNotification(this.keyService.getKeyTranslation('t4'), null);
       this.getExercisesFromService();
     });
   }
@@ -97,7 +97,7 @@ export class ExerciseOverViewComponent implements OnInit {
   // Opens popup window to display notification
   deleteExercise() {
     this.exerciseService.deleteExercise(this.exerciseToDelete).subscribe(() => {
-      this.openSnackBar(this.keyService.getString('t5'), null);
+      this.displayNotification(this.keyService.getKeyTranslation('t5'), null);
       this.getExercisesFromService(); // TODO remove exercise from array
     });
   }
@@ -109,7 +109,7 @@ export class ExerciseOverViewComponent implements OnInit {
    */
 
   // Opens popup menu for notifications
-  openSnackBar(message: string, action: string) {
+  displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });

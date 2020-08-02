@@ -11,10 +11,6 @@ export class WeightService {
 
   constructor(private httpClient: HttpClient) {}
 
-  // ==================================================
-  // CRUD OPERATIONS
-  // ==================================================
-
   public getAllWeights(): Observable<Weight[]> {
     return this.httpClient.get<Array<Weight>>(this.url);
   }

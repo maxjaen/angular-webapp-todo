@@ -19,7 +19,7 @@ export class SettingsComponent implements OnInit {
     private tabTitleService: Title,
     private snackBarService: MatSnackBar
   ) {
-    this.tabTitleService.setTitle(this.keyService.getString('s1'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('s1'));
   }
 
   ngOnInit(): void {
@@ -40,7 +40,7 @@ export class SettingsComponent implements OnInit {
 
   saveSettings() {
     this.settingsService.putSettings(this.settings[0]).subscribe(() => {
-      this.openSnackBar(this.keyService.getString('s2'), null);
+      this.displayNotification(this.keyService.getKeyTranslation('s2'), null);
       window.location.reload();
     });
   }
@@ -65,7 +65,7 @@ export class SettingsComponent implements OnInit {
   }
 
   // Opens popup menu for notifications
-  openSnackBar(message: string, action: string) {
+  displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });

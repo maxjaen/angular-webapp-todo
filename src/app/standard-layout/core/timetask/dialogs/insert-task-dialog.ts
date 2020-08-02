@@ -20,7 +20,7 @@ export class InsertTaskDialogTime {
     public dialogRefService: MatDialogRef<InsertTaskDialogTime>,
     @Inject(MAT_DIALOG_DATA) public data: TimeTask
   ) {
-    this.taskService.getAllTasks().subscribe((tasks) => {
+    this.taskService.getTasks().subscribe((tasks) => {
       this.tasks = tasks
         .filter((e) => !e.hided)
         .sort((a, b) =>

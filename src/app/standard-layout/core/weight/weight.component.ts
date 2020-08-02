@@ -37,7 +37,7 @@ export class WeightComponent implements OnInit {
   ngOnInit() {
     this.getWeightsFromService();
 
-    this.tabTitleService.setTitle(this.keyService.getString('w1'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('w1'));
   }
 
   /*
@@ -85,7 +85,10 @@ export class WeightComponent implements OnInit {
 
       if (this.utilityService.isNumber(weight.value)) {
         this.weightService.postWeight(weight).subscribe(() => {
-          this.openSnackBar(this.keyService.getString('w2'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('w2'),
+            null
+          );
           this.getWeightsFromService();
         });
       } else {
@@ -104,9 +107,12 @@ export class WeightComponent implements OnInit {
   removeWeight(weight: Weight) {
     if (weight !== undefined) {
       if (this.utilityService.isNumber(weight.id)) {
-        if (window.confirm(this.keyService.getString('a11'))) {
+        if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
           this.weightService.deleteWeight(weight.id).subscribe(() => {
-            this.openSnackBar(this.keyService.getString('w3'), null);
+            this.displayNotification(
+              this.keyService.getKeyTranslation('w3'),
+              null
+            );
             this.getWeightsFromService();
           });
         }
@@ -129,7 +135,7 @@ export class WeightComponent implements OnInit {
       this.displayedWeights += 10;
       this.initGraphData();
     } else {
-      console.log(this.keyService.getString('a21'));
+      console.log(this.keyService.getKeyTranslation('a21'));
     }
   }
 
@@ -138,7 +144,7 @@ export class WeightComponent implements OnInit {
       this.displayedWeights -= 10;
       this.initGraphData();
     } else {
-      console.log(this.keyService.getString('a22'));
+      console.log(this.keyService.getKeyTranslation('a22'));
     }
   }
 
@@ -239,7 +245,7 @@ export class WeightComponent implements OnInit {
    */
 
   // Opens popup menu for notifications
-  openSnackBar(message: string, action: string) {
+  displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 2000,
     });

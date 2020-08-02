@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
     private routerService: Router,
     private keyService: KeyService
   ) {
-    this.tabTitleService.setTitle(this.keyService.getString('d1'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('d1'));
   }
 
   ngOnInit(): void {
@@ -61,7 +61,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getTaskPlaceholderFromService() {
-    this.taskService.getAllTasks().subscribe((tasks) => {
+    this.taskService.getTasks().subscribe((tasks) => {
       const element: KeyValuePair = {
         key: 'tasks',
         value: tasks.filter((task) => task.pinned).length.toString(),
@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getTimeTaskPlaceholderFromService() {
-    this.timeTaskService.getAllTimeElements().subscribe((timetasks) => {
+    this.timeTaskService.getTimeElements().subscribe((timetasks) => {
       let tempValue = 0;
 
       if (timetasks.length > 0) {

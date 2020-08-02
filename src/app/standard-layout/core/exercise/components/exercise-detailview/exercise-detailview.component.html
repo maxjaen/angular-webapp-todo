@@ -1,44 +1,76 @@
 <div class="notifications" *ngIf="!exercise || !trainings">
-    Please select exercise!
+  Please select exercise!
 </div>
 <div *ngIf="exercise && trainings">
-    <div class="tab-m header">
-        Name of exercise: {{ exercise.name }}
-    </div>
-    <div class="tab-m stat">
-        Number of trainings: {{ trainings.length }}
-    </div>
-    <div class="tab-m category">
-        Name of exercise category: {{ exercise.category }}
-    </div>
-    <div class="notifications" *ngIf="trainings.length == 0">
-        No data available!
-    </div>
-    <div class="tab-m graph" *ngIf="trainings.length > 0 && exercise.category != 'freepattern'">
-        <ngx-charts-bar-vertical [view]="[700,400]" [results]="graphData" [xAxisLabel]="'Date'"
-            [legendTitle]="'Trainings'" [yAxisLabel]="this.exercise.category" [legend]="true" [showXAxisLabel]="true"
-            [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
-        </ngx-charts-bar-vertical>
-    </div>
-    <div class="tab-m graph" *ngIf="trainings.length > 0 && exercise.category != 'freepattern'">
-        <ngx-charts-bar-vertical [view]="[700,400]" [results]="graphDataPercent" [xAxisLabel]="'Date'"
-            [legendTitle]="'Trainings'" [yAxisLabel]="'%'" [legend]="true" [showXAxisLabel]="true"
-            [showYAxisLabel]="true" [xAxis]="true" [yAxis]="true" [gradient]="true">
-        </ngx-charts-bar-vertical>
-    </div>
-    <div class="tab-m calc" *ngIf="trainings.length > 0">
-        <div>
-            <div class="flex" *ngFor="let training of trainings">
-                <div class="column-2">
-                    {{ trainingService.getDateFromTraining(training) }}
-                </div>
-                <div class="column-3">
-                    {{ patternAnalysisService.calculateExerciseRecordsForTraining(training, exercise) }}
-                </div>
-                <div class="column-1">
-                    {{ patternAnalysisService.calculateExerciseResultStringForTraining(training, exercise) }}
-                </div>
-            </div>
+  <div class="tab-m header">Name of exercise: {{ exercise.name }}</div>
+  <div class="tab-m stat">Number of trainings: {{ trainings.length }}</div>
+  <div class="tab-m category">
+    Name of exercise category: {{ exercise.category }}
+  </div>
+  <div class="notifications" *ngIf="trainings.length == 0">
+    No data available!
+  </div>
+  <div
+    class="tab-m graph"
+    *ngIf="trainings.length > 0 && exercise.category != 'freepattern'"
+  >
+    <ngx-charts-bar-vertical
+      [view]="[700, 400]"
+      [results]="graphData"
+      [xAxisLabel]="'Date'"
+      [legendTitle]="'Trainings'"
+      [yAxisLabel]="this.exercise.category"
+      [legend]="true"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      [xAxis]="true"
+      [yAxis]="true"
+      [gradient]="true"
+    >
+    </ngx-charts-bar-vertical>
+  </div>
+  <div
+    class="tab-m graph"
+    *ngIf="trainings.length > 0 && exercise.category != 'freepattern'"
+  >
+    <ngx-charts-bar-vertical
+      [view]="[700, 400]"
+      [results]="graphDataPercent"
+      [xAxisLabel]="'Date'"
+      [legendTitle]="'Trainings'"
+      [yAxisLabel]="'%'"
+      [legend]="true"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      [xAxis]="true"
+      [yAxis]="true"
+      [gradient]="true"
+    >
+    </ngx-charts-bar-vertical>
+  </div>
+  <div class="tab-m calc" *ngIf="trainings.length > 0">
+    <div>
+      <div class="flex" *ngFor="let training of trainings">
+        <div class="column-2">
+          {{ trainingService.extractLocaleDateStringFromTraining(training) }}
         </div>
+        <div class="column-3">
+          {{
+            patternAnalysisService.calculateExerciseRecordsForTraining(
+              training,
+              exercise
+            )
+          }}
+        </div>
+        <div class="column-1">
+          {{
+            patternAnalysisService.calculateExerciseResultStringForTraining(
+              training,
+              exercise
+            )
+          }}
+        </div>
+      </div>
     </div>
+  </div>
 </div>

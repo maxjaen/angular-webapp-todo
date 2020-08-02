@@ -8,6 +8,7 @@
 - Comments
 - Angular linting
 - TimerComponent (own
+- Lazy Loading
 
 ## General
 

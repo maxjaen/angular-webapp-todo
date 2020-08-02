@@ -15,11 +15,7 @@ export class TaskService {
     private httpClient: HttpClient
   ) {}
 
-  // ===================================================================================
-  // CRUD TASK OPERATIONS
-  // ===================================================================================
-
-  public getAllTasks(): Observable<Task[]> {
+  public getTasks(): Observable<Task[]> {
     return this.httpClient.get<Array<Task>>(this.url);
   }
 
@@ -39,11 +35,11 @@ export class TaskService {
     return this.httpClient.delete<Task>(this.url + '/' + taskID);
   }
 
-  // ===================================================================================
-  // FILTER TASK OPERATIONS
-  // ===================================================================================
-
-  public filterAndSortToPinnedTasks(tasks: Task[]): Task[] {
+  /**
+   * @param tasks to filter for pinned tasks and sorted
+   * @returns numerically sorted pinned tasks
+   */
+  public retrievePinnedTasks(tasks: Task[]): Task[] {
     return tasks
       .filter(this.isPinned)
       .sort((a, b) =>
@@ -54,7 +50,11 @@ export class TaskService {
       );
   }
 
-  public filterAndSortToUnpinnedAndUnhidedTasks(tasks: Task[]): Task[] {
+  /**
+   * @param tasks to filter for unpinned and unhided tasks
+   * @returns numerically sorted unpinned and unhided tasks
+   */
+  public retrieveUnpinnedAndUnhidedTasks(tasks: Task[]): Task[] {
     return tasks
       .filter((e) => !this.isPinned(e) && !this.isHided(e))
       .sort((a, b) =>
@@ -65,7 +65,11 @@ export class TaskService {
       );
   }
 
-  public getHidedTasks(tasks: Task[]): Task[] {
+  /**
+   * @param tasks to filter for hided tasks
+   * @returns numerically sorted hided tasks
+   */
+  public retrieveHidedTasks(tasks: Task[]): Task[] {
     return tasks
       .filter(this.isHided)
       .sort((a, b) =>
@@ -76,27 +80,14 @@ export class TaskService {
       );
   }
 
-  // ===================================================================================
-  // TEST TASK OPERATIONS
-  // ===================================================================================
-
-  /*
-   * Checks if the input task as parameter is pinned
+  /**
+   * @param task to extract utc string from
+   * @return utc string from task date
    */
-  private isPinned(task: Task): boolean {
-    return task.pinned;
+  public extractUtcStringFromTask(task: Task): string {
+    return new Date(task.date).toUTCString();
   }
 
-  /*
-   * Checks if the input task as parameter is hided
-   */
-  private isHided(task: Task): boolean {
-    return task.hided;
-  }
-
-  /*
-   * Checks if the input task as parameter is saved
-   */
   public isSaved(task: Task): boolean {
     return (
       task.shortdescr === task.tempshortdescr &&
@@ -105,25 +96,19 @@ export class TaskService {
     );
   }
 
-  /*
-   * Checks if every input task in array as parameter is saved
-   */
   public allSaved(tasks: Task[]): boolean {
     return tasks.every(this.isSaved);
   }
 
-  /*
-   * Gets task as parameter
-   * Returns UTCString the date of the task
-   */
-  public utcStringFromTask(task: Task): string {
-    return new Date(task.date).toUTCString();
-  }
-
-  /*
-   * Counts all unsaved tasks
-   */
   public countUnsavedTasks(tasks: Task[]): number {
     return tasks.filter((e) => !this.isSaved(e)).length;
+  }
+
+  private isPinned(task: Task): boolean {
+    return task.pinned;
+  }
+
+  private isHided(task: Task): boolean {
+    return task.hided;
   }
 }

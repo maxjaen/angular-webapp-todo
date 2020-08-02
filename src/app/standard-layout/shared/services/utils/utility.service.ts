@@ -8,67 +8,34 @@ const NEW_LINE = '\n';
 export class UtilityService {
   constructor() {}
 
-  /*
-   * Split string based on new line
-   */
-  public split(str: string): string[] {
+  public splitWithNewLine(str: string): string[] {
     return str.split(NEW_LINE);
   }
 
-  /*
-   * Checks if the input parameter is a number
-   */
   public isNumber(input: any): boolean {
     return !isNaN(Number(input));
   }
 
-  /*
-   * When number has only one digit
-   * then add a 0 in front
-   */
   public formatToTwoDigits(num: number) {
     return num < 10 ? `0${num}` : num;
   }
 
-  /*
-   * Create random interval with min and max values
-   */
   public randomIntFromInterval(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  // ==================================================
-  // SORTING
-  // ==================================================
-
-  /*
-   * Sort items numerically
-   */
   public sortNumerical(a: number, b: number): number {
     return a > b ? -1 : 1;
   }
 
-  /*
-   * Sort items alphabetically
-   */
   public sortAlphabetical(a: string, b: string): number {
     return a > b ? 1 : -1;
   }
 
-  /*
-   * Only show distinct elements
-   */
   public sortDistinct(value, index, self): boolean {
     return self.indexOf(value) === index;
   }
 
-  // ==================================================
-  // OBJECTS
-  // ==================================================
-
-  /*
-   * Checks if an object has the specified property
-   */
   public objectHasPropertyWithValue(object: any, property: string): boolean {
     if (
       object.hasOwnProperty(property) &&
@@ -81,27 +48,18 @@ export class UtilityService {
     return false;
   }
 
-  // ==================================================
-  // ARRAY
-  // ==================================================
-
-  /*
-   * Remove element in array with position
-   */
-  public removePositionFromArray(elementPosition: number, array: any[]) {
-    array.splice(elementPosition, 1);
-  }
-
-  /*
-   * Remove element in array with element
-   */
   public removeElementFromArray(element: any, array: any[]) {
     array.splice(array.indexOf(element), 1);
   }
 
-  /*
-   * Change element order in array with direction and index
-   */
+  public removeElementOnPositionFromArray(
+    elementPosition: number,
+    array: any[]
+  ) {
+    array.splice(elementPosition, 1);
+  }
+
+  // TODO
   public changeElementOrderInArray(
     array: any[],
     direction: string,

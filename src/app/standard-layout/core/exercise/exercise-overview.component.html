@@ -1,77 +1,135 @@
 <div *ngIf="exercises">
-    <div class="content">
-        <div class="selection">
-            <div class="notifications" *ngIf="exercises && exercises.length == 0">
-                No exercises created!
-            </div>
-            <div #createexercise class="tab">
-                <h2>Create Exercise</h2>
-                <div class="text-container">
-                    <form [formGroup]="exerciseCreateForm" class="inline example-form">
-                        <mat-form-field>
-                            <input matInput placeholder="exercise name" name="exercisename" formControlName="name">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Choose pattern</mat-label>
-                            <mat-select (selectionChange)="setExerciseCategory($event)">
-                                <mat-option *ngFor="let patternString of patterns" [value]="patternString">
-                                    {{patternString}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </form>
-                    <button class="indenting" (click)="saveExercise();" mat-stroked-button>Insert</button>
-                </div>
-            </div>
-            <div class="tab" *ngIf="exercises && exercises.length>0" #deleteexercise>
-                <h2>Delete Exercise</h2>
-                <div class="text-container">
-                    <form class="inline example-form">
-                        <mat-form-field>
-                            <mat-label>Choose exercise</mat-label>
-                            <mat-select (selectionChange)="selectExerciseToDelete($event)">
-                                <mat-option *ngFor="let exercise of getSortedExercises()" [value]="exercise">
-                                    {{exercise.name}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </form>
-                    <button class="indenting" (click)="deleteExercise();" mat-stroked-button>Delete</button>
-                </div>
-            </div>
-            <div class="tab" *ngIf="exercises && exercises.length>0" #overviewexercise>
-                <h2>Exercises</h2>
-                <div>
-                    <div class="side leftside">
-                        <div class="category"
-                            *ngFor="let category of exerciseService.selectDistinctExerciseCategories(exercises)">
-                            <div class="top-category">
-                                {{ category }}
-                            </div>
-                            <hr>
-                            <div
-                                *ngFor="let exercise of exerciseService.getExercisesFromCategorySorted(exercises, category)">
-                                <div class="list-item" *ngIf="selectedExercise == exercise  && exercise.name != 'Break'"
-                                    title="{{exercise.name}}" (click)="selectExercise(exercise)"
-                                    [style.background-color]="'#3b63c2'">
-                                    {{ exercise.name }}
-                                </div>
-                                <div class="list-item" *ngIf="selectedExercise != exercise && exercise.name != 'Break'"
-                                    title="{{exercise.name}}" (click)="selectExercise(exercise)">
-                                    {{ exercise.name }}
-                                </div>
-                                <div class="list-item" *ngIf=" exercise.name == 'Break'" title="{{exercise.name}}"
-                                    (click)="selectExercise(exercise)" [style.background-color]="'#c23b3b'">
-                                    {{ exercise.name }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="side rightside">
-                        <app-exercise-detailview [exercise]="selectedExercise"></app-exercise-detailview>
-                    </div>
-                </div>
-            </div>
+  <div class="content">
+    <div class="selection">
+      <div class="notifications" *ngIf="exercises && exercises.length == 0">
+        No exercises created!
+      </div>
+      <div #createexercise class="tab">
+        <h2>Create Exercise</h2>
+        <div class="text-container">
+          <form [formGroup]="exerciseCreateForm" class="inline example-form">
+            <mat-form-field>
+              <input
+                matInput
+                placeholder="exercise name"
+                name="exercisename"
+                formControlName="name"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Choose pattern</mat-label>
+              <mat-select (selectionChange)="setExerciseCategory($event)">
+                <mat-option
+                  *ngFor="let patternString of patterns"
+                  [value]="patternString"
+                >
+                  {{ patternString }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+          <button class="indenting" (click)="saveExercise()" mat-stroked-button>
+            Insert
+          </button>
         </div>
+      </div>
+      <div
+        class="tab"
+        *ngIf="exercises && exercises.length > 0"
+        #deleteexercise
+      >
+        <h2>Delete Exercise</h2>
+        <div class="text-container">
+          <form class="inline example-form">
+            <mat-form-field>
+              <mat-label>Choose exercise</mat-label>
+              <mat-select (selectionChange)="selectExerciseToDelete($event)">
+                <mat-option
+                  *ngFor="let exercise of getSortedExercises()"
+                  [value]="exercise"
+                >
+                  {{ exercise.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+          <button
+            class="indenting"
+            (click)="deleteExercise()"
+            mat-stroked-button
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+      <div
+        class="tab"
+        *ngIf="exercises && exercises.length > 0"
+        #overviewexercise
+      >
+        <h2>Exercises</h2>
+        <div>
+          <div class="side leftside">
+            <div
+              class="category"
+              *ngFor="
+                let category of exerciseService.retrieveDistinctCategoriesFromExercises(
+                  exercises
+                )
+              "
+            >
+              <div class="top-category">
+                {{ category }}
+              </div>
+              <hr />
+              <div
+                *ngFor="
+                  let exercise of exerciseService.retrieveSortedExercisesWithCategory(
+                    exercises,
+                    category
+                  )
+                "
+              >
+                <div
+                  class="list-item"
+                  *ngIf="
+                    selectedExercise == exercise && exercise.name != 'Break'
+                  "
+                  title="{{ exercise.name }}"
+                  (click)="selectExercise(exercise)"
+                  [style.background-color]="'#3b63c2'"
+                >
+                  {{ exercise.name }}
+                </div>
+                <div
+                  class="list-item"
+                  *ngIf="
+                    selectedExercise != exercise && exercise.name != 'Break'
+                  "
+                  title="{{ exercise.name }}"
+                  (click)="selectExercise(exercise)"
+                >
+                  {{ exercise.name }}
+                </div>
+                <div
+                  class="list-item"
+                  *ngIf="exercise.name == 'Break'"
+                  title="{{ exercise.name }}"
+                  (click)="selectExercise(exercise)"
+                  [style.background-color]="'#c23b3b'"
+                >
+                  {{ exercise.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="side rightside">
+            <app-exercise-detailview
+              [exercise]="selectedExercise"
+            ></app-exercise-detailview>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

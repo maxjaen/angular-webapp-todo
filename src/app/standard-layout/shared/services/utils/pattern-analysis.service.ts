@@ -8,7 +8,6 @@ import { Training } from '../../../core/training/model/training';
 export class PatternAnalysisService {
   constructor() {}
 
-  refactoring;
   /*
    * Get all Exercises in a training that have the same name value as the input exercise
    */
@@ -102,14 +101,6 @@ export class PatternAnalysisService {
         break;
 
       case 'conditionalpattern1d':
-        foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
-
-          sum += records * repetitions;
-        });
-        break;
-
       case 'countablepattern':
         foundExercises.forEach((e) => {
           const records: number = +e['records'];

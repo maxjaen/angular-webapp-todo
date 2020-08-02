@@ -21,8 +21,6 @@ import { Settings } from '../settings/model/settings';
 import { NameAndNumberPair } from '../../shared/model/GraphData';
 import { NameAndStringPair } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const EMPTY_STRING = '';
 
@@ -38,13 +36,13 @@ export class TimeTaskComponent implements OnInit {
   testConfig: countUpTimerConfigModel;
   settings: Settings[] = [];
 
-  todayTimeElements: TimeTask[];
-  allTimeElements: TimeTask[];
+  timeTasksFromToday: TimeTask[];
+  timeTasks: TimeTask[];
   runningTimeElement: TimeTask;
   selectedTimeElement: TimeTask;
-  historyElements: TimeTask[];
+  timeTasksFromHistory: TimeTask[];
 
-  accumulatedSecondsPerTask: NameAndNumberPair[] = [];
+  tasksWithAccumulatedSeconds: NameAndNumberPair[] = [];
   accumulatedElements: NameAndStringPair[] = [];
   historyAccumulatedElements: NameAndStringPair[] = [];
   graphData: NameAndNumberPair[] = [];
@@ -70,7 +68,7 @@ export class TimeTaskComponent implements OnInit {
     private tabTitleService: Title,
     private snackBarService: MatSnackBar
   ) {
-    this.tabTitleService.setTitle(this.keyService.getString('ti1'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('ti1'));
   }
 
   ngOnInit() {
@@ -123,19 +121,19 @@ export class TimeTaskComponent implements OnInit {
    * Fill particular arrays with a subset of all TimeTasks
    */
   getTimeElementsFromService() {
-    this.allTimeElements = []; // all TimeTasks from database
-    this.todayTimeElements = []; // all TimeTasks from today
-    this.historyElements = []; // browse your history for prior TimeTasks
+    this.timeTasks = [];
+    this.timeTasksFromToday = [];
+    this.timeTasksFromHistory = [];
 
-    this.timeTaskService.getAllTimeElements().subscribe((data) => {
-      this.allTimeElements = data;
+    this.timeTaskService.getTimeElements().subscribe((data) => {
+      this.timeTasks = data;
 
-      this.initTodayTimeElements();
+      this.initTimeTasksFromToday();
       this.initAccumulationProcess();
 
       if (this.timerService.isTimerStart) {
-        if (this.todayTimeElements.length > 0) {
-          this.runningTimeElement = this.todayTimeElements[0];
+        if (this.timeTasksFromToday.length > 0) {
+          this.runningTimeElement = this.timeTasksFromToday[0];
         }
       }
     });
@@ -147,44 +145,39 @@ export class TimeTaskComponent implements OnInit {
    * ===================================================================================
    */
 
-  private initTodayTimeElements() {
-    this.todayTimeElements = this.timeTaskService.getTodayTimeTasks(
-      this.allTimeElements
+  private initTimeTasksFromToday() {
+    this.timeTasksFromToday = this.timeTaskService.retrieveTimeTasksFromToday(
+      this.timeTasks
     );
   }
 
   private initAccumulationProcess() {
-    this.accumulatedSecondsPerTask = this.timeTaskService.getAccumulatedTimeTaskAndSecondsPairs(
-      this.todayTimeElements.filter((e) => this.timeTaskService.isValid(e))
+    this.tasksWithAccumulatedSeconds = this.timeTaskService.extractAccumulatedTimeTasks(
+      this.timeTasksFromToday
     );
-
     this.accumulatedElements = this.initAccumulatedTaskData(
-      this.accumulatedSecondsPerTask
+      this.tasksWithAccumulatedSeconds
     );
     this.graphData = this.graphDataService.initGraphDataForAccumulatedNameAndNumberValuePair(
-      this.accumulatedSecondsPerTask
+      this.tasksWithAccumulatedSeconds
     );
   }
 
   private initAccumulatedTaskData(pair: NameAndNumberPair[]) {
-    const arr: NameAndStringPair[] = [];
-
-    pair.forEach((e) => {
-      const element: NameAndStringPair = {
-        name: e.name,
-        value: this.timeService.formatMillisecondsToString(e.value),
+    return pair.map((entry) => {
+      return {
+        name: entry.name,
+        value: this.timeService.formatMillisecondsToString(entry.value),
       };
-      arr.push(element);
     });
-    return arr;
   }
 
   /*
    * Load history data from history elements
    */
   initHistoryData() {
-    const accumulatedInSeconds = this.timeTaskService.getAccumulatedTimeTaskAndSecondsPairs(
-      this.historyElements
+    const accumulatedInSeconds = this.timeTaskService.extractAccumulatedTimeTasks(
+      this.timeTasksFromHistory
     );
 
     this.historyAccumulatedElements = this.initAccumulatedTaskData(
@@ -240,7 +233,7 @@ export class TimeTaskComponent implements OnInit {
    * @param timeElement to continue
    */
   continueTimeElement(timeElement: TimeTask) {
-    if (!window.confirm(this.keyService.getString('a12'))) {
+    if (!window.confirm(this.keyService.getKeyTranslation('a12'))) {
       return;
     }
 
@@ -281,7 +274,10 @@ export class TimeTaskComponent implements OnInit {
     if (timeElement !== undefined) {
       if (this.utilityService.isNumber(timeElement.id)) {
         this.timeTaskService.putTimeElement(timeElement).subscribe(() => {
-          this.openSnackBar(this.keyService.getString('ti2'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti2'),
+            null
+          );
           this.getTimeElementsFromService();
         });
       } else {
@@ -300,7 +296,7 @@ export class TimeTaskComponent implements OnInit {
    * Save all TimeTasks in the database
    */
   saveAllTimeElements() {
-    this.todayTimeElements.forEach((element) => {
+    this.timeTasksFromToday.forEach((element) => {
       this.saveTimeElement(element);
     });
   }
@@ -317,7 +313,7 @@ export class TimeTaskComponent implements OnInit {
       return;
     }
 
-    if (!window.confirm(this.keyService.getString('a11'))) {
+    if (!window.confirm(this.keyService.getKeyTranslation('a11'))) {
       return;
     }
 
@@ -326,12 +322,12 @@ export class TimeTaskComponent implements OnInit {
       this.runningTimeElement !== null &&
       timeElement.id === this.runningTimeElement.id
     ) {
-      this.openSnackBar(this.keyService.getString('a23'), null);
+      this.displayNotification(this.keyService.getKeyTranslation('a23'), null);
       return;
     }
 
     this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(() => {
-      this.openSnackBar(this.keyService.getString('a23'), null);
+      this.displayNotification(this.keyService.getKeyTranslation('a23'), null);
       this.getTimeElementsFromService();
       this.hideSelectedTimeElement();
     });
@@ -341,19 +337,22 @@ export class TimeTaskComponent implements OnInit {
    * Delete all elements from choosen Date
    */
   deleteAllAvailableTimeTasks() {
-    if (!window.confirm(this.keyService.getString('a11'))) {
+    if (!window.confirm(this.keyService.getKeyTranslation('a11'))) {
       return;
     }
 
-    this.historyElements.forEach((e) => {
+    this.timeTasksFromHistory.forEach((e) => {
       this.timeTaskService.deleteTimeElement(e.id).subscribe(() => {
-        this.openSnackBar(this.keyService.getString('ti3'), null);
+        this.displayNotification(
+          this.keyService.getKeyTranslation('ti3'),
+          null
+        );
         this.getTimeElementsFromService();
         this.hideSelectedTimeElement();
       });
     });
 
-    this.historyElements = null;
+    this.timeTasksFromHistory = null;
     this.historyAccumulatedElements = null;
   }
 
@@ -410,7 +409,7 @@ export class TimeTaskComponent implements OnInit {
    */
   startTimer() {
     this.timerService.startTimer();
-    this.tabTitleService.setTitle(this.keyService.getString('a3'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('a3'));
   }
 
   /*
@@ -427,7 +426,10 @@ export class TimeTaskComponent implements OnInit {
         .subscribe(() => {
           this.hideRunningTimeElement();
           this.hideSelectedTimeElement();
-          this.openSnackBar(this.keyService.getString('ti4'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti4'),
+            null
+          );
           this.getTimeElementsFromService();
         });
     }
@@ -439,7 +441,7 @@ export class TimeTaskComponent implements OnInit {
   resetTimer() {
     this.timerService.stopTimer();
     this.timerService.setTimervalue(0);
-    this.tabTitleService.setTitle(this.keyService.getString('ti1'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('ti1'));
   }
 
   /*
@@ -471,7 +473,10 @@ export class TimeTaskComponent implements OnInit {
       this.timeTaskService
         .putTimeElement(this.runningTimeElement)
         .subscribe(() => {
-          this.openSnackBar(this.keyService.getString('ti2'), null);
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti2'),
+            null
+          );
           // this.hideSelectedTimeElement();
           this.getTimeElementsFromService();
         });
@@ -500,7 +505,10 @@ export class TimeTaskComponent implements OnInit {
           this.timeTaskService
             .postTimeElement(resultFromDialog)
             .subscribe((resultFromPost) => {
-              this.openSnackBar(this.keyService.getString('ti5'), null);
+              this.displayNotification(
+                this.keyService.getKeyTranslation('ti5'),
+                null
+              );
               this.getTimeElementsFromService();
               this.runningTimeElement.id = resultFromPost.id;
               this.resetTimer();
@@ -572,7 +580,7 @@ export class TimeTaskComponent implements OnInit {
     const month: string = dateArray[1];
     const year: string = dateArray[2];
 
-    this.historyElements = this.allTimeElements.filter((e) => {
+    this.timeTasksFromHistory = this.timeTasks.filter((e) => {
       const date: Date = new Date(e.startdate);
 
       return (
@@ -603,7 +611,7 @@ export class TimeTaskComponent implements OnInit {
   /*
    * Opens popup menu for notifications
    */
-  openSnackBar(message: string, action: string) {
+  displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });
@@ -681,7 +689,7 @@ export class TimeTaskComponent implements OnInit {
   // Returns array of distinct dates
   selectDistinctDates(): Array<string> {
     const tempDates: Date[] = [];
-    this.allTimeElements.forEach((timeElement) => {
+    this.timeTasks.forEach((timeElement) => {
       if (
         !tempDates.find((date) => {
           const DateToInsert: Date = new Date(timeElement.startdate);
@@ -708,7 +716,7 @@ export class TimeTaskComponent implements OnInit {
           '.' +
           this.utilityService.formatToTwoDigits(date.getFullYear()) +
           ', ' +
-          this.timeService.createDayString(date.getDay())
+          this.timeService.retrieveDayOfTheWeek(date.getDay())
         );
       });
   }

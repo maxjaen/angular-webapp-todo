@@ -56,7 +56,7 @@ export class TrainingOverViewComponent implements OnInit {
     private snackBarService: MatSnackBar,
     private routerService: Router
   ) {
-    this.tabTitleService.setTitle(this.keyService.getString('t1'));
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('t1'));
   }
 
   ngOnInit() {
@@ -83,7 +83,7 @@ export class TrainingOverViewComponent implements OnInit {
 
   // Get all exercises from service
   getExercisesFromService() {
-    this.exerciseService.getAllExercises().subscribe((exercises) => {
+    this.exerciseService.getExercises().subscribe((exercises) => {
       this.exercises = exercises;
     });
   }
@@ -146,7 +146,7 @@ export class TrainingOverViewComponent implements OnInit {
     });
 
     this.trainingService.postTraining(this.training).subscribe(() => {
-      this.openSnackBar(this.keyService.getString('t2'), null);
+      this.displayNotification(this.keyService.getKeyTranslation('t2'), null);
       this.getTrainingsFromService();
       this.resetForm();
     });
@@ -186,7 +186,9 @@ export class TrainingOverViewComponent implements OnInit {
   // Get training data from service
   getTrainingsFromService() {
     this.trainingService.getAllTrainings().subscribe((trainings) => {
-      this.trainings = this.trainingService.getSortedTrainings(trainings);
+      this.trainings = this.trainingService.retrieveTrainingsSortedByDate(
+        trainings
+      );
     });
   }
 
@@ -245,7 +247,7 @@ export class TrainingOverViewComponent implements OnInit {
     if (this.moreTrainingsThanDisplayed()) {
       this.displayedTrainings += 10;
     } else {
-      console.log(this.keyService.getString('a21'));
+      console.log(this.keyService.getKeyTranslation('a21'));
     }
   }
 
@@ -253,7 +255,7 @@ export class TrainingOverViewComponent implements OnInit {
     if (this.displayedTrainings > 10) {
       this.displayedTrainings -= 10;
     } else {
-      console.log(this.keyService.getString('a22'));
+      console.log(this.keyService.getKeyTranslation('a22'));
     }
   }
 
@@ -381,11 +383,11 @@ export class TrainingOverViewComponent implements OnInit {
       }
     }
 
-    this.utilityService.removePositionFromArray(
+    this.utilityService.removeElementOnPositionFromArray(
       elementPosition,
       this.exercisesToInsert
     );
-    this.utilityService.removePositionFromArray(
+    this.utilityService.removeElementOnPositionFromArray(
       elementPosition,
       this.formGroups
     );
@@ -495,7 +497,7 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   // Opens popup menu for notifications
-  openSnackBar(message: string, action: string) {
+  displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });

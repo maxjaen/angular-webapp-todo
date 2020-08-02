@@ -10,15 +10,6 @@ const GER_UTC_PLUS_TWO = 2;
 export class TimeService {
   constructor(private utilityService: UtilityService) {}
 
-  /*
-   * ===================================================================================
-   * CREATE/CALCULATE OPERATIONS
-   * ===================================================================================
-   */
-
-  /*
-   * Create a new date with offset for own timezone
-   */
   public createNewDate(): Date {
     const date: Date = new Date();
     date.setHours(date.getUTCHours() + GER_UTC_PLUS_TWO);
@@ -26,10 +17,7 @@ export class TimeService {
     return date;
   }
 
-  /*
-   * Get day of the week from String array
-   */
-  public createDayString(i: number): string {
+  public retrieveDayOfTheWeek(index: number): string {
     return [
       'Sunday',
       'Monday',
@@ -38,18 +26,9 @@ export class TimeService {
       'Thursday',
       'Friday',
       'Saturday',
-    ][i];
+    ][index];
   }
 
-  /*
-   * ===================================================================================
-   * CALCULATIONS
-   * ===================================================================================
-   */
-
-  /*
-   * Calculates week number of the year for todays date
-   */
   public calculateCurrentWeekNumber(): number {
     const now = this.createNewDate();
     const onejan = new Date(now.getFullYear(), 0, 1);
@@ -59,9 +38,6 @@ export class TimeService {
     );
   }
 
-  /*
-   * Calculates week number of the year from given date
-   */
   public calculateWeekNumberForDate(date: Date): number {
     const onejan = new Date(date.getFullYear(), 0, 1);
 
@@ -70,70 +46,10 @@ export class TimeService {
     );
   }
 
-  /*
-   * Calculates the time difference between input date and current date in milliseconds
-   */
   private calculateTimeDifferenceToCurrentDate(date: Date) {
     return new Date(date).getTime() - this.createNewDate().getTime();
   }
 
-  /*
-   * ===================================================================================
-   * TEST OPERATIONS
-   * ===================================================================================
-   */
-
-  /*
-   * Test if the given date equals today's date
-   */
-  public isToday(date: Date): boolean {
-    const unknownDate = new Date(date);
-    const currentDate = this.createNewDate();
-
-    return (
-      unknownDate.getDate() === currentDate.getDate() &&
-      unknownDate.getMonth() === currentDate.getMonth() &&
-      unknownDate.getFullYear() === currentDate.getFullYear()
-    );
-  }
-
-  /*
-   * Test if the given date is in the current week
-   */
-  public isThisWeek(unknownDate: Date) {
-    // TODO
-  }
-
-  /*
-   * Test if the given date is in the current month
-   */
-  public isThisMonth(unknownDate: Date) {
-    // TODO
-  }
-
-  /*
-   * Test if the given date is in the current year
-   */
-  public isThisYear(unknownDate: Date) {
-    // TODO
-  }
-
-  /*
-   * Test if the fiven date is valid
-   */
-  public isValid(date: Date): boolean {
-    return date !== null || date !== undefined;
-  }
-
-  /*
-   * ===================================================================================
-   * STRING FORMATTER OPERATIONS
-   * ===================================================================================
-   */
-
-  /*
-   * Get string  with format 'h:m:s' from given milliseconds
-   */
   public formatMillisecondsToString(milliseconds: number): string {
     let seconds: any = Math.floor((milliseconds / 1000) % 60);
     let minutes: any = Math.floor((milliseconds / (1000 * 60)) % 60);
@@ -145,9 +61,6 @@ export class TimeService {
     return `${hours}:${minutes}:${seconds}`;
   }
 
-  /*
-   * Get string with format 'description: h:m' from given date and description
-   */
   public formatDateToStringWithDescription(
     date: Date,
     description: string
@@ -159,9 +72,6 @@ export class TimeService {
     )}:${this.utilityService.formatToTwoDigits(temp.getMinutes())}`;
   }
 
-  /*
-   * Get string with message explaining the current date in proportion to the parameter date
-   */
   public formatDateToDeadlineMessage(date: Date): string {
     let diffInMilliseconds = this.calculateTimeDifferenceToCurrentDate(date);
 
@@ -179,5 +89,32 @@ export class TimeService {
     return !beforeDeadline
       ? `(~ ${days} day/s behind your goal)`
       : `(~ ${days} day/s until your deadline)`;
+  }
+
+  public isValid(date: Date): boolean {
+    return date !== null || date !== undefined;
+  }
+
+  public isToday(date: Date): boolean {
+    const unknownDate = new Date(date);
+    const currentDate = this.createNewDate();
+
+    return (
+      unknownDate.getDate() === currentDate.getDate() &&
+      unknownDate.getMonth() === currentDate.getMonth() &&
+      unknownDate.getFullYear() === currentDate.getFullYear()
+    );
+  }
+
+  public isThisWeek(unknownDate: Date) {
+    // TODO
+  }
+
+  public isThisMonth(unknownDate: Date) {
+    // TODO
+  }
+
+  public isThisYear(unknownDate: Date) {
+    // TODO
   }
 }

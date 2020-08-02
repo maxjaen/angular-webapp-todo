@@ -16,10 +16,6 @@ export class TrainingService {
     private httpClient: HttpClient
   ) {}
 
-  // ==================================================
-  // CRUD TASK OPERATIONS
-  // ==================================================
-
   public getAllTrainings(): Observable<Training[]> {
     return this.httpClient.get<Array<Training>>(this.url);
   }
@@ -36,40 +32,31 @@ export class TrainingService {
     return this.httpClient.delete<Training>(this.url + '/' + id);
   }
 
-  // ==================================================
-  // OTHER TASK OPERATIONS
-  // ==================================================
-
-  /*
-   * Get all trainings from given trainings
-   * Sorted by date
+  /**
+   * @param trainings to look for specified exercise
+   * @param exercise which should be included in training
    */
-  public getSortedTrainings(trainings: Training[]) {
-    return trainings.sort((a, b) =>
+  public retrieveTrainingsIncludingExercise(
+    trainings: Training[],
+    exercise: Exercise
+  ): Training[] {
+    return this.retrieveTrainingsSortedByDate(trainings).filter(
+      (training) =>
+        training.exercices.filter((other) => exercise.name === other.name)
+          .length > 0
+    );
+  }
+
+  public retrieveTrainingsSortedByDate(trainings: Training[]) {
+    return trainings.sort((training, other) =>
       this.utilityService.sortNumerical(
-        Date.parse(a.date.toString()),
-        Date.parse(b.date.toString())
+        Date.parse(training.date.toString()),
+        Date.parse(other.date.toString())
       )
     );
   }
 
-  /*
-   * Get all trainings from given trainings which enlude given exercise
-   * Sorted by date
-   */
-  public getSortedTrainingFromExercise(
-    trainings: Training[],
-    exercise: Exercise
-  ) {
-    return this.getSortedTrainings(trainings).filter(
-      (e) => e.exercices.filter((f) => f.name === exercise.name).length > 0
-    );
-  }
-
-  /*
-   * Return formated date string from training
-   */
-  public getDateFromTraining(training: Training): string {
+  public extractLocaleDateStringFromTraining(training: Training): string {
     return new Date(training.date).toLocaleString();
   }
 }

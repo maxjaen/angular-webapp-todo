@@ -18,11 +18,7 @@ export class TimeTaskService {
     private timeService: TimeService
   ) {}
 
-  // ==================================================
-  // CRUD TIMETASK OPERATIONS
-  // ==================================================
-
-  public getAllTimeElements(): Observable<TimeTask[]> {
+  public getTimeElements(): Observable<TimeTask[]> {
     return this.httpClient.get<Array<TimeTask>>(this.url);
   }
 
@@ -30,43 +26,27 @@ export class TimeTaskService {
     return this.httpClient.get<Array<TimeTask>>(this.url + '/' + id);
   }
 
-  public postTimeElement(zeitElement: TimeTask): Observable<TimeTask> {
-    return this.httpClient.post<TimeTask>(this.url, zeitElement);
+  public postTimeElement(timeTask: TimeTask): Observable<TimeTask> {
+    return this.httpClient.post<TimeTask>(this.url, timeTask);
   }
 
-  public putTimeElement(zeitElement: TimeTask): Observable<TimeTask> {
+  public putTimeElement(timeTask: TimeTask): Observable<TimeTask> {
     return this.httpClient.put<TimeTask>(
-      this.url + '/' + zeitElement.id,
-      zeitElement
+      this.url + '/' + timeTask.id,
+      timeTask
     );
   }
 
-  public deleteTimeElement(zeitElement: number): Observable<TimeTask> {
-    return this.httpClient.delete<TimeTask>(this.url + '/' + zeitElement);
+  public deleteTimeElement(timeTask: number): Observable<TimeTask> {
+    return this.httpClient.delete<TimeTask>(this.url + '/' + timeTask);
   }
 
-  // ==================================================
-  // OTHER TIMETASK OPERATIONS
-  // ==================================================
-
-  /*
-   * Checks if a timetask is valid and can be displayed
+  /**
+   * @param input timetask to be checked for todays date
+   * @returns time tasks with todays date in numerical order
    */
-  public isValid(timetask: TimeTask) {
-    return (
-      timetask.startdate !== undefined &&
-      timetask.enddate !== undefined &&
-      new Date(timetask.enddate).getTime() >
-        new Date(timetask.startdate).getTime()
-    );
-  }
-
-  /*
-   * Get all TimeTasks that have today as startdate
-   * Return sorted TimeTask array
-   */
-  public getTodayTimeTasks(data: TimeTask[]): TimeTask[] {
-    return data
+  public retrieveTimeTasksFromToday(input: TimeTask[]): TimeTask[] {
+    return input
       .filter((e) => {
         const startdate: Date = new Date(e.startdate);
         const now: Date = this.timeService.createNewDate();
@@ -80,74 +60,79 @@ export class TimeTaskService {
       .sort((a, b) => this.utilityService.sortNumerical(a.id, b.id));
   }
 
-  /*
-   * Calculate the overall work time for the current day
+  /**
+   * @param input to accumulate time from
+   * @returns todays work time in milliseconds
    */
-  public calculateTodayTime(data: TimeTask[]): number {
-    return data
-      .filter(
-        (e) =>
-          e.startdate !== undefined &&
-          e.enddate !== undefined &&
-          new Date(e.enddate).getTime() > new Date(e.startdate).getTime()
-      )
-      .filter(
-        (f) =>
-          this.utilityService.objectHasPropertyWithValue(f, 'startdate') &&
-          this.utilityService.objectHasPropertyWithValue(f, 'enddate')
-      )
-      .map(
-        (g) => new Date(g.enddate).getTime() - new Date(g.startdate).getTime()
-      )
+  public calculateTimeForToday(input: TimeTask[]): number {
+    return input
+      .filter((timeTask) => this.isValid(timeTask))
+      .map((validTimeTask) => this.extractTimeBetweenStartandEnd(validTimeTask))
       .reduce((a, b) => a + b, 0);
   }
 
-  /*
-   * Calculate the overall time for the current week
+  /**
+   * @param input to accumulate time from
+   * @returns this weeks work time in milliseconds
    */
-  public calculateOverallTime(data: TimeTask[]): number {
-    return data
-      .filter((e) => this.isValid(e))
+  public calculateTimeForCurrentWeek(input: TimeTask[]): number {
+    return input
+      .filter((timeTask) => this.isValid(timeTask))
       .filter(
-        (f) =>
-          this.utilityService.objectHasPropertyWithValue(f, 'startdate') &&
-          this.utilityService.objectHasPropertyWithValue(f, 'enddate') &&
+        (validTimeTask) =>
           this.timeService.calculateCurrentWeekNumber() ===
-            this.timeService.calculateWeekNumberForDate(new Date(f.startdate))
+          this.timeService.calculateWeekNumberForDate(
+            new Date(validTimeTask.startdate)
+          )
       )
-      .map(
-        (filteredData) =>
-          new Date(filteredData.enddate).getTime() -
-          new Date(filteredData.startdate).getTime()
-      )
+      .map((validTimeTask) => this.extractTimeBetweenStartandEnd(validTimeTask))
       .reduce((a, b) => a + b, 0);
   }
 
-  /*
-   * Calculate the overall time for each timetask that that data can be grouped together
+  /**
+   * @param input to be grouped depending on each timetask
+   * @returns key value pair array with task as key and accumulated task time in milliseconds  as value
    */
-  public getAccumulatedTimeTaskAndSecondsPairs(
-    data: TimeTask[]
-  ): NameAndNumberPair[] {
-    const array: NameAndNumberPair[] = [];
+  public extractAccumulatedTimeTasks(input: TimeTask[]): NameAndNumberPair[] {
+    return input
+      .filter((timeTask) => this.isValid(timeTask))
+      .map((validTimeTask) => {
+        return {
+          name: validTimeTask.shortdescr,
+          value: input
+            .filter((othertimeTask) => this.isValid(othertimeTask))
+            .filter(
+              (otherValidTimeTask) =>
+                validTimeTask.shortdescr === otherValidTimeTask.shortdescr
+            )
+            .reduce((a, b) => a + this.extractTimeBetweenStartandEnd(b), 0),
+        };
+      })
+      .filter(
+        (value, index, self) =>
+          self.map((x) => x.name).indexOf(value.name) === index
+      );
+  }
 
-    data.forEach((key) => {
-      const element: NameAndNumberPair = {
-        name: key.shortdescr, // name of timetask as string
-        value: data
-          .filter((e) => e.shortdescr === key.shortdescr)
-          .reduce(
-            (a, b) =>
-              a +
-              (new Date(b.enddate).getTime() - new Date(b.startdate).getTime()),
-            0
-          ),
-      };
-      if (array.filter((e) => e.name === element.name).length === 0) {
-        array.push(element);
-      }
-    });
+  /**
+   * @param timeTask to extract time from
+   * @returns time between start and end in milliseconds
+   */
+  private extractTimeBetweenStartandEnd(timeTask: TimeTask): number {
+    return (
+      new Date(timeTask.enddate).getTime() -
+      new Date(timeTask.startdate).getTime()
+    );
+  }
 
-    return array;
+  public isValid(timetask: TimeTask): boolean {
+    return (
+      this.utilityService.objectHasPropertyWithValue(timetask, 'startdate') &&
+      this.utilityService.objectHasPropertyWithValue(timetask, 'enddate') &&
+      timetask.startdate !== undefined &&
+      timetask.enddate !== undefined &&
+      new Date(timetask.enddate).getTime() >
+        new Date(timetask.startdate).getTime()
+    );
   }
 }

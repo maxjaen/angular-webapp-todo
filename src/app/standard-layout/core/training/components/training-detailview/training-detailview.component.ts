@@ -38,7 +38,7 @@ export class TrainingDetailViewComponent implements OnInit {
   }
 
   removeTraining() {
-    if (window.confirm(this.keyService.getString('a11'))) {
+    if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
       this.activeRouteService.params.subscribe((params) => {
         this.trainingService.deleteTrainingByID(+params['id']).subscribe(() => {
           this.viewTraining();

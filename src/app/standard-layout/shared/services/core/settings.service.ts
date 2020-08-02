@@ -11,10 +11,6 @@ export class SettingsService {
 
   constructor(private httpClient: HttpClient) {}
 
-  // ===================================================================================
-  // CRUD SETTINGS OPERATIONS
-  // ===================================================================================
-
   public getAllSettings(): Observable<Settings[]> {
     return this.httpClient.get<Array<Settings>>(this.url);
   }
@@ -26,20 +22,10 @@ export class SettingsService {
     );
   }
 
-  // ===================================================================================
-  // OTHER SETTINGS OPERATIONS
-  // ===================================================================================
-
-  /*
-   * Get all startpage headers
-   */
   public getStartPageHeaders(settings: Settings[]) {
     return settings[0]['startpage'];
   }
 
-  /*
-   * Get all Settings headers
-   */
   public getSettingsHeaders(settings: Settings[]) {
     return settings[0]['settingsmenu'];
   }

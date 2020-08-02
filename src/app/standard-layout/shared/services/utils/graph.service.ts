@@ -11,61 +11,54 @@ import { Weight } from '../../../core/weight/model/weight';
 export class GraphDataService {
   constructor(private patternAnalysisService: PatternAnalysisService) {}
 
-  /*
-   * Get graph data format for exercise details
+  /**
+   * @param trainings to be mapped
+   * @param exercise which should be find in training exercises atleast once
    */
-  public initGraphDataForExerciseDetails(
+  public initGraphDataForExerciseProgress(
     trainings: Training[],
     exercise: Exercise
   ): NameAndNumberPair[] {
-    const arr: NameAndNumberPair[] = [];
-
-    trainings
-      .filter((e) => e.exercices.find((f) => f.category === exercise.category))
-      .forEach((g) => {
-        const element: NameAndNumberPair = {
-          name: new Date(g.date).toLocaleString(),
+    return trainings
+      .filter((training) =>
+        training.exercices.find((other) => exercise.category === other.category)
+      )
+      .map((trainingIncludesCategory) => {
+        return {
+          name: new Date(trainingIncludesCategory.date).toLocaleString(),
           value: this.patternAnalysisService.calculateExerciseResultForTraining(
-            g,
+            trainingIncludesCategory,
             exercise
           ),
         };
-        arr.push(element);
       });
-    return arr;
   }
 
-  /*
-   * Get graph data format for time tasks
+  /**
+   * @param weights to be mapped
+   * @returns new key value pair from weight
+   */
+  public initGraphDataForWeights(weights: Weight[]): NameAndNumberPair[] {
+    return weights.map((weight) => {
+      return {
+        name: weight.date.toString(),
+        value: weight.value,
+      };
+    });
+  }
+
+  /**
+   * @param pair whose value should be mapped from milliseconds to minutes
+   * @returns new new key value pair with minutes as value
    */
   public initGraphDataForAccumulatedNameAndNumberValuePair(
     pair: NameAndNumberPair[]
   ): NameAndNumberPair[] {
-    const arr: NameAndNumberPair[] = [];
-
-    pair.forEach((e) => {
-      const element: NameAndNumberPair = {
-        name: e.name,
-        value: +(e.value / 60 / 60 / 1000).toFixed(3),
+    return pair.map((entry) => {
+      return {
+        name: entry.name,
+        value: +(entry.value / 60 / 60 / 1000).toFixed(3),
       };
-      arr.push(element);
     });
-    return arr;
-  }
-
-  /*
-   * Get graph data format for weights
-   */
-  public initGraphDataForWeights(weights: Weight[]): NameAndNumberPair[] {
-    const arr: NameAndNumberPair[] = [];
-
-    weights.forEach((e) => {
-      const element: NameAndNumberPair = {
-        name: e.date.toString(),
-        value: e.value,
-      };
-      arr.push(element);
-    });
-    return arr;
   }
 }

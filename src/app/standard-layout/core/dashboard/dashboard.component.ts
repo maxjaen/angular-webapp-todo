@@ -10,6 +10,7 @@ import { WeightService } from '../../shared/services/core/weight.service';
 import { Title } from '@angular/platform-browser';
 import { TimeService } from '../../shared/services/utils/time.service';
 import { KeyService } from '../../shared/services/utils/key.service';
+import { ThemeService } from '../../shared/services/utils/theme.service';
 
 interface KeyValuePair {
   key: string;

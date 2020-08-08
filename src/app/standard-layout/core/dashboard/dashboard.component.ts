@@ -42,76 +42,56 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getSettingsFromService();
-    this.getTaskPlaceholderFromService();
-    this.getTimeTaskPlaceholderFromService();
-    this.getSessionPlaceholderFromService();
-    this.getWeightPlaceholderFromService();
+    this.getSettings();
+    this.getTaskPlaceholder();
+    this.getTimeTaskPlaceholder();
+    this.getSessionPlaceholder();
+    this.getWeightPlaceholder();
   }
 
   goToUrl(component: StartPageSetting) {
     this.routerService.navigate(['/' + component.name]);
   }
 
-  // Get all settings from service
-  getSettingsFromService() {
-    this.settingsService.getAllSettings().subscribe((settings) => {
+  getSettings() {
+    this.settingsService.getSettings().subscribe((settings) => {
       this.settings = settings;
     });
   }
 
-  getTaskPlaceholderFromService() {
+  getTaskPlaceholder() {
     this.taskService.getTasks().subscribe((tasks) => {
-      const element: KeyValuePair = {
+      const value = tasks.filter((task) => task.pinned).length.toString();
+
+      this.placeHolderArray.push({
         key: 'tasks',
-        value: tasks.filter((task) => task.pinned).length.toString(),
-      };
-
-      this.placeHolderArray.push(element);
+        value: value,
+      });
     });
   }
 
-  getTimeTaskPlaceholderFromService() {
-    this.timeTaskService.getTimeElements().subscribe((timetasks) => {
-      let tempValue = 0;
+  getTimeTaskPlaceholder() {
+    this.timeTaskService.getTimeTasks().subscribe((timetasks) => {
+      const value = timetasks
+        .filter(
+          (timeTasks) =>
+            this.timeTaskService.isToday(timeTasks) &&
+            this.timeTaskService.isValid(timeTasks)
+        )
+        .map((validTimeTasks) =>
+          this.timeTaskService.extractTimeBetweenStartandEnd(validTimeTasks)
+        )
+        .reduce((a, b) => a + b, 0);
 
-      if (timetasks.length > 0) {
-        tempValue = timetasks
-          .filter((e) => {
-            const startdate: Date = new Date(e.startdate);
-            const today: Date = new Date();
-
-            if (
-              startdate.getDate() === today.getDate() &&
-              startdate.getMonth() === today.getMonth() &&
-              startdate.getFullYear() === today.getFullYear()
-            ) {
-              return true;
-            }
-            return false;
-          })
-          .filter((e) => this.timeTaskService.isValid(e))
-          .map(
-            (filteredData) =>
-              new Date(filteredData.enddate).getTime() -
-              new Date(filteredData.startdate).getTime()
-          )
-          .reduce((a, b) => a + b, 0);
-      }
-
-      const element: KeyValuePair = {
+      this.placeHolderArray.push({
         key: 'timetask',
-        value: this.timeService
-          .formatMillisecondsToString(tempValue)
-          .toString(),
-      };
-
-      this.placeHolderArray.push(element);
+        value: this.timeService.formatMillisecondsToString(value).toString(),
+      });
     });
   }
 
-  getSessionPlaceholderFromService() {
-    this.trainingService.getAllTrainings().subscribe((trainings) => {
+  getSessionPlaceholder() {
+    this.trainingService.getTrainings().subscribe((trainings) => {
       if (trainings.length > 0) {
         const timetrainings = trainings.filter((training) =>
           training.exercices.every(
@@ -120,46 +100,70 @@ export class DashboardComponent implements OnInit {
         );
 
         const training = timetrainings[timetrainings.length - 1];
+        const value = (
+          training.exercices
+            .map((exercise) => +exercise['repetitions'])
+            .reduce((sum, current) => sum + current, 0) +
+          5 * training.exercices.length
+        ).toString();
 
-        const element: KeyValuePair = {
+        this.placeHolderArray.push({
           key: 'session',
-          value: (
-            training.exercices
-              .map((exercise) => +exercise['repetitions'])
-              .reduce((sum, current) => sum + current, 0) +
-            5 * training.exercices.length
-          ).toString(),
-        };
-        this.placeHolderArray.push(element);
+          value: value,
+        });
       }
     });
   }
 
-  getWeightPlaceholderFromService() {
+  getWeightPlaceholder() {
     this.weightService.getAllWeights().subscribe((weights) => {
       if (weights.length > 0) {
-        const element: KeyValuePair = {
-          key: 'weight',
-          value: weights[weights.length - 1].value.toString(),
-        };
+        const value = weights[weights.length - 1].value.toString();
 
-        this.placeHolderArray.push(element);
+        this.placeHolderArray.push({
+          key: 'weight',
+          value: value,
+        });
       }
     });
   }
 
+  /**
+   *
+   * @param key
+   */
   getPlaceHolderValueFromKey(key: string) {
-    return this.placeHolderArray.filter((e) => e.key === key)[0].value;
+    return this.placeHolderArray.filter(
+      (placeholder) => placeholder.key === key
+    )[0].value;
   }
 
+  /**
+   *
+   * @param key
+   */
   hasPlaceHolder(key: string) {
-    return this.placeHolderArray.filter((e) => e.key === key)[0] !== undefined;
+    return (
+      this.placeHolderArray.filter(
+        (placeholder) => placeholder.key === key
+      )[0] !== undefined
+    );
   }
 
+  /**
+   * Checks if an argument of type string is an ignored module
+   * @param str check if ignore module
+   */
   isIgnoredModule(str: string) {
     return this.ignoreModules.indexOf(str) > -1;
   }
 
+  /**
+   * Replace characters in a string
+   * @param word where you want to replace characters
+   * @param from character
+   * @param to character
+   */
   replacePlaceholder(word: string, from: string, to: string) {
     return word.replace(from, to);
   }

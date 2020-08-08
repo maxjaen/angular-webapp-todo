@@ -6,6 +6,7 @@ import { KeyService } from '../../shared/services/utils/key.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UtilityService } from '../../shared/services/utils/utility.service';
 import { Title } from '@angular/platform-browser';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-exercise-overview',
@@ -15,7 +16,7 @@ import { Title } from '@angular/platform-browser';
 export class ExerciseOverViewComponent implements OnInit {
   exercises: Exercise[];
   exerciseToCreate: Exercise = new Exercise();
-  exerciseCreateForm = new FormGroup({
+  formForExerciseCreation = new FormGroup({
     name: new FormControl('', [Validators.required]),
     category: new FormControl('', [Validators.required]),
   });
@@ -39,76 +40,79 @@ export class ExerciseOverViewComponent implements OnInit {
     private snackBarService: MatSnackBar
   ) {}
 
-  ngOnInit(): void {
-    this.getExercisesFromService();
-
+  ngOnInit() {
+    this.initExercises();
     this.tabTitleService.setTitle(this.keyService.getKeyTranslation('e1'));
   }
 
-  /*
-   * ===================================================================================
-   * EXERCISE FUNCTIONS
-   * ===================================================================================
-   */
-
-  // Get all exercises from service
-  getExercisesFromService() {
-    this.exerciseService.getExercises().subscribe((exercises) => {
-      this.exercises = exercises;
-    });
+  initExercises() {
+    this.exerciseService
+      .getExercises()
+      .pipe(
+        map((exercises) => {
+          return exercises.sort((a, b) =>
+            this.utilityService.sortAlphabetical(a.name, b.name)
+          );
+        })
+      )
+      .subscribe((exercises) => {
+        this.exercises = exercises;
+      });
   }
 
-  getSortedExercises() {
-    return this.exercises.sort((a, b) =>
-      this.utilityService.sortAlphabetical(a.name, b.name)
-    );
-  }
-
-  selectExercise(exercise: Exercise): void {
-    this.selectedExercise = exercise;
-  }
-
-  // Set category of new exercise
-  setExerciseCategory(event: { value: string }) {
-    this.exerciseToCreate.category = event.value;
-  }
-
-  // Set name of new exercise
-  setExerciseName(name: string) {
-    this.exerciseToCreate.name = name;
-  }
-
-  // Creates a new exercise based on the name and category of the input fields
   saveExercise() {
-    this.setExerciseName(this.exerciseCreateForm.getRawValue().name);
+    this.prepareExerciseName(this.formForExerciseCreation.getRawValue().name);
 
     this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
       this.displayNotification(this.keyService.getKeyTranslation('t4'), null);
-      this.getExercisesFromService();
+      this.initExercises();
     });
   }
 
-  // Set the exercise which should be deleted
+  deleteExercise() {
+    this.exerciseService.deleteExercise(this.exerciseToDelete).subscribe(() => {
+      this.displayNotification(this.keyService.getKeyTranslation('t5'), null);
+      this.initExercises();
+    });
+  }
+
+  /**
+   * Select exercise from user interface
+   * @param exercise to be selected
+   */
+  selectExercise(exercise: Exercise) {
+    this.selectedExercise = exercise;
+  }
+
+  /**
+   * Set exercise that should be deleted on user interface
+   * @param event to init exercise to be deleted
+   */
   selectExerciseToDelete(event: { value: Exercise }) {
     this.exerciseToDelete = event.value;
   }
 
-  // Deletes exercise from server
-  // Opens popup window to display notification
-  deleteExercise() {
-    this.exerciseService.deleteExercise(this.exerciseToDelete).subscribe(() => {
-      this.displayNotification(this.keyService.getKeyTranslation('t5'), null);
-      this.getExercisesFromService(); // TODO remove exercise from array
-    });
+  /**
+   *  Set name of new exercise
+   * @param name to be setted for new exercise
+   */
+  prepareExerciseName(name: string) {
+    this.exerciseToCreate.name = name;
   }
 
-  /*
-   * ===================================================================================
-   * HELPER FUNCTIONS
-   * ===================================================================================
+  /**
+   * Set category of new exercise
+   * @param event to init value for new exercise
    */
+  prepareExerciseCategory(event: { value: string }) {
+    this.exerciseToCreate.category = event.value;
+  }
 
-  // Opens popup menu for notifications
+  /**
+   * Opens popup menu to show new notifications on user interface
+   * @param message to be displayed
+   * @param action to be taken
+   */
   displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 4000,

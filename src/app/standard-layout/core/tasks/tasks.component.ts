@@ -45,7 +45,7 @@ export class TasksComponent implements OnInit {
   focusedTask: Task;
   lastChangedTask: Task;
 
-  runningTimeElement: TimeTask;
+  runningTimeTask: TimeTask;
   testConfig: countUpTimerConfigModel;
 
   id: number;
@@ -100,7 +100,7 @@ export class TasksComponent implements OnInit {
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(
     event: KeyboardEvent
   ) {
-    this.manageFastCreation();
+    this.toogleFastCreation();
   }
 
   // Init all Tasks from service
@@ -127,7 +127,7 @@ export class TasksComponent implements OnInit {
 
   // Init all settings from service
   initSettingsFromService() {
-    this.settingsService.getAllSettings().subscribe((settings) => {
+    this.settingsService.getSettings().subscribe((settings) => {
       this.settings = settings;
 
       this.displayUnpinned = this.settingsService.getSettingsValue(
@@ -138,11 +138,11 @@ export class TasksComponent implements OnInit {
   }
 
   initRunningTimeElement() {
-    this.timeTaskService.getTimeElements().subscribe((data) => {
+    this.timeTaskService.getTimeTasks().subscribe((data) => {
       const timeTask = data.filter((e) => e.running === true)[0];
 
       if (this.timerService.isTimerStart && !timeTask.enddate) {
-        this.runningTimeElement = timeTask;
+        this.runningTimeTask = timeTask;
       }
     });
   }
@@ -331,7 +331,7 @@ export class TasksComponent implements OnInit {
   }
 
   // Change all abbreviations to text in the task description (based on ngModelChange)
-  replaceWithShortcut(task: Task) {
+  replaceWithShortcuts(task: Task) {
     Object.keys(this.keyService.getShortcuts()).forEach((key) => {
       task.longdescr = task.longdescr.replace(
         key,
@@ -377,7 +377,7 @@ export class TasksComponent implements OnInit {
     return this.keyService.getColor('darkgreen');
   }
 
-  manageFastCreation() {
+  toogleFastCreation() {
     this.fastCreation = !this.fastCreation;
 
     setTimeout(() => {
@@ -391,18 +391,16 @@ export class TasksComponent implements OnInit {
   }
 
   startTimeTask(task: Task): void {
-    if (this.runningTimeElement) {
-      this.runningTimeElement.enddate = this.timeService.createNewDate();
-      this.runningTimeElement.running = false;
+    if (this.runningTimeTask) {
+      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.runningTimeTask.running = false;
 
-      this.timeTaskService
-        .putTimeElement(this.runningTimeElement)
-        .subscribe(() => {
-          this.displayNotification(
-            this.keyService.getKeyTranslation('ti62'),
-            null
-          );
-        });
+      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
+        this.displayNotification(
+          this.keyService.getKeyTranslation('ti62'),
+          null
+        );
+      });
 
       this.resetTimer();
     }
@@ -421,9 +419,9 @@ export class TasksComponent implements OnInit {
       running: true,
     };
 
-    this.timeTaskService.postTimeElement(timeTask).subscribe((data) => {
+    this.timeTaskService.postTimeTask(timeTask).subscribe((data) => {
       this.timerService.startTimer();
-      this.runningTimeElement = data;
+      this.runningTimeTask = data;
     });
   }
 
@@ -431,18 +429,16 @@ export class TasksComponent implements OnInit {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
 
-      this.runningTimeElement.enddate = this.timeService.createNewDate();
-      this.runningTimeElement.running = false;
+      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.runningTimeTask.running = false;
 
-      this.timeTaskService
-        .putTimeElement(this.runningTimeElement)
-        .subscribe(() => {
-          this.displayNotification(
-            this.keyService.getKeyTranslation('ti4'),
-            null
-          );
-          this.runningTimeElement = null;
-        });
+      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
+        this.displayNotification(
+          this.keyService.getKeyTranslation('ti4'),
+          null
+        );
+        this.runningTimeTask = null;
+      });
     } else {
       this.displayNotification(this.keyService.getKeyTranslation('ti61'), null);
     }

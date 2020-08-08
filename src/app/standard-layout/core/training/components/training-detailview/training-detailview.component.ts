@@ -23,10 +23,10 @@ export class TrainingDetailViewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getTrainingFromService();
+    this.getTraining();
   }
 
-  getTrainingFromService() {
+  private getTraining() {
     this.activeRouteService.params.subscribe((params) => {
       this.trainingService
         .getTrainingByID(+params['id'])
@@ -37,21 +37,21 @@ export class TrainingDetailViewComponent implements OnInit {
     });
   }
 
-  removeTraining() {
+  public removeTraining() {
     if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
       this.activeRouteService.params.subscribe((params) => {
         this.trainingService.deleteTrainingByID(+params['id']).subscribe(() => {
-          this.viewTraining();
+          this.viewDetailedTraining();
         });
       });
     }
   }
 
-  viewTraining() {
+  public viewDetailedTraining() {
     this.RouterService.navigate(['/training']);
   }
 
-  showDatestring(date: Date): string {
+  public showDateString(date: Date): string {
     const tempDate: Date = new Date(date);
     const options = {
       weekday: 'long',

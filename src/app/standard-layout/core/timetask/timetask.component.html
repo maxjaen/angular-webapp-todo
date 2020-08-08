@@ -10,7 +10,7 @@
       <div class="input-bottom" [ngClass]="fastCreation ? '' : 'hidden'">
         <mat-form-field class="example-form-field">
           <mat-label>Let's do it!</mat-label>
-          <input matInput type="text" (keyup.enter)="newTimeTask($event)" #fast />
+          <input matInput type="text" (keyup.enter)="createFastTimeTask($event)" #fast />
         </mat-form-field>
       </div>
       <div class="show-wrapper">
@@ -66,13 +66,13 @@
             </div>
           </div>
           <div class="block" *ngIf="timeTasksFromToday.length > 1">
-            <ngx-charts-pie-chart [results]="graphData" [legend]="true" [legendTitle]="'Zeiterfassung'"
+            <ngx-charts-pie-chart [results]="graphDataFromToday" [legend]="true" [legendTitle]="'Zeiterfassung'"
               [view]="[900, 300]" [labels]="true">
             </ngx-charts-pie-chart>
           </div>
-          <div *ngIf="accumulatedElements && accumulatedElements.length > 1">
+          <div *ngIf="accumulatedTasksFromToday && accumulatedTasksFromToday.length > 1">
             <br />
-            <div *ngFor="let element of accumulatedElements">
+            <div *ngFor="let element of accumulatedTasksFromToday">
               {{ element.value }}: {{ element.name }}
             </div>
             <br />
@@ -91,36 +91,31 @@
         </div>
         <div *ngIf="timeTasksFromToday">
           <div *ngFor="let timeElement of timeTasksFromToday">
-            <div class="block low-margin smallToBottom changeField" *ngIf="selectedTimeElement == timeElement">
+            <div class="block low-margin smallToBottom changeField" *ngIf="selectedTimeTask == timeElement">
               <form class="example-form">
                 <mat-form-field class="example-full-width" style="margin-right: 2%;">
                   <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
-                    [(ngModel)]="selectedTimeElement.shortdescr" />
+                    [(ngModel)]="selectedTimeTask.shortdescr" />
                   <mat-hint>{{ message.value.length }} / 50</mat-hint>
                 </mat-form-field>
                 <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                  <textarea matInput placeholder="description" name="longdescr"
-                    [(ngModel)]="selectedTimeElement.longdescr"
-                    (ngModelChange)="replaceWithShortcut(selectedTimeElement)"></textarea>
+                  <textarea matInput placeholder="description" name="longdescr" [(ngModel)]="selectedTimeTask.longdescr"
+                    (ngModelChange)="replaceWithShortcuts(selectedTimeTask)"></textarea>
                 </mat-form-field>
                 <div class="inlineButtons">
-                  <button (click)="changeStartDate(selectedTimeElement)" style="float: right;" mat-button
-                    color="accent">
+                  <button (click)="changeStartDate(selectedTimeTask)" style="float: right;" mat-button color="accent">
                     Start
                   </button>
-                  <button (click)="changeEndDate(selectedTimeElement)" style="float: right;" mat-button color="accent">
+                  <button (click)="changeEndDate(selectedTimeTask)" style="float: right;" mat-button color="accent">
                     End
                   </button>
-                  <button (click)="saveTimeElement(selectedTimeElement)" style="float: right;" mat-button>
+                  <button (click)="saveTimeTask(selectedTimeTask)" style="float: right;" mat-button>
                     Save
-                  </button>
-                  <button (click)="saveAllTimeElements()" style="float: right;" mat-button>
-                    Save all
                   </button>
                 </div>
               </form>
             </div>
-            <mat-card (click)="selectTimeElement(timeElement)" class="example-card block">
+            <mat-card (click)="toogleSelection(timeElement)" class="example-card block">
               <div *ngIf="
                   this.settings &&
                   this.settings.length > 0 &&
@@ -137,7 +132,7 @@
                     {{ timeElement.shortdescr }}
                     <div class="fontSize12" *ngIf="
                         !timeTaskService.isValid(timeElement) &&
-                        timeElement == runningTimeElement
+                        timeElement == runningTimeTask
                       " [style.color]="'#ffffff'" style="margin-top: 20px;">
                       Measurement is running
                       <p>
@@ -151,7 +146,7 @@
                     </div>
                     <div class="fontSize12" *ngIf="
                         !timeTaskService.isValid(timeElement) &&
-                        timeElement != runningTimeElement
+                        timeElement != runningTimeTask
                       " [style.color]="'#ffffff'" style="margin-top: 20px;">
                       Measurement is invalid
                       <p>
@@ -165,7 +160,7 @@
                     </div>
                     <div class="fontSize12" style="margin-top: 20px;" *ngIf="timeTaskService.isValid(timeElement)">
                       <div class="inline">
-                        {{ timeElementToTimestring(timeElement) }} >>
+                        {{ toString(timeElement) }} >>
                       </div>
                       {{
                         this.timeService.formatDateToStringWithDescription(
@@ -201,7 +196,7 @@
                 </mat-card-header>
               </div>
               <div class="inlineButtons">
-                <button title="Continue" (click)="continueTimeElement(timeElement)" mat-button>
+                <button title="Continue" (click)="continueTimeTask(timeElement)" mat-button>
                   <mat-icon>play_arrow</mat-icon>
                 </button>
                 <button title="Delete" (click)="removeTimeElement(timeElement)" mat-button>
@@ -243,15 +238,15 @@
           </p>
         </div>
         <div class="block" *ngIf="
-            historyAccumulatedElements && historyAccumulatedElements.length > 0
+            accumulatedTasksFromHistory && accumulatedTasksFromHistory.length > 0
           ">
-          <ngx-charts-pie-chart [results]="graphDataHistory" [legend]="true" [legendTitle]="'Zeiterfassung'"
+          <ngx-charts-pie-chart [results]="graphDataFromHistory" [legend]="true" [legendTitle]="'Zeiterfassung'"
             [view]="[900, 300]" [labels]="true">
           </ngx-charts-pie-chart>
         </div>
-        <div *ngIf="historyAccumulatedElements">
+        <div *ngIf="accumulatedTasksFromHistory">
           <br />
-          <div *ngFor="let element of historyAccumulatedElements">
+          <div *ngFor="let element of accumulatedTasksFromHistory">
             {{ element.value }}: {{ element.name }}
           </div>
           <br />
@@ -267,7 +262,7 @@
                 </div>
                 <div class="fontSize12" style="margin-top: 20px;">
                   <div *ngIf="timeElement.enddate" style="display: inline;">
-                    {{ timeElementToTimestring(timeElement) }} >>
+                    {{ toString(timeElement) }} >>
                   </div>
                   {{
                     this.timeService.formatDateToStringWithDescription(

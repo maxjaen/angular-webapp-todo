@@ -31,7 +31,7 @@ export class ExerciseDetailviewComponent implements OnChanges {
   }
 
   initTrainingData() {
-    this.trainingService.getAllTrainings().subscribe((trainings) => {
+    this.trainingService.getTrainings().subscribe((trainings) => {
       if (this.exercise) {
         this.trainings = this.trainingService.retrieveTrainingsIncludingExercise(
           trainings,

@@ -51,7 +51,7 @@ export class GraphDataService {
    * @param pair whose value should be mapped from milliseconds to minutes
    * @returns new new key value pair with minutes as value
    */
-  public initGraphDataForAccumulatedNameAndNumberValuePair(
+  public createAccumulationGraph(
     pair: NameAndNumberPair[]
   ): NameAndNumberPair[] {
     return pair.map((entry) => {

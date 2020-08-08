@@ -20,6 +20,7 @@ import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { UtilityService } from '../../shared/services/utils/utility.service';
 import { KeyService } from '../../shared/services/utils/key.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-training-overview',
@@ -60,74 +61,38 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getExercisesFromService();
-    this.getTrainingsFromService();
+    this.getExercises();
+    this.getTrainings();
   }
 
-  /*
-   * ===================================================================================
-   * HOSTLISTENER
-   * ===================================================================================
+  /**
+   * Shows a dialog window to restart webpage
    */
-
   @HostListener('window:beforeunload')
   onBeforeUnload() {
     return false;
   }
 
-  /*
-   * ===================================================================================
-   * EXERCISE FUNCTIONS
-   * ===================================================================================
-   */
-
-  // Get all exercises from service
-  getExercisesFromService() {
+  private getExercises() {
     this.exerciseService.getExercises().subscribe((exercises) => {
       this.exercises = exercises;
     });
   }
 
-  // Compares the name of the exerciseof one element to the element one postion in before
-  // Returns true, if it's the same exercise name, otherwise false
-  compareExercisetoElementBefore(exercise: Exercise, index: number): boolean {
-    if (index > 0) {
-      if (this.exercisesToInsert[index - 1].name === exercise.name) {
-        return true;
-      }
-    }
-
-    return false;
+  private getTrainings() {
+    this.trainingService
+      .getTrainings()
+      .pipe(
+        map((trainings) =>
+          this.trainingService.retrieveTrainingsSortedByDate(trainings)
+        )
+      )
+      .subscribe((trainings) => {
+        this.trainings = trainings;
+      });
   }
 
-  /*
-   * ===================================================================================
-   * TRAINING FUNCTIONS
-   * ===================================================================================
-   */
-
-  // Choose olf training as template for new training
-  selectTraining(event: { value: Training }) {
-    this.trainingDescription = event.value.description;
-
-    event.value.exercices.forEach((element) => {
-      this.toggleCheckboxEvent(element, { checked: true });
-    });
-  }
-
-  // Choose olf training as template for new training
-  selectMode(event: { value: string }) {
-    this.selectedMode = event.value;
-  }
-
-  // Routes to url with detail view of of a training
-  viewTraining(training: Training) {
-    this.routerService.navigate(['/training/' + training.id]);
-  }
-
-  // Creates new training data based on choosen exercises
-  // Triggered whne pressing create button
-  createTraining() {
+  public createTraining() {
     this.training = {
       id: 0,
       exercices: [],
@@ -147,14 +112,32 @@ export class TrainingOverViewComponent implements OnInit {
 
     this.trainingService.postTraining(this.training).subscribe(() => {
       this.displayNotification(this.keyService.getKeyTranslation('t2'), null);
-      this.getTrainingsFromService();
+      this.getTrainings();
       this.resetForm();
     });
   }
 
-  // Creates a exercise string that can be displayed on the website
-  // Returns view string
-  createExerciseString(exercise: Exercise): string {
+  /**
+   * Compares the name of the exercise of one element to the element one postion in before
+   * @returns true, if it's the same exercise name, otherwise false
+   * @param exercise to be compared
+   * @param index to get the element before in array
+   */
+  public compareExercisetoOtherBefore(
+    exercise: Exercise,
+    index: number
+  ): boolean {
+    return (
+      index > 0 && this.exercisesToInsert[index - 1].name === exercise.name
+    );
+  }
+
+  /**
+   * Creates a exercise string that can be displayed on the user interface
+   * @param exercise to create string from
+   * @returns exercise formatted as string
+   */
+  private createExerciseString(exercise: Exercise): string {
     const stringArray: string[] = Object.getOwnPropertyNames(exercise).filter(
       (e) => e !== 'name' && e !== 'category'
     );
@@ -183,95 +166,13 @@ export class TrainingOverViewComponent implements OnInit {
     return tempString;
   }
 
-  // Get training data from service
-  getTrainingsFromService() {
-    this.trainingService.getAllTrainings().subscribe((trainings) => {
-      this.trainings = this.trainingService.retrieveTrainingsSortedByDate(
-        trainings
-      );
-    });
-  }
-
-  // Set the training date to the date choosen from the pupup dialog clock
-  setTrainingsDate(type: string, event: MatDatepickerInputEvent<Date>) {
-    this.trainingsDate = event.value;
-  }
-
-  // Creates human readable String from date object
-  // Returns date as string
-  showDatestring(date: Date): string {
-    const tempDate: Date = new Date(date);
-    const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    return tempDate.toLocaleDateString('de-DE', options);
-  }
-
-  isRunningOrBicycle(training: Training): boolean {
-    return training.exercices.length === 1;
-  }
-
-  isGym(training: Training): boolean {
-    if (
-      training.exercices.find(
-        (e) =>
-          e.name === 'Bench Press' ||
-          e.name === 'Rowing Sitting At The Cable Pull' ||
-          e.name === 'Lat Pulldown Crossover' ||
-          e.name === 'Butterfly' ||
-          e.name === 'Box Climping'
-      )
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
-  getStatusColorValue(training: Training): string {
-    if (this.isRunningOrBicycle(training)) {
-      return this.keyService.getColor('red');
-    }
-
-    if (this.isGym(training)) {
-      return this.keyService.getColor('blue');
-    }
-
-    return this.keyService.getColor('darkgray');
-  }
-
-  showMoreTrainings() {
-    if (this.moreTrainingsThanDisplayed()) {
-      this.displayedTrainings += 10;
-    } else {
-      console.log(this.keyService.getKeyTranslation('a21'));
-    }
-  }
-
-  showLessTrainings() {
-    if (this.displayedTrainings > 10) {
-      this.displayedTrainings -= 10;
-    } else {
-      console.log(this.keyService.getKeyTranslation('a22'));
-    }
-  }
-
-  moreTrainingsThanDisplayed() {
-    return this.trainings.length - this.displayedTrainings > 0;
-  }
-
-  /*
-   * ===================================================================================
-   * CHECKBOX METHODS
-   * ===================================================================================
+  /**
+   * Gets called when any checkbox for a exercise is toogled
+   * Adds/Removes exercises and form groups to/from lists
+   * @param exercise to be toogled on
+   * @param event when toogle checkbox on user interface
    */
-
-  // Gets called when any checkbox for a exercise is toogled
-  // Adds/Removes exercises and form groups to/from lists
-  toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean }) {
+  public toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean }) {
     this.setCheckBoxFromExerciseName(exercise.name, true);
 
     const pattern: ConditionalPattern = {
@@ -310,29 +211,11 @@ export class TrainingOverViewComponent implements OnInit {
     }
   }
 
-  // Set checked poperty for each toogled checkbox
-  setCheckBoxFromExerciseName(exerciseName: string, checked: boolean) {
-    this.exercises
-      .filter((exercise) => exerciseName === exercise.name)
-      .forEach((exercise) => {
-        exercise.checked = checked;
-      });
-  }
-
-  /*
-   * ===================================================================================
-   * FORM METHODS
-   * ===================================================================================
+  /**
+   * Create new from group for exercise
+   * @param exercise to create from for
    */
-
-  // Get form group from array with specific id
-  // Returns form group
-  getFormGroup(index: number): FormGroup {
-    return this.formGroups[index];
-  }
-
-  // Create form group
-  createFormGroup(exercise: Exercise) {
+  private createFormGroup(exercise: Exercise) {
     this.formGroupToInsert = new FormGroup({});
 
     const patternArray: string[] = this.retrievePatternKeys(exercise);
@@ -361,10 +244,14 @@ export class TrainingOverViewComponent implements OnInit {
     this.formGroups.push(this.formGroupToInsert);
   }
 
-  // Removes element in exercise list and form group list
-  removeElementFromForm(exercise: Exercise, elementPosition: number) {
+  /**
+   * Removes element in exercise list and form group list
+   * @param exercise to be removed
+   * @param elementPosition to remove from array
+   */
+  public removeExerciseFromForm(exercise: Exercise, elementPosition: number) {
     if (
-      // only toogle exercise checkbox, when exercise only once inserted
+      // only toogle exercise checkbox when exercise only once inserted
       this.exercisesToInsert.filter((e) => e.name === exercise.name).length ===
       1
     ) {
@@ -394,117 +281,88 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   /**
-   * Returns true, if the current form is valid, otherwise false
+   * Set checked poperty for each toogled checkbox
+   * @param exerciseName to filetr for
+   * @param checked value to be set and showed on user interface
    */
-  formIsValid(): boolean {
-    if (this.formGroups.length <= 0 || this.formGroups.find((e) => e.invalid)) {
-      return false;
-    }
-
-    // TODO validating form
-
-    return true;
+  private setCheckBoxFromExerciseName(exerciseName: string, checked: boolean) {
+    this.exercises
+      .filter((exercise) => exerciseName === exercise.name)
+      .forEach((exercise) => {
+        exercise.checked = checked;
+      });
   }
-
-  /**
-   * Reset forms and choosen exercises, triggered by reset button
-   */
-  resetForm() {
-    this.exercisesToInsert = [];
-    this.formGroupToInsert = null;
-    this.formGroups = [];
-
-    this.exercises.forEach((exercise) => {
-      exercise.checked = false;
-    });
-  }
-
-  /*
-   * ===================================================================================
-   * TRAINING TYPES/PATTERN METHODS
-   * ===================================================================================
-   */
 
   /**
    * Retrieve pattern keys string array from input exercise
    * @param exercise to get keys from
    */
-  retrievePatternKeys(exercise: Exercise): string[] {
-    // TODO switch case
-    if (exercise.category === 'conditionalpattern1d') {
-      const pattern: ConditionalPattern = {
-        name: 'conditionalpattern1d',
-        records: 0,
-        repetitions: 0,
-        unit: 's',
-      };
-      exercise.pattern = pattern;
-      return Object.getOwnPropertyNames(pattern);
-    }
-
-    if (exercise.category === 'conditionalpattern2d') {
-      const pattern: ConditionalPattern2d = {
-        name: 'conditionalpattern2d',
-        period: 0,
-        speed: 0,
-        unitperiod: 'min',
-        unitspeed: 'km/h',
-      };
-      exercise.pattern = pattern;
-      return Object.getOwnPropertyNames(pattern);
-    }
-
-    if (exercise.category === 'countablepattern') {
-      const pattern: CountablePattern = {
-        name: 'countablepattern',
-        records: 0,
-        repetitions: 0,
-      };
-      exercise.pattern = pattern;
-      return Object.getOwnPropertyNames(pattern);
-    }
-
-    if (exercise.category === 'weightpattern') {
-      const pattern: WeightPattern = {
-        name: 'weightpattern',
-        records: 0,
-        repetitions: 0,
-        weight: 0,
-        unit: 'kg',
-      };
-      exercise.pattern = pattern;
-      return Object.getOwnPropertyNames(pattern);
-    }
-
-    if (exercise.category === 'freepattern') {
-      const pattern: FreePattern = {
-        name: 'freepattern',
-        text: '',
-      };
-      exercise.pattern = pattern;
-      return Object.getOwnPropertyNames(pattern);
+  private retrievePatternKeys(exercise: Exercise): string[] {
+    switch (exercise.category) {
+      case 'conditionalpattern1d':
+        let patternOne: ConditionalPattern = {
+          name: 'conditionalpattern1d',
+          records: 0,
+          repetitions: 0,
+          unit: 's',
+        };
+        exercise.pattern = patternOne;
+        return Object.getOwnPropertyNames(patternOne);
+      case 'conditionalpattern2d':
+        let patternTwo: ConditionalPattern2d = {
+          name: 'conditionalpattern2d',
+          period: 0,
+          speed: 0,
+          unitperiod: 'min',
+          unitspeed: 'km/h',
+        };
+        exercise.pattern = patternTwo;
+        return Object.getOwnPropertyNames(patternTwo);
+      case 'countablepattern':
+        const patternThree: CountablePattern = {
+          name: 'countablepattern',
+          records: 0,
+          repetitions: 0,
+        };
+        exercise.pattern = patternThree;
+        return Object.getOwnPropertyNames(patternThree);
+      case 'weightpattern':
+        const patternFour: WeightPattern = {
+          name: 'weightpattern',
+          records: 0,
+          repetitions: 0,
+          weight: 0,
+          unit: 'kg',
+        };
+        exercise.pattern = patternFour;
+        return Object.getOwnPropertyNames(patternFour);
+      case 'freepattern':
+        const patternFive: FreePattern = {
+          name: 'freepattern',
+          text: '',
+        };
+        exercise.pattern = patternFive;
+        return Object.getOwnPropertyNames(patternFive);
+      default:
+        break;
     }
   }
 
-  // Checks if exercise has a specific training pattern
-  // Return true if is has the pattern, otherwise false
-  hasPattern(exercise: Exercise, pattern: string): boolean {
-    if (exercise.pattern.name === pattern) {
-      return true;
-    }
-
-    return false;
+  /**
+   * Checks if exercise has a specific training pattern
+   * @param exercise to be checked
+   * @param pattern to be checked on exercise
+   */
+  public hasPattern(exercise: Exercise, pattern: string): boolean {
+    return exercise.pattern.name === pattern;
   }
 
-  // Opens popup menu for notifications
-  displayNotification(message: string, action: string) {
-    this.snackBarService.open(message, action, {
-      duration: 4000,
-    });
-  }
-
-  // Changes the position of an element in forms group and exercise array at the same time
-  switchPosition(direction: string, index: number) {
+  /**
+   * Changes the position of an element in forms group and exercise array at the same time
+   * @param direction to switch position
+   * @param index of the element to be changed
+   */
+  public switchPosition(direction: string, index: number) {
     this.utilityService.changeElementOrderInArray(
       this.formGroups,
       direction,
@@ -517,13 +375,115 @@ export class TrainingOverViewComponent implements OnInit {
     );
   }
 
-  /*
-   * ===================================================================================
-   * SMOOTH SCROLLING
-   * ===================================================================================
-   */
+  public viewDetailedTraining(training: Training) {
+    this.routerService.navigate(['/training/' + training.id]);
+  }
 
-  scroll(element: string) {
+  public selectTrainingTemplate(event: { value: Training }) {
+    this.trainingDescription = event.value.description;
+    event.value.exercices.forEach((element) => {
+      this.toggleCheckboxEvent(element, { checked: true });
+    });
+  }
+
+  public selectTrainingMode(event: { value: string }) {
+    this.selectedMode = event.value;
+  }
+
+  public showMoreTrainings() {
+    if (this.moreTrainingsThanDisplayed()) {
+      this.displayedTrainings += 10;
+    } else {
+      console.log(this.keyService.getKeyTranslation('a21'));
+    }
+  }
+
+  public showLessTrainings() {
+    if (this.displayedTrainings > 10) {
+      this.displayedTrainings -= 10;
+    } else {
+      console.log(this.keyService.getKeyTranslation('a22'));
+    }
+  }
+
+  public moreTrainingsThanDisplayed() {
+    return this.trainings.length - this.displayedTrainings > 0;
+  }
+
+  public setTrainingsDate(type: string, event: MatDatepickerInputEvent<Date>) {
+    this.trainingsDate = event.value;
+  }
+
+  /**
+   * Creates human readable String from date object
+   * @param date to be formatted
+   * @returns date as formatted string
+   */
+  public showDateString(date: Date): string {
+    const tempDate: Date = new Date(date);
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+    return tempDate.toLocaleDateString('de-DE', options);
+  }
+
+  /**
+   * Set status color for user interface
+   * @param training to get status color for
+   */
+  public getStatusColorValue(training: Training): string {
+    if (this.isRunningOrBicycle(training)) {
+      return this.keyService.getColor('red');
+    }
+
+    if (this.isGym(training)) {
+      return this.keyService.getColor('blue');
+    }
+
+    return this.keyService.getColor('darkgray');
+  }
+
+  private isRunningOrBicycle(training: Training): boolean {
+    return training.exercices.length === 1;
+  }
+
+  private isGym(training: Training): boolean {
+    return (
+      training.exercices.filter(
+        (exercise) =>
+          exercise.name === 'Bench Press' ||
+          exercise.name === 'Rowing Sitting At The Cable Pull' ||
+          exercise.name === 'Lat Pulldown Crossover' ||
+          exercise.name === 'Butterfly' ||
+          exercise.name === 'Box Climping'
+      ).length > 0
+    );
+  }
+
+  public formIsValid(): boolean {
+    return (
+      this.formGroups.length > 0 && !this.formGroups.find((e) => e.invalid)
+    );
+  }
+
+  public resetForm() {
+    this.exercisesToInsert = [];
+    this.formGroupToInsert = null;
+    this.formGroups = [];
+
+    this.exercises.forEach((exercise) => {
+      exercise.checked = false;
+    });
+  }
+
+  /**
+   * Scroll on user interface to specific element
+   * @param element to be scrolled to
+   */
+  public scroll(element: string) {
     switch (element) {
       case 'overviewtraining':
         this.overviewtraining.nativeElement.scrollIntoView({
@@ -538,5 +498,16 @@ export class TrainingOverViewComponent implements OnInit {
         });
         break;
     }
+  }
+
+  /**
+   * Opens popup menu to show new notifications on user interface
+   * @param message to be displayed
+   * @param action to be taken
+   */
+  private displayNotification(message: string, action: string) {
+    this.snackBarService.open(message, action, {
+      duration: 4000,
+    });
   }
 }

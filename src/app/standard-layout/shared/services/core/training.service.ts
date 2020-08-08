@@ -16,7 +16,7 @@ export class TrainingService {
     private httpClient: HttpClient
   ) {}
 
-  public getAllTrainings(): Observable<Training[]> {
+  public getTrainings(): Observable<Training[]> {
     return this.httpClient.get<Array<Training>>(this.url);
   }
 
@@ -47,6 +47,10 @@ export class TrainingService {
     );
   }
 
+  /**
+   * @param trainings to be sorted
+   * @returns sorted list of trainings
+   */
   public retrieveTrainingsSortedByDate(trainings: Training[]) {
     return trainings.sort((training, other) =>
       this.utilityService.sortNumerical(

@@ -18,26 +18,26 @@ export class TimeTaskService {
     private timeService: TimeService
   ) {}
 
-  public getTimeElements(): Observable<TimeTask[]> {
+  public getTimeTasks(): Observable<TimeTask[]> {
     return this.httpClient.get<Array<TimeTask>>(this.url);
   }
 
-  public getTimeElementByID(id: number): Observable<TimeTask[]> {
+  public getTimeTaskByID(id: number): Observable<TimeTask[]> {
     return this.httpClient.get<Array<TimeTask>>(this.url + '/' + id);
   }
 
-  public postTimeElement(timeTask: TimeTask): Observable<TimeTask> {
+  public postTimeTask(timeTask: TimeTask): Observable<TimeTask> {
     return this.httpClient.post<TimeTask>(this.url, timeTask);
   }
 
-  public putTimeElement(timeTask: TimeTask): Observable<TimeTask> {
+  public putTimeTask(timeTask: TimeTask): Observable<TimeTask> {
     return this.httpClient.put<TimeTask>(
       this.url + '/' + timeTask.id,
       timeTask
     );
   }
 
-  public deleteTimeElement(timeTask: number): Observable<TimeTask> {
+  public deleteTimeTask(timeTask: number): Observable<TimeTask> {
     return this.httpClient.delete<TimeTask>(this.url + '/' + timeTask);
   }
 
@@ -45,19 +45,29 @@ export class TimeTaskService {
    * @param input timetask to be checked for todays date
    * @returns time tasks with todays date in numerical order
    */
-  public retrieveTimeTasksFromToday(input: TimeTask[]): TimeTask[] {
+  public retrieveFromToday(input: TimeTask[]): TimeTask[] {
     return input
-      .filter((e) => {
-        const startdate: Date = new Date(e.startdate);
-        const now: Date = this.timeService.createNewDate();
-
-        return (
-          startdate.getDate() === now.getDate() &&
-          startdate.getMonth() === now.getMonth() &&
-          startdate.getFullYear() === now.getFullYear()
-        );
-      })
+      .filter((timeTask) => this.isToday(timeTask))
       .sort((a, b) => this.utilityService.sortNumerical(a.id, b.id));
+  }
+
+  /**
+   * @param input timetask to be checked for specific date
+   * @returns time tasks with specific date in numerical order
+   */
+  public retrieveFromHistory(
+    timeTask: TimeTask,
+    day: string,
+    month: string,
+    year: string
+  ) {
+    const date: Date = new Date(timeTask.startdate);
+
+    return (
+      date.getDate() === +day &&
+      date.getMonth() === +month - 1 &&
+      date.getFullYear() === +year
+    );
   }
 
   /**
@@ -77,13 +87,8 @@ export class TimeTaskService {
    */
   public calculateTimeForCurrentWeek(input: TimeTask[]): number {
     return input
-      .filter((timeTask) => this.isValid(timeTask))
       .filter(
-        (validTimeTask) =>
-          this.timeService.calculateCurrentWeekNumber() ===
-          this.timeService.calculateWeekNumberForDate(
-            new Date(validTimeTask.startdate)
-          )
+        (timeTask) => this.isValid(timeTask) && this.isCurrentWeek(timeTask)
       )
       .map((validTimeTask) => this.extractTimeBetweenStartandEnd(validTimeTask))
       .reduce((a, b) => a + b, 0);
@@ -100,10 +105,10 @@ export class TimeTaskService {
         return {
           name: validTimeTask.shortdescr,
           value: input
-            .filter((othertimeTask) => this.isValid(othertimeTask))
             .filter(
-              (otherValidTimeTask) =>
-                validTimeTask.shortdescr === otherValidTimeTask.shortdescr
+              (othertimeTask) =>
+                this.isValid(othertimeTask) &&
+                this.haveSameDescription(validTimeTask, othertimeTask)
             )
             .reduce((a, b) => a + this.extractTimeBetweenStartandEnd(b), 0),
         };
@@ -118,7 +123,7 @@ export class TimeTaskService {
    * @param timeTask to extract time from
    * @returns time between start and end in milliseconds
    */
-  private extractTimeBetweenStartandEnd(timeTask: TimeTask): number {
+  public extractTimeBetweenStartandEnd(timeTask: TimeTask): number {
     return (
       new Date(timeTask.enddate).getTime() -
       new Date(timeTask.startdate).getTime()
@@ -134,5 +139,31 @@ export class TimeTaskService {
       new Date(timetask.enddate).getTime() >
         new Date(timetask.startdate).getTime()
     );
+  }
+
+  public isToday(timeTask: TimeTask) {
+    const startdate: Date = new Date(timeTask.startdate);
+    const now: Date = this.timeService.createNewDate();
+
+    return (
+      startdate.getDate() === now.getDate() &&
+      startdate.getMonth() === now.getMonth() &&
+      startdate.getFullYear() === now.getFullYear()
+    );
+  }
+
+  private isCurrentWeek(timeTask: TimeTask): boolean {
+    return (
+      this.timeService.calculateCurrentWeekNumber() ===
+      this.timeService.calculateWeekNumberForDate(new Date(timeTask.startdate))
+    );
+  }
+
+  public isSame(timeTask: TimeTask, other: TimeTask) {
+    return other !== undefined && other !== null && timeTask.id === other.id;
+  }
+
+  private haveSameDescription(timeTask: TimeTask, other: TimeTask): boolean {
+    return timeTask.shortdescr === other.shortdescr;
   }
 }

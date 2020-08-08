@@ -1,10 +1,9 @@
-
-
 <div *ngIf="actualTraining">
    <div class=content>
-      <button style="margin-right: 15px; margin-bottom: 30px;" (click)="removeTraining()" mat-stroked-button>Delete</button>
-      <button style="margin-bottom: 30px;" (click)="viewTraining()" mat-stroked-button>Back</button>
-      <p style="margin-bottom: 30px;">Datum: {{ showDatestring(actualTraining.date) }}</p>
+      <button style="margin-right: 15px; margin-bottom: 30px;" (click)="removeTraining()"
+         mat-stroked-button>Delete</button>
+      <button style="margin-bottom: 30px;" (click)="viewDetailedTraining()" mat-stroked-button>Back</button>
+      <p style="margin-bottom: 30px;">Datum: {{ showDateString(actualTraining.date) }}</p>
       <p style="margin-bottom: 30px;">Beschreibung: {{ actualTraining.description }}</p>
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
          <ng-container matColumnDef="name">
@@ -24,4 +23,3 @@
       </table>
    </div>
 </div>
-

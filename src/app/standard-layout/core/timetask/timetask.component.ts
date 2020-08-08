@@ -21,6 +21,12 @@ import { Settings } from '../settings/model/settings';
 import { NameAndNumberPair } from '../../shared/model/GraphData';
 import { NameAndStringPair } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
+import { tap, map } from 'rxjs/operators';
+
+enum Period {
+  TODAY,
+  HISTORY,
+}
 
 const EMPTY_STRING = '';
 
@@ -36,17 +42,8 @@ export class TimeTaskComponent implements OnInit {
   testConfig: countUpTimerConfigModel;
   settings: Settings[] = [];
 
-  timeTasksFromToday: TimeTask[];
-  timeTasks: TimeTask[];
-  runningTimeElement: TimeTask;
-  selectedTimeElement: TimeTask;
-  timeTasksFromHistory: TimeTask[];
-
-  tasksWithAccumulatedSeconds: NameAndNumberPair[] = [];
-  accumulatedElements: NameAndStringPair[] = [];
-  historyAccumulatedElements: NameAndStringPair[] = [];
-  graphData: NameAndNumberPair[] = [];
-  graphDataHistory: NameAndNumberPair[] = [];
+  runningTimeTask: TimeTask;
+  selectedTimeTask: TimeTask;
 
   id: number;
   shortdescr: string;
@@ -54,7 +51,19 @@ export class TimeTaskComponent implements OnInit {
   startdate: Date;
   enddate: Date;
 
-  // TODO timerservice doesn't show correct time in google chrome, when tab inactive
+  // general
+  timeTasks: TimeTask[] = [];
+
+  // today
+  timeTasksFromToday: TimeTask[] = [];
+  accumulatedTasksFromToday: NameAndStringPair[] = [];
+  graphDataFromToday: NameAndNumberPair[] = [];
+
+  // history
+  timeTasksFromHistory: TimeTask[] = [];
+  accumulatedTasksFromHistory: NameAndStringPair[] = [];
+  graphDataFromHistory: NameAndNumberPair[] = [];
+
   constructor(
     public settingsService: SettingsService,
     public timeTaskService: TimeTaskService,
@@ -72,17 +81,24 @@ export class TimeTaskComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getSettingsFromService();
-    this.getTimeElementsFromService();
-    this.setTimerConfig();
+    this.setTimerConfiguration();
+    this.getSettings();
+    this.getTimeTasksFromToday();
   }
 
-  /*
-   * ===================================================================================
-   * HOSTLISTENER
-   * ===================================================================================
+  /**
+   * Restarts website only if the timer is not running, otherwise
+   * shows a dialog window
    */
+  @HostListener('window:beforeunload')
+  onBeforeUnload() {
+    return !this.timerService.isTimerStart;
+  }
 
+  /**
+   * Create new time task with shift and click on user interface
+   * @param event when clicked
+   */
   @HostListener('click', ['$event'])
   onMouseClick(event: MouseEvent) {
     if (event.shiftKey) {
@@ -90,364 +106,15 @@ export class TimeTaskComponent implements OnInit {
     }
   }
 
-  @HostListener('window:beforeunload')
-  onBeforeUnload() {
-    return !this.timerService.isTimerStart;
-  }
-
-  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(
-    event: KeyboardEvent
-  ) {
-    this.manageFastCreation();
-  }
-
-  /*
-   * ===================================================================================
-   * CRUD OPERATIONS
-   * ===================================================================================
-   */
-
-  /*
-   * Get all settings from service
-   */
-  getSettingsFromService() {
-    this.settingsService.getAllSettings().subscribe((settings) => {
-      this.settings = settings;
-    });
-  }
-
-  /*
-   * Get all TimeTasks from service
-   * Fill particular arrays with a subset of all TimeTasks
-   */
-  getTimeElementsFromService() {
-    this.timeTasks = [];
-    this.timeTasksFromToday = [];
-    this.timeTasksFromHistory = [];
-
-    this.timeTaskService.getTimeElements().subscribe((data) => {
-      this.timeTasks = data;
-
-      this.initTimeTasksFromToday();
-      this.initAccumulationProcess();
-
-      if (this.timerService.isTimerStart) {
-        if (this.timeTasksFromToday.length > 0) {
-          this.runningTimeElement = this.timeTasksFromToday[0];
-        }
-      }
-    });
-  }
-
-  /*
-   * ===================================================================================
-   * INIT
-   * ===================================================================================
-   */
-
-  private initTimeTasksFromToday() {
-    this.timeTasksFromToday = this.timeTaskService.retrieveTimeTasksFromToday(
-      this.timeTasks
-    );
-  }
-
-  private initAccumulationProcess() {
-    this.tasksWithAccumulatedSeconds = this.timeTaskService.extractAccumulatedTimeTasks(
-      this.timeTasksFromToday
-    );
-    this.accumulatedElements = this.initAccumulatedTaskData(
-      this.tasksWithAccumulatedSeconds
-    );
-    this.graphData = this.graphDataService.initGraphDataForAccumulatedNameAndNumberValuePair(
-      this.tasksWithAccumulatedSeconds
-    );
-  }
-
-  private initAccumulatedTaskData(pair: NameAndNumberPair[]) {
-    return pair.map((entry) => {
-      return {
-        name: entry.name,
-        value: this.timeService.formatMillisecondsToString(entry.value),
-      };
-    });
-  }
-
-  /*
-   * Load history data from history elements
-   */
-  initHistoryData() {
-    const accumulatedInSeconds = this.timeTaskService.extractAccumulatedTimeTasks(
-      this.timeTasksFromHistory
-    );
-
-    this.historyAccumulatedElements = this.initAccumulatedTaskData(
-      accumulatedInSeconds
-    );
-    this.graphDataHistory = this.graphDataService.initGraphDataForAccumulatedNameAndNumberValuePair(
-      accumulatedInSeconds
-    );
-  }
-
-  // ===================================================================================
-  // CRUD OPERATIONS
-  // ===================================================================================
-
   /**
-   * Create new TimeTask with fastCreation (press esc)
-   * @param event when pressing enter after addign text to fast selection
+   * Show window for faster creation of new time tasks
+   * @param event when esc pressed
    */
-  newTimeTask(event: any) {
-    const date = this.timeService.createNewDate();
-    const title = event.target.value;
-    const empty = '';
-
-    if (this.timerService.isTimerStart) {
-      this.runningTimeElement.enddate = this.timeService.createNewDate();
-      this.timeTaskService
-        .putTimeElement(this.runningTimeElement)
-        .subscribe(() => {
-          this.getTimeElementsFromService();
-        });
-    }
-    this.resetTimer();
-
-    const timeTask: TimeTask = {
-      id: 0,
-      title: title,
-      shortdescr: title,
-      longdescr: empty,
-      startdate: date,
-      enddate: null,
-    };
-
-    this.timeTaskService.postTimeElement(timeTask).subscribe((data) => {
-      this.getTimeElementsFromService();
-      this.runningTimeElement = data;
-      this.hideSelectedTimeElement();
-      this.startTimer();
-    });
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler() {
+    this.toogleFastCreation();
   }
 
-  /**
-   * Create a new TimeTask from an already finished TimeTask
-   * @param timeElement to continue
-   */
-  continueTimeElement(timeElement: TimeTask) {
-    if (!window.confirm(this.keyService.getKeyTranslation('a12'))) {
-      return;
-    }
-
-    if (this.timerService.isTimerStart) {
-      this.runningTimeElement.enddate = this.timeService.createNewDate();
-      this.enddate.setHours(this.enddate.getHours() + 1);
-      this.timeTaskService
-        .putTimeElement(this.runningTimeElement)
-        .subscribe(() => {
-          this.getTimeElementsFromService();
-        });
-    }
-    this.resetTimer();
-
-    const tempTimeElement: TimeTask = {
-      id: null,
-      title: timeElement.title,
-      shortdescr: timeElement.shortdescr,
-      longdescr: timeElement.longdescr,
-      startdate: this.timeService.createNewDate(),
-      enddate: null,
-      task: timeElement.task,
-    };
-
-    this.timeTaskService.postTimeElement(tempTimeElement).subscribe((data) => {
-      this.getTimeElementsFromService();
-      this.runningTimeElement = data;
-      this.hideSelectedTimeElement();
-      this.startTimer();
-    });
-  }
-
-  /**
-   * Save TimeTask in the database
-   * @param timeElement to save
-   */
-  saveTimeElement(timeElement: TimeTask) {
-    if (timeElement !== undefined) {
-      if (this.utilityService.isNumber(timeElement.id)) {
-        this.timeTaskService.putTimeElement(timeElement).subscribe(() => {
-          this.displayNotification(
-            this.keyService.getKeyTranslation('ti2'),
-            null
-          );
-          this.getTimeElementsFromService();
-        });
-      } else {
-        console.warn(
-          `saveTimeElement(): ID: ${timeElement.id}, expected number`
-        );
-      }
-    } else {
-      console.warn(`saveTimeElement(): ID: ${timeElement.id}, expected id`);
-    }
-
-    this.hideSelectedTimeElement();
-  }
-
-  /**
-   * Save all TimeTasks in the database
-   */
-  saveAllTimeElements() {
-    this.timeTasksFromToday.forEach((element) => {
-      this.saveTimeElement(element);
-    });
-  }
-
-  /**
-   * Remove selected TimeTask from the database
-   * @param timeElement to remove
-   */
-  removeTimeElement(timeElement: TimeTask) {
-    if (
-      timeElement === undefined ||
-      !this.utilityService.isNumber(timeElement.id)
-    ) {
-      return;
-    }
-
-    if (!window.confirm(this.keyService.getKeyTranslation('a11'))) {
-      return;
-    }
-
-    if (
-      this.runningTimeElement !== undefined &&
-      this.runningTimeElement !== null &&
-      timeElement.id === this.runningTimeElement.id
-    ) {
-      this.displayNotification(this.keyService.getKeyTranslation('a23'), null);
-      return;
-    }
-
-    this.timeTaskService.deleteTimeElement(timeElement.id).subscribe(() => {
-      this.displayNotification(this.keyService.getKeyTranslation('a23'), null);
-      this.getTimeElementsFromService();
-      this.hideSelectedTimeElement();
-    });
-  }
-
-  /**
-   * Delete all elements from choosen Date
-   */
-  deleteAllAvailableTimeTasks() {
-    if (!window.confirm(this.keyService.getKeyTranslation('a11'))) {
-      return;
-    }
-
-    this.timeTasksFromHistory.forEach((e) => {
-      this.timeTaskService.deleteTimeElement(e.id).subscribe(() => {
-        this.displayNotification(
-          this.keyService.getKeyTranslation('ti3'),
-          null
-        );
-        this.getTimeElementsFromService();
-        this.hideSelectedTimeElement();
-      });
-    });
-
-    this.timeTasksFromHistory = null;
-    this.historyAccumulatedElements = null;
-  }
-
-  /*
-   * ===================================================================================
-   * OTHER TIMETASK OPERATIONS
-   * ===================================================================================
-   */
-
-  /*
-   * Selected current TimeElement if not already set,
-   * otherwise hide current selected TimeElement
-   */
-  selectTimeElement(timeElement: TimeTask) {
-    if (
-      this.selectedTimeElement === undefined ||
-      this.selectedTimeElement === null
-    ) {
-      this.selectedTimeElement = timeElement;
-    } else {
-      this.hideSelectedTimeElement();
-    }
-  }
-
-  /*
-   * Remove selected TimeElement
-   */
-  hideSelectedTimeElement() {
-    this.selectedTimeElement = null;
-  }
-
-  /*
-   * Set the current running timeElement
-   */
-  selectRunningTimeElement(timeElement: TimeTask) {
-    this.runningTimeElement = timeElement;
-  }
-
-  /*
-   * Remove running TimeElement
-   */
-  hideRunningTimeElement() {
-    this.runningTimeElement = null;
-  }
-
-  /*
-   * ===================================================================================
-   * TIMER
-   * ===================================================================================
-   */
-
-  /*
-   * Start timer service and set tab name
-   */
-  startTimer() {
-    this.timerService.startTimer();
-    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('a3'));
-  }
-
-  /*
-   * Finish the current TimeTask and reset the Timer
-   * Add enddate property to TimeElement in the database
-   * Triggered with finish button
-   */
-  finishTimer() {
-    if (this.timerService.isTimerStart) {
-      this.resetTimer();
-      this.runningTimeElement.enddate = this.timeService.createNewDate();
-      this.timeTaskService
-        .putTimeElement(this.runningTimeElement)
-        .subscribe(() => {
-          this.hideRunningTimeElement();
-          this.hideSelectedTimeElement();
-          this.displayNotification(
-            this.keyService.getKeyTranslation('ti4'),
-            null
-          );
-          this.getTimeElementsFromService();
-        });
-    }
-  }
-
-  /*
-   * Reset timer back to the start
-   */
-  resetTimer() {
-    this.timerService.stopTimer();
-    this.timerService.setTimervalue(0);
-    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('ti1'));
-  }
-
-  /*
-   * Set timer configuration with each init
-   */
-  setTimerConfig() {
+  private setTimerConfiguration() {
     this.testConfig = new countUpTimerConfigModel();
     this.testConfig.timerClass = 'test_Timer_class';
     this.testConfig.timerTexts = new timerTexts();
@@ -456,34 +123,311 @@ export class TimeTaskComponent implements OnInit {
     this.testConfig.timerTexts.secondsText = ' s';
   }
 
-  /*
-   * ===================================================================================
-   * DIALOGS/POPUPS
-   * ===================================================================================
-   */
+  private getSettings() {
+    this.settingsService.getSettings().subscribe((settings) => {
+      this.settings = settings;
+    });
+  }
 
-  /*
-   * Open popup dialog to create a new TimeTask
-   * Finish current TimeTask if still running
-   * Add new TimeElement to the database
+  private getTimeTasksFromToday() {
+    this.timeTaskService
+      .getTimeTasks()
+      .pipe(
+        tap((timeTasks) => (this.timeTasks = timeTasks)),
+        map((timeTasks) => this.timeTaskService.retrieveFromToday(timeTasks)),
+        tap((timeTasks) => {
+          this.initAccumulationProcess(timeTasks, Period.TODAY);
+        })
+      )
+      .subscribe((timeTasks) => {
+        this.timeTasksFromToday = timeTasks;
+        this.setRunningTimeTaskIfExisting();
+      });
+  }
+
+  private getTimeTasksHistory(day: string, month: string, year: string) {
+    this.timeTaskService
+      .getTimeTasks()
+      .pipe(
+        map((timeTasks) =>
+          timeTasks.filter((timeTask) =>
+            this.timeTaskService.retrieveFromHistory(timeTask, day, month, year)
+          )
+        ),
+        tap((timeTasks) => {
+          this.initAccumulationProcess(timeTasks, Period.HISTORY);
+        })
+      )
+      .subscribe((timeTasks) => {
+        this.timeTasksFromHistory = timeTasks;
+      });
+  }
+
+  /**
+   * If the timer is not stopped the last timetask will be set to running
    */
-  openInsertDialog(): void {
+  private setRunningTimeTaskIfExisting() {
     if (this.timerService.isTimerStart) {
-      this.runningTimeElement.enddate = this.timeService.createNewDate();
-      this.timeTaskService
-        .putTimeElement(this.runningTimeElement)
-        .subscribe(() => {
+      if (this.timeTasksFromToday.length > 0) {
+        this.runningTimeTask = this.timeTasksFromToday[0];
+      }
+    }
+  }
+
+  /**
+   * Get all time tasks started at the specific date based on the parameter
+   * @param event when selecting time task from history on user interface
+   */
+  public selectDate(event: { value: string }) {
+    const str: string[] = event.value.split(',');
+    const dateArray: string[] = str[0].split('.');
+    const day: string = dateArray[0];
+    const month: string = dateArray[1];
+    const year: string = dateArray[2];
+
+    this.getTimeTasksHistory(day, month, year);
+  }
+
+  /**
+   * Used to create accumulated graph data and descrption
+   * @param timeTasks from today
+   */
+  private initAccumulationProcess(timeTasks: TimeTask[], period: Period) {
+    const accumulatedInSeconds = this.timeTaskService.extractAccumulatedTimeTasks(
+      timeTasks
+    );
+    const descrData = this.createAccumulationDescr(accumulatedInSeconds);
+    const graphData = this.graphDataService.createAccumulationGraph(
+      accumulatedInSeconds
+    );
+
+    if (period === Period.TODAY) {
+      this.accumulatedTasksFromToday = descrData;
+      this.graphDataFromToday = graphData;
+    } else if (period === Period.HISTORY) {
+      this.accumulatedTasksFromHistory = descrData;
+      this.graphDataFromHistory = graphData;
+    }
+  }
+
+  /**
+   * Creates a key value pair with the task and the accumulated time in ms as formatted string
+   * @param pair that includes every tasks and the accumulated time
+   */
+  private createAccumulationDescr(pair: NameAndNumberPair[]) {
+    return pair.map((entry) => {
+      return {
+        name: entry.name,
+        value: this.timeService.formatMillisecondsToString(entry.value),
+      };
+    });
+  }
+
+  /**
+   * Create new TimeTask with fastCreation (press esc)
+   * @param event when pressing enter after addign text to fast selection
+   */
+  createFastTimeTask(event: any) {
+    const date = this.timeService.createNewDate();
+    const title = event.target.value;
+    const empty = '';
+
+    if (this.timerService.isTimerStart) {
+      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
+        this.getTimeTasksFromToday();
+      });
+    }
+    this.resetTimer();
+
+    this.timeTaskService
+      .postTimeTask({
+        id: 0,
+        title: title,
+        shortdescr: title,
+        longdescr: empty,
+        startdate: date,
+        enddate: null,
+      })
+      .subscribe((data) => {
+        this.getTimeTasksFromToday();
+        this.runningTimeTask = data;
+        this.hideSelectedTimeTask();
+        this.startTimer();
+      });
+  }
+
+  /**
+   * Create a new TimeTask from an already finished TimeTask
+   * @param timeElement to continue
+   */
+  continueTimeTask(timeElement: TimeTask) {
+    if (
+      window.confirm(this.keyService.getKeyTranslation('a12')) && // confirm new task
+      this.timerService.isTimerStart // timer is running
+    ) {
+      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
+        this.getTimeTasksFromToday();
+      });
+    }
+    this.resetTimer();
+
+    this.timeTaskService
+      .postTimeTask({
+        id: null,
+        title: timeElement.title,
+        shortdescr: timeElement.shortdescr,
+        longdescr: timeElement.longdescr,
+        startdate: this.timeService.createNewDate(),
+        enddate: null,
+        task: timeElement.task,
+      })
+      .subscribe((data) => {
+        this.getTimeTasksFromToday();
+        this.runningTimeTask = data;
+        this.hideSelectedTimeTask();
+        this.startTimer();
+      });
+  }
+
+  /**
+   * Save TimeTask in the database
+   * @param timeElement to save
+   */
+  saveTimeTask(timeElement: TimeTask) {
+    if (timeElement !== undefined) {
+      if (this.utilityService.isNumber(timeElement.id)) {
+        this.timeTaskService.putTimeTask(timeElement).subscribe(() => {
           this.displayNotification(
             this.keyService.getKeyTranslation('ti2'),
             null
           );
-          // this.hideSelectedTimeElement();
-          this.getTimeElementsFromService();
+          this.getTimeTasksFromToday();
         });
+      } else {
+        console.warn(`saveTimeTask(): ID: ${timeElement.id}, expected number`);
+      }
+    } else {
+      console.warn(`saveTimeTask(): ID: ${timeElement.id}, expected id`);
+    }
+
+    this.hideSelectedTimeTask();
+  }
+
+  /**
+   * Remove selected TimeTask from the database
+   * @param timeTask to remove
+   */
+  removeTimeElement(timeTask: TimeTask) {
+    if (
+      timeTask !== undefined && // not undefined
+      this.utilityService.isNumber(timeTask.id) && // is number
+      !this.timeTaskService.isSame(timeTask, this.runningTimeTask) && // not running
+      window.confirm(this.keyService.getKeyTranslation('a11')) // confirmed for deletion
+    ) {
+      this.timeTaskService.deleteTimeTask(timeTask.id).subscribe(() => {
+        this.displayNotification(
+          this.keyService.getKeyTranslation('a23'),
+          null
+        );
+        this.getTimeTasksFromToday();
+        this.hideSelectedTimeTask();
+      });
+    }
+  }
+
+  /**
+   * Delete all elements from choosen Date
+   */
+  deleteAllAvailableTimeTasks() {
+    if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
+      this.timeTasksFromHistory.forEach((e) => {
+        this.timeTaskService.deleteTimeTask(e.id).subscribe(() => {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti3'),
+            null
+          );
+          this.getTimeTasksFromToday();
+          this.hideSelectedTimeTask();
+        });
+      });
+
+      this.timeTasksFromHistory = null;
+      this.accumulatedTasksFromHistory = null;
+    }
+  }
+
+  /**
+   * Selected current TimeElement if not already set,
+   * otherwise hide current selected TimeElement
+   * @param timeElement to be selected
+   */
+  toogleSelection(timeElement: TimeTask) {
+    if (this.selectedTimeTask === undefined || this.selectedTimeTask === null) {
+      this.selectedTimeTask = timeElement;
+    } else {
+      this.hideSelectedTimeTask();
+    }
+  }
+
+  selectRunningTimeTask(timeElement: TimeTask) {
+    this.runningTimeTask = timeElement;
+  }
+
+  hideSelectedTimeTask() {
+    this.selectedTimeTask = null;
+  }
+
+  hideRunningTimeTask() {
+    this.runningTimeTask = null;
+  }
+
+  startTimer() {
+    this.timerService.startTimer();
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('a3'));
+  }
+
+  finishTimer() {
+    if (this.timerService.isTimerStart) {
+      this.resetTimer();
+      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
+        this.hideRunningTimeTask();
+        this.hideSelectedTimeTask();
+        this.displayNotification(
+          this.keyService.getKeyTranslation('ti4'),
+          null
+        );
+        this.getTimeTasksFromToday();
+      });
+    }
+  }
+
+  resetTimer() {
+    this.timerService.stopTimer();
+    this.timerService.setTimervalue(0);
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('ti1'));
+  }
+
+  /**
+   * Open popup dialog to create a new TimeTask
+   * Finish current TimeTask if still running and add new TimeElement to the database
+   */
+  openInsertDialog(): void {
+    if (this.timerService.isTimerStart) {
+      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
+        this.displayNotification(
+          this.keyService.getKeyTranslation('ti2'),
+          null
+        );
+        this.getTimeTasksFromToday();
+      });
     }
     this.resetTimer();
-    this.hideSelectedTimeElement();
-    this.hideRunningTimeElement();
+    this.hideSelectedTimeTask();
+    this.hideRunningTimeTask();
 
     const dialogRef = this.dialog.open(InsertTaskDialogTime, {
       width: '250px',
@@ -496,21 +440,21 @@ export class TimeTaskComponent implements OnInit {
     dialogRef.afterClosed().subscribe((resultFromDialog) => {
       if (resultFromDialog !== undefined) {
         resultFromDialog.startdate = this.timeService.createNewDate();
-        this.selectRunningTimeElement(resultFromDialog);
+        this.selectRunningTimeTask(resultFromDialog);
 
         if (
           this.shortdescr !== EMPTY_STRING &&
           this.longdescr !== EMPTY_STRING
         ) {
           this.timeTaskService
-            .postTimeElement(resultFromDialog)
+            .postTimeTask(resultFromDialog)
             .subscribe((resultFromPost) => {
               this.displayNotification(
                 this.keyService.getKeyTranslation('ti5'),
                 null
               );
-              this.getTimeElementsFromService();
-              this.runningTimeElement.id = resultFromPost.id;
+              this.getTimeTasksFromToday();
+              this.runningTimeTask.id = resultFromPost.id;
               this.resetTimer();
               this.startTimer();
             });
@@ -531,16 +475,17 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
-  /*
+  /**
    * Change start hour and start minutes of a TimeTask
+   * @param timeTask to be changed
    */
-  changeStartDate(timeElement: TimeTask) {
+  changeStartDate(timeTask: TimeTask) {
     const amazingTimePicker = this.timePickerService.open();
     amazingTimePicker.afterClose().subscribe((time) => {
       const temp: Date = this.timeService.createNewDate();
       const timePickerResult: string[] = time.split(':');
 
-      timeElement.startdate = new Date(
+      timeTask.startdate = new Date(
         temp.getFullYear(),
         temp.getMonth(),
         temp.getDate(),
@@ -550,16 +495,17 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
-  /*
+  /**
    * Change end hour and end minutes of a TimeTask
+   * @param timeTask to be changed
    */
-  changeEndDate(timeElement: TimeTask) {
+  changeEndDate(timeTask: TimeTask) {
     const amazingTimePicker = this.timePickerService.open();
     amazingTimePicker.afterClose().subscribe((time) => {
       const temp: Date = this.timeService.createNewDate();
       const timePickerResult: string[] = time.split(':');
 
-      timeElement.enddate = new Date(
+      timeTask.enddate = new Date(
         temp.getFullYear(),
         temp.getMonth(),
         temp.getDate(),
@@ -569,96 +515,28 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
-  /*
-   * Get all TimeElements start at the specific date based on the parameter
-   * Returns history of TimeElements for a day
-   */
-  selectDate(event: { value: string }) {
-    const str: string[] = event.value.split(',');
-    const dateArray: string[] = str[0].split('.');
-    const day: string = dateArray[0];
-    const month: string = dateArray[1];
-    const year: string = dateArray[2];
-
-    this.timeTasksFromHistory = this.timeTasks.filter((e) => {
-      const date: Date = new Date(e.startdate);
-
-      return (
-        date.getDate() === +day &&
-        date.getMonth() === +month - 1 &&
-        date.getFullYear() === +year
-      );
-    });
-
-    this.initHistoryData();
-  }
-
-  /*
-   * Unfocus fastCreation html element when not active
-   */
-  unfocusAfterClick() {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-  }
-
-  /*
-   * ===================================================================================
-   * HELPER FUNCTIONS
-   * ===================================================================================
-   */
-
-  /*
-   * Opens popup menu for notifications
-   */
-  displayNotification(message: string, action: string) {
-    this.snackBarService.open(message, action, {
-      duration: 4000,
-    });
-  }
-
-  /*
-   * Create time view string from TimeTask
-   */
-  timeElementToTimestring(timeElement: TimeTask): string {
-    return this.timeService.formatMillisecondsToString(
-      new Date(timeElement.enddate).getTime() -
-        new Date(timeElement.startdate).getTime()
-    );
-  }
-
-  /*
+  /**
    * Get backround color for different types of TimeTasks
-   * Return backround color
+   * @param timeTask to set the background color
+   * @returns backround color
    */
   getStatusColorValue(timeTask: TimeTask): string {
-    if (
-      this.runningTimeElement !== undefined &&
-      this.runningTimeElement !== null &&
-      this.runningTimeElement.id === timeTask.id
-    ) {
+    if (this.timeTaskService.isSame(timeTask, this.runningTimeTask)) {
       return this.keyService.getColor('yellow');
-    }
-
-    if (
-      this.selectedTimeElement !== undefined &&
-      this.selectedTimeElement !== null &&
-      this.selectedTimeElement.id === timeTask.id
-    ) {
+    } else if (this.timeTaskService.isSame(timeTask, this.selectedTimeTask)) {
       return this.keyService.getColor('blue');
-    }
-
-    if (timeTask !== undefined && timeTask !== null && !timeTask.enddate) {
+    } else if (!this.timeTaskService.isValid(timeTask)) {
       return this.keyService.getColor('red');
     }
 
     return this.keyService.getColor('darkgreen');
   }
 
-  /*
+  /**
    * Change all abbreviations to text in the task description (based on ngModelChange)
+   * @param timeTask to be changed
    */
-  replaceWithShortcut(timeTask: TimeTask) {
+  public replaceWithShortcuts(timeTask: TimeTask) {
     Object.keys(this.keyService.getShortcuts()).forEach((key) => {
       timeTask.longdescr = timeTask.longdescr.replace(
         key,
@@ -667,11 +545,11 @@ export class TimeTaskComponent implements OnInit {
     });
   }
 
-  /*
-   * Negate fastCreation value when pressing esc
+  /**
+   * Opens window for fastCreation on user interface
    * Focus or unfocus html element when not activating/deactivating
    */
-  manageFastCreation() {
+  private toogleFastCreation() {
     this.fastCreation = !this.fastCreation;
 
     setTimeout(() => {
@@ -685,11 +563,19 @@ export class TimeTaskComponent implements OnInit {
     }
   }
 
-  // Get distinct dates of all TimeTasks
-  // Returns array of distinct dates
-  selectDistinctDates(): Array<string> {
+  private unfocusAfterClick() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+
+  /**
+   * Get distinct dates of all TimeTasks
+   * @returns array of distinct dates
+   */
+  public selectDistinctDates(): Array<string> {
     const tempDates: Date[] = [];
-    this.timeTasks.forEach((timeElement) => {
+    this.timeTasksFromToday.forEach((timeElement) => {
       if (
         !tempDates.find((date) => {
           const DateToInsert: Date = new Date(timeElement.startdate);
@@ -719,5 +605,23 @@ export class TimeTaskComponent implements OnInit {
           this.timeService.retrieveDayOfTheWeek(date.getDay())
         );
       });
+  }
+
+  public toString(timeElement: TimeTask): string {
+    return this.timeService.formatMillisecondsToString(
+      new Date(timeElement.enddate).getTime() -
+        new Date(timeElement.startdate).getTime()
+    );
+  }
+
+  /**
+   * Opens popup menu to show new notifications on user interface
+   * @param message to be displayed
+   * @param action to be taken
+   */
+  private displayNotification(message: string, action: string) {
+    this.snackBarService.open(message, action, {
+      duration: 4000,
+    });
   }
 }

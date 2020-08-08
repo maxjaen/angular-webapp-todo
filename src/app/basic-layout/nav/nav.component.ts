@@ -24,7 +24,7 @@ export class NavComponent {
     private breakpointObserver: BreakpointObserver,
     private settingsService: SettingsService
   ) {
-    this.settingsService.getAllSettings().subscribe((settings) => {
+    this.settingsService.getSettings().subscribe((settings) => {
       this.settings = settings[0];
     });
   }

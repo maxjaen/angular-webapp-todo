@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { SessionState } from '../../shared/model/Enums';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-session',
@@ -15,17 +16,16 @@ import { SessionState } from '../../shared/model/Enums';
   styleUrls: ['./session.component.scss'],
 })
 export class SessionComponent implements OnInit {
-  timedTrainings: Training[];
-  selectedTimedTraining: Training;
-  exerciseIntervalId: number;
+  trainings: Training[];
+  selectedTraining: Training;
+  exerciseInterval: number;
 
   currentExercise: Exercise;
   currentExerciseIndex: number;
-  currentExerciseCountdown: number;
-  generalExerciseCountdown: number;
 
+  exerciseCountdown: number;
   workoutCountdown: number;
-  getReadyCountdown: number;
+  readyCountdown: number;
 
   state: SessionState = SessionState.Initial;
 
@@ -38,67 +38,41 @@ export class SessionComponent implements OnInit {
     private tabTitleService: Title
   ) {}
 
-  ngOnInit(): void {
-    this.getTrainingsFromService();
-
+  ngOnInit() {
+    this.initTrainings();
     this.tabTitleService.setTitle(this.keyService.getKeyTranslation('wo1'));
   }
 
-  // ===================================================================================
-  // CRUD SESSION OPERATIONS
-  // ===================================================================================
-
-  /*
-   * Get training data from service
-   */
-  public getTrainingsFromService(): void {
-    this.trainingService.getAllTrainings().subscribe((trainings) => {
-      if (trainings.length >= 2) {
-        trainings.sort((a, b) =>
-          this.utilityService.sortNumerical(
-            Date.parse(a.date.toString()),
-            Date.parse(b.date.toString())
+  public initTrainings() {
+    this.trainingService
+      .getTrainings()
+      .pipe(
+        map((trainings) => {
+          if (trainings.length >= 2) {
+            trainings.sort((a, b) =>
+              this.utilityService.sortNumerical(
+                Date.parse(a.date.toString()),
+                Date.parse(b.date.toString())
+              )
+            );
+            return trainings;
+          }
+        }),
+        map((trainings) =>
+          trainings.filter((training) =>
+            training.exercices.every(
+              (exercise) => exercise.category === 'conditionalpattern1d'
+            )
           )
-        );
-      }
-
-      // Show the last x trainings
-      this.timedTrainings = trainings.filter((training) =>
-        training.exercices.every(
-          (exercise) => exercise.category === 'conditionalpattern1d'
         )
-      );
-    });
+      )
+      .subscribe((trainings) => {
+        this.trainings = trainings;
+      });
   }
 
-  // ===================================================================================
-  // TRAINING FUNCTIONS
-  // ===================================================================================
-
-  /*
-   * Checks i a input exercise is one of the following three elments in the seelcted exercise list
-   */
-  public inListOfNextSteps(exercise: Exercise): boolean {
-    return (
-      this.selectedTimedTraining.exercices.indexOf(exercise) ===
-        this.currentExerciseIndex + 1 ||
-      this.selectedTimedTraining.exercices.indexOf(exercise) ===
-        this.currentExerciseIndex + 2 ||
-      this.selectedTimedTraining.exercices.indexOf(exercise) ===
-        this.currentExerciseIndex + 3
-    );
-  }
-
-  /*
-   * Choose previous (old) training as template for new training
-   */
-  public selectTraining(event: { value: Training }): void {
-    this.selectedTimedTraining = event.value;
-    this.currentExercise = null;
-  }
-
-  /*
-   * Break your Workout Session
+  /**
+   * Pause workout within the session
    */
   public stopWorkout() {
     switch (this.state) {
@@ -125,10 +99,10 @@ export class SessionComponent implements OnInit {
         throw new Error(`State ${this.state} not implemented yet.`);
     }
 
-    window.clearInterval(this.exerciseIntervalId);
+    window.clearInterval(this.exerciseInterval);
   }
 
-  /*
+  /**
    * Reset your progress to initial state
    */
   public resetWorkout(): void {
@@ -151,16 +125,17 @@ export class SessionComponent implements OnInit {
         throw new Error(`State ${this.state} not implemented yet.`);
     }
 
-    window.clearInterval(this.exerciseIntervalId);
-    this.selectedTimedTraining = null;
+    window.clearInterval(this.exerciseInterval);
+    this.selectedTraining = null;
     this.currentExercise = null;
   }
 
-  /*
+  /**
    * Start a new Workout Session and init general exercise countdown
+   * @param elementIndex from which the total amount of time will be calculated
    */
   public doWorkout(elementIndex: number): void {
-    if (!this.selectedTimedTraining) {
+    if (!this.selectedTraining) {
       this.displayNotification(this.keyService.getKeyTranslation('t6'), null);
       return;
     }
@@ -190,18 +165,18 @@ export class SessionComponent implements OnInit {
     }
 
     // set general exercise countdown
-    this.generalExerciseCountdown = this.selectedTimedTraining.exercices
-      .slice(elementIndex, this.selectedTimedTraining.exercices.length)
+    this.workoutCountdown = this.selectedTraining.exercices
+      .slice(elementIndex, this.selectedTraining.exercices.length)
       .map((exercise) => +exercise['repetitions'])
       .reduce((sum, current) => sum + current, 0);
 
     this.startWorkout(elementIndex);
   }
 
-  /*
+  /**
    * Continue at the time you stopped in an Workout Session
    */
-  public continueWorkout(): void {
+  public continueWorkout() {
     switch (this.state) {
       case SessionState.Initial:
         this.displayNotification(
@@ -226,76 +201,102 @@ export class SessionComponent implements OnInit {
         throw new Error(`State ${this.state} not implemented yet.`);
     }
 
-    const elementIndex = this.selectedTimedTraining.exercices.indexOf(
+    const elementIndex = this.selectedTraining.exercices.indexOf(
       this.currentExercise
     );
 
-    // Update current exercise timespan with current exercise countdown
-    // Continue exactly where you stopped in an exercise
-    this.selectedTimedTraining.exercices[elementIndex][
+    // Update current exercise value with countdown to continue where you stopped
+    this.selectedTraining.exercices[elementIndex][
       'repetitions'
-    ] = this.currentExerciseCountdown;
+    ] = this.exerciseCountdown;
 
     this.startWorkout(elementIndex);
   }
 
-  /*
-   * Starts your Workout Session on position of your input parameter
+  /**
+   * Init new workout session from training with exercise index
+   * @param index for exercise to start with
    */
-  public startWorkout(i: number): void {
-    // Set current ready countdown in seconds
-    this.getReadyCountdown = 5;
+  public startWorkout(index: number): void {
+    this.readyCountdown = 5;
 
     (async () => {
       this.soundService.playSound('snapchat');
-      await this.delay(2000);
+      await this.waitMilliseconds(2000);
 
       let endSound = true;
+      let iterationCountdown = this.currentExercise['repetitions'];
 
-      this.currentExerciseIndex = i;
-      this.currentExercise = this.selectedTimedTraining.exercices[i];
-      this.workoutCountdown = this.currentExercise['repetitions'];
-      this.currentExerciseCountdown = this.currentExercise['repetitions'];
+      this.currentExerciseIndex = index;
+      this.currentExercise = this.selectedTraining.exercices[index];
+      this.exerciseCountdown = this.currentExercise['repetitions'];
 
-      this.exerciseIntervalId = window.setInterval(() => {
-        this.workoutCountdown = this.workoutCountdown - 1;
+      this.exerciseInterval = window.setInterval(() => {
+        iterationCountdown = iterationCountdown - 1;
 
-        if (this.workoutCountdown === 1 && endSound) {
+        if (iterationCountdown === 1 && endSound) {
+          // play sound before exercise finished
           this.soundService.playSound('iphone');
           endSound = false;
         }
-        if (this.workoutCountdown >= 0) {
-          this.currentExerciseCountdown = this.currentExerciseCountdown - 1;
-          this.generalExerciseCountdown = this.generalExerciseCountdown - 1;
+        if (iterationCountdown >= 0) {
+          // when exercise finished
+          this.exerciseCountdown = this.exerciseCountdown - 1;
+          this.workoutCountdown = this.workoutCountdown - 1;
         }
-        if (this.workoutCountdown < 0) {
-          this.getReadyCountdown--;
+        if (iterationCountdown < 0) {
+          // time interval between exercises to get ready
+          this.readyCountdown--;
         }
-        if (this.workoutCountdown === -6) {
-          window.clearInterval(this.exerciseIntervalId);
-          this.startWorkout(i + 1);
+        if (iterationCountdown === -6) {
+          // restart workout cycle with next exercise
+          window.clearInterval(this.exerciseInterval);
+          this.startWorkout(index + 1);
         }
       }, 1000);
     })();
   }
 
-  // ===================================================================================
-  // HELPER FUNCTIONS
-  // ===================================================================================
+  /**
+   * Choose previous (old) training as template for new training
+   * @param event to get the training value
+   */
+  public selectTrainingTemplate(event: { value: Training }) {
+    this.selectedTraining = event.value;
+    this.currentExercise = null;
+  }
 
-  /*
-   * Opens popup menu for notifications
+  /**
+   * Checks if input exercise is one of the following three elements in the selected training list
+   * @param exercise to be checked
+   */
+  public inListOfNextSteps(exercise: Exercise): boolean {
+    return (
+      this.selectedTraining.exercices.indexOf(exercise) ===
+        this.currentExerciseIndex + 1 ||
+      this.selectedTraining.exercices.indexOf(exercise) ===
+        this.currentExerciseIndex + 2 ||
+      this.selectedTraining.exercices.indexOf(exercise) ===
+        this.currentExerciseIndex + 3
+    );
+  }
+
+  /**
+   * Helper function to wait a specific time period
+   * @param milliseconds to wait
+   */
+  private waitMilliseconds(milliseconds: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  }
+
+  /**
+   * Opens popup menu to show new notifications on user interface
+   * @param message to be displayed
+   * @param action to be taken
    */
   private displayNotification(message: string, action: string): void {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });
-  }
-
-  /*
-   * Delay to wait in application execution
-   */
-  private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

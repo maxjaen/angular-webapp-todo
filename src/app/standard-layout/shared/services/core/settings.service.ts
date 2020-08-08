@@ -11,7 +11,7 @@ export class SettingsService {
 
   constructor(private httpClient: HttpClient) {}
 
-  public getAllSettings(): Observable<Settings[]> {
+  public getSettings(): Observable<Settings[]> {
     return this.httpClient.get<Array<Settings>>(this.url);
   }
 

@@ -23,17 +23,11 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getSettingsFromService();
+    this.initSettings();
   }
 
-  /*
-   * ===================================================================================
-   * GET DATA
-   * ===================================================================================
-   */
-
-  getSettingsFromService() {
-    this.settingsService.getAllSettings().subscribe((settings) => {
+  initSettings() {
+    this.settingsService.getSettings().subscribe((settings) => {
       this.settings = settings;
     });
   }
@@ -45,13 +39,11 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  /*
-   * ===================================================================================
-   * HELPER FUNCTIONS
-   * ===================================================================================
+  /**
+   * Switch setting on/off when clicking on slider
+   * @param setting to be changed
+   * @param event toogle event on user interface
    */
-
-  // Switch setting on/off when clicking on slider
   toogleSlider(setting: any, event: any) {
     this.settings[0]['settingsmenu']
       .map((e) => e['settings'])
@@ -64,7 +56,11 @@ export class SettingsComponent implements OnInit {
       });
   }
 
-  // Opens popup menu for notifications
+  /**
+   * Opens popup menu to show new notifications on user interface
+   * @param message to be displayed
+   * @param action to be taken
+   */
   displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 4000,

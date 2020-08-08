@@ -6,7 +6,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 // ==================================================================
@@ -83,6 +83,11 @@ COLORS
 .gray {
   color: #484747;
 }
+
+$main: #45679d;
+// blue #45679d
+// green #459d4a
+// red #9d4545
 
 /*
 DISTANCE
@@ -218,8 +223,9 @@ textarea,
 .notifications {
   @extend .largeToBottom;
   @include basic-block;
-  border-left: 5px solid #c23b3b;
-  padding: 55px 30px 55px 30px;
+  background-color: #303030;
+  border-left: 5px solid $main;
+  padding: 35px 30px 35px 30px;
 }
 
 /*
@@ -260,7 +266,7 @@ STICKY
   display: grid;
   overflow: visible;
   z-index: 999;
-  background: #aa982e;
+  background: #303030;
   padding: 1% 1% 0 1%;
   position: fixed;
   left: 0;

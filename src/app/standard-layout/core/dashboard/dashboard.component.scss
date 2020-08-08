@@ -1,5 +1,5 @@
-@import "../../../../styles.scss";
-@import url("https://fonts.googleapis.com/css2?family=Caveat&display=swap");
+@import '../../../../styles.scss';
+@import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
 
 .content {
   mat-card:hover {
@@ -13,20 +13,19 @@
     float: left;
     width: 88%;
     margin-bottom: 35px;
-    background-color: #5a606f;
 
     .dashboard-card-content {
       .tab-symbol {
         font-size: 70px;
         display: inline-block;
-        font-family: "Caveat", cursive;
+        font-family: 'Caveat', cursive;
         margin-right: 40px;
       }
 
       .tab-message {
         font-size: 30px;
         display: inline-block;
-        font-family: "Caveat", cursive;
+        font-family: 'Caveat', cursive;
       }
     }
   }

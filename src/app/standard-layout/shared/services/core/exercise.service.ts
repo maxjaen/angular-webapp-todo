@@ -54,6 +54,6 @@ export class ExerciseService {
   }
 
   private hasCategory(exercise: Exercise, category: string) {
-    return exercise['category'] === category;
+    return exercise.category === category;
   }
 }

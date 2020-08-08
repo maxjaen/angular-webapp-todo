@@ -5,7 +5,7 @@
             <div *ngFor="let component of this.settingsService.getStartPageHeaders(this.settings);">
                 <div
                     *ngIf="settingsService.getSettingsValue(this.settings, 'Show Tasks module') && component.type=='task'">
-                    <mat-card class="dashboard-card" (click)="goToUrl(component)">
+                    <mat-card class="dashboard-card primary-bg" (click)="goToUrl(component)">
                         <mat-card-content class="dashboard-card-content">
                             <div class="tab-symbol">
                                 <mat-icon>{{ component.symbol }}</mat-icon>
@@ -27,7 +27,7 @@
                 </div>
                 <div
                     *ngIf="settingsService.getSettingsValue(this.settings, 'Show Fitness module') && component.type=='fitness'">
-                    <mat-card class="dashboard-card" (click)="goToUrl(component)">
+                    <mat-card class="dashboard-card primary-bg" (click)="goToUrl(component)">
                         <mat-card-content class="dashboard-card-content">
                             <div class="tab-symbol">
                                 <mat-icon>{{component.symbol}}</mat-icon>
@@ -48,7 +48,7 @@
                     </mat-card>
                 </div>
                 <div *ngIf="component.type=='general'">
-                    <mat-card (click)=" goToUrl(component)" class="dashboard-card">
+                    <mat-card class="dashboard-card primary-bg" (click)=" goToUrl(component)">
                         <mat-card-content class="dashboard-card-content">
                             <div class="tab-symbol">
                                 <mat-icon>{{component.symbol}}</mat-icon>

@@ -224,12 +224,12 @@ export class SessionComponent implements OnInit {
       this.soundService.playSound('snapchat');
       await this.waitMilliseconds(2000);
 
-      let endSound = true;
-      let iterationCountdown = this.currentExercise['repetitions'];
-
       this.currentExerciseIndex = index;
       this.currentExercise = this.selectedTraining.exercices[index];
       this.exerciseCountdown = this.currentExercise['repetitions'];
+
+      let endSound = true;
+      let iterationCountdown = this.currentExercise['repetitions'];
 
       this.exerciseInterval = window.setInterval(() => {
         iterationCountdown = iterationCountdown - 1;

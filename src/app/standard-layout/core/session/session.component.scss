@@ -1,4 +1,4 @@
-@import "../../../../styles.scss";
+@import '../../../../styles.scss';
 
 .content {
   .insert {
@@ -50,14 +50,14 @@
         }
 
         .text:hover {
-          background-color: indianred;
-          
+          background-color: $main;
+
           .break {
             color: #ffffff;
           }
           .start-here-icon {
             display: inline;
-          } 
+          }
         }
       }
     }

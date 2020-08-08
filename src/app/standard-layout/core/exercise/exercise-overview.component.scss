@@ -1,4 +1,4 @@
-@import "../../../../styles.scss";
+@import '../../../../styles.scss';
 
 .side {
   float: left;
@@ -27,13 +27,13 @@
 }
 
 .list-item:hover {
-  background-color: #3b63c2;
+  background-color: $main;
   cursor: pointer;
 }
 
 .category {
   @extend .tab-m;
-  border-left: 5px solid #c2673b;
+  border-left: 5px solid $main;
   background-color: #4d4a4a;
   padding: 5%;
 

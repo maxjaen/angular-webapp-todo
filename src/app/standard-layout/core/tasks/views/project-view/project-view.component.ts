@@ -58,6 +58,7 @@ export class ProjectViewComponent implements OnInit {
     this.taskService
       .getTasks()
       .pipe(
+        map(tasks => tasks.filter(task => !task.hided)),
         tap((tasks) => {
           tasks.forEach((task) => {
             task.tempshortdescr = task.shortdescr;

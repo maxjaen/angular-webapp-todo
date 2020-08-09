@@ -154,6 +154,7 @@ export class PinViewComponent implements OnInit, OnChanges {
   }
 
   private setTabTitle() {
+    // TODO every task that is not hided
     if (this.tasksPinned.length > 0) {
       this.tabTitleService.setTitle(
         `${this.keyService.getKeyTranslation(

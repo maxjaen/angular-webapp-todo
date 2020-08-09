@@ -11,6 +11,7 @@ import { InsertTaskDialog } from './core/tasks/dialogs/insert-task-dialog';
 import { InsertTaskDialogTime } from './core/timetask/dialogs/insert-task-dialog';
 import { NgxTimerModule } from 'ngx-timer';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -49,6 +50,8 @@ import { ExerciseOverViewComponent } from './core/exercise/exercise-overview.com
 import { ExerciseDetailviewComponent } from './core/exercise/components/exercise-detailview/exercise-detailview.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PinViewComponent } from './core/tasks/views/pin-view/pin-view.component';
+import { ProjectViewComponent } from './core/tasks/views/project-view/project-view.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +67,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     DashboardComponent,
     ExerciseOverViewComponent,
     ExerciseDetailviewComponent,
+    PinViewComponent,
+    ProjectViewComponent,
   ],
   imports: [
     CommonModule,
@@ -103,6 +108,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatToolbarModule,
     MatTooltipModule,
     MatNativeDateModule,
+    DragDropModule,
 
     // ngx-charts
     BrowserAnimationsModule,

@@ -44,6 +44,7 @@ export class InsertTaskDialogTime {
         tempDate: date,
         hided: false,
         pinned: true,
+        project: 'Ohne Projekt',
       });
     });
   }

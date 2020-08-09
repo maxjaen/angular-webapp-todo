@@ -1,17 +1,4 @@
-@import "../../../../styles.scss";
-
-mat-card {
-  @include block;
-  @extend .indentingFromBottom;
-}
-
-ul {
-  list-style-type: none;
-}
-
-textarea {
-  @include height300px;
-}
+@import '../../../../styles.scss';
 
 #createNewTask {
   margin-right: 20px;
@@ -24,6 +11,10 @@ textarea {
   display: none;
 }
 
-countup-timer {
-  color: red;
+.chips {
+  margin-bottom: 40px;
+
+  mat-chip {
+    margin-right: 10px;
+  }
 }

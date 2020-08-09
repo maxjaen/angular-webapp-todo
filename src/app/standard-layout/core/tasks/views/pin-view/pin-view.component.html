@@ -1,0 +1,266 @@
+<div class="block">
+    <div class="notifications" *ngIf="
+                  tasksUnpinned &&
+                  tasksUnpinned.length == 0 &&
+                  tasksPinned &&
+                  tasksPinned.length == 0
+                ">
+        Can't find any tasks!
+    </div>
+</div>
+<div *ngIf="tasksUnpinned && tasksPinned">
+    <div class="fixedButtons-righttop">
+        <div class="circle">{{ taskService.countUnsavedTasks(tasks) }}</div>
+    </div>
+    <div class="fixedButtons-rightbottom">
+        <button class="control-buttons-gray smallToBottom" (click)="displayUnpinnedTasks()" mat-mini-fab>
+            <mat-icon>reorder</mat-icon>
+        </button>
+        <button class="control-buttons-gray" title="Create new task" (click)="openInsertTaskDialog()" mat-mini-fab>
+            <mat-icon>create</mat-icon>
+        </button>
+    </div>
+    <div class="largeToBottom" *ngIf="tasksPinned.length > 0">
+        <h3>Pinned Tasks</h3>
+        <div *ngFor="let task of tasksPinned; let i = index">
+            <div class="block changeField minorToBottom" *ngIf="task == selectedTask">
+                <form class="example-form">
+                    <mat-form-field class="example-full-width indentingFromRight">
+                        <input #message maxlength="50" placeholder="titel" name="shortdescr"
+                            [(ngModel)]="selectedTask.shortdescr" matInput />
+                        <mat-hint>{{ message.value.length }} / 50</mat-hint>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
+                            placeholder="Choose a date" matInput />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width textarea-container indentingFromTop">
+                        <textarea matInput placeholder="description" name="longdescr"
+                            [(ngModel)]="selectedTask.longdescr"
+                            (ngModelChange)="replaceWithShortcuts(selectedTask)"></textarea>
+                    </mat-form-field>
+                    <div class="inlineButtons">
+                        <button (click)="saveTask(selectedTask)" mat-button>
+                            Save task
+                        </button>
+                        <button (click)="saveAllTasks()" mat-button>
+                            Save all
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <mat-card class="example-card">
+                <div *ngIf="
+                          this.settings &&
+                          this.settings.length > 0 &&
+                          settingsService.getSettingsValue(
+                            this.settings,
+                            'Show status color'
+                          )
+                        ">
+                    <div class="card-status" [style.background-color]="getStatusColorValue(task)"></div>
+                </div>
+                <div class="inlineblock">
+                    <mat-card-header>
+                        <mat-card-title>
+                            {{ task.shortdescr }}
+                            <div *ngIf="
+                                runningTimeTask &&
+                                task.shortdescr == runningTimeTask.title
+                              ">
+                                <countup-timer [countUpTimerConfig]="testConfig"></countup-timer>
+                            </div>
+                            <div *ngIf="
+                                this.settings &&
+                                settingsService.getSettingsValue(
+                                  this.settings,
+                                  'Show creation date'
+                                )
+                              ">
+                                <div class="smallToTop fontSize12">
+                                    {{ taskService.extractUtcStringFromTask(task) }}
+                                    {{
+                                  timeService.formatDateToDeadlineMessage(task.date)
+                                }}
+                                </div>
+                            </div>
+                        </mat-card-title>
+                        <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
+                            <ul *ngFor="
+                                let point of this.utilityService.splitWithNewLine(task.longdescr)
+                              ">
+                                <div *ngIf="
+                                  point.length > 0 &&
+                                  !point.includes('!') &&
+                                  !point.includes('#') &&
+                                  !(point == ' ') &&
+                                  !point.includes('$')
+                                ">
+                                    <li>{{ point }}</li>
+                                </div>
+                                <div *ngIf="point.length == 0">
+                                    <br />
+                                </div>
+                                <div *ngIf="point == ' '">
+                                    <hr />
+                                </div>
+                                <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
+                                    {{ point }}
+                                </div>
+                                <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
+                                    {{ point }}
+                                </div>
+                                <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
+                                    <h3>{{ point }}</h3>
+                                </div>
+                            </ul>
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                </div>
+                <div class="inlineButtons">
+                    <p *ngIf="!taskService.isSaved(task)">
+                        Not saved
+                    </p>
+                    <button title="Continue" (click)="startTimeTask(task)" mat-button>
+                        <mat-icon>play_arrow</mat-icon>
+                    </button>
+                    <button title="Stop" (click)="stopTimeTask()" mat-button>
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <button title="Add description" (click)="selectTask(task)" mat-button>
+                        <mat-icon>comment</mat-icon>
+                    </button>
+                    <button title="Unpin" (click)="pinTask(task)" mat-button>
+                        <mat-icon>push_pin</mat-icon>
+                    </button>
+                    <button title="Archive" (click)="hideTask(task)" mat-button>
+                        <mat-icon>move_to_inbox</mat-icon>
+                    </button>
+                    <button title="Delete" (click)="removeTask(task)" mat-button>
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+    <div *ngIf="
+                    tasksUnpinned.length > 0 &&
+                    (this.displayUnpinned || this.tasksPinned.length == 0)
+                  ">
+        <br />
+        <h3>Unpinned Tasks</h3>
+        <div *ngFor="let task of tasksUnpinned; let i = index">
+            <div class="block changeField minorToBottom" *ngIf="task == selectedTask">
+                <form class="example-form">
+                    <mat-form-field class="example-full-width indentingFromRight">
+                        <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
+                            [(ngModel)]="selectedTask.shortdescr" />
+                        <mat-hint>{{ message.value.length }} / 50</mat-hint>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
+                            placeholder="Choose a date" />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width textarea-container indentingFromTop">
+                        <textarea placeholder="description" name="longdescr" [(ngModel)]="selectedTask.longdescr"
+                            (ngModelChange)="replaceWithShortcuts(selectedTask)" matInput></textarea>
+                    </mat-form-field>
+                    <div class="inlineButtons">
+                        <button (click)="saveTask(selectedTask)" mat-button>
+                            Save task
+                        </button>
+                        <button (click)="saveAllTasks()" mat-button>
+                            Save all
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <mat-card class="example-card">
+                <div *ngIf="
+                          this.settings &&
+                          settingsService.getSettingsValue(
+                            this.settings,
+                            'Show status color'
+                          )
+                        ">
+                    <div class="card-status" [style.background-color]="getStatusColorValue(task)"></div>
+                </div>
+                <div class="inlineblock">
+                    <mat-card-header>
+                        <mat-card-title>
+                            {{ task.shortdescr }}
+                            <div *ngIf="
+                                this.settings &&
+                                settingsService.getSettingsValue(
+                                  this.settings,
+                                  'Show creation date'
+                                )
+                              ">
+                                <div class="smallToTop fontSize12">
+                                    {{ taskService.extractUtcStringFromTask(task) }}
+                                </div>
+                            </div>
+                        </mat-card-title>
+                        <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
+                            <ul *ngFor="
+                                let point of this.utilityService.splitWithNewLine(task.longdescr)
+                              ">
+                                <div *ngIf="
+                                  point.length > 0 &&
+                                  !point.includes('!') &&
+                                  !point.includes('#') &&
+                                  !(point == ' ') &&
+                                  !point.includes('$')
+                                ">
+                                    <li>{{ point }}</li>
+                                </div>
+                                <div *ngIf="point.length == 0">
+                                    <br />
+                                </div>
+                                <div *ngIf="point == ' '">
+                                    <hr />
+                                </div>
+                                <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
+                                    {{ point }}
+                                </div>
+                                <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
+                                    {{ point }}
+                                </div>
+                                <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
+                                    <h3>{{ point }}</h3>
+                                </div>
+                            </ul>
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                </div>
+                <div class="inlineButtons">
+                    <p *ngIf="!taskService.isSaved(task)">
+                        Not saved
+                    </p>
+                    <button title="Continue" (click)="startTimeTask(task)" mat-button>
+                        <mat-icon>play_arrow</mat-icon>
+                    </button>
+                    <button title="Stop" (click)="stopTimeTask()" mat-button>
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <button title="Add description" (click)="selectTask(task)" mat-button>
+                        <mat-icon>comment</mat-icon>
+                    </button>
+                    <button title="Pin task" (click)="pinTask(task)" mat-button>
+                        <mat-icon>push_pin</mat-icon>
+                    </button>
+                    <button title="Archive task" (click)="hideTask(task)" mat-button>
+                        <mat-icon>move_to_inbox</mat-icon>
+                    </button>
+                    <button title="Delete task" (click)="removeTask(task)" mat-button>
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</div>

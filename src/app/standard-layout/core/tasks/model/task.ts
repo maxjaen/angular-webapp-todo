@@ -8,4 +8,5 @@ export class Task {
   templongdescr: string;
   tempshortdescr: string;
   tempDate: Date;
+  project: string;
 }

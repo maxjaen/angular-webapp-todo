@@ -36,8 +36,8 @@ const EMPTY_STRING = '';
   styleUrls: ['./timetask.component.scss'],
 })
 export class TimeTaskComponent implements OnInit {
-  @ViewChild('fast') inputElement: ElementRef;
-  fastCreation = false;
+  @ViewChild('creationField') inputElement: ElementRef;
+  creationFieldCreation = false;
 
   testConfig: countUpTimerConfigModel;
   settings: Settings[] = [];
@@ -550,14 +550,14 @@ export class TimeTaskComponent implements OnInit {
    * Focus or unfocus html element when not activating/deactivating
    */
   private toogleFastCreation() {
-    this.fastCreation = !this.fastCreation;
+    this.showCreationField = !this.showCreationField;
 
     setTimeout(() => {
       // this will make the execution after the above boolean has changed
       this.inputElement.nativeElement.focus();
     }, 0);
 
-    if (!this.fastCreation) {
+    if (!this.showCreationField) {
       this.inputElement.nativeElement.value = '';
       this.unfocusAfterClick();
     }

@@ -2,8 +2,6 @@ import {
   Component,
   OnInit,
   Input,
-  ViewChild,
-  ElementRef,
   HostListener,
   OnChanges,
   SimpleChanges,
@@ -73,7 +71,6 @@ export class PinViewComponent implements OnInit, OnChanges {
     public keyService: KeyService,
     public utilityService: UtilityService,
     public dialogService: MatDialog,
-    private tabTitleService: Title,
     private timeTaskService: TimeTaskService,
     private snackBarService: MatSnackBar
   ) {}
@@ -107,13 +104,9 @@ export class PinViewComponent implements OnInit, OnChanges {
 
   ngOnChanges(_changes: SimpleChanges) {
     if (this.tasks && this.settings && this.tasksRunning) {
-      this.initTaskCategories();
-      this.initSettings();
-      this.initRunningTimeElement();
-
-      console.log(this.tasks);
-      console.log(this.settings);
-      console.log(this.tasksRunning);
+      this.onTaskCategoriesChange();
+      this.onSettingsChange();
+      this.setRunningTaskWhenisTimerStarted();
     }
   }
 
@@ -126,7 +119,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     this.testConfig.timerTexts.secondsText = ' s';
   }
 
-  private initTaskCategories() {
+  private onTaskCategoriesChange() {
     of(this.tasks)
       .pipe(
         tap((tasks) => {
@@ -134,13 +127,12 @@ export class PinViewComponent implements OnInit, OnChanges {
             tasks
           );
           this.tasksPinned = this.taskService.retrievePinnedTasks(tasks);
-        }),
-        tap(() => this.setTabTitle())
+        })
       )
       .subscribe();
   }
 
-  private initSettings() {
+  private onSettingsChange() {
     of(this.settings)
       .pipe(
         tap((settings) => {
@@ -153,190 +145,17 @@ export class PinViewComponent implements OnInit, OnChanges {
       .subscribe();
   }
 
-  private setTabTitle() {
-    // TODO every task that is not hided
-    if (this.tasksPinned.length > 0) {
-      this.tabTitleService.setTitle(
-        `${this.keyService.getKeyTranslation(
-          'ta1'
-        )} (${this.tasksPinned.length.toString()})`
-      );
-    } else {
-      this.tabTitleService.setTitle(this.keyService.getKeyTranslation('ta1'));
-    }
-  }
-
-  private initRunningTimeElement() {
+  private setRunningTaskWhenisTimerStarted() {
     if (this.timerService.isTimerStart) {
       this.runningTimeTask = this.tasksRunning[0];
     }
   }
 
-  // ====================================================================================================
-  // ====================================================================================================
-  // ====================================================================================================
-  // ====================================================================================================
-
-  saveTask(task: Task) {
-    if (task !== undefined) {
-      if (this.utilityService.isNumber(task.id)) {
-        if (this.taskService.isSaved(task)) {
-          this.displayNotification(
-            this.keyService.getKeyTranslation('a4'),
-            null
-          );
-          this.hideSelectedTask();
-          return;
-        }
-        this.taskService.putTask(task).subscribe(() => {
-          this.displayNotification(
-            this.keyService.getKeyTranslation('ta7'),
-            null
-          );
-          this.reload.emit();
-        });
-      } else {
-        console.warn('saveTask(): ID: ' + task.id + ', expected number');
-      }
-    } else {
-      console.warn('saveTask(): ID: ' + task.id + ', expected ID');
-    }
-
-    this.hideSelectedTask();
-  }
-
-  saveAllTasks() {
-    this.tasks.forEach((element) => {
-      this.saveTask(element);
-    });
-  }
-
-  pinTask(task: Task) {
-    if (task !== undefined) {
-      if (this.utilityService.isNumber(task.id)) {
-        this.copyTaskPropertiesToLastChangedTask(task);
-        task.pinned = !task.pinned;
-        this.updateTask(
-          task,
-          this.keyService.getKeyTranslation('ta6'),
-          'Reset'
-        );
-      } else {
-        console.warn('pinTask(): ID: ' + task.id + ', expected number');
-      }
-    } else {
-      console.warn('pinTask(): ID: ' + task.id + ', expected ID');
-    }
-  }
-
-  hideTask(task: Task) {
-    if (task !== undefined) {
-      if (this.utilityService.isNumber(task.id)) {
-        this.copyTaskPropertiesToLastChangedTask(task);
-        task.hided = !task.hided;
-        task.pinned = false;
-        this.updateTask(
-          task,
-          this.keyService.getKeyTranslation('ta5'),
-          'Reset'
-        );
-      } else {
-        console.warn(`hideTask(): ID: ${task.id}, expected number`);
-      }
-    } else {
-      console.warn(`hideTask(): ID: ${task.id}, expected id`);
-    }
-  }
-
-  removeTask(task: Task) {
-    if (task !== undefined) {
-      if (this.utilityService.isNumber(task.id)) {
-        if (!window.confirm(this.keyService.getKeyTranslation('a11'))) {
-          return;
-        }
-        this.taskService.deleteTask(task.id).subscribe(() => {
-          this.displayNotification(
-            this.keyService.getKeyTranslation('ta3'),
-            null
-          );
-          this.reload.emit();
-        });
-      } else {
-        console.warn(`removeTask(): ID: ${task.id}, expected number`);
-      }
-    } else {
-      console.warn(`removeTask(): ID: ${task.id}, expected id`);
-    }
-  }
-
-  resetTask(task: Task) {
-    if (task !== undefined) {
-      if (this.utilityService.isNumber(task.id)) {
-        this.updateTask(task, this.keyService.getKeyTranslation('ta4'), null);
-      } else {
-        console.warn(`resetTask(): ID: ${task.id}, expected number`);
-      }
-    } else {
-      console.warn(`resetTask(): ID: ${task.id}, expected id`);
-    }
-  }
-
-  private updateTask(
-    task: Task,
-    notificationMessage: string,
-    notificationAction: string
-  ) {
-    this.taskService.putTask(task).subscribe(() => {
-      this.displayNotification(notificationMessage, notificationAction);
-      this.reload.emit();
-      this.hideSelectedTask();
-    });
-  }
-
-  // Selected current Task if not already set,
-  // otherwise hide current selected Task
-  selectTask(task: Task) {
-    if (this.selectedTask === undefined || this.selectedTask === null) {
-      this.selectedTask = task;
-    } else {
-      this.hideSelectedTask();
-    }
-  }
-
-  // Remove selected Task
-  hideSelectedTask() {
-    this.selectedTask = null;
-  }
-
-  // Change target date of the selected task
-  changeDateFromTask(event: MatDatepickerInputEvent<Date>) {
-    this.selectedTask.date = event.value;
-  }
-
-  // Copy all properties from the current task to the last changed task
-  // Can be used to 'undo' an action like delete, put, ..
-  copyTaskPropertiesToLastChangedTask(fromTask: Task) {
-    this.lastChangedTask = {
-      id: fromTask.id,
-      date: fromTask.date,
-      hided: fromTask.hided,
-      pinned: fromTask.pinned,
-      shortdescr: fromTask.shortdescr,
-      longdescr: fromTask.longdescr,
-      templongdescr: fromTask.templongdescr,
-      tempshortdescr: fromTask.tempshortdescr,
-      tempDate: fromTask.tempDate,
-      project: fromTask.project,
-    };
-  }
-
-  // Let browser display unpinned tasks or not
-  displayUnpinnedTasks() {
-    this.displayUnpinned = !this.displayUnpinned;
-  }
-
-  // Change all abbreviations to text in the task description (based on ngModelChange)
-  replaceWithShortcuts(task: Task) {
+  /**
+   * Change all abbreviations to text in the task description (based on ngModelChange)
+   * @param task to be changed
+   */
+  public replaceWithShortcuts(task: Task) {
     Object.keys(this.keyService.getShortcuts()).forEach((key) => {
       task.longdescr = task.longdescr.replace(
         key,
@@ -345,7 +164,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     });
   }
 
-  getStatusColorValue(task: Task): string {
+  public getStatusColorValue(task: Task): string {
     const actualDate: Date = this.timeService.createNewDate();
     const tempTaskDate: Date = new Date(task.date);
     const dayMilliseconds: number = 1000 * 60 * 60 * 24;
@@ -382,6 +201,148 @@ export class PinViewComponent implements OnInit, OnChanges {
     return this.keyService.getColor('darkgreen');
   }
 
+  // ====================================================================================================
+  // ====================================================================================================
+  // ====================================================================================================
+  // ====================================================================================================
+
+  // TODO rework method
+  saveTask(task: Task) {
+    if (task !== undefined) {
+      if (this.utilityService.isNumber(task.id)) {
+        if (this.taskService.isSaved(task)) {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('a4'),
+            null
+          );
+          this.hideSelectedTask();
+          return;
+        }
+        this.taskService.putTask(task).subscribe(() => {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ta7'),
+            null
+          );
+          this.reload.emit();
+        });
+      } else {
+        console.warn('saveTask(): ID: ' + task.id + ', expected number');
+      }
+    } else {
+      console.warn('saveTask(): ID: ' + task.id + ', expected ID');
+    }
+
+    this.hideSelectedTask();
+  }
+
+  // TODO rework method
+  pinTask(task: Task) {
+    if (task !== undefined) {
+      if (this.utilityService.isNumber(task.id)) {
+        this.copyTaskPropertiesToLastChangedTask(task);
+        task.pinned = !task.pinned;
+        this.updateTask(
+          task,
+          this.keyService.getKeyTranslation('ta6'),
+          'Reset'
+        );
+      } else {
+        console.warn('pinTask(): ID: ' + task.id + ', expected number');
+      }
+    } else {
+      console.warn('pinTask(): ID: ' + task.id + ', expected ID');
+    }
+  }
+
+  // TODO rework method
+  hideTask(task: Task) {
+    if (task !== undefined) {
+      if (this.utilityService.isNumber(task.id)) {
+        this.copyTaskPropertiesToLastChangedTask(task);
+        task.hided = !task.hided;
+        task.pinned = false;
+        this.updateTask(
+          task,
+          this.keyService.getKeyTranslation('ta5'),
+          'Reset'
+        );
+      } else {
+        console.warn(`hideTask(): ID: ${task.id}, expected number`);
+      }
+    } else {
+      console.warn(`hideTask(): ID: ${task.id}, expected id`);
+    }
+  }
+
+  // TODO rework method
+  removeTask(task: Task) {
+    if (task !== undefined) {
+      if (this.utilityService.isNumber(task.id)) {
+        if (!window.confirm(this.keyService.getKeyTranslation('a11'))) {
+          return;
+        }
+        this.taskService.deleteTask(task.id).subscribe(() => {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ta3'),
+            null
+          );
+          this.reload.emit();
+        });
+      } else {
+        console.warn(`removeTask(): ID: ${task.id}, expected number`);
+      }
+    } else {
+      console.warn(`removeTask(): ID: ${task.id}, expected id`);
+    }
+  }
+
+  // TODO rework method
+  resetTask(task: Task) {
+    if (task !== undefined) {
+      if (this.utilityService.isNumber(task.id)) {
+        this.updateTask(task, this.keyService.getKeyTranslation('ta4'), null);
+      } else {
+        console.warn(`resetTask(): ID: ${task.id}, expected number`);
+      }
+    } else {
+      console.warn(`resetTask(): ID: ${task.id}, expected id`);
+    }
+  }
+
+  // TODO rework method
+  private updateTask(
+    task: Task,
+    notificationMessage: string,
+    notificationAction: string
+  ) {
+    this.taskService.putTask(task).subscribe(() => {
+      this.displayNotification(notificationMessage, notificationAction);
+      this.reload.emit();
+      this.hideSelectedTask();
+    });
+  }
+
+  /**
+   * Copy all properties from the current task to the last changed task
+   * Can be used to 'undo' an action like delete, put, ..
+   * @param fromTask has proprty value we mayb want back later
+   */
+  private copyTaskPropertiesToLastChangedTask(fromTask: Task) {
+    this.lastChangedTask = {
+      id: fromTask.id,
+      date: fromTask.date,
+      hided: fromTask.hided,
+      pinned: fromTask.pinned,
+      shortdescr: fromTask.shortdescr,
+      longdescr: fromTask.longdescr,
+      templongdescr: fromTask.templongdescr,
+      tempshortdescr: fromTask.tempshortdescr,
+      tempDate: fromTask.tempDate,
+      project: fromTask.project,
+    };
+  }
+
+  // TODO rework method
   startTimeTask(task: Task): void {
     if (this.runningTimeTask) {
       this.runningTimeTask.enddate = this.timeService.createNewDate();
@@ -417,6 +378,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     });
   }
 
+  // TODO rework method
   stopTimeTask(): void {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
@@ -436,26 +398,11 @@ export class PinViewComponent implements OnInit, OnChanges {
     }
   }
 
-  private resetTimer() {
-    this.timerService.stopTimer();
-    this.timerService.setTimervalue(0);
-  }
-
-  private displayNotification(message: string, action: string) {
-    this.snackBarService
-      .open(message, action, {
-        duration: 4000,
-      })
-      .onAction()
-      .subscribe(() => {
-        this.resetTask(this.lastChangedTask);
-      });
-  }
-
-  // Open popup dialog to create a new Task
-  // Hide selected task
-  // Add new Task to the database
-  openInsertTaskDialog(): void {
+  // TODO rework method
+  /**
+   * Popup dialog for creating a new task with different parameters
+   */
+  openInsertTaskDialog() {
     this.hideSelectedTask();
 
     const dialogRef = this.dialogService.open(InsertTaskDialog, {
@@ -499,5 +446,46 @@ export class PinViewComponent implements OnInit, OnChanges {
         );
       }
     });
+  }
+
+  selectTask(task: Task) {
+    if (this.selectedTask === undefined || this.selectedTask === null) {
+      this.selectedTask = task;
+    } else {
+      this.hideSelectedTask();
+    }
+  }
+
+  private hideSelectedTask() {
+    this.selectedTask = null;
+  }
+
+  public changeDateFromTask(event: MatDatepickerInputEvent<Date>) {
+    this.selectedTask.date = event.value;
+  }
+
+  public displayUnpinnedTasks() {
+    this.displayUnpinned = !this.displayUnpinned;
+  }
+
+  private resetTimer() {
+    this.timerService.stopTimer();
+    this.timerService.setTimervalue(0);
+  }
+
+  /**
+   * Opens popup menu to show new notifications on user interface
+   * @param message to be displayed
+   * @param action to be taken
+   */
+  private displayNotification(message: string, action: string) {
+    this.snackBarService
+      .open(message, action, {
+        duration: 4000,
+      })
+      .onAction()
+      .subscribe(() => {
+        this.resetTask(this.lastChangedTask);
+      });
   }
 }

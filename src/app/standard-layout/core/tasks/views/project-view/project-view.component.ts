@@ -15,11 +15,6 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-export interface ProjectList {
-  name: string;
-  list: Task[];
-}
-
 @Component({
   selector: 'app-project-view',
   templateUrl: './project-view.component.html',
@@ -45,10 +40,10 @@ export class ProjectViewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadServices();
+    this.loadFromServices();
   }
 
-  public loadServices() {
+  public loadFromServices() {
     this.initTasks();
     this.initTimeTasks();
     this.initSettings();
@@ -58,7 +53,7 @@ export class ProjectViewComponent implements OnInit {
     this.taskService
       .getTasks()
       .pipe(
-        map(tasks => tasks.filter(task => !task.hided)),
+        map((tasks) => tasks.filter((task) => !task.hided)),
         tap((tasks) => {
           tasks.forEach((task) => {
             task.tempshortdescr = task.shortdescr;
@@ -93,6 +88,7 @@ export class ProjectViewComponent implements OnInit {
     });
   }
 
+  // TODO rework method
   private updateTask(
     task: Task,
     notificationMessage: string,
@@ -104,6 +100,7 @@ export class ProjectViewComponent implements OnInit {
     });
   }
 
+  // TODO rework method
   public removeTask(task: Task) {
     if (task !== undefined) {
       if (this.utilityService.isNumber(task.id)) {
@@ -125,29 +122,8 @@ export class ProjectViewComponent implements OnInit {
     }
   }
 
-  public retrieveDistinctTasks(tasks: Task[]): string[] {
-    return tasks
-      .map((e) => e.project)
-      .filter(this.utilityService.sortDistinct)
-      .sort();
-  }
-
-  public retrieveTasksForProject(project: string): Task[] {
-    return this.tasks.filter((task) => task.project == project);
-  }
-
-  /**
-   * Opens popup menu to show new notifications on user interface
-   * @param message to be displayed
-   * @param action to be taken
-   */
-  private displayNotification(message: string, action: string): void {
-    this.snackBarService.open(message, action, {
-      duration: 4000,
-    });
-  }
-
-  drop(event: CdkDragDrop<string[]>) {
+  // TODO rework method
+  public drop(event: CdkDragDrop<string[]>) {
     console.log(event);
     if (event.previousContainer.id === event.container.id) {
       moveItemInArray(
@@ -170,5 +146,27 @@ export class ProjectViewComponent implements OnInit {
         });
       this.updateTask(event.item.data, 'Updated Task', null);
     }
+  }
+
+  public retrieveDistinctProjectNames(tasks: Task[]): string[] {
+    return tasks
+      .map((e) => e.project)
+      .filter(this.utilityService.sortDistinct)
+      .sort();
+  }
+
+  public retrieveTasksForProject(project: string): Task[] {
+    return this.tasks.filter((task) => task.project == project);
+  }
+
+  /**
+   * Opens popup menu to show new notifications on user interface
+   * @param message to be displayed
+   * @param action to be taken
+   */
+  private displayNotification(message: string, action: string): void {
+    this.snackBarService.open(message, action, {
+      duration: 4000,
+    });
   }
 }

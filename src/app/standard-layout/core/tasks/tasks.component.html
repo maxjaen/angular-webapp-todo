@@ -2,10 +2,10 @@
   <!-- ###################### TODAY TAB ###################### -->
   <mat-tab label="Tasks">
     <div class="content">
-      <div class="input-bottom" [ngClass]="fastCreation ? '' : 'hidden'">
+      <div class="input-bottom" [ngClass]="showCreationField ? '' : 'hidden'">
         <mat-form-field class="example-form-field">
           <mat-label>Let's do it!</mat-label>
-          <input matInput type="text" (keyup.enter)="createNewTask($event)" #fast />
+          <input matInput type="text" (keyup.enter)="createTaskFromCreationField($event)" #creationField />
         </mat-form-field>
       </div>
       <div class="chips">
@@ -15,11 +15,12 @@
         </mat-chip-list>
       </div>
       <div *ngIf="viewSelected === View.PROJECTS">
-        <app-project-view [tasks]="tasks" [settings]="settings" [tasksRunning]="tasksRunning" (reload)="loadServices()">
+        <app-project-view [tasks]="tasks" [settings]="settings" [tasksRunning]="tasksRunning"
+          (reload)="loadFromServices()">
         </app-project-view>
       </div>
       <div *ngIf="viewSelected === View.PINS">
-        <app-pin-view [tasks]="tasks" [settings]="settings" [tasksRunning]="tasksRunning" (reload)="loadServices()">
+        <app-pin-view [tasks]="tasks" [settings]="settings" [tasksRunning]="tasksRunning" (reload)="loadFromServices()">
         </app-pin-view>
       </div>
     </div>
@@ -51,9 +52,7 @@
               <button (click)="saveTask(taskSelected)" mat-button>
                 Save task
               </button>
-              <button (click)="saveAllTasks()" mat-button>
-                Save all
-              </button>
+
             </div>
           </form>
         </div>

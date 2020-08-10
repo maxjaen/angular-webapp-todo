@@ -7,23 +7,17 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskService } from '../../shared/services/core/task.service';
-import { InsertTaskDialog } from './dialogs/insert-task-dialog';
 import { Task } from './model/task';
-import { MatDatepickerInputEvent, MatSnackBar } from '@angular/material';
-import { Title } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { UtilityService } from '../../shared/services/utils/utility.service';
 import { Settings } from '../settings/model/settings';
 import { SettingsService } from '../../shared/services/core/settings.service';
 import { TimeService } from '../../shared/services/utils/time.service';
 import { TimeTaskService } from '../../shared/services/core/timetask.service';
-import {
-  CountupTimerService,
-  countUpTimerConfigModel,
-  timerTexts,
-} from 'ngx-timer';
 import { TimeTask } from '../timetask/model/timetask';
 import { tap, map } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
 
 export enum View {
   PROJECTS,
@@ -41,8 +35,8 @@ export class TasksComponent implements OnInit {
   tasksRunning: TimeTask[];
   settings: Settings[];
 
-  @ViewChild('fast') inputElement: ElementRef;
-  fastCreation = false;
+  @ViewChild('creationField') inputElement: ElementRef;
+  showCreationField = false;
 
   View = View;
   viewSelected: View = View.PROJECTS;
@@ -52,7 +46,7 @@ export class TasksComponent implements OnInit {
    * @param event occurs when esc is pressed
    */
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(
-    event: KeyboardEvent
+    _event: KeyboardEvent
   ) {
     this.toogleFastCreation();
   }
@@ -61,20 +55,19 @@ export class TasksComponent implements OnInit {
     public timeService: TimeService,
     public settingsService: SettingsService,
     public taskService: TaskService,
-    public timerService: CountupTimerService,
     public keyService: KeyService,
+    private tabTitleService: Title,
     public utilityService: UtilityService,
     public dialogService: MatDialog,
-    private tabTitleService: Title,
     private timeTaskService: TimeTaskService,
     private snackBarService: MatSnackBar
   ) {}
 
   ngOnInit() {
-    this.loadServices();
+    this.loadFromServices();
   }
 
-  public loadServices() {
+  public loadFromServices() {
     this.initTasks();
     this.initTimeTasks();
     this.initSettings();
@@ -84,16 +77,14 @@ export class TasksComponent implements OnInit {
     this.taskService
       .getTasks()
       .pipe(
+        tap((tasks) => this.setTabTitle(tasks)),
         tap((tasks) => {
-          tasks.forEach((task) => {
-            task.tempshortdescr = task.shortdescr;
-            task.templongdescr = task.longdescr;
-            task.tempDate = task.date;
-          });
+          this.fillTemporaryInfos(tasks);
         }),
         tap((tasks) => {
           this.tasksHided = this.taskService.retrieveHidedTasks(tasks);
-        })
+        }),
+        map((tasks) => tasks.filter((task) => !task.hided))
       )
       .subscribe((tasks) => {
         this.tasks = tasks;
@@ -122,13 +113,14 @@ export class TasksComponent implements OnInit {
   }
 
   public toogleFastCreation() {
-    this.fastCreation = !this.fastCreation;
+    this.showCreationField = !this.showCreationField;
 
     setTimeout(() => {
       this.inputElement.nativeElement.focus();
     }, 0);
 
-    if (!this.fastCreation) {
+    if (!this.showCreationField) {
+      // reset form after usage
       this.inputElement.nativeElement.value = '';
       this.unfocusAfterClick();
     }
@@ -140,14 +132,12 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  public createNewTask(event: any) {
+  public createTaskFromCreationField(event: any) {
     const date = this.timeService.createNewDate();
+
     const shortDescr = event.target.value as string;
     const longDescr = '';
-
     const splittedDescr = shortDescr.split('  ');
-
-    console.log(splittedDescr);
     const name = splittedDescr[0].trim();
     const project = splittedDescr[1] ? splittedDescr[1].trim() : 'Ohne Projekt';
 
@@ -166,13 +156,35 @@ export class TasksComponent implements OnInit {
 
     this.taskService.postTask(task).subscribe(() => {
       this.displayNotification(this.keyService.getKeyTranslation('ta2'), null);
-      this.loadServices();
+      this.loadFromServices();
+    });
+  }
+
+  /**
+   * Make sure that each tasks temporary infos are same as current
+   * in order to use actions like 'redo'
+   * @param tasks
+   */
+  private fillTemporaryInfos(tasks: Task[]) {
+    tasks.forEach((task) => {
+      task.tempshortdescr = task.shortdescr;
+      task.templongdescr = task.longdescr;
+      task.tempDate = task.date;
     });
   }
 
   public selectView(view: View) {
     this.viewSelected = view;
   }
+
+  private setTabTitle(tasks: Task[]) {
+    const unhidedTasks = tasks.filter((task) => !task.hided).length;
+
+    this.tabTitleService.setTitle(
+      `${this.keyService.getKeyTranslation('ta1')} (${unhidedTasks})`
+    );
+  }
+
   /**
    * Opens popup menu to show new notifications on user interface
    * @param message to be displayed

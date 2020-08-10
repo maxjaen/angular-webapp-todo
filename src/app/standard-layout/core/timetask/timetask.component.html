@@ -7,10 +7,10 @@
           Start a new timer now!
         </div>
       </div>
-      <div class="input-bottom" [ngClass]="fastCreation ? '' : 'hidden'">
+      <div class="input-bottom" [ngClass]="showCreationField ? '' : 'hidden'">
         <mat-form-field class="example-form-field">
           <mat-label>Let's do it!</mat-label>
-          <input matInput type="text" (keyup.enter)="createFastTimeTask($event)" #fast />
+          <input matInput type="text" (keyup.enter)="createFastTimeTask($event)" #creationField />
         </mat-form-field>
       </div>
       <div class="show-wrapper">

@@ -448,7 +448,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     });
   }
 
-  selectTask(task: Task) {
+  public selectTask(task: Task) {
     if (this.selectedTask === undefined || this.selectedTask === null) {
       this.selectedTask = task;
     } else {

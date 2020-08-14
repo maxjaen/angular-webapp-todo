@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Direction } from '../../model/Enums';
 
 const NEW_LINE = '\n';
 
@@ -37,15 +38,11 @@ export class UtilityService {
   }
 
   public objectHasPropertyWithValue(object: any, property: string): boolean {
-    if (
+    return (
       object.hasOwnProperty(property) &&
       object[property] !== null &&
       object[property] !== undefined
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   }
 
   public removeElementFromArray(element: any, array: any[]) {
@@ -59,10 +56,9 @@ export class UtilityService {
     array.splice(elementPosition, 1);
   }
 
-  // TODO
   public changeElementOrderInArray(
     array: any[],
-    direction: string,
+    direction: Direction,
     index: number
   ) {
     const actualElement: number = index;
@@ -70,31 +66,29 @@ export class UtilityService {
     const nextElement: number = index + 1;
 
     switch (direction) {
-      case 'up':
+      case Direction.UP:
         if (index !== 0) {
           const tempLast = array[lastElement];
           array[lastElement] = array[actualElement];
           array[actualElement] = tempLast;
         } else {
           console.warn(
-            `First element in array ${array} cannot be moved further up to index ${
+            `First element in array cannot be moved further up to index ${
               index - 1
-            }. Array from 0 to ${array.length - 1}
-            `
+            }.`
           );
         }
         break;
-      case 'down':
+      case Direction.DOWN:
         if (actualElement < array.length - 1) {
           const tempNext: any = array[nextElement];
           array[nextElement] = array[actualElement];
           array[actualElement] = tempNext;
         } else {
           console.warn(
-            `Last element in array ${array} cannot be moved further down to index ${
+            `Last element in array cannot be moved further down to index ${
               index + 1
-            }. Array from 0 to ${array.length + 1}
-            `
+            }.`
           );
         }
         break;

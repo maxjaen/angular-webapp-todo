@@ -49,13 +49,13 @@ export class InsertTaskDialogTime {
     });
   }
 
-  selectCategory(event: { value: Task }) {
+  public selectCategory(event: { value: Task }) {
     this.data.task = event.value;
     this.data.shortdescr = event.value.shortdescr;
     this.data.longdescr = event.value.longdescr;
   }
 
-  onNoClick(): void {
+  public onNoClick(): void {
     this.dialogRefService.close();
   }
 }

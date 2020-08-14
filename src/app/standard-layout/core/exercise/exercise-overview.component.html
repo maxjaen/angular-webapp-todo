@@ -14,8 +14,8 @@
             <mat-form-field>
               <mat-label>Choose pattern</mat-label>
               <mat-select (selectionChange)="prepareExerciseCategory($event)">
-                <mat-option *ngFor="let patternString of patterns" [value]="patternString">
-                  {{ patternString }}
+                <mat-option *ngFor="let category of exerciseService.retrievePatternKeys()" [value]="category">
+                  {{ exerciseService.retrievePatternValueFromPattern(category) }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -53,7 +53,7 @@
                 )
               ">
               <div class="top-category">
-                {{ category }}
+                {{ exerciseService.retrievePatternValueFromPattern(category) }}
               </div>
               <hr />
               <div *ngFor="

@@ -9,6 +9,7 @@ import { TimeService } from '../../shared/services/utils/time.service';
 import { NameAndNumberPair } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
 import { Title } from '@angular/platform-browser';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-weight',
@@ -36,47 +37,31 @@ export class WeightComponent implements OnInit {
 
   ngOnInit() {
     this.getWeightsFromService();
-
     this.tabTitleService.setTitle(this.keyService.getKeyTranslation('w1'));
   }
 
-  /*
-   * ===================================================================================
-   * GET DATA
-   * ===================================================================================
-   */
-
-  // Get all Weights (sorted) from service
-  getWeightsFromService() {
-    this.weights = [];
-
-    this.weightService.getAllWeights().subscribe((weights) => {
-      weights.sort((a, b) =>
-        this.utilityService.sortNumerical(
-          Date.parse(a.date.toString()),
-          Date.parse(b.date.toString())
-        )
-      );
-
-      this.weights = weights;
-      this.initGraphData();
-    });
+  private getWeightsFromService() {
+    this.weightService
+      .getAllWeights()
+      .pipe(
+        tap((weights) => {
+          this.initGraphData(weights);
+        }),
+        map((weights) => {
+          return weights.sort((a, b) =>
+            this.utilityService.sortNumerical(
+              Date.parse(a.date.toString()),
+              Date.parse(b.date.toString())
+            )
+          );
+        })
+      )
+      .subscribe((weights) => {
+        this.weights = weights;
+      });
   }
 
-  private initGraphData() {
-    this.graphData = this.graphDataService.initGraphDataForWeights(
-      this.weights.slice(0, this.displayedWeights)
-    );
-  }
-
-  /*
-   * ===================================================================================
-   * CRUD OPERATIONS
-   * ===================================================================================
-   */
-
-  // Save weight into the database
-  saveWeight() {
+  public saveWeight() {
     if (this.form.getRawValue().weight !== '') {
       const weightValue: number = this.form.getRawValue().weight;
       const dateValue: Date = this.timeService.createNewDate();
@@ -103,8 +88,17 @@ export class WeightComponent implements OnInit {
     }
   }
 
-  // Remove selected weight from the database
-  removeWeight(weight: Weight) {
+  private initGraphData(weights: Weight[]) {
+    this.graphData = this.graphDataService.initGraphDataForWeights(
+      weights.slice(0, this.displayedWeights)
+    );
+  }
+
+  /**
+   * Remove selected weight from the database
+   * @param weight to be removed
+   */
+  public removeWeight(weight: Weight) {
     if (weight !== undefined) {
       if (this.utilityService.isNumber(weight.id)) {
         if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
@@ -124,53 +118,41 @@ export class WeightComponent implements OnInit {
     }
   }
 
-  /*
-   * ===================================================================================
-   * OTHER WEIGHT OPERATIONS
-   * ===================================================================================
-   */
-
-  showMoreWeights() {
+  public showMoreWeights() {
     if (this.moreWeightsThanDisplayed()) {
       this.displayedWeights += 10;
-      this.initGraphData();
+      this.initGraphData(this.weights);
     } else {
       console.log(this.keyService.getKeyTranslation('a21'));
     }
   }
 
-  showLessWeights() {
+  public showLessWeights() {
     if (this.displayedWeights > 10) {
       this.displayedWeights -= 10;
-      this.initGraphData();
+      this.initGraphData(this.weights);
     } else {
       console.log(this.keyService.getKeyTranslation('a22'));
     }
   }
 
-  moreWeightsThanDisplayed() {
-    if (this.weights.length - this.displayedWeights > 0) {
-      return true;
-    }
-
-    return false;
+  public moreWeightsThanDisplayed() {
+    return this.weights.length - this.displayedWeights > 0;
   }
 
-  /*
-   * ===================================================================================
-   * STATISTICS
-   * ===================================================================================
+  /**
+   * Get the latest weight measurement
    */
-
-  // Get the latest weight measurement
-  getLatestWeight(): Weight {
+  private getLatestWeight(): Weight {
     return this.weights.sort((a, b) =>
       this.utilityService.sortNumerical(a.id, b.id)
     )[0];
   }
 
-  // Get the number of days since last training session
-  getDaysSinceLastWeight(): number {
+  /**
+   * Get the number of days since last training session
+   */
+  public getDaysSinceLastWeight(): number {
     const tempDate: Date = this.timeService.createNewDate();
     const milliseconds: number =
       tempDate.getTime() - new Date(this.getLatestWeight().date).getTime();
@@ -178,8 +160,10 @@ export class WeightComponent implements OnInit {
     return Math.floor(milliseconds / (1000 * 60 * 60 * 24));
   }
 
-  // Calculate BMI index
-  calculateBMI() {
+  /**
+   * Calculate BMI index for latest weight
+   */
+  public calculateBMI() {
     if (this.weights.length !== 0) {
       return (+this.getLatestWeight().value / (1.85 * 1.85)).toFixed(2);
     }
@@ -187,31 +171,40 @@ export class WeightComponent implements OnInit {
     return -1;
   }
 
-  // Get lowest weight value of all weight data
-  getLowestWeightValue(): number {
+  /**
+   * Get lowest weight value of all weight data
+   */
+  private getLowestWeightValue(): number {
     return this.weights
       .map((weight) => weight.value)
       .sort(this.utilityService.sortNumerical)[this.weights.length - 1];
   }
 
-  // Get average data value from all weight data
-  getAverageWeightValue(): number {
+  /**
+   * Get average data value from all weight data
+   */
+  private getAverageWeightValue(): number {
     return (
       this.weights.map((e) => +e.value).reduce((a, b) => a + b, 0) /
       this.weights.length
     );
   }
 
-  // Get highest weight value of all weight data
-  getHighestWeightValue(): number {
+  /**
+   * Get highest weight value of all weight data
+   */
+  private getHighestWeightValue(): number {
     return this.weights
       .map((weight) => weight.value)
       .sort(this.utilityService.sortNumerical)[0];
   }
 
-  // Get backround color for different weight intervals
-  // Return backround color
-  getStatusColorValue(weight: Weight): string {
+  /**
+   * Get backround color for different weight intervals
+   * @param weight to set the background color for
+   * @returns backround color
+   */
+  public getStatusColorValue(weight: Weight): string {
     const highestValue: number = this.getHighestWeightValue();
     if (weight.value === highestValue) {
       return this.keyService.getColor('darkgreen');
@@ -226,11 +219,9 @@ export class WeightComponent implements OnInit {
     if (weight.value <= averageValue + 1 && weight.value >= averageValue - 1) {
       return this.keyService.getColor('yellow');
     }
-
     if (weight.value < averageValue - 1) {
       return this.keyService.getColor('orange');
     }
-
     if (weight.value > averageValue + 1) {
       return this.keyService.getColor('lightgreen');
     }
@@ -238,14 +229,12 @@ export class WeightComponent implements OnInit {
     return this.keyService.getColor('darkgray');
   }
 
-  /*
-   * ===================================================================================
-   * HELPER FUNCTIONS
-   * ===================================================================================
+  /**
+   * Opens popup menu to show new notifications on user interface
+   * @param message to be displayed
+   * @param action to be taken
    */
-
-  // Opens popup menu for notifications
-  displayNotification(message: string, action: string) {
+  private displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 2000,
     });

@@ -4,6 +4,7 @@ import { Training } from '../../model/training';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Exercise } from '../../../exercise/model/exercise';
 import { KeyService } from '../../../../shared/services/utils/key.service';
+import { ExerciseService } from 'src/app/standard-layout/shared/services/core/exercise.service';
 
 @Component({
   selector: 'app-training-detailview',
@@ -16,6 +17,7 @@ export class TrainingDetailViewComponent implements OnInit {
   displayedColumns: string[] = ['name', 'category', 'string'];
 
   constructor(
+    public exerciseService: ExerciseService,
     private keyService: KeyService,
     private trainingService: TrainingService,
     private activeRouteService: ActivatedRoute,

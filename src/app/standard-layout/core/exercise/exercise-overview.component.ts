@@ -7,6 +7,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { UtilityService } from '../../shared/services/utils/utility.service';
 import { Title } from '@angular/platform-browser';
 import { map } from 'rxjs/operators';
+import { Pattern } from '../../shared/model/Enums';
 
 @Component({
   selector: 'app-exercise-overview',
@@ -24,14 +25,6 @@ export class ExerciseOverViewComponent implements OnInit {
 
   selectedExercise: Exercise;
 
-  patterns = [
-    'conditionalpattern1d',
-    'conditionalpattern2d',
-    'countablepattern',
-    'weightpattern',
-    'freepattern',
-  ];
-
   constructor(
     private utilityService: UtilityService,
     public exerciseService: ExerciseService,
@@ -45,7 +38,7 @@ export class ExerciseOverViewComponent implements OnInit {
     this.tabTitleService.setTitle(this.keyService.getKeyTranslation('e1'));
   }
 
-  initExercises() {
+  private initExercises() {
     this.exerciseService
       .getExercises()
       .pipe(
@@ -60,7 +53,7 @@ export class ExerciseOverViewComponent implements OnInit {
       });
   }
 
-  saveExercise() {
+  public saveExercise() {
     this.prepareExerciseName(this.formForExerciseCreation.getRawValue().name);
 
     this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
@@ -69,7 +62,7 @@ export class ExerciseOverViewComponent implements OnInit {
     });
   }
 
-  deleteExercise() {
+  public deleteExercise() {
     this.exerciseService.deleteExercise(this.exerciseToDelete).subscribe(() => {
       this.displayNotification(this.keyService.getKeyTranslation('t5'), null);
       this.initExercises();
@@ -80,7 +73,7 @@ export class ExerciseOverViewComponent implements OnInit {
    * Select exercise from user interface
    * @param exercise to be selected
    */
-  selectExercise(exercise: Exercise) {
+  public selectExercise(exercise: Exercise) {
     this.selectedExercise = exercise;
   }
 
@@ -88,7 +81,7 @@ export class ExerciseOverViewComponent implements OnInit {
    * Set exercise that should be deleted on user interface
    * @param event to init exercise to be deleted
    */
-  selectExerciseToDelete(event: { value: Exercise }) {
+  public selectExerciseToDelete(event: { value: Exercise }) {
     this.exerciseToDelete = event.value;
   }
 
@@ -96,7 +89,7 @@ export class ExerciseOverViewComponent implements OnInit {
    *  Set name of new exercise
    * @param name to be setted for new exercise
    */
-  prepareExerciseName(name: string) {
+  private prepareExerciseName(name: string) {
     this.exerciseToCreate.name = name;
   }
 
@@ -104,7 +97,7 @@ export class ExerciseOverViewComponent implements OnInit {
    * Set category of new exercise
    * @param event to init value for new exercise
    */
-  prepareExerciseCategory(event: { value: string }) {
+  public prepareExerciseCategory(event: { value: Pattern }) {
     this.exerciseToCreate.category = event.value;
   }
 
@@ -113,7 +106,7 @@ export class ExerciseOverViewComponent implements OnInit {
    * @param message to be displayed
    * @param action to be taken
    */
-  displayNotification(message: string, action: string) {
+  private displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Exercise } from '../../../core/exercise/model/exercise';
 import { UtilityService } from '../utils/utility.service';
+import { Pattern } from '../../model/Enums';
 
 @Injectable({
   providedIn: 'root',
@@ -33,10 +34,11 @@ export class ExerciseService {
    */
   public retrieveDistinctCategoriesFromExercises(
     exercises: Exercise[]
-  ): Array<string> {
+  ): Array<Pattern> {
     return exercises
       .map((e) => e.category)
-      .filter(this.utilityService.sortDistinct);
+      .filter(this.utilityService.sortDistinct)
+      .reverse();
   }
 
   /**
@@ -46,14 +48,36 @@ export class ExerciseService {
    */
   public retrieveSortedExercisesWithCategory(
     exercises: Exercise[],
-    category: string
+    category: Pattern
   ) {
     return exercises
       .filter((e) => this.hasCategory(e, category))
       .sort((a, b) => this.utilityService.sortAlphabetical(a.name, b.name));
   }
 
-  private hasCategory(exercise: Exercise, category: string) {
+  /**
+   * Checks if an exercise has the specified category
+   * @param exercise to be checked
+   * @param category to be compared with exercises category
+   */
+  private hasCategory(exercise: Exercise, category: Pattern) {
     return exercise.category === category;
+  }
+
+  /**
+   * Get String instead of number from pattern enum for better readability
+   * on user interface
+   * @param index is the position of the pattern in the array
+   */
+  public retrievePatternValueFromPattern(index: number) {
+    return this.retrievePatternValues()[index];
+  }
+
+  private retrievePatternValues() {
+    return Object.values(Pattern);
+  }
+
+  public retrievePatternKeys() {
+    return Object.keys(Pattern).splice(0, Object.keys(Pattern).length / 2);
   }
 }

@@ -10,7 +10,7 @@ import { WeightService } from '../../shared/services/core/weight.service';
 import { Title } from '@angular/platform-browser';
 import { TimeService } from '../../shared/services/utils/time.service';
 import { KeyService } from '../../shared/services/utils/key.service';
-import { ThemeService } from '../../shared/services/utils/theme.service';
+import { Pattern } from '../../shared/model/Enums';
 
 interface KeyValuePair {
   key: string;
@@ -50,17 +50,17 @@ export class DashboardComponent implements OnInit {
     this.getWeightPlaceholder();
   }
 
-  goToUrl(component: StartPageSetting) {
+  public goToUrl(component: StartPageSetting) {
     this.routerService.navigate(['/' + component.name]);
   }
 
-  getSettings() {
+  private getSettings() {
     this.settingsService.getSettings().subscribe((settings) => {
       this.settings = settings;
     });
   }
 
-  getTaskPlaceholder() {
+  private getTaskPlaceholder() {
     this.taskService.getTasks().subscribe((tasks) => {
       const value = tasks.filter((task) => !task.hided).length.toString();
 
@@ -71,7 +71,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  getTimeTaskPlaceholder() {
+  private getTimeTaskPlaceholder() {
     this.timeTaskService.getTimeTasks().subscribe((timetasks) => {
       const value = timetasks
         .filter(
@@ -91,12 +91,12 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  getSessionPlaceholder() {
+  private getSessionPlaceholder() {
     this.trainingService.getTrainings().subscribe((trainings) => {
       if (trainings.length > 0) {
         const timetrainings = trainings.filter((training) =>
           training.exercices.every(
-            (exercise) => exercise.category === 'conditionalpattern1d'
+            (exercise) => exercise.category === Pattern.CONDITIONAL1
           )
         );
 
@@ -116,7 +116,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  getWeightPlaceholder() {
+  private getWeightPlaceholder() {
     this.weightService.getAllWeights().subscribe((weights) => {
       if (weights.length > 0) {
         const value = weights[weights.length - 1].value.toString();
@@ -130,20 +130,20 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   *
-   * @param key
+   * Get value from element in placeholder array
+   * @param key to identify an specific element from the array
    */
-  getPlaceHolderValueFromKey(key: string) {
+  public getPlaceHolderValueFromKey(key: string): string {
     return this.placeHolderArray.filter(
       (placeholder) => placeholder.key === key
     )[0].value;
   }
 
   /**
-   *
-   * @param key
+   * Checks if element is in placeholder array and not undefined
+   * @param key to identify an specific element from the array
    */
-  hasPlaceHolder(key: string) {
+  public hasPlaceHolder(key: string): boolean {
     return (
       this.placeHolderArray.filter(
         (placeholder) => placeholder.key === key
@@ -155,7 +155,7 @@ export class DashboardComponent implements OnInit {
    * Checks if an argument of type string is an ignored module
    * @param str check if ignore module
    */
-  isIgnoredModule(str: string) {
+  public isIgnoredModule(str: string) {
     return this.ignoreModules.indexOf(str) > -1;
   }
 
@@ -165,7 +165,7 @@ export class DashboardComponent implements OnInit {
    * @param from character
    * @param to character
    */
-  replacePlaceholder(word: string, from: string, to: string) {
+  public replacePlaceholder(word: string, from: string, to: string) {
     return word.replace(from, to);
   }
 }

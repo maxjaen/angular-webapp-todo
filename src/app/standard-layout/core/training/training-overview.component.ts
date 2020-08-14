@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { UtilityService } from '../../shared/services/utils/utility.service';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { map } from 'rxjs/operators';
+import { Direction, Pattern } from '../../shared/model/Enums';
 
 @Component({
   selector: 'app-training-overview',
@@ -47,6 +48,9 @@ export class TrainingOverViewComponent implements OnInit {
 
   formGroups: FormGroup[] = [];
   formGroupToInsert: FormGroup;
+
+  Direction = Direction;
+  Pattern = Pattern;
 
   constructor(
     public exerciseService: ExerciseService,
@@ -175,16 +179,15 @@ export class TrainingOverViewComponent implements OnInit {
   public toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean }) {
     this.setCheckBoxFromExerciseName(exercise.name, true);
 
-    const pattern: ConditionalPattern = {
-      name: 'conditionalpattern1d',
-      records: 0,
-      repetitions: 0,
-      unit: 's',
-    };
-
     if (this.selectedMode === 'Time Session') {
+      const pattern: ConditionalPattern = {
+        category: 3, // Pattern.CONDITIONAL1
+        records: 0,
+        repetitions: 0,
+        unit: 's',
+      };
       exercise.pattern = pattern;
-      exercise.category = 'conditionalpattern1d';
+      exercise.category = Pattern.CONDITIONAL1;
     }
 
     if (event.checked === true) {
@@ -299,36 +302,16 @@ export class TrainingOverViewComponent implements OnInit {
    */
   private retrievePatternKeys(exercise: Exercise): string[] {
     switch (exercise.category) {
-      case 'conditionalpattern1d':
-        let patternOne: ConditionalPattern = {
-          name: 'conditionalpattern1d',
-          records: 0,
-          repetitions: 0,
-          unit: 's',
+      case Pattern.FREE:
+        const patternFive: FreePattern = {
+          category: Pattern.FREE,
+          text: '',
         };
-        exercise.pattern = patternOne;
-        return Object.getOwnPropertyNames(patternOne);
-      case 'conditionalpattern2d':
-        let patternTwo: ConditionalPattern2d = {
-          name: 'conditionalpattern2d',
-          period: 0,
-          speed: 0,
-          unitperiod: 'min',
-          unitspeed: 'km/h',
-        };
-        exercise.pattern = patternTwo;
-        return Object.getOwnPropertyNames(patternTwo);
-      case 'countablepattern':
-        const patternThree: CountablePattern = {
-          name: 'countablepattern',
-          records: 0,
-          repetitions: 0,
-        };
-        exercise.pattern = patternThree;
-        return Object.getOwnPropertyNames(patternThree);
-      case 'weightpattern':
+        exercise.pattern = patternFive;
+        return Object.getOwnPropertyNames(patternFive);
+      case Pattern.WEIGHT:
         const patternFour: WeightPattern = {
-          name: 'weightpattern',
+          category: Pattern.WEIGHT,
           records: 0,
           repetitions: 0,
           weight: 0,
@@ -336,13 +319,33 @@ export class TrainingOverViewComponent implements OnInit {
         };
         exercise.pattern = patternFour;
         return Object.getOwnPropertyNames(patternFour);
-      case 'freepattern':
-        const patternFive: FreePattern = {
-          name: 'freepattern',
-          text: '',
+      case Pattern.COUNTABLE:
+        const patternThree: CountablePattern = {
+          category: Pattern.COUNTABLE,
+          records: 0,
+          repetitions: 0,
         };
-        exercise.pattern = patternFive;
-        return Object.getOwnPropertyNames(patternFive);
+        exercise.pattern = patternThree;
+        return Object.getOwnPropertyNames(patternThree);
+      case Pattern.CONDITIONAL1:
+        let patternOne: ConditionalPattern = {
+          category: Pattern.CONDITIONAL1,
+          records: 0,
+          repetitions: 0,
+          unit: 's',
+        };
+        exercise.pattern = patternOne;
+        return Object.getOwnPropertyNames(patternOne);
+      case Pattern.CONDITIONAL2:
+        let patternTwo: ConditionalPattern2d = {
+          category: Pattern.CONDITIONAL2,
+          period: 0,
+          speed: 0,
+          unitperiod: 'min',
+          unitspeed: 'km/h',
+        };
+        exercise.pattern = patternTwo;
+        return Object.getOwnPropertyNames(patternTwo);
       default:
         break;
     }
@@ -353,8 +356,8 @@ export class TrainingOverViewComponent implements OnInit {
    * @param exercise to be checked
    * @param pattern to be checked on exercise
    */
-  public hasPattern(exercise: Exercise, pattern: string): boolean {
-    return exercise.pattern.name === pattern;
+  public hasPattern(exercise: Exercise, pattern: Pattern): boolean {
+    return exercise.pattern.category === pattern;
   }
 
   /**
@@ -362,7 +365,7 @@ export class TrainingOverViewComponent implements OnInit {
    * @param direction to switch position
    * @param index of the element to be changed
    */
-  public switchPosition(direction: string, index: number) {
+  public switchPosition(direction: Direction, index: number) {
     this.utilityService.changeElementOrderInArray(
       this.formGroups,
       direction,

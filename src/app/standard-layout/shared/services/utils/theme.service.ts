@@ -7,7 +7,7 @@ import { StyleManagerService } from './style-manager.service';
 export class ThemeService {
   constructor(private styleManager: StyleManagerService) {}
 
-  setTheme(theme) {
+  public setTheme(theme) {
     this.styleManager.setStyle('theme', `/assets/themes/${theme}.css`);
   }
 }

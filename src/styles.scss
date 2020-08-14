@@ -9,9 +9,8 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-// ==================================================================
+// ----------------------------------------
 // USER GLOBAL settings
-// ==================================================================
 
 @mixin cursor-pointer {
   cursor: pointer;
@@ -38,9 +37,8 @@ body {
   height: 300px;
 }
 
-/*
-GENERAL
-*/
+// ----------------------------------------
+// GENERAL
 
 .content {
   margin-top: 3%;
@@ -49,9 +47,24 @@ GENERAL
   margin-right: 15%;
 }
 
-/*
-MATCARDS
-*/
+// ----------------------------------------
+// COLORS
+// @see colors.json
+// @see nav.component.ts for setting theme
+
+$main: #45679d; // will be used for Topbar and a few components
+$blue: #45679d;
+$green: #459d4a;
+$red: #9d4545;
+$light-gray: #b0afaf;
+$taskbar-gray: #424242;
+$main-background-gray: #303030;
+$hover-gray: #464545;
+$black: black;
+$white: white;
+
+// ----------------------------------------
+// MATCARDS
 
 .card-status {
   width: 3px;
@@ -72,27 +85,20 @@ MATCARDS
   margin-bottom: 0px;
 }
 
+mat-card {
+  background-color: $main-background-gray;
+  border-left: 3px solid $main;
+  border-top: 3px solid $taskbar-gray;
+  border-bottom: 3px solid $taskbar-gray;
+}
+
 mat-card:hover {
-  background-color: #464545;
+  background-color: $hover-gray;
   @include cursor-pointer;
 }
 
-/*
-COLORS
-*/
-
-.gray {
-  color: #484747;
-}
-
-$main: #45679d;
-// blue #45679d
-// green #459d4a
-// red #9d4545
-
-/*
-DISTANCE
-*/
+// ----------------------------------------
+// DISTANCE
 
 .indenting {
   margin-left: 2%;
@@ -138,9 +144,8 @@ DISTANCE
   margin-top: 20px;
 }
 
-/*
-DISPLAY
-*/
+// ----------------------------------------
+// DISPLAY
 
 .flow-root {
   display: flow-root;
@@ -154,13 +159,12 @@ DISPLAY
   display: inline-block;
 }
 
-/*
-ELEMENTS
-*/
+// ----------------------------------------
+// ELEMENTS
 
 textarea,
 .mat-input-element {
-  caret-color: white;
+  caret-color: $white;
 }
 
 .block {
@@ -189,30 +193,30 @@ textarea,
 }
 
 .control-buttons-white {
-  background-color: white;
-  color: black;
+  background-color: $white;
+  color: $black;
 }
 
 .control-buttons-gray {
-  background-color: #424242;
-  color: white;
+  background-color: $taskbar-gray;
+  color: $white;
 }
 
 .circle {
   height: 75px;
   width: 75px;
-  background-color: #424242;
+  background-color: $taskbar-gray;
   border-radius: 50%;
   display: inline-block;
   text-align: center;
   line-height: 77px;
   font-size: 28px;
-  color: #f4f4f4;
+  color: $white;
 }
 
 @mixin basic-block {
   padding: 17px 30px 17px 30px;
-  background-color: #4d4a4a;
+  background-color: $taskbar-gray;
   font-size: 18px;
 }
 
@@ -224,14 +228,13 @@ textarea,
 .notifications {
   @extend .largeToBottom;
   @include basic-block;
-  background-color: #303030;
+  background-color: $taskbar-gray;
   border-left: 5px solid $main;
   padding: 35px 30px 35px 30px;
 }
 
-/*
-FONTS
-*/
+// ----------------------------------------
+// FONTS
 
 .fontSize12 {
   font-size: 12px;
@@ -241,9 +244,8 @@ FONTS
   font-size: 50px;
 }
 
-/*
-STICKY
-*/
+// ----------------------------------------
+// STICKY
 
 .fixedButtons-rightbottom {
   display: grid;
@@ -267,7 +269,7 @@ STICKY
   display: grid;
   overflow: visible;
   z-index: 999;
-  background: #b0afaf;
+  background: $light-gray;
   padding: 1% 1% 0 1%;
   position: fixed;
   left: 0;
@@ -277,9 +279,8 @@ STICKY
   width: 500px;
 }
 
-/*
-INLINE BUTTONS
-*/
+// ----------------------------------------
+// INLINE BUTTONS
 
 .inlineButtons {
   display: flex;
@@ -287,9 +288,8 @@ INLINE BUTTONS
   float: right;
 }
 
-/*
-NGX-CHARTS
-*/
+// ----------------------------------------
+// NGX-CHARTS
 
 ::ng-deep .ngx-charts {
   text {

@@ -1,3 +1,3 @@
 export class ExercisePattern {
-  name: string;
+  category: number;
 }

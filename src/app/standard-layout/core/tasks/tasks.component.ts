@@ -18,11 +18,7 @@ import { TimeTaskService } from '../../shared/services/core/timetask.service';
 import { TimeTask } from '../timetask/model/timetask';
 import { tap, map } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
-
-export enum View {
-  PROJECTS,
-  PINS,
-}
+import { View } from '../../shared/model/Enums';
 
 @Component({
   selector: 'app-tasks',

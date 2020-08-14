@@ -7,7 +7,7 @@ import { UtilityService } from '../../shared/services/utils/utility.service';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { KeyService } from '../../shared/services/utils/key.service';
-import { SessionState } from '../../shared/model/Enums';
+import { SessionState, Pattern } from '../../shared/model/Enums';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -61,7 +61,7 @@ export class SessionComponent implements OnInit {
         map((trainings) =>
           trainings.filter((training) =>
             training.exercices.every(
-              (exercise) => exercise.category === 'conditionalpattern1d'
+              (exercise) => exercise.category === Pattern.CONDITIONAL1
             )
           )
         )

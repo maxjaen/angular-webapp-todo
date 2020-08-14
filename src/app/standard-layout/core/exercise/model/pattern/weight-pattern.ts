@@ -1,7 +1,7 @@
 import { ExercisePattern } from './exercise-pattern';
 
 export class WeightPattern extends ExercisePattern {
-  name = 'weightpattern';
+  category: number;
   records: number;
   repetitions: number;
   weight: number;

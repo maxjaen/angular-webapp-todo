@@ -105,16 +105,4 @@ export class TimeService {
       unknownDate.getFullYear() === currentDate.getFullYear()
     );
   }
-
-  public isThisWeek(unknownDate: Date) {
-    // TODO
-  }
-
-  public isThisMonth(unknownDate: Date) {
-    // TODO
-  }
-
-  public isThisYear(unknownDate: Date) {
-    // TODO
-  }
 }

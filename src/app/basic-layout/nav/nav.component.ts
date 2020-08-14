@@ -18,13 +18,23 @@ export class NavComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private settingsService: SettingsService,
     private themeService: ThemeService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.themeService.setTheme('blue');
+    this.getSettings();
+  }
+
+  private getSettings() {
     this.settingsService.getSettings().subscribe((settings) => {
       this.settings = settings[0];
     });
   }
-  ngOnInit(): void {
-    this.themeService.setTheme('blue');
+
+  public unfocusAfterClick() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   }
 
   isHandset$: Observable<boolean> = this.breakpointObserver
@@ -33,10 +43,4 @@ export class NavComponent implements OnInit {
       map((result) => result.matches),
       shareReplay()
     );
-
-  unfocusAfterClick() {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-  }
 }

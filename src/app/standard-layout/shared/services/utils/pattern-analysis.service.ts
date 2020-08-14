@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Exercise } from '../../../core/exercise/model/exercise';
 import { Training } from '../../../core/training/model/training';
+import { Pattern } from '../../model/Enums';
 
 @Injectable({
   providedIn: 'root',
@@ -8,8 +9,10 @@ import { Training } from '../../../core/training/model/training';
 export class PatternAnalysisService {
   constructor() {}
 
-  /*
-   * Get all Exercises in a training that have the same name value as the input exercise
+  /**
+   * Get all exercises in a training that have the same name value as the input exercise
+   * @param training to get all exercises from
+   * @param exercise to search the same name in the input training
    */
   private getExercisesInTrainingWithName(
     training: Training,
@@ -18,8 +21,10 @@ export class PatternAnalysisService {
     return training.exercices.filter((e) => e.name === exercise.name);
   }
 
-  /*
-   * Get all Exercises in a training that have the same name value as the input exercise
+  /**
+   * Get all exercises in a training that have the same name value as the input exercise
+   * @param training to be searched for same exercise
+   * @param exercise to be searched in training
    */
   public calculateExerciseResultStringForTraining(
     training: Training,
@@ -33,7 +38,7 @@ export class PatternAnalysisService {
     let sum = 0;
 
     switch (foundExercises[0].category) {
-      case 'weightpattern':
+      case Pattern.WEIGHT:
         foundExercises.forEach((e) => {
           const records: number = +e['records'];
           const repetitions: number = +e['repetitions'];
@@ -42,7 +47,15 @@ export class PatternAnalysisService {
           sum += records * repetitions * weight;
         });
         return `${sum} kg`;
-      case 'conditionalpattern1d':
+      case Pattern.COUNTABLE:
+        foundExercises.forEach((e) => {
+          const records: number = +e['records'];
+          const repetitions: number = +e['repetitions'];
+
+          sum += records * repetitions;
+        });
+        return `${sum}`;
+      case Pattern.CONDITIONAL1:
         let unit = '';
         foundExercises.forEach((e) => {
           const records: number = +e['records'];
@@ -52,17 +65,7 @@ export class PatternAnalysisService {
           sum += records * repetitions;
         });
         return `${sum}${unit}`;
-
-      case 'countablepattern':
-        foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
-
-          sum += records * repetitions;
-        });
-        return `${sum}`;
-
-      case 'conditionalpattern2d':
+      case Pattern.CONDITIONAL2:
         foundExercises.forEach((e) => {
           const period: number = +e['period'];
           const speed: number = +e['speed'];
@@ -70,7 +73,6 @@ export class PatternAnalysisService {
           sum += (speed / 60) * period;
         });
         return `${sum.toFixed(2)}km`;
-
       default:
         break;
     }
@@ -78,6 +80,11 @@ export class PatternAnalysisService {
     return '';
   }
 
+  /**
+   * Calculates overall number for each exercise to make comparable with other exercises
+   * @param training to get exercises from
+   * @param exercise to calculate overall measurement number from
+   */
   public calculateExerciseResultForTraining(
     training: Training,
     exercise: Exercise
@@ -90,7 +97,7 @@ export class PatternAnalysisService {
     let sum = 0;
 
     switch (foundExercises[0].category) {
-      case 'weightpattern':
+      case Pattern.WEIGHT:
         foundExercises.forEach((e) => {
           const records: number = +e['records'];
           const repetitions: number = +e['repetitions'];
@@ -99,9 +106,8 @@ export class PatternAnalysisService {
           sum += records * repetitions * weight;
         });
         break;
-
-      case 'conditionalpattern1d':
-      case 'countablepattern':
+      case Pattern.COUNTABLE:
+      case Pattern.CONDITIONAL1:
         foundExercises.forEach((e) => {
           const records: number = +e['records'];
           const repetitions: number = +e['repetitions'];
@@ -109,8 +115,7 @@ export class PatternAnalysisService {
           sum += records * repetitions;
         });
         break;
-
-      case 'conditionalpattern2d':
+      case Pattern.CONDITIONAL2:
         foundExercises.forEach((e) => {
           const period: number = +e['period'];
           const speed: number = +e['speed'];
@@ -118,7 +123,6 @@ export class PatternAnalysisService {
           sum += (speed / 60) * period;
         });
         break;
-
       default:
         break;
     }
@@ -126,6 +130,11 @@ export class PatternAnalysisService {
     return sum;
   }
 
+  /**
+   * Create string represenattion for the specified records of each exercise
+   * @param training to be shown and clickable on user interface
+   * @param exercise that will displayed with it's training measurements like repetitions etc.
+   */
   public calculateExerciseRecordsForTraining(
     training: Training,
     exercise: Exercise
@@ -138,7 +147,7 @@ export class PatternAnalysisService {
     let entry = '';
 
     switch (foundExercises[0].category) {
-      case 'weightpattern':
+      case Pattern.WEIGHT:
         foundExercises.forEach((e) => {
           const records: number = +e['records'];
           const repetitions: number = +e['repetitions'];
@@ -147,8 +156,15 @@ export class PatternAnalysisService {
           entry += `${records}/${repetitions}/${weight}, `;
         });
         break;
+      case Pattern.COUNTABLE:
+        foundExercises.forEach((e) => {
+          const records: number = +e['records'];
+          const repetitions: number = +e['repetitions'];
 
-      case 'conditionalpattern1d':
+          entry += `${records}/${repetitions}, `;
+        });
+        break;
+      case Pattern.CONDITIONAL1:
         foundExercises.forEach((e) => {
           const records: number = +e['records'];
           const repetitions: number = +e['repetitions'];
@@ -157,8 +173,7 @@ export class PatternAnalysisService {
           entry += `${records}/${repetitions}${unit}, `;
         });
         break;
-
-      case 'conditionalpattern2d':
+      case Pattern.CONDITIONAL2:
         foundExercises.forEach((e) => {
           const period: number = +e['period'];
           const unitperiod: string = e['unitperiod'];
@@ -168,21 +183,10 @@ export class PatternAnalysisService {
           entry += `${period} ${unitperiod}/${speed} ${unitspeed}, `;
         });
         break;
-
-      case 'countablepattern':
-        foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
-
-          entry += `${records}/${repetitions}, `;
-        });
-        break;
-
       default:
         break;
     }
 
-    // cut the last comma and space in the result string
-    return entry.substring(0, entry.length - 2);
+    return entry.substring(0, entry.length - 2); // cut the last comma and space
   }
 }

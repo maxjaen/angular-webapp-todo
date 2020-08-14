@@ -5,6 +5,7 @@ import { Training } from '../../../training/model/training';
 import { PatternAnalysisService } from '../../../../shared/services/utils/pattern-analysis.service';
 import { NameAndNumberPair } from 'src/app/standard-layout/shared/model/GraphData';
 import { GraphDataService } from 'src/app/standard-layout/shared/services/utils/graph.service';
+import { Pattern } from 'src/app/standard-layout/shared/model/Enums';
 
 @Component({
   selector: 'app-exercise-detailview',
@@ -18,6 +19,8 @@ export class ExerciseDetailviewComponent implements OnChanges {
   graphData: NameAndNumberPair[] = [];
   graphDataPercent: NameAndNumberPair[] = [];
 
+  Pattern = Pattern;
+
   constructor(
     public trainingService: TrainingService,
     public patternAnalysisService: PatternAnalysisService,
@@ -30,7 +33,7 @@ export class ExerciseDetailviewComponent implements OnChanges {
     }
   }
 
-  initTrainingData() {
+  private initTrainingData() {
     this.trainingService.getTrainings().subscribe((trainings) => {
       if (this.exercise) {
         this.trainings = this.trainingService.retrieveTrainingsIncludingExercise(
@@ -47,6 +50,10 @@ export class ExerciseDetailviewComponent implements OnChanges {
     });
   }
 
+  /**
+   * Method to calculate the difference between one training and the training before
+   * as percentage to determine highs and lows in exercises and trainings
+   */
   private calculateGraphDataPercent() {
     const graphData = this.graphData;
     const graphDataPercent = [];

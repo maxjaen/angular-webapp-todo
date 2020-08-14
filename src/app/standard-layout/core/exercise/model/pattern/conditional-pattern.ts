@@ -1,7 +1,7 @@
 import { ExercisePattern } from './exercise-pattern';
 
 export class ConditionalPattern extends ExercisePattern {
-  name = 'conditionalpattern1d';
+  category: number;
   records: number;
   repetitions: number;
   unit: string;

@@ -1,6 +1,6 @@
 import { ExercisePattern } from './exercise-pattern';
 
 export class FreePattern extends ExercisePattern {
-  name = 'freepattern';
+  category: number;
   text: string;
 }

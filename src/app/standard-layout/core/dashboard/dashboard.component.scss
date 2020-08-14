@@ -3,7 +3,7 @@
 
 .content {
   mat-card:hover {
-    background-color: #464545;
+    background-color: $hover-gray;
     cursor: pointer;
   }
 

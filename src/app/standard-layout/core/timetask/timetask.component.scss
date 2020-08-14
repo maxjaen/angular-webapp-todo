@@ -1,12 +1,8 @@
-@import "../../../../styles.scss";
+@import '../../../../styles.scss';
 
 mat-card {
   @include block;
   @extend .indentingFromBottom;
-  background-color: #303030;
-  border-left: 3px solid $main;
-  border-top: 3px solid #424242;
-  border-bottom: 3px solid #424242;
 }
 
 .show-wrapper {

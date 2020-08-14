@@ -26,13 +26,13 @@ export class SettingsComponent implements OnInit {
     this.initSettings();
   }
 
-  initSettings() {
+  private initSettings() {
     this.settingsService.getSettings().subscribe((settings) => {
       this.settings = settings;
     });
   }
 
-  saveSettings() {
+  public saveSettings() {
     this.settingsService.putSettings(this.settings[0]).subscribe(() => {
       this.displayNotification(this.keyService.getKeyTranslation('s2'), null);
       window.location.reload();
@@ -44,7 +44,7 @@ export class SettingsComponent implements OnInit {
    * @param setting to be changed
    * @param event toogle event on user interface
    */
-  toogleSlider(setting: any, event: any) {
+  public toogleSlider(setting: any, event: any) {
     this.settings[0]['settingsmenu']
       .map((e) => e['settings'])
       .forEach((element) => {
@@ -61,7 +61,7 @@ export class SettingsComponent implements OnInit {
    * @param message to be displayed
    * @param action to be taken
    */
-  displayNotification(message: string, action: string) {
+  private displayNotification(message: string, action: string) {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });

@@ -571,7 +571,7 @@ export class TimeTaskComponent implements OnInit {
    */
   public selectDistinctDates(): Array<string> {
     const tempDates: Date[] = [];
-    this.timeTasksFromToday.forEach((timeElement) => {
+    this.timeTasks.forEach((timeElement) => {
       if (
         !tempDates.find((date) => {
           const DateToInsert: Date = new Date(timeElement.startdate);

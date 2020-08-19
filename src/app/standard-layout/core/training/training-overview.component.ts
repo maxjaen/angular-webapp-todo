@@ -49,8 +49,8 @@ export class TrainingOverViewComponent implements OnInit {
   formGroups: FormGroup[] = [];
   formGroupToInsert: FormGroup;
 
-  Direction = Direction;
-  Pattern = Pattern;
+  readonly Direction = Direction;
+  readonly Pattern = Pattern;
 
   constructor(
     public exerciseService: ExerciseService,
@@ -238,6 +238,8 @@ export class TrainingOverViewComponent implements OnInit {
         );
       }
     });
+
+    this.formGroupToInsert.addControl('name', new FormControl(exercise.name));
 
     this.formGroupToInsert.addControl(
       'category',

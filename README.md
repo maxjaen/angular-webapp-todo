@@ -18,7 +18,7 @@ Note on the project
 
 <br>
 
-Installation (step by step)
+# Installation Guide
 
 1. Install npm
 ```
@@ -39,7 +39,7 @@ npm install -g json-server
 4. Clone the project to your local directory
 
 ```
-git clone https://github.com/maxjaen/project_presence.git
+git clone https://github.com/maxjaen/angular-webapp-todo.git
 ```
 
 5. Install dependencies in directory
@@ -48,17 +48,20 @@ git clone https://github.com/maxjaen/project_presence.git
 npm install
 ```
 
-The development server and the JSON server must now be executed in separate terminals (see below). 
+<br>
+
+# Usage
+
+The development server and the JSON server have be executed in separate terminals at the same time. 
 
 <br>
 
-
-
-
 ## Development server
 
-Run `ng serve -open` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Run `ng serve -open` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+<br>
 
 ## JSON Server
 
-Run `json-server --watch server/example.json` for a json server. Navigate to `http://localhost:3000/`.
+- Run `json-server --watch server/example.json` for a json server. Navigate to `http://localhost:3000/`.

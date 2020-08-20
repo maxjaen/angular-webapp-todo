@@ -43,10 +43,10 @@ export class TimeTaskComponent implements OnInit {
   selectedTimeTask: TimeTask;
 
   id: number;
-  shortdescr: string;
-  longdescr: string;
-  startdate: Date;
-  enddate: Date;
+  shortDescription: string;
+  longDescription: string;
+  startDate: Date;
+  endDate: Date;
 
   // general
   timeTasks: TimeTask[] = [];
@@ -108,7 +108,7 @@ export class TimeTaskComponent implements OnInit {
    * @param event when esc pressed
    */
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler() {
-    this.toogleFastCreation();
+    this.toggleFastCreation();
   }
 
   private setTimerConfiguration() {
@@ -186,23 +186,25 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /**
-   * Used to create accumulated graph data and descrption
+   * Used to create accumulated graph data and description
    * @param timeTasks from today
    */
   private initAccumulationProcess(timeTasks: TimeTask[], period: Period) {
     const accumulatedInSeconds = this.timeTaskService.extractAccumulatedTimeTasks(
       timeTasks
     );
-    const descrData = this.createAccumulationDescr(accumulatedInSeconds);
+    const descriptionData = this.createAccumulationDescription(
+      accumulatedInSeconds
+    );
     const graphData = this.graphDataService.createAccumulationGraph(
       accumulatedInSeconds
     );
 
     if (period === Period.TODAY) {
-      this.accumulatedTasksFromToday = descrData;
+      this.accumulatedTasksFromToday = descriptionData;
       this.graphDataFromToday = graphData;
     } else if (period === Period.HISTORY) {
-      this.accumulatedTasksFromHistory = descrData;
+      this.accumulatedTasksFromHistory = descriptionData;
       this.graphDataFromHistory = graphData;
     }
   }
@@ -211,7 +213,7 @@ export class TimeTaskComponent implements OnInit {
    * Creates a key value pair with the task and the accumulated time in ms as formatted string
    * @param pair that includes every tasks and the accumulated time
    */
-  private createAccumulationDescr(pair: NameAndNumberPair[]) {
+  private createAccumulationDescription(pair: NameAndNumberPair[]) {
     return pair.map((entry) => {
       return {
         name: entry.name,
@@ -222,7 +224,7 @@ export class TimeTaskComponent implements OnInit {
 
   /**
    * Create new TimeTask with fastCreation (press esc)
-   * @param event when pressing enter after addign text to fast selection
+   * @param event when pressing enter after adding text to fast selection
    */
   public createFastTimeTask(event: any) {
     const date = this.timeService.createNewDate();
@@ -230,7 +232,7 @@ export class TimeTaskComponent implements OnInit {
     const empty = '';
 
     if (this.timerService.isTimerStart) {
-      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.runningTimeTask.endDate = this.timeService.createNewDate();
       this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
         this.getTimeTasksFromToday();
       });
@@ -241,10 +243,10 @@ export class TimeTaskComponent implements OnInit {
       .postTimeTask({
         id: 0,
         title: title,
-        shortdescr: title,
-        longdescr: empty,
-        startdate: date,
-        enddate: null,
+        shortDescription: title,
+        longDescription: empty,
+        startDate: date,
+        endDate: null,
       })
       .subscribe((data) => {
         this.getTimeTasksFromToday();
@@ -263,7 +265,7 @@ export class TimeTaskComponent implements OnInit {
       window.confirm(this.keyService.getKeyTranslation('a12')) && // confirm new task
       this.timerService.isTimerStart // timer is running
     ) {
-      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.runningTimeTask.endDate = this.timeService.createNewDate();
       this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
         this.getTimeTasksFromToday();
       });
@@ -274,10 +276,10 @@ export class TimeTaskComponent implements OnInit {
       .postTimeTask({
         id: null,
         title: timeTask.title,
-        shortdescr: timeTask.shortdescr,
-        longdescr: timeTask.longdescr,
-        startdate: this.timeService.createNewDate(),
-        enddate: null,
+        shortDescription: timeTask.shortDescription,
+        longDescription: timeTask.longDescription,
+        startDate: this.timeService.createNewDate(),
+        endDate: null,
         task: timeTask.task,
       })
       .subscribe((data) => {
@@ -295,12 +297,12 @@ export class TimeTaskComponent implements OnInit {
   public saveTimeTask(timeTask: TimeTask) {
     if (isNullOrUndefined(timeTask)) {
       throw new Error(
-        'saveTimeTask(): Timetask is not valid. Expected not null or not undefined.'
+        'saveTimeTask(): timeTask is not valid. Expected not null or not undefined.'
       );
     }
     if (!this.utilityService.isNumber(timeTask.id)) {
       throw new Error(
-        'saveTimeTask(): Timetask id is not valid. Expected number.'
+        'saveTimeTask(): timeTask id is not valid. Expected number.'
       );
     }
 
@@ -334,7 +336,7 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /**
-   * Delete all elements from choosen Date
+   * Delete all elements from chosen Date
    */
   public deleteAllAvailableTimeTasks() {
     if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
@@ -359,7 +361,7 @@ export class TimeTaskComponent implements OnInit {
    * otherwise hide current selected TimeTask
    * @param timeTask to be selected
    */
-  public toogleSelection(timeTask: TimeTask) {
+  public toggleSelection(timeTask: TimeTask) {
     if (this.selectedTimeTask === undefined || this.selectedTimeTask === null) {
       this.selectedTimeTask = timeTask;
     } else {
@@ -387,7 +389,7 @@ export class TimeTaskComponent implements OnInit {
   public finishTimer() {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
-      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.runningTimeTask.endDate = this.timeService.createNewDate();
       this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
         this.hideRunningTimeTask();
         this.hideSelectedTimeTask();
@@ -412,7 +414,7 @@ export class TimeTaskComponent implements OnInit {
    */
   public openInsertDialog(): void {
     if (this.timerService.isTimerStart) {
-      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.runningTimeTask.endDate = this.timeService.createNewDate();
       this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
         this.displayNotification(
           this.keyService.getKeyTranslation('ti2'),
@@ -428,19 +430,19 @@ export class TimeTaskComponent implements OnInit {
     const dialogRef = this.dialog.open(InsertTaskDialogTime, {
       width: '250px',
       data: {
-        shortdescr: this.shortdescr,
-        longdescr: this.longdescr,
+        shortDescription: this.shortDescription,
+        longDescription: this.longDescription,
       },
     });
 
     dialogRef.afterClosed().subscribe((resultFromDialog) => {
       if (resultFromDialog !== undefined) {
-        resultFromDialog.startdate = this.timeService.createNewDate();
+        resultFromDialog.startDate = this.timeService.createNewDate();
         this.selectRunningTimeTask(resultFromDialog);
 
         if (
-          this.shortdescr !== EMPTY_STRING &&
-          this.longdescr !== EMPTY_STRING
+          this.shortDescription !== EMPTY_STRING &&
+          this.longDescription !== EMPTY_STRING
         ) {
           this.timeTaskService
             .postTimeTask(resultFromDialog)
@@ -458,7 +460,7 @@ export class TimeTaskComponent implements OnInit {
           console.warn(
             'dialogRef.afterClosed(): ID: ' +
               this.id +
-              ', expected that all fields arent empty'
+              ', expected that all fields are not empty'
           );
         }
       } else {
@@ -481,7 +483,7 @@ export class TimeTaskComponent implements OnInit {
       const temp: Date = this.timeService.createNewDate();
       const timePickerResult: string[] = time.split(':');
 
-      timeTask.startdate = new Date(
+      timeTask.startDate = new Date(
         temp.getFullYear(),
         temp.getMonth(),
         temp.getDate(),
@@ -501,7 +503,7 @@ export class TimeTaskComponent implements OnInit {
       const temp: Date = this.timeService.createNewDate();
       const timePickerResult: string[] = time.split(':');
 
-      timeTask.enddate = new Date(
+      timeTask.endDate = new Date(
         temp.getFullYear(),
         temp.getMonth(),
         temp.getDate(),
@@ -512,9 +514,9 @@ export class TimeTaskComponent implements OnInit {
   }
 
   /**
-   * Get backround color for different types of TimeTasks
+   * Get background color for different types of TimeTasks
    * @param timeTask to set the background color
-   * @returns backround color
+   * @returns background color
    */
   public getStatusColorValue(timeTask: TimeTask): string {
     if (this.timeTaskService.isSame(timeTask, this.runningTimeTask)) {
@@ -525,7 +527,7 @@ export class TimeTaskComponent implements OnInit {
       return this.keyService.getColor('red');
     }
 
-    return this.keyService.getColor('darkgreen');
+    return this.keyService.getColor('darkGreen');
   }
 
   /**
@@ -534,7 +536,7 @@ export class TimeTaskComponent implements OnInit {
    */
   public replaceWithShortcuts(timeTask: TimeTask) {
     Object.keys(this.keyService.getShortcuts()).forEach((key) => {
-      timeTask.longdescr = timeTask.longdescr.replace(
+      timeTask.longDescription = timeTask.longDescription.replace(
         key,
         this.keyService.getShortcut(key)
       );
@@ -545,7 +547,7 @@ export class TimeTaskComponent implements OnInit {
    * Opens window for fastCreation on user interface
    * Focus or unfocus html element when not activating/deactivating
    */
-  private toogleFastCreation() {
+  private toggleFastCreation() {
     this.showCreationField = !this.showCreationField;
 
     setTimeout(() => {
@@ -555,11 +557,11 @@ export class TimeTaskComponent implements OnInit {
 
     if (!this.showCreationField) {
       this.inputElement.nativeElement.value = '';
-      this.unfocusAfterClick();
+      this.unFocusAfterClick();
     }
   }
 
-  private unfocusAfterClick() {
+  private unFocusAfterClick() {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -574,7 +576,7 @@ export class TimeTaskComponent implements OnInit {
     this.timeTasks.forEach((timeElement) => {
       if (
         !tempDates.find((date) => {
-          const DateToInsert: Date = new Date(timeElement.startdate);
+          const DateToInsert: Date = new Date(timeElement.startDate);
           const insertedDate: Date = new Date(date);
           return (
             insertedDate.getDate() === DateToInsert.getDate() &&
@@ -583,7 +585,7 @@ export class TimeTaskComponent implements OnInit {
           );
         })
       ) {
-        tempDates.push(timeElement.startdate);
+        tempDates.push(timeElement.startDate);
       }
     });
 
@@ -605,8 +607,8 @@ export class TimeTaskComponent implements OnInit {
 
   public toString(timeElement: TimeTask): string {
     return this.timeService.formatMillisecondsToString(
-      new Date(timeElement.enddate).getTime() -
-        new Date(timeElement.startdate).getTime()
+      new Date(timeElement.endDate).getTime() -
+        new Date(timeElement.startDate).getTime()
     );
   }
 

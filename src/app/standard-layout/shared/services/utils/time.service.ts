@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UtilityService } from './utility.service';
 
-const GER_UTC_PLUS_ONE = 1; // TODO Not needed right now
+const GER_UTC_PLUS_ONE = 1; // TODO maybe there is a way to determine if summertime
 const GER_UTC_PLUS_TWO = 2;
 
 @Injectable({
@@ -31,18 +31,24 @@ export class TimeService {
 
   public calculateCurrentWeekNumber(): number {
     const now = this.createNewDate();
-    const onejan = new Date(now.getFullYear(), 0, 1);
+    const firstOfJanuary = new Date(now.getFullYear(), 0, 1);
 
     return Math.ceil(
-      ((now.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) / 7
+      ((now.getTime() - firstOfJanuary.getTime()) / 86400000 +
+        firstOfJanuary.getDay() +
+        1) /
+        7
     );
   }
 
   public calculateWeekNumberForDate(date: Date): number {
-    const onejan = new Date(date.getFullYear(), 0, 1);
+    const firstOfJanuary = new Date(date.getFullYear(), 0, 1);
 
     return Math.ceil(
-      ((date.getTime() - onejan.getTime()) / 86400000 + onejan.getDay() + 1) / 7
+      ((date.getTime() - firstOfJanuary.getTime()) / 86400000 +
+        firstOfJanuary.getDay() +
+        1) /
+        7
     );
   }
 

@@ -3,10 +3,10 @@ import { Task } from '../../tasks/model/task';
 export class TimeTask {
   id: number;
   title: string;
-  shortdescr: string;
-  longdescr: string;
-  startdate: Date;
-  enddate: Date;
+  shortDescription: string;
+  longDescription: string;
+  startDate: Date;
+  endDate: Date;
   running?: boolean;
   task?: Task;
 }

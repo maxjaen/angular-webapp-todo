@@ -34,7 +34,7 @@ export class TrainingDetailViewComponent implements OnInit {
         .getTrainingByID(+params['id'])
         .subscribe((training) => {
           this.actualTraining = training;
-          this.dataSource = this.actualTraining.exercices;
+          this.dataSource = this.actualTraining.exercises;
         });
     });
   }

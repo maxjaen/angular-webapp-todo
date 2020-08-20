@@ -29,10 +29,10 @@ import { Direction, Pattern } from '../../shared/model/Enums';
   styleUrls: ['./training-overview.component.scss'],
 })
 export class TrainingOverViewComponent implements OnInit {
-  @ViewChild('overviewtraining')
-  overviewtraining: ElementRef;
-  @ViewChild('createtraining')
-  createtraining: ElementRef;
+  @ViewChild('overviewTraining')
+  overviewTraining: ElementRef;
+  @ViewChild('generateTraining')
+  generateTraining: ElementRef;
 
   displayedTrainings = 10;
   sessionMode = ['Normal Session', 'Time Session'];
@@ -99,7 +99,7 @@ export class TrainingOverViewComponent implements OnInit {
   public createTraining() {
     this.training = {
       id: 0,
-      exercices: [],
+      exercises: [],
       date: this.trainingsDate,
       description: this.trainingDescription,
     };
@@ -107,10 +107,10 @@ export class TrainingOverViewComponent implements OnInit {
     this.trainingDescription = '';
 
     this.formGroups.forEach((formGroup) => {
-      this.training.exercices.push(formGroup.getRawValue());
+      this.training.exercises.push(formGroup.getRawValue());
     });
 
-    this.training.exercices.forEach((element) => {
+    this.training.exercises.forEach((element) => {
       element.string = this.createExerciseString(element);
     });
 
@@ -122,12 +122,12 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   /**
-   * Compares the name of the exercise of one element to the element one postion in before
+   * Compares the name of the exercise of one element to the element one position in before
    * @returns true, if it's the same exercise name, otherwise false
    * @param exercise to be compared
    * @param index to get the element before in array
    */
-  public compareExercisetoOtherBefore(
+  public compareExerciseToOtherBefore(
     exercise: Exercise,
     index: number
   ): boolean {
@@ -171,10 +171,10 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   /**
-   * Gets called when any checkbox for a exercise is toogled
+   * Gets called when any checkbox for a exercise is toggled
    * Adds/Removes exercises and form groups to/from lists
-   * @param exercise to be toogled on
-   * @param event when toogle checkbox on user interface
+   * @param exercise to be toggled on
+   * @param event when toggle checkbox on user interface
    */
   public toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean }) {
     this.setCheckBoxFromExerciseName(exercise.name, true);
@@ -256,7 +256,7 @@ export class TrainingOverViewComponent implements OnInit {
    */
   public removeExerciseFromForm(exercise: Exercise, elementPosition: number) {
     if (
-      // only toogle exercise checkbox when exercise only once inserted
+      // only toggle exercise checkbox when exercise only once inserted
       this.exercisesToInsert.filter((e) => e.name === exercise.name).length ===
       1
     ) {
@@ -286,8 +286,8 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   /**
-   * Set checked poperty for each toogled checkbox
-   * @param exerciseName to filetr for
+   * Set checked property for each toggled checkbox
+   * @param exerciseName to filter for
    * @param checked value to be set and showed on user interface
    */
   private setCheckBoxFromExerciseName(exerciseName: string, checked: boolean) {
@@ -343,8 +343,8 @@ export class TrainingOverViewComponent implements OnInit {
           category: Pattern.CONDITIONAL2,
           period: 0,
           speed: 0,
-          unitperiod: 'min',
-          unitspeed: 'km/h',
+          unitPeriod: 'min',
+          unitSpeed: 'km/h',
         };
         exercise.pattern = patternTwo;
         return Object.getOwnPropertyNames(patternTwo);
@@ -386,7 +386,7 @@ export class TrainingOverViewComponent implements OnInit {
 
   public selectTrainingTemplate(event: { value: Training }) {
     this.trainingDescription = event.value.description;
-    event.value.exercices.forEach((element) => {
+    event.value.exercises.forEach((element) => {
       this.toggleCheckboxEvent(element, { checked: true });
     });
   }
@@ -415,7 +415,7 @@ export class TrainingOverViewComponent implements OnInit {
     return this.trainings.length - this.displayedTrainings > 0;
   }
 
-  public setTrainingsDate(type: string, event: MatDatepickerInputEvent<Date>) {
+  public setTrainingsDate(_type: string, event: MatDatepickerInputEvent<Date>) {
     this.trainingsDate = event.value;
   }
 
@@ -448,22 +448,22 @@ export class TrainingOverViewComponent implements OnInit {
       return this.keyService.getColor('blue');
     }
 
-    return this.keyService.getColor('darkgray');
+    return this.keyService.getColor('darkGray');
   }
 
   private isRunningOrBicycle(training: Training): boolean {
-    return training.exercices.length === 1;
+    return training.exercises.length === 1;
   }
 
   private isGym(training: Training): boolean {
     return (
-      training.exercices.filter(
+      training.exercises.filter(
         (exercise) =>
           exercise.name === 'Bench Press' ||
           exercise.name === 'Rowing Sitting At The Cable Pull' ||
           exercise.name === 'Lat Pulldown Crossover' ||
           exercise.name === 'Butterfly' ||
-          exercise.name === 'Box Climping'
+          exercise.name === 'Box Climbing'
       ).length > 0
     );
   }
@@ -490,14 +490,14 @@ export class TrainingOverViewComponent implements OnInit {
    */
   public scroll(element: string) {
     switch (element) {
-      case 'overviewtraining':
-        this.overviewtraining.nativeElement.scrollIntoView({
+      case 'overviewTraining':
+        this.overviewTraining.nativeElement.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         });
         break;
-      case 'createtraining':
-        this.createtraining.nativeElement.scrollIntoView({
+      case 'generateTraining':
+        this.generateTraining.nativeElement.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         });

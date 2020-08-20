@@ -18,7 +18,7 @@ export class PatternAnalysisService {
     training: Training,
     exercise: Exercise
   ): Exercise[] {
-    return training.exercices.filter((e) => e.name === exercise.name);
+    return training.exercises.filter((e) => e.name === exercise.name);
   }
 
   /**
@@ -131,7 +131,7 @@ export class PatternAnalysisService {
   }
 
   /**
-   * Create string represenattion for the specified records of each exercise
+   * Create string representation for the specified records of each exercise
    * @param training to be shown and clickable on user interface
    * @param exercise that will displayed with it's training measurements like repetitions etc.
    */
@@ -176,11 +176,11 @@ export class PatternAnalysisService {
       case Pattern.CONDITIONAL2:
         foundExercises.forEach((e) => {
           const period: number = +e['period'];
-          const unitperiod: string = e['unitperiod'];
+          const unitPeriod: string = e['unitPeriod'];
           const speed: number = +e['speed'];
-          const unitspeed: string = e['unitspeed'];
+          const unitSpeed: string = e['unitSpeed'];
 
-          entry += `${period} ${unitperiod}/${speed} ${unitspeed}, `;
+          entry += `${period} ${unitPeriod}/${speed} ${unitSpeed}, `;
         });
         break;
       default:

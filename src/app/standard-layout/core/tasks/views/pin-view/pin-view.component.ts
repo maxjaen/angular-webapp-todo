@@ -58,8 +58,8 @@ export class PinViewComponent implements OnInit, OnChanges {
   testConfig: countUpTimerConfigModel;
 
   id: number;
-  shortdescr: string;
-  longdescr: string;
+  shortDescription: string;
+  longDescription: string;
   date: Date;
   dateString: string;
 
@@ -123,7 +123,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     of(this.tasks)
       .pipe(
         tap((tasks) => {
-          this.tasksUnpinned = this.taskService.retrieveUnpinnedAndUnhidedTasks(
+          this.tasksUnpinned = this.taskService.retrieveUnpinnedAndUnHidedTasks(
             tasks
           );
           this.tasksPinned = this.taskService.retrievePinnedTasks(tasks);
@@ -157,7 +157,7 @@ export class PinViewComponent implements OnInit, OnChanges {
    */
   public replaceWithShortcuts(task: Task) {
     Object.keys(this.keyService.getShortcuts()).forEach((key) => {
-      task.longdescr = task.longdescr.replace(
+      task.longDescription = task.longDescription.replace(
         key,
         this.keyService.getShortcut(key)
       );
@@ -198,7 +198,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     }
 
     // Standard colour
-    return this.keyService.getColor('darkgreen');
+    return this.keyService.getColor('darkGreen');
   }
 
   // ====================================================================================================
@@ -333,10 +333,10 @@ export class PinViewComponent implements OnInit, OnChanges {
       date: fromTask.date,
       hided: fromTask.hided,
       pinned: fromTask.pinned,
-      shortdescr: fromTask.shortdescr,
-      longdescr: fromTask.longdescr,
-      templongdescr: fromTask.templongdescr,
-      tempshortdescr: fromTask.tempshortdescr,
+      shortDescription: fromTask.shortDescription,
+      longDescription: fromTask.longDescription,
+      tempLongDescription: fromTask.tempLongDescription,
+      tempShortDescription: fromTask.tempShortDescription,
       tempDate: fromTask.tempDate,
       project: fromTask.project,
     };
@@ -345,7 +345,7 @@ export class PinViewComponent implements OnInit, OnChanges {
   // TODO rework method
   startTimeTask(task: Task): void {
     if (this.runningTimeTask) {
-      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.runningTimeTask.endDate = this.timeService.createNewDate();
       this.runningTimeTask.running = false;
 
       this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
@@ -359,16 +359,16 @@ export class PinViewComponent implements OnInit, OnChanges {
     }
 
     const date = this.timeService.createNewDate();
-    const title = task.shortdescr;
+    const title = task.shortDescription;
     const empty = '';
 
     const timeTask: TimeTask = {
       id: 0,
       title: title,
-      shortdescr: title,
-      longdescr: empty,
-      startdate: date,
-      enddate: null,
+      shortDescription: title,
+      longDescription: empty,
+      startDate: date,
+      endDate: null,
       running: true,
     };
 
@@ -383,7 +383,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
 
-      this.runningTimeTask.enddate = this.timeService.createNewDate();
+      this.runningTimeTask.endDate = this.timeService.createNewDate();
       this.runningTimeTask.running = false;
 
       this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
@@ -408,8 +408,8 @@ export class PinViewComponent implements OnInit, OnChanges {
     const dialogRef = this.dialogService.open(InsertTaskDialog, {
       width: '250px',
       data: {
-        shortdescr: this.shortdescr,
-        longdescr: this.longdescr,
+        shortDescription: this.shortDescription,
+        longDescription: this.longDescription,
         date: this.date,
       },
     });
@@ -423,7 +423,7 @@ export class PinViewComponent implements OnInit, OnChanges {
         postResult.hide = false;
         postResult.pinned = false;
 
-        if (this.shortdescr !== '' && this.longdescr !== '') {
+        if (this.shortDescription !== '' && this.longDescription !== '') {
           this.taskService.postTask(postResult).subscribe(() => {
             this.displayNotification(
               this.keyService.getKeyTranslation('ta2'),

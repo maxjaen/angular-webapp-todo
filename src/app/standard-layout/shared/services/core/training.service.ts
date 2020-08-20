@@ -42,7 +42,7 @@ export class TrainingService {
   ): Training[] {
     return this.retrieveTrainingsSortedByDate(trainings).filter(
       (training) =>
-        training.exercices.filter((other) => exercise.name === other.name)
+        training.exercises.filter((other) => exercise.name === other.name)
           .length > 0
     );
   }

@@ -42,10 +42,10 @@ export class SettingsComponent implements OnInit {
   /**
    * Switch setting on/off when clicking on slider
    * @param setting to be changed
-   * @param event toogle event on user interface
+   * @param event toggle event on user interface
    */
-  public toogleSlider(setting: any, event: any) {
-    this.settings[0]['settingsmenu']
+  public toggleSlider(setting: any, event: any) {
+    this.settings[0]['settingsMenu']
       .map((e) => e['settings'])
       .forEach((element) => {
         element.forEach((e) => {

@@ -1,12 +1,12 @@
 export class Task {
   id: number;
-  shortdescr: string;
-  longdescr: string;
+  shortDescription: string;
+  longDescription: string;
+  tempLongDescription: string;
+  tempShortDescription: string;
   hided: boolean;
   pinned: boolean;
   date: Date;
-  templongdescr: string;
-  tempshortdescr: string;
   tempDate: Date;
   project: string;
 }

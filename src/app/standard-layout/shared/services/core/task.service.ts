@@ -51,10 +51,10 @@ export class TaskService {
   }
 
   /**
-   * @param tasks to filter for unpinned and unhided tasks
-   * @returns numerically sorted unpinned and unhided tasks
+   * @param tasks to filter for unpinned and unHided tasks
+   * @returns numerically sorted unpinned and unHided tasks
    */
-  public retrieveUnpinnedAndUnhidedTasks(tasks: Task[]): Task[] {
+  public retrieveUnpinnedAndUnHidedTasks(tasks: Task[]): Task[] {
     return tasks
       .filter((e) => !this.isPinned(e) && !this.isHided(e))
       .sort((a, b) =>
@@ -90,8 +90,8 @@ export class TaskService {
 
   public isSaved(task: Task): boolean {
     return (
-      task.shortdescr === task.tempshortdescr &&
-      task.longdescr === task.templongdescr &&
+      task.shortDescription === task.tempShortDescription &&
+      task.longDescription === task.tempLongDescription &&
       task.date === task.tempDate
     );
   }

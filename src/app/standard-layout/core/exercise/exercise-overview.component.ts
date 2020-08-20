@@ -87,7 +87,7 @@ export class ExerciseOverViewComponent implements OnInit {
 
   /**
    *  Set name of new exercise
-   * @param name to be setted for new exercise
+   * @param name to be set for new exercise
    */
   private prepareExerciseName(name: string) {
     this.exerciseToCreate.name = name;

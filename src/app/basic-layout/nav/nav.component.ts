@@ -31,7 +31,7 @@ export class NavComponent implements OnInit {
     });
   }
 
-  public unfocusAfterClick() {
+  public unFocusAfterClick() {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }

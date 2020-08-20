@@ -23,11 +23,11 @@ export class SettingsService {
   }
 
   public getStartPageHeaders(settings: Settings[]) {
-    return settings[0]['startpage'];
+    return settings[0]['startPage'];
   }
 
   public getSettingsHeaders(settings: Settings[]) {
-    return settings[0]['settingsmenu'];
+    return settings[0]['settingsMenu'];
   }
 
   /*

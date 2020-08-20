@@ -200,14 +200,14 @@ export class WeightComponent implements OnInit {
   }
 
   /**
-   * Get backround color for different weight intervals
+   * Get background color for different weight intervals
    * @param weight to set the background color for
-   * @returns backround color
+   * @returns background color
    */
   public getStatusColorValue(weight: Weight): string {
     const highestValue: number = this.getHighestWeightValue();
     if (weight.value === highestValue) {
-      return this.keyService.getColor('darkgreen');
+      return this.keyService.getColor('darkGreen');
     }
 
     const lowestValue: number = this.getLowestWeightValue();
@@ -223,10 +223,10 @@ export class WeightComponent implements OnInit {
       return this.keyService.getColor('orange');
     }
     if (weight.value > averageValue + 1) {
-      return this.keyService.getColor('lightgreen');
+      return this.keyService.getColor('lightGreen');
     }
 
-    return this.keyService.getColor('darkgray');
+    return this.keyService.getColor('darkGray');
   }
 
   /**

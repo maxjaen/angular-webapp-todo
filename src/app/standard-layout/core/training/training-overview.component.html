@@ -1,9 +1,9 @@
 <div *ngIf="exercises">
   <div class="fixedButtons-rightbottom">
-    <button class="control-buttons-gray smallToBottom" (click)="scroll('overviewtraining')" mat-mini-fab>
+    <button class="control-buttons-gray smallToBottom" (click)="scroll('overviewTraining')" mat-mini-fab>
       <mat-icon>home</mat-icon>
     </button>
-    <button class="control-buttons-gray" (click)="scroll('createtraining')" mat-mini-fab>
+    <button class="control-buttons-gray" (click)="scroll('generateTraining')" mat-mini-fab>
       <mat-icon>menu</mat-icon>
     </button>
   </div>
@@ -15,7 +15,7 @@
       <div class="notifications" *ngIf="exercises.length == 0">
         No exercise created! Can't create training without exercises...
       </div>
-      <div class="tab" *ngIf="trainings.length > 0" #overviewtraining>
+      <div class="tab" *ngIf="trainings.length > 0" #overviewTraining>
         <h2>Overview Training</h2>
         <div class="flow-root" *ngIf="trainings.length > 0">
           <div *ngFor="let training of trainings.slice(0, displayedTrainings)">
@@ -41,7 +41,7 @@
           </button>
         </div>
       </div>
-      <div class="tab" #createtraining>
+      <div class="tab" #generateTraining>
         <h2>Create Training</h2>
         <div class="categories largeToBottom" *ngIf="exercises.length > 0">
           <div *ngFor="
@@ -105,7 +105,7 @@
             </mat-form-field>
           </div>
           <div class="block" *ngFor="let exercise of exercisesToInsert; let i = index">
-            <div *ngIf="!compareExercisetoOtherBefore(exercise, i)">
+            <div *ngIf="!compareExerciseToOtherBefore(exercise, i)">
               <p>{{ exercise['name'] }}</p>
               <button class="buttons" (click)="toggleCheckboxEvent(exercise, { checked: true })" mat-mini-fab
                 color="primary">
@@ -167,13 +167,13 @@
                     <input matInput placeholder="Dauer" formControlName="period" />
                   </mat-form-field>
                   <mat-form-field class="example-full-width">
-                    <input matInput placeholder="Einheit" formControlName="unitperiod" value="min" />
+                    <input matInput placeholder="Einheit" formControlName="unitPeriod" value="min" />
                   </mat-form-field>
                   <mat-form-field class="example-full-width">
                     <input matInput placeholder="Geschwindigkeit" formControlName="speed" />
                   </mat-form-field>
                   <mat-form-field class="example-full-width">
-                    <input matInput placeholder="Einheit" formControlName="unitspeed" value="km/h" />
+                    <input matInput placeholder="Einheit" formControlName="unitSpeed" value="km/h" />
                   </mat-form-field>
                   <button class="positionbuttons" (click)="switchPosition(Direction.UP, i)" mat-stroked-button
                     color="primary">

@@ -7,7 +7,7 @@
   "settings": [
     {
       "id": 0,
-      "startpage": [
+      "startPage": [
         {
           "name": "tasks",
           "symbol": "post_add",
@@ -51,7 +51,7 @@
           "type": "general"
         }
       ],
-      "settingsmenu": [
+      "settingsMenu": [
         {
           "name": "General",
           "settings": [

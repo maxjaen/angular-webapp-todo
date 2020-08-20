@@ -33,7 +33,7 @@ export class UtilityService {
     return a > b ? 1 : -1;
   }
 
-  public sortDistinct(value, index, self): boolean {
+  public sortDistinct(value: any, index: any, self: any): boolean {
     return self.indexOf(value) === index;
   }
 

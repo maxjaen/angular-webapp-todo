@@ -2,21 +2,20 @@
 <div mat-dialog-content>
   <p>task name</p>
   <mat-form-field>
-    <input matInput [(ngModel)]="data.shortdescr">
+    <input matInput [(ngModel)]="data.shortDescription">
   </mat-form-field>
   <p>task description</p>
   <mat-form-field>
-    <input matInput [(ngModel)]="data.longdescr">
+    <input matInput [(ngModel)]="data.longDescription">
   </mat-form-field>
   <p>Stichtag</p>
   <mat-form-field>
     <input matInput [(ngModel)]="data.date" [matDatepicker]="picker" placeholder="Choose a date">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker ></mat-datepicker>
+    <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="data"
-  cdkFocusInitial>Create</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Create</button>
 </div>

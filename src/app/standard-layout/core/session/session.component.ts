@@ -60,7 +60,7 @@ export class SessionComponent implements OnInit {
         }),
         map((trainings) =>
           trainings.filter((training) =>
-            training.exercices.every(
+            training.exercises.every(
               (exercise) => exercise.category === Pattern.CONDITIONAL1
             )
           )
@@ -165,8 +165,8 @@ export class SessionComponent implements OnInit {
     }
 
     // set general exercise countdown
-    this.workoutCountdown = this.selectedTraining.exercices
-      .slice(elementIndex, this.selectedTraining.exercices.length)
+    this.workoutCountdown = this.selectedTraining.exercises
+      .slice(elementIndex, this.selectedTraining.exercises.length)
       .map((exercise) => +exercise['repetitions'])
       .reduce((sum, current) => sum + current, 0);
 
@@ -201,12 +201,12 @@ export class SessionComponent implements OnInit {
         throw new Error(`State ${this.state} not implemented yet.`);
     }
 
-    const elementIndex = this.selectedTraining.exercices.indexOf(
+    const elementIndex = this.selectedTraining.exercises.indexOf(
       this.currentExercise
     );
 
     // Update current exercise value with countdown to continue where you stopped
-    this.selectedTraining.exercices[elementIndex][
+    this.selectedTraining.exercises[elementIndex][
       'repetitions'
     ] = this.exerciseCountdown;
 
@@ -225,7 +225,7 @@ export class SessionComponent implements OnInit {
       await this.waitMilliseconds(2000);
 
       this.currentExerciseIndex = index;
-      this.currentExercise = this.selectedTraining.exercices[index];
+      this.currentExercise = this.selectedTraining.exercises[index];
       this.exerciseCountdown = this.currentExercise['repetitions'];
 
       let endSound = true;
@@ -236,7 +236,7 @@ export class SessionComponent implements OnInit {
 
         if (iterationCountdown === 1 && endSound) {
           // play sound before exercise finished
-          this.soundService.playSound('iphone');
+          this.soundService.playSound('phone');
           endSound = false;
         }
         if (iterationCountdown >= 0) {
@@ -272,11 +272,11 @@ export class SessionComponent implements OnInit {
    */
   public inListOfNextSteps(exercise: Exercise): boolean {
     return (
-      this.selectedTraining.exercices.indexOf(exercise) ===
+      this.selectedTraining.exercises.indexOf(exercise) ===
         this.currentExerciseIndex + 1 ||
-      this.selectedTraining.exercices.indexOf(exercise) ===
+      this.selectedTraining.exercises.indexOf(exercise) ===
         this.currentExerciseIndex + 2 ||
-      this.selectedTraining.exercices.indexOf(exercise) ===
+      this.selectedTraining.exercises.indexOf(exercise) ===
         this.currentExerciseIndex + 3
     );
   }

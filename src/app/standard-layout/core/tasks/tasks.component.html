@@ -34,8 +34,8 @@
         <div *ngIf="task == taskSelected" class="block changeField minorToBottom">
           <form class="example-form">
             <mat-form-field class="example-full-width indentingFromRight">
-              <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
-                [(ngModel)]="taskSelected.shortdescr" />
+              <input matInput #message maxlength="50" placeholder="titel" name="shortDescription"
+                [(ngModel)]="taskSelected.shortDescription" />
               <mat-hint>{{ message.value.length }} / 50</mat-hint>
             </mat-form-field>
             <mat-form-field>
@@ -45,7 +45,7 @@
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
             <mat-form-field class="example-full-width textarea-container indentingFromTop">
-              <textarea placeholder="description" name="longdescr" [(ngModel)]="taskSelected.longdescr"
+              <textarea placeholder="description" name="longDescription" [(ngModel)]="taskSelected.longDescription"
                 (ngModelChange)="replaceWithShortcuts(taskSelected)" matInput></textarea>
             </mat-form-field>
             <div class="inlineButtons">
@@ -60,7 +60,7 @@
           <div block="inlineblock">
             <mat-card-header>
               <mat-card-title>
-                {{ task.shortdescr }}
+                {{ task.shortDescription }}
                 <div *ngIf="
                           this.settings &&
                           settingsService.getSettingsValue(
@@ -73,9 +73,9 @@
                   </div>
                 </div>
               </mat-card-title>
-              <mat-card-subtitle *ngIf="task.longdescr && task.longdescr.length > 0">
+              <mat-card-subtitle *ngIf="task.longDescription && task.longDescription.length > 0">
                 <ul *ngFor="
-                          let point of this.utilityService.splitWithNewLine(task.longdescr)
+                          let point of this.utilityService.splitWithNewLine(task.longDescription)
                         ">
                   <div *ngIf="
                             point.length > 0 &&

@@ -13,7 +13,7 @@ export class GraphDataService {
 
   /**
    * @param trainings to be mapped
-   * @param exercise which should be find in training exercises atleast once
+   * @param exercise which should be find in training exercises at least once
    */
   public initGraphDataForExerciseProgress(
     trainings: Training[],
@@ -21,7 +21,7 @@ export class GraphDataService {
   ): NameAndNumberPair[] {
     return trainings
       .filter((training) =>
-        training.exercices.find((other) => exercise.category === other.category)
+        training.exercises.find((other) => exercise.category === other.category)
       )
       .map((trainingIncludesCategory) => {
         return {

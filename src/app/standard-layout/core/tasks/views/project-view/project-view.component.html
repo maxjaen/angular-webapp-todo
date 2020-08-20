@@ -7,7 +7,7 @@
             id="{{project}}" [cdkDropListData]="retrieveTasksForProject(project)" (cdkDropListDropped)="drop($event)">
             <div class="tasks" [cdkDragData]="task" *ngFor="let task of retrieveTasksForProject(project);" cdkDrag>
                 <div class="task">
-                    <div class="description">{{ task.shortdescr }}</div>
+                    <div class="description">{{ task.shortDescription }}</div>
                     <div class="time"></div>
                     <div class="task-hided">
                         <button title="Continue" mat-button>

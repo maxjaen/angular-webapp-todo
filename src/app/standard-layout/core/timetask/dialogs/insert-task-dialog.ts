@@ -30,29 +30,29 @@ export class InsertTaskDialogTime {
           )
         );
 
-      const shortDescr = 'Not an existing task';
-      const longDescr = '';
+      const shortDescription = 'Not an existing task';
+      const longDescription = '';
       const date = this.timeService.createNewDate();
 
       tasks.push({
         id: 0,
-        shortdescr: shortDescr,
-        tempshortdescr: shortDescr,
-        longdescr: longDescr,
-        templongdescr: longDescr,
+        shortDescription: shortDescription,
+        tempShortDescription: shortDescription,
+        longDescription: longDescription,
+        tempLongDescription: longDescription,
         date: date,
         tempDate: date,
         hided: false,
         pinned: true,
-        project: 'Ohne Projekt',
+        project: 'Without project',
       });
     });
   }
 
   public selectCategory(event: { value: Task }) {
     this.data.task = event.value;
-    this.data.shortdescr = event.value.shortdescr;
-    this.data.longdescr = event.value.longdescr;
+    this.data.shortDescription = event.value.shortDescription;
+    this.data.longDescription = event.value.longDescription;
   }
 
   public onNoClick(): void {

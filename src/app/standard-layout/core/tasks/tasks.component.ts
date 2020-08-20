@@ -38,13 +38,13 @@ export class TasksComponent implements OnInit {
   viewSelected: View = View.PROJECTS;
 
   /**
-   * Dialog for creating a task will be displayed when clicking excape on keyboard
+   * Dialog for creating a task will be displayed when clicking escape on keyboard
    * @param event occurs when esc is pressed
    */
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(
     _event: KeyboardEvent
   ) {
-    this.toogleFastCreation();
+    this.toggleFastCreation();
   }
 
   constructor(
@@ -93,7 +93,7 @@ export class TasksComponent implements OnInit {
       .pipe(
         map((timeTasks) =>
           timeTasks.filter(
-            (timeTask) => timeTask.running === true && !timeTask.enddate
+            (timeTask) => timeTask.running === true && !timeTask.endDate
           )
         )
       )
@@ -108,7 +108,7 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  public toogleFastCreation() {
+  public toggleFastCreation() {
     this.showCreationField = !this.showCreationField;
 
     setTimeout(() => {
@@ -118,11 +118,11 @@ export class TasksComponent implements OnInit {
     if (!this.showCreationField) {
       // reset form after usage
       this.inputElement.nativeElement.value = '';
-      this.unfocusAfterClick();
+      this.unFocusAfterClick();
     }
   }
 
-  private unfocusAfterClick() {
+  private unFocusAfterClick() {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -131,18 +131,20 @@ export class TasksComponent implements OnInit {
   public createTaskFromCreationField(event: any) {
     const date = this.timeService.createNewDate();
 
-    const shortDescr = event.target.value as string;
-    const longDescr = '';
-    const splittedDescr = shortDescr.split('  ');
-    const name = splittedDescr[0].trim();
-    const project = splittedDescr[1] ? splittedDescr[1].trim() : 'Ohne Projekt';
+    const shortDescription = event.target.value as string;
+    const longDescription = '';
+    const descriptionSplit = shortDescription.split('  ');
+    const name = descriptionSplit[0].trim();
+    const project = descriptionSplit[1]
+      ? descriptionSplit[1].trim()
+      : 'Without project';
 
     const task: Task = {
       id: 0,
-      shortdescr: name,
-      tempshortdescr: shortDescr,
-      longdescr: longDescr,
-      templongdescr: longDescr,
+      shortDescription: name,
+      tempShortDescription: shortDescription,
+      longDescription: longDescription,
+      tempLongDescription: longDescription,
       date: date,
       tempDate: date,
       hided: false,
@@ -163,8 +165,8 @@ export class TasksComponent implements OnInit {
    */
   private fillTemporaryInfos(tasks: Task[]) {
     tasks.forEach((task) => {
-      task.tempshortdescr = task.shortdescr;
-      task.templongdescr = task.longdescr;
+      task.tempShortDescription = task.shortDescription;
+      task.tempLongDescription = task.longDescription;
       task.tempDate = task.date;
     });
   }
@@ -174,10 +176,10 @@ export class TasksComponent implements OnInit {
   }
 
   private setTabTitle(tasks: Task[]) {
-    const unhidedTasks = tasks.filter((task) => !task.hided).length;
+    const unHidedTasks = tasks.filter((task) => !task.hided).length;
 
     this.tabTitleService.setTitle(
-      `${this.keyService.getKeyTranslation('ta1')} (${unhidedTasks})`
+      `${this.keyService.getKeyTranslation('ta1')} (${unHidedTasks})`
     );
   }
 

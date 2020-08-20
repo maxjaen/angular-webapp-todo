@@ -1,24 +1,23 @@
 <h1 mat-dialog-title>Create new timetask</h1>
 <div mat-dialog-content>
-<mat-form-field>
+  <mat-form-field>
     <mat-label>Existing Tasks</mat-label>
     <mat-select (selectionChange)="selectCategory($event)">
       <mat-option *ngFor="let task of tasks" [value]="task">
-        {{task.shortdescr}}
+        {{task.shortDescription}}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <p>task name</p>
   <mat-form-field>
-    <input matInput [(ngModel)]="data.shortdescr">
+    <input matInput [(ngModel)]="data.shortDescription">
   </mat-form-field>
   <p>task description</p>
   <mat-form-field>
-    <input matInput [(ngModel)]="data.longdescr">
-  </mat-form-field>  
+    <input matInput [(ngModel)]="data.longDescription">
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="data"
-  cdkFocusInitial>Create</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Create</button>
 </div>

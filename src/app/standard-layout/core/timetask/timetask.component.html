@@ -94,12 +94,13 @@
             <div class="block low-margin smallToBottom changeField" *ngIf="selectedTimeTask == timeElement">
               <form class="example-form">
                 <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                  <input matInput #message maxlength="50" placeholder="titel" name="shortdescr"
-                    [(ngModel)]="selectedTimeTask.shortdescr" />
+                  <input matInput #message maxlength="50" placeholder="titel" name="shortDescription"
+                    [(ngModel)]="selectedTimeTask.shortDescription" />
                   <mat-hint>{{ message.value.length }} / 50</mat-hint>
                 </mat-form-field>
                 <mat-form-field class="example-full-width" style="margin-right: 2%; min-width: 500px;">
-                  <textarea matInput placeholder="description" name="longdescr" [(ngModel)]="selectedTimeTask.longdescr"
+                  <textarea matInput placeholder="description" name="longDescription"
+                    [(ngModel)]="selectedTimeTask.longDescription"
                     (ngModelChange)="replaceWithShortcuts(selectedTimeTask)"></textarea>
                 </mat-form-field>
                 <div class="inlineButtons">
@@ -115,7 +116,7 @@
                 </div>
               </form>
             </div>
-            <mat-card (click)="toogleSelection(timeElement)" class="example-card block">
+            <mat-card (click)="toggleSelection(timeElement)" class="example-card block">
               <div *ngIf="
                   this.settings &&
                   this.settings.length > 0 &&
@@ -129,7 +130,7 @@
               <div style="width: 70%; display: inline-block;">
                 <mat-card-header style="float: left;">
                   <mat-card-title>
-                    {{ timeElement.shortdescr }}
+                    {{ timeElement.shortDescription }}
                     <div class="fontSize12" *ngIf="
                         !timeTaskService.isValid(timeElement) &&
                         timeElement == runningTimeTask
@@ -138,7 +139,7 @@
                       <p>
                         @{{
                           this.timeService.formatDateToStringWithDescription(
-                            timeElement.startdate,
+                            timeElement.startDate,
                             'Start'
                           )
                         }}
@@ -152,7 +153,7 @@
                       <p>
                         @{{
                           this.timeService.formatDateToStringWithDescription(
-                            timeElement.startdate,
+                            timeElement.startDate,
                             'Start'
                           )
                         }}
@@ -164,7 +165,7 @@
                       </div>
                       {{
                         this.timeService.formatDateToStringWithDescription(
-                          timeElement.startdate,
+                          timeElement.startDate,
                           'Start'
                         )
                       }}
@@ -172,7 +173,7 @@
                         ,
                         {{
                           this.timeService.formatDateToStringWithDescription(
-                            timeElement.enddate,
+                            timeElement.endDate,
                             'End'
                           )
                         }}
@@ -180,11 +181,11 @@
                     </div>
                   </mat-card-title>
                   <mat-card-subtitle *ngIf="
-                      timeElement.longdescr && timeElement.longdescr.length > 0
+                      timeElement.longDescription && timeElement.longDescription.length > 0
                     ">
                     <ul *ngFor="
                         let point of this.utilityService.splitWithNewLine(
-                          timeElement.longdescr
+                          timeElement.longDescription
                         )
                       ">
                       <div *ngIf="point.length > 0">
@@ -252,29 +253,29 @@
           <br />
         </div>
         <div *ngFor="let timeElement of timeTasksFromHistory">
-          <mat-card [style.background-color]="this.keyService.getColor('darkgray')" class="example-card block">
+          <mat-card [style.background-color]="this.keyService.getColor('darkGray')" class="example-card block">
             <mat-card-header style="float: left;">
               <mat-card-title>
-                {{ timeElement.shortdescr }}
-                <div class="fontSize12" *ngIf="!timeElement.enddate" [style.color]="'#ffffff'"
+                {{ timeElement.shortDescription }}
+                <div class="fontSize12" *ngIf="!timeElement.endDate" [style.color]="'#ffffff'"
                   style="margin-top: 20px;">
-                  No measurement enddate available...
+                  No measurement endDate available...
                 </div>
                 <div class="fontSize12" style="margin-top: 20px;">
-                  <div *ngIf="timeElement.enddate" style="display: inline;">
+                  <div *ngIf="timeElement.endDate" style="display: inline;">
                     {{ toString(timeElement) }} >>
                   </div>
                   {{
                     this.timeService.formatDateToStringWithDescription(
-                      timeElement.startdate,
+                      timeElement.startDate,
                       'Start'
                     )
                   }}
-                  <div *ngIf="timeElement.enddate" style="display: inline;">
+                  <div *ngIf="timeElement.endDate" style="display: inline;">
                     ,
                     {{
                       this.timeService.formatDateToStringWithDescription(
-                        timeElement.enddate,
+                        timeElement.endDate,
                         'End'
                       )
                     }}
@@ -282,11 +283,11 @@
                 </div>
               </mat-card-title>
               <mat-card-subtitle *ngIf="
-                  timeElement.longdescr && timeElement.longdescr.length > 0
+                  timeElement.longDescription && timeElement.longDescription.length > 0
                 ">
                 <ul *ngFor="
                     let point of this.utilityService.splitWithNewLine(
-                      timeElement.longdescr
+                      timeElement.longDescription
                     )
                   ">
                   <li>{{ point }}</li>

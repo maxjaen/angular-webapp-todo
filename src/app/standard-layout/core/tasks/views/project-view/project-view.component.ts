@@ -56,8 +56,8 @@ export class ProjectViewComponent implements OnInit {
         map((tasks) => tasks.filter((task) => !task.hided)),
         tap((tasks) => {
           tasks.forEach((task) => {
-            task.tempshortdescr = task.shortdescr;
-            task.templongdescr = task.longdescr;
+            task.tempShortDescription = task.shortDescription;
+            task.tempLongDescription = task.longDescription;
             task.tempDate = task.date;
           });
         })
@@ -73,7 +73,7 @@ export class ProjectViewComponent implements OnInit {
       .pipe(
         map((timeTasks) =>
           timeTasks.filter(
-            (timeTask) => timeTask.running === true && !timeTask.enddate
+            (timeTask) => timeTask.running === true && !timeTask.endDate
           )
         )
       )
@@ -140,7 +140,9 @@ export class ProjectViewComponent implements OnInit {
       );
 
       this.tasks
-        .filter((task) => task.shortdescr == event.item.data.shortdescr)
+        .filter(
+          (task) => task.shortDescription == event.item.data.shortDescription
+        )
         .forEach((filteredTask) => {
           filteredTask.project = event.container.id;
         });

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../../shared/services/core/settings.service';
 import { Settings } from '../settings/model/settings';
-import { StartPageSetting } from '../settings/model/start-page-setting';
+import { startPageSetting } from '../settings/model/start-page-setting';
 import { Router } from '@angular/router';
 import { TaskService } from '../../shared/services/core/task.service';
 import { TimeTaskService } from '../../shared/services/core/timetask.service';
@@ -50,7 +50,7 @@ export class DashboardComponent implements OnInit {
     this.getWeightPlaceholder();
   }
 
-  public goToUrl(component: StartPageSetting) {
+  public goToUrl(component: startPageSetting) {
     this.routerService.navigate(['/' + component.name]);
   }
 
@@ -72,15 +72,15 @@ export class DashboardComponent implements OnInit {
   }
 
   private getTimeTaskPlaceholder() {
-    this.timeTaskService.getTimeTasks().subscribe((timetasks) => {
-      const value = timetasks
+    this.timeTaskService.getTimeTasks().subscribe((timeTasks) => {
+      const value = timeTasks
         .filter(
-          (timeTasks) =>
-            this.timeTaskService.isToday(timeTasks) &&
-            this.timeTaskService.isValid(timeTasks)
+          (timeTaskData) =>
+            this.timeTaskService.isToday(timeTaskData) &&
+            this.timeTaskService.isValid(timeTaskData)
         )
         .map((validTimeTasks) =>
-          this.timeTaskService.extractTimeBetweenStartandEnd(validTimeTasks)
+          this.timeTaskService.extractTimeBetweenStartAndEnd(validTimeTasks)
         )
         .reduce((a, b) => a + b, 0);
 
@@ -94,18 +94,18 @@ export class DashboardComponent implements OnInit {
   private getSessionPlaceholder() {
     this.trainingService.getTrainings().subscribe((trainings) => {
       if (trainings.length > 0) {
-        const timetrainings = trainings.filter((training) =>
-          training.exercices.every(
+        const timeTrainings = trainings.filter((trainingData) =>
+          trainingData.exercises.every(
             (exercise) => exercise.category === Pattern.CONDITIONAL1
           )
         );
 
-        const training = timetrainings[timetrainings.length - 1];
+        const training = timeTrainings[timeTrainings.length - 1];
         const value = (
-          training.exercices
+          training.exercises
             .map((exercise) => +exercise['repetitions'])
             .reduce((sum, current) => sum + current, 0) +
-          5 * training.exercices.length
+          5 * training.exercises.length
         ).toString();
 
         this.placeHolderArray.push({

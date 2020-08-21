@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Exercise } from '../exercise/model/exercise';
 import { Training } from '../training/model/training';
 import { TrainingService } from '../../shared/services/core/training.service';
-import { SoundService } from '../../shared/services/utils/sound.service';
 import { UtilityService } from '../../shared/services/utils/utility.service';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { SessionState, Pattern } from '../../shared/model/Enums';
 import { map } from 'rxjs/operators';
+import { playSound } from '../../shared/utils/SoundUtils';
 
 @Component({
   selector: 'app-session',
@@ -32,7 +32,6 @@ export class SessionComponent implements OnInit {
   constructor(
     private utilityService: UtilityService,
     private trainingService: TrainingService,
-    private soundService: SoundService,
     private keyService: KeyService,
     private snackBarService: MatSnackBar,
     private tabTitleService: Title
@@ -221,7 +220,7 @@ export class SessionComponent implements OnInit {
     this.readyCountdown = 5;
 
     (async () => {
-      this.soundService.playSound('snapchat');
+      playSound('snapchat');
       await this.waitMilliseconds(2000);
 
       this.currentExerciseIndex = index;
@@ -236,7 +235,7 @@ export class SessionComponent implements OnInit {
 
         if (iterationCountdown === 1 && endSound) {
           // play sound before exercise finished
-          this.soundService.playSound('phone');
+          playSound('phone');
           endSound = false;
         }
         if (iterationCountdown >= 0) {

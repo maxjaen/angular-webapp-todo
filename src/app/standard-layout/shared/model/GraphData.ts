@@ -1,9 +1,9 @@
-export interface NameAndStringPair {
+export interface StringValueGraph {
   name: string;
   value: string;
 }
 
-export interface NameAndNumberPair {
+export interface NumberValueGraph {
   name: string;
   value: number;
 }

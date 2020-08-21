@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { TimeTask } from '../../../core/timetask/model/timetask';
 import { UtilityService } from 'src/app/standard-layout/shared/services/utils/utility.service';
 import { TimeService } from 'src/app/standard-layout/shared/services/utils/time.service';
-import { NameAndNumberPair } from 'src/app/standard-layout/shared/model/GraphData';
+import { NumberValueGraph } from 'src/app/standard-layout/shared/model/GraphData';
 
 @Injectable({
   providedIn: 'root',
@@ -98,7 +98,7 @@ export class TimeTaskService {
    * @param input to be grouped depending on each timeTask
    * @returns key value pair array with task as key and accumulated task time in milliseconds  as value
    */
-  public extractAccumulatedTimeTasks(input: TimeTask[]): NameAndNumberPair[] {
+  public extractAccumulatedTimeTasks(input: TimeTask[]): NumberValueGraph[] {
     return input
       .filter((timeTask) => this.isValid(timeTask))
       .map((validTimeTask) => {

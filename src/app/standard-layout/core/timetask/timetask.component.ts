@@ -18,8 +18,8 @@ import { KeyService } from '../../shared/services/utils/key.service';
 import { TimeService } from '../../shared/services/utils/time.service';
 import { SettingsService } from '../../shared/services/core/settings.service';
 import { Settings } from '../settings/model/settings';
-import { NameAndNumberPair } from '../../shared/model/GraphData';
-import { NameAndStringPair } from '../../shared/model/GraphData';
+import { NumberValueGraph } from '../../shared/model/GraphData';
+import { StringValueGraph } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
 import { tap, map } from 'rxjs/operators';
 import { Period } from '../../shared/model/Enums';
@@ -53,13 +53,13 @@ export class TimeTaskComponent implements OnInit {
 
   // today
   timeTasksFromToday: TimeTask[] = [];
-  accumulatedTasksFromToday: NameAndStringPair[] = [];
-  graphDataFromToday: NameAndNumberPair[] = [];
+  accumulatedTasksFromToday: StringValueGraph[] = [];
+  graphDataFromToday: NumberValueGraph[] = [];
 
   // history
   timeTasksFromHistory: TimeTask[] = [];
-  accumulatedTasksFromHistory: NameAndStringPair[] = [];
-  graphDataFromHistory: NameAndNumberPair[] = [];
+  accumulatedTasksFromHistory: StringValueGraph[] = [];
+  graphDataFromHistory: NumberValueGraph[] = [];
 
   constructor(
     public settingsService: SettingsService,
@@ -213,7 +213,7 @@ export class TimeTaskComponent implements OnInit {
    * Creates a key value pair with the task and the accumulated time in ms as formatted string
    * @param pair that includes every tasks and the accumulated time
    */
-  private createAccumulationDescription(pair: NameAndNumberPair[]) {
+  private createAccumulationDescription(pair: NumberValueGraph[]) {
     return pair.map((entry) => {
       return {
         name: entry.name,

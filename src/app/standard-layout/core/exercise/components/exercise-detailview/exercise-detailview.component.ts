@@ -3,7 +3,7 @@ import { Exercise } from '../../model/exercise';
 import { TrainingService } from '../../../../shared/services/core/training.service';
 import { Training } from '../../../training/model/training';
 import { PatternAnalysisService } from '../../../../shared/services/utils/pattern-analysis.service';
-import { NameAndNumberPair } from 'src/app/standard-layout/shared/model/GraphData';
+import { NumberValueGraph } from 'src/app/standard-layout/shared/model/GraphData';
 import { GraphDataService } from 'src/app/standard-layout/shared/services/utils/graph.service';
 import { Pattern } from 'src/app/standard-layout/shared/model/Enums';
 
@@ -16,8 +16,8 @@ export class ExerciseDetailviewComponent implements OnChanges {
   @Input() exercise: Exercise;
 
   trainings: Training[];
-  graphData: NameAndNumberPair[] = [];
-  graphDataPercent: NameAndNumberPair[] = [];
+  graphData: NumberValueGraph[] = [];
+  graphDataPercent: NumberValueGraph[] = [];
 
   Pattern = Pattern;
 
@@ -63,7 +63,7 @@ export class ExerciseDetailviewComponent implements OnChanges {
       const endOfArray = graphData[graphData.length - 1];
 
       if (currentElem !== endOfArray) {
-        const entry: NameAndNumberPair = {
+        const entry: NumberValueGraph = {
           name: 'From ' + lastElem.name + ' to ' + currentElem.name,
           value:
             ((+currentElem.value - +lastElem.value) / +currentElem.value) * 100,

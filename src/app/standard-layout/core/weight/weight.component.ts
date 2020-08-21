@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material';
 import { UtilityService } from '../../shared/services/utils/utility.service';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { TimeService } from '../../shared/services/utils/time.service';
-import { NameAndNumberPair } from '../../shared/model/GraphData';
+import { NumberValueGraph } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
 import { Title } from '@angular/platform-browser';
 import { map, tap } from 'rxjs/operators';
@@ -18,7 +18,7 @@ import { map, tap } from 'rxjs/operators';
 })
 export class WeightComponent implements OnInit {
   weights: Weight[];
-  graphData: NameAndNumberPair[] = [];
+  graphData: NumberValueGraph[] = [];
 
   displayedWeights = 15;
   form = new FormGroup({

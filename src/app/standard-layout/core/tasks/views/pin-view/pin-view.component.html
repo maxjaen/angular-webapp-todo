@@ -50,10 +50,10 @@
             </div>
             <mat-card class="example-card">
                 <div *ngIf="
-                          this.settings &&
-                          this.settings.length > 0 &&
+                          settings &&
+                          settings.length > 0 &&
                           settingsService.getSettingsValue(
-                            this.settings,
+                            settings,
                             'Show status color'
                           )
                         ">
@@ -70,23 +70,23 @@
                                 <countup-timer [countUpTimerConfig]="testConfig"></countup-timer>
                             </div>
                             <div *ngIf="
-                                this.settings &&
+                                settings &&
                                 settingsService.getSettingsValue(
-                                  this.settings,
+                                  settings,
                                   'Show creation date'
                                 )
                               ">
                                 <div class="smallToTop fontSize12">
                                     {{ taskService.extractUtcStringFromTask(task) }}
                                     {{
-                                  timeService.formatDateToDeadlineMessage(task.date)
+                                  retrieveDeadlineMessageFromDate(task.date)
                                 }}
                                 </div>
                             </div>
                         </mat-card-title>
                         <mat-card-subtitle *ngIf="task.longDescription && task.longDescription.length > 0">
                             <ul *ngFor="
-                                let point of this.utilityService.splitWithNewLine(task.longDescription)
+                                let point of utilityService.splitWithNewLine(task.longDescription)
                               ">
                                 <div *ngIf="
                                   point.length > 0 &&
@@ -103,13 +103,13 @@
                                 <div *ngIf="point == ' '">
                                     <hr />
                                 </div>
-                                <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
+                                <div *ngIf="point.includes('!')" [style.color]="keyService.getColor('orange')">
                                     {{ point }}
                                 </div>
-                                <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
+                                <div *ngIf="point.includes('$')" [style.color]="keyService.getColor('green')">
                                     {{ point }}
                                 </div>
-                                <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
+                                <div *ngIf="point.includes('#')" [style.color]="keyService.getColor('white')">
                                     <h3>{{ point }}</h3>
                                 </div>
                             </ul>
@@ -120,10 +120,10 @@
                     <p *ngIf="!taskService.isSaved(task)">
                         Not saved
                     </p>
-                    <button title="Continue" (click)="startTimeTask(task)" mat-button>
+                    <button title="Continue" (click)="startTimeTaskFeature(task)" mat-button>
                         <mat-icon>play_arrow</mat-icon>
                     </button>
-                    <button title="Stop" (click)="stopTimeTask()" mat-button>
+                    <button title="Stop" (click)="stopTimeTaskFeature()" mat-button>
                         <mat-icon>close</mat-icon>
                     </button>
                     <button title="Add description" (click)="selectTask(task)" mat-button>
@@ -144,7 +144,7 @@
     </div>
     <div *ngIf="
                     tasksUnpinned.length > 0 &&
-                    (this.displayUnpinned || this.tasksPinned.length == 0)
+                    (displayUnpinned || tasksPinned.length == 0)
                   ">
         <br />
         <h3>Unpinned Tasks</h3>
@@ -176,9 +176,9 @@
             </div>
             <mat-card class="example-card">
                 <div *ngIf="
-                          this.settings &&
+                          settings &&
                           settingsService.getSettingsValue(
-                            this.settings,
+                            settings,
                             'Show status color'
                           )
                         ">
@@ -189,9 +189,9 @@
                         <mat-card-title>
                             {{ task.shortDescription }}
                             <div *ngIf="
-                                this.settings &&
+                                settings &&
                                 settingsService.getSettingsValue(
-                                  this.settings,
+                                  settings,
                                   'Show creation date'
                                 )
                               ">
@@ -202,7 +202,7 @@
                         </mat-card-title>
                         <mat-card-subtitle *ngIf="task.longDescription && task.longDescription.length > 0">
                             <ul *ngFor="
-                                let point of this.utilityService.splitWithNewLine(task.longDescription)
+                                let point of utilityService.splitWithNewLine(task.longDescription)
                               ">
                                 <div *ngIf="
                                   point.length > 0 &&
@@ -219,13 +219,13 @@
                                 <div *ngIf="point == ' '">
                                     <hr />
                                 </div>
-                                <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
+                                <div *ngIf="point.includes('!')" [style.color]="keyService.getColor('orange')">
                                     {{ point }}
                                 </div>
-                                <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
+                                <div *ngIf="point.includes('$')" [style.color]="keyService.getColor('green')">
                                     {{ point }}
                                 </div>
-                                <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
+                                <div *ngIf="point.includes('#')" [style.color]="keyService.getColor('white')">
                                     <h3>{{ point }}</h3>
                                 </div>
                             </ul>
@@ -236,10 +236,10 @@
                     <p *ngIf="!taskService.isSaved(task)">
                         Not saved
                     </p>
-                    <button title="Continue" (click)="startTimeTask(task)" mat-button>
+                    <button title="Continue" (click)="startTimeTaskFeature(task)" mat-button>
                         <mat-icon>play_arrow</mat-icon>
                     </button>
-                    <button title="Stop" (click)="stopTimeTask()" mat-button>
+                    <button title="Stop" (click)="stopTimeTaskFeature()" mat-button>
                         <mat-icon>close</mat-icon>
                     </button>
                     <button title="Add description" (click)="selectTask(task)" mat-button>

@@ -35,7 +35,7 @@
             Show more
           </button>
           <button type="button" (click)="showLessTrainings()" [disabled]="
-              this.trainings.slice(0, displayedTrainings).length <= 10
+              trainings.slice(0, displayedTrainings).length <= 10
             " mat-raised-button>
             Show less
           </button>
@@ -117,7 +117,7 @@
             </div>
             <div>
               <div *ngIf="hasPattern(exercise, Pattern.WEIGHT)">
-                <form class="example-form" [formGroup]="this.formGroups[i]">
+                <form class="example-form" [formGroup]="formGroups[i]">
                   <mat-form-field class="example-full-width">
                     <input matInput placeholder="Sätze" formControlName="records" />
                   </mat-form-field>
@@ -141,7 +141,7 @@
                 </form>
               </div>
               <div *ngIf="hasPattern(exercise, Pattern.CONDITIONAL1)">
-                <form class="example-form" [formGroup]="this.formGroups[i]">
+                <form class="example-form" [formGroup]="formGroups[i]">
                   <mat-form-field class="example-full-width">
                     <input matInput placeholder="Anzahl" formControlName="records" />
                   </mat-form-field>
@@ -162,7 +162,7 @@
                 </form>
               </div>
               <div *ngIf="hasPattern(exercise, Pattern.CONDITIONAL2)">
-                <form class="example-form" [formGroup]="this.formGroups[i]">
+                <form class="example-form" [formGroup]="formGroups[i]">
                   <mat-form-field class="example-full-width">
                     <input matInput placeholder="Dauer" formControlName="period" />
                   </mat-form-field>
@@ -186,7 +186,7 @@
                 </form>
               </div>
               <div *ngIf="hasPattern(exercise, Pattern.COUNTABLE)">
-                <form class="example-form" [formGroup]="this.formGroups[i]">
+                <form class="example-form" [formGroup]="formGroups[i]">
                   <mat-form-field class="example-full-width">
                     <input matInput placeholder="Sätze" formControlName="records" />
                   </mat-form-field>
@@ -204,7 +204,7 @@
                 </form>
               </div>
               <div *ngIf="hasPattern(exercise, Pattern.FREE)">
-                <form class="example-form" [formGroup]="this.formGroups[i]">
+                <form class="example-form" [formGroup]="formGroups[i]">
                   <mat-form-field class="example-full-width">
                     <input matInput placeholder="Einheit" formControlName="text" />
                   </mat-form-field>

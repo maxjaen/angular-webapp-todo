@@ -41,13 +41,13 @@
             </div>
             <div class="block" *ngIf="selectedTraining && currentExercise">
                 <h2> Next Exercises</h2>
-                <div class="exercise-start" *ngFor="let exercise of this.selectedTraining.exercises; let i = index;">
+                <div class="exercise-start" *ngFor="let exercise of selectedTraining.exercises; let i = index;">
                     <div
-                        *ngIf="currentExercise.name==exercise.name && currentExercise.name!='Break' && this.selectedTraining.exercises.indexOf(exercise)==currentExerciseIndex">
+                        *ngIf="currentExercise.name==exercise.name && currentExercise.name!='Break' && selectedTraining.exercises.indexOf(exercise)==currentExerciseIndex">
                         <div class="current">{{ i+1 }}: {{exercise.name}}, {{exercise.repetitions}}</div>
                     </div>
                     <div
-                        *ngIf="exercise.name=='Break' && this.selectedTraining.exercises.indexOf(exercise)==currentExerciseIndex">
+                        *ngIf="exercise.name=='Break' && selectedTraining.exercises.indexOf(exercise)==currentExerciseIndex">
                         <div class="break">{{ i+1 }}: {{exercise.name}}, {{exercise.repetitions}}</div>
                     </div>
                     <div *ngIf="currentExercise.name!=exercise.name && inListOfNextSteps(exercise)">
@@ -57,7 +57,7 @@
             </div>
             <div class="block session" *ngIf="selectedTraining && !currentExercise">
                 <h2>Aktuelles Training</h2>
-                <div class="exercise-start" *ngFor="let exercise of this.selectedTraining.exercises; let i = index;">
+                <div class="exercise-start" *ngFor="let exercise of selectedTraining.exercises; let i = index;">
                     <div class="text" *ngIf="exercise.name!='Break'">
                         <div>{{ i+1 }}: {{exercise.name}} ({{exercise.repetitions}} seconds)</div>
                         <span class="start-here-icon" (click)="doWorkout(i)">

@@ -23,10 +23,10 @@ interface KeyValuePair {
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  settings: Settings[] = [];
+  public settings: Settings[] = [];
 
-  placeHolderArray: KeyValuePair[] = [];
-  ignoreModules: string[] = ['settings', 'training', 'exercise'];
+  public placeHolderArray: KeyValuePair[] = [];
+  private ignoreModules: string[] = ['settings', 'training', 'exercise'];
 
   constructor(
     public settingsService: SettingsService,

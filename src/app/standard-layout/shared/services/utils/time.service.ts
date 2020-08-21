@@ -52,7 +52,7 @@ export class TimeService {
     );
   }
 
-  private calculateTimeDifferenceToCurrentDate(date: Date) {
+  public calculateTimeDifferenceToCurrentDate(date: Date) {
     return new Date(date).getTime() - this.createNewDate().getTime();
   }
 
@@ -76,25 +76,6 @@ export class TimeService {
     return `${description}: ${this.utilityService.formatToTwoDigits(
       temp.getHours()
     )}:${this.utilityService.formatToTwoDigits(temp.getMinutes())}`;
-  }
-
-  public formatDateToDeadlineMessage(date: Date): string {
-    let diffInMilliseconds = this.calculateTimeDifferenceToCurrentDate(date);
-
-    const beforeDeadline: boolean = diffInMilliseconds >= 0;
-
-    if (!beforeDeadline) {
-      diffInMilliseconds *= -1;
-    }
-
-    if (this.isToday(date)) {
-      return '(Your deadline is today!)';
-    }
-
-    const days: any = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
-    return !beforeDeadline
-      ? `(~ ${days} day/s behind your goal)`
-      : `(~ ${days} day/s until your deadline)`;
   }
 
   public isValid(date: Date): boolean {

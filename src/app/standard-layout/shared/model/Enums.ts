@@ -1,7 +1,7 @@
 export enum SessionState {
-  Initial,
-  Started,
-  Stopped,
+  INITIAL,
+  STARTED,
+  STOPPED,
 }
 
 export enum Period {

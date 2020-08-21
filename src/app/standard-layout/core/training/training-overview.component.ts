@@ -30,24 +30,24 @@ import { Direction, Pattern } from '../../shared/model/Enums';
 })
 export class TrainingOverViewComponent implements OnInit {
   @ViewChild('overviewTraining')
-  overviewTraining: ElementRef;
+  public overviewTraining: ElementRef;
   @ViewChild('generateTraining')
-  generateTraining: ElementRef;
+  public generateTraining: ElementRef;
 
-  displayedTrainings = 10;
-  sessionMode = ['Normal Session', 'Time Session'];
-  selectedMode: string;
+  public displayedTrainings = 10;
+  public sessionMode = ['Normal Session', 'Time Session'];
+  private selectedMode: string;
 
-  trainings: Training[];
-  trainingsDate: Date = new Date();
-  training: Training;
-  trainingDescription = '';
+  public trainings: Training[];
+  private trainingsDate: Date = new Date();
+  public training: Training;
+  public trainingDescription = '';
 
-  exercises: Exercise[];
-  exercisesToInsert: Exercise[] = [];
+  public exercises: Exercise[];
+  public exercisesToInsert: Exercise[] = [];
 
-  formGroups: FormGroup[] = [];
-  formGroupToInsert: FormGroup;
+  public formGroups: FormGroup[] = [];
+  private formGroupToInsert: FormGroup;
 
   readonly Direction = Direction;
   readonly Pattern = Pattern;

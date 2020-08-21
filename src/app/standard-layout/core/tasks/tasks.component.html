@@ -62,9 +62,9 @@
               <mat-card-title>
                 {{ task.shortDescription }}
                 <div *ngIf="
-                          this.settings &&
+                          settings &&
                           settingsService.getSettingsValue(
-                            this.settings,
+                            settings,
                             'Show creation date'
                           )
                         ">
@@ -75,7 +75,7 @@
               </mat-card-title>
               <mat-card-subtitle *ngIf="task.longDescription && task.longDescription.length > 0">
                 <ul *ngFor="
-                          let point of this.utilityService.splitWithNewLine(task.longDescription)
+                          let point of utilityService.splitWithNewLine(task.longDescription)
                         ">
                   <div *ngIf="
                             point.length > 0 &&
@@ -92,13 +92,13 @@
                   <div *ngIf="point == ' '">
                     <hr />
                   </div>
-                  <div *ngIf="point.includes('!')" [style.color]="this.keyService.getColor('orange')">
+                  <div *ngIf="point.includes('!')" [style.color]="keyService.getColor('orange')">
                     {{ point }}
                   </div>
-                  <div *ngIf="point.includes('$')" [style.color]="this.keyService.getColor('green')">
+                  <div *ngIf="point.includes('$')" [style.color]="keyService.getColor('green')">
                     {{ point }}
                   </div>
-                  <div *ngIf="point.includes('#')" [style.color]="this.keyService.getColor('white')">
+                  <div *ngIf="point.includes('#')" [style.color]="keyService.getColor('white')">
                     <h3>{{ point }}</h3>
                   </div>
                 </ul>

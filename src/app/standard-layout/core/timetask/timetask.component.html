@@ -16,16 +16,16 @@
       <div class="show-wrapper">
         <div class="show">
           <countup-timer [countUpTimerConfig]="testConfig"> </countup-timer>
-          <div *ngIf="this.settings.length > 0">
+          <div *ngIf="settings.length > 0">
             <div *ngIf="
                 settingsService.getSettingsValue(
-                  this.settings,
+                  settings,
                   'Show total this week'
                 )
               ">
               <p>
                 <span>Time week: </span>
-                <span [style.color]="this.keyService.getColor('white')">
+                <span [style.color]="keyService.getColor('white')">
                   {{
                     timeService.formatMillisecondsToString(
                       timeTaskService.calculateTimeForCurrentWeek(timeTasks)
@@ -35,15 +35,15 @@
             </div>
             <div *ngIf="
                 settingsService.getSettingsValue(
-                  this.settings,
+                  settings,
                   'Show total today'
                 )
               ">
               <p>
                 <span>Time today: </span>
-                <span [style.color]="this.keyService.getColor('white')">
+                <span [style.color]="keyService.getColor('white')">
                   {{
-                    this.timeService.formatMillisecondsToString(
+                    timeService.formatMillisecondsToString(
                       timeTaskService.calculateTimeForToday(timeTasksFromToday)
                     )
                   }}</span>
@@ -51,15 +51,15 @@
             </div>
             <div *ngIf="
                 settingsService.getSettingsValue(
-                  this.settings,
+                  settings,
                   'Show week number'
                 )
               ">
               <p>
                 <span>Week: </span>
-                <span [style.color]="this.keyService.getColor('white')">{{
-                  this.utilityService.formatToTwoDigits(
-                    this.timeService.calculateCurrentWeekNumber()
+                <span [style.color]="keyService.getColor('white')">{{
+                  utilityService.formatToTwoDigits(
+                    timeService.calculateCurrentWeekNumber()
                   )
                 }}</span>
               </p>
@@ -118,10 +118,10 @@
             </div>
             <mat-card (click)="toggleSelection(timeElement)" class="example-card block">
               <div *ngIf="
-                  this.settings &&
-                  this.settings.length > 0 &&
+                  settings &&
+                  settings.length > 0 &&
                   settingsService.getSettingsValue(
-                    this.settings,
+                    settings,
                     'Show status color'
                   )
                 ">
@@ -138,7 +138,7 @@
                       Measurement is running
                       <p>
                         @{{
-                          this.timeService.formatDateToStringWithDescription(
+                          timeService.formatDateToStringWithDescription(
                             timeElement.startDate,
                             'Start'
                           )
@@ -152,7 +152,7 @@
                       Measurement is invalid
                       <p>
                         @{{
-                          this.timeService.formatDateToStringWithDescription(
+                          timeService.formatDateToStringWithDescription(
                             timeElement.startDate,
                             'Start'
                           )
@@ -164,7 +164,7 @@
                         {{ toString(timeElement) }} >>
                       </div>
                       {{
-                        this.timeService.formatDateToStringWithDescription(
+                        timeService.formatDateToStringWithDescription(
                           timeElement.startDate,
                           'Start'
                         )
@@ -172,7 +172,7 @@
                       <div class="inline">
                         ,
                         {{
-                          this.timeService.formatDateToStringWithDescription(
+                          timeService.formatDateToStringWithDescription(
                             timeElement.endDate,
                             'End'
                           )
@@ -184,7 +184,7 @@
                       timeElement.longDescription && timeElement.longDescription.length > 0
                     ">
                     <ul *ngFor="
-                        let point of this.utilityService.splitWithNewLine(
+                        let point of utilityService.splitWithNewLine(
                           timeElement.longDescription
                         )
                       ">
@@ -224,7 +224,7 @@
       <div *ngIf="timeTasksFromHistory">
         <div *ngIf="timeTasksFromHistory.length > 0">
           <div class="fixedButtons-rightbottom">
-            <button class="control-buttons-gray" title="Delete all" (click)="this.deleteAllAvailableTimeTasks()"
+            <button class="control-buttons-gray" title="Delete all" (click)="deleteAllAvailableTimeTasks()"
               color="primary" mat-mini-fab>
               <mat-icon>close</mat-icon>
             </button>
@@ -232,7 +232,7 @@
           <p>
             Time:
             <span style="color: coral;">{{
-              this.timeService.formatMillisecondsToString(
+              timeService.formatMillisecondsToString(
                 timeTaskService.calculateTimeForToday(timeTasksFromHistory)
               )
             }}</span>
@@ -253,7 +253,7 @@
           <br />
         </div>
         <div *ngFor="let timeElement of timeTasksFromHistory">
-          <mat-card [style.background-color]="this.keyService.getColor('darkGray')" class="example-card block">
+          <mat-card [style.background-color]="keyService.getColor('darkGray')" class="example-card block">
             <mat-card-header style="float: left;">
               <mat-card-title>
                 {{ timeElement.shortDescription }}
@@ -266,7 +266,7 @@
                     {{ toString(timeElement) }} >>
                   </div>
                   {{
-                    this.timeService.formatDateToStringWithDescription(
+                    timeService.formatDateToStringWithDescription(
                       timeElement.startDate,
                       'Start'
                     )
@@ -274,7 +274,7 @@
                   <div *ngIf="timeElement.endDate" style="display: inline;">
                     ,
                     {{
-                      this.timeService.formatDateToStringWithDescription(
+                      timeService.formatDateToStringWithDescription(
                         timeElement.endDate,
                         'End'
                       )
@@ -286,7 +286,7 @@
                   timeElement.longDescription && timeElement.longDescription.length > 0
                 ">
                 <ul *ngFor="
-                    let point of this.utilityService.splitWithNewLine(
+                    let point of utilityService.splitWithNewLine(
                       timeElement.longDescription
                     )
                   ">

@@ -1,5 +1,5 @@
 <div class="content">
-    <div *ngIf="this.settings && this.settings.length > 0">
+    <div *ngIf="settings && settings.length > 0">
         <div class="fixedButtons-rightbottom">
             <button class="control-buttons-gray" title="Save settings" (click)="saveSettings()" mat-mini-fab>
                 <mat-icon>save_alt</mat-icon>
@@ -18,7 +18,7 @@
                     <div class="right">
                         <section class="example-section">
                             <mat-slide-toggle class="example-margin" [color]="" [checked]="setting['value']"
-                                [disabled]="" (change)="this.toggleSlider(setting, $event)">
+                                [disabled]="" (change)="toggleSlider(setting, $event)">
                             </mat-slide-toggle>
                         </section>
                     </div>

@@ -16,18 +16,18 @@ import { playSound } from '../../shared/utils/SoundUtils';
   styleUrls: ['./session.component.scss'],
 })
 export class SessionComponent implements OnInit {
-  trainings: Training[];
-  selectedTraining: Training;
-  exerciseInterval: number;
+  public trainings: Training[];
+  public selectedTraining: Training;
+  private exerciseInterval: number;
 
-  currentExercise: Exercise;
-  currentExerciseIndex: number;
+  public currentExercise: Exercise;
+  public currentExerciseIndex: number;
 
-  exerciseCountdown: number;
-  workoutCountdown: number;
-  readyCountdown: number;
+  public exerciseCountdown: number;
+  public workoutCountdown: number;
+  public readyCountdown: number;
 
-  state: SessionState = SessionState.Initial;
+  private state: SessionState = SessionState.INITIAL;
 
   constructor(
     private utilityService: UtilityService,
@@ -75,20 +75,20 @@ export class SessionComponent implements OnInit {
    */
   public stopWorkout() {
     switch (this.state) {
-      case SessionState.Initial:
+      case SessionState.INITIAL:
         this.displayNotification(
           this.keyService.getKeyTranslation('se21'),
           null
         );
         return;
-      case SessionState.Started:
+      case SessionState.STARTED:
         this.displayNotification(
           this.keyService.getKeyTranslation('se33'),
           null
         );
-        this.state = SessionState.Stopped;
+        this.state = SessionState.STOPPED;
         break;
-      case SessionState.Stopped:
+      case SessionState.STOPPED:
         this.displayNotification(
           this.keyService.getKeyTranslation('se23'),
           null
@@ -102,23 +102,23 @@ export class SessionComponent implements OnInit {
   }
 
   /**
-   * Reset your progress to initial state
+   * Reset your progress to INITIAL state
    */
   public resetWorkout(): void {
     switch (this.state) {
-      case SessionState.Initial:
+      case SessionState.INITIAL:
         this.displayNotification(
           this.keyService.getKeyTranslation('se21'),
           null
         );
         return;
-      case SessionState.Started:
-      case SessionState.Stopped:
+      case SessionState.STARTED:
+      case SessionState.STOPPED:
         this.displayNotification(
           this.keyService.getKeyTranslation('se34'),
           null
         );
-        this.state = SessionState.Initial;
+        this.state = SessionState.INITIAL;
         break;
       default:
         throw new Error(`State ${this.state} not implemented yet.`);
@@ -140,20 +140,20 @@ export class SessionComponent implements OnInit {
     }
 
     switch (this.state) {
-      case SessionState.Initial:
+      case SessionState.INITIAL:
         this.displayNotification(
           this.keyService.getKeyTranslation('se31'),
           null
         );
-        this.state = SessionState.Started;
+        this.state = SessionState.STARTED;
         break;
-      case SessionState.Started:
+      case SessionState.STARTED:
         this.displayNotification(
           this.keyService.getKeyTranslation('se21'),
           null
         );
         return;
-      case SessionState.Stopped:
+      case SessionState.STOPPED:
         this.displayNotification(
           this.keyService.getKeyTranslation('se24'),
           null
@@ -173,28 +173,28 @@ export class SessionComponent implements OnInit {
   }
 
   /**
-   * Continue at the time you stopped in an Workout Session
+   * Continue at the time you STOPPED in an Workout Session
    */
   public continueWorkout() {
     switch (this.state) {
-      case SessionState.Initial:
+      case SessionState.INITIAL:
         this.displayNotification(
           this.keyService.getKeyTranslation('se21'),
           null
         );
         return;
-      case SessionState.Started:
+      case SessionState.STARTED:
         this.displayNotification(
           this.keyService.getKeyTranslation('se22'),
           null
         );
         return;
-      case SessionState.Stopped:
+      case SessionState.STOPPED:
         this.displayNotification(
           this.keyService.getKeyTranslation('se32'),
           null
         );
-        this.state = SessionState.Started;
+        this.state = SessionState.STARTED;
         break;
       default:
         throw new Error(`State ${this.state} not implemented yet.`);
@@ -204,7 +204,7 @@ export class SessionComponent implements OnInit {
       this.currentExercise
     );
 
-    // Update current exercise value with countdown to continue where you stopped
+    // Update current exercise value with countdown to continue where you STOPPED
     this.selectedTraining.exercises[elementIndex][
       'repetitions'
     ] = this.exerciseCountdown;

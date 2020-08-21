@@ -12,8 +12,8 @@
   </div>
   <div class="tab-m graph" *ngIf="trainings.length > 0 && exercise.category != Pattern.FREE">
     <ngx-charts-bar-vertical [view]="[700, 400]" [results]="graphData" [xAxisLabel]="'Date'" [legendTitle]="'Trainings'"
-      [yAxisLabel]="this.exercise.category" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true"
-      [xAxis]="true" [yAxis]="true" [gradient]="true">
+      [yAxisLabel]="exercise.category" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true"
+      [yAxis]="true" [gradient]="true">
     </ngx-charts-bar-vertical>
   </div>
   <div class="tab-m graph" *ngIf="trainings.length > 0 && exercise.category != Pattern.FREE">

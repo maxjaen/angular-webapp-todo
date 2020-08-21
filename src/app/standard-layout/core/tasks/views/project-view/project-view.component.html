@@ -1,9 +1,9 @@
 <div class="component-container" *ngIf="tasks">
-    <div class="project" *ngFor="let project of this.retrieveDistinctProjectNames(tasks)">
+    <div class="project" *ngFor="let project of retrieveDistinctProjectNames(tasks)">
         <div class="name">
             <div>{{ project }}</div>
         </div>
-        <div class="tasksWrapper" cdkDropList [cdkDropListConnectedTo]="this.retrieveDistinctProjectNames(tasks)"
+        <div class="tasksWrapper" cdkDropList [cdkDropListConnectedTo]="retrieveDistinctProjectNames(tasks)"
             id="{{project}}" [cdkDropListData]="retrieveTasksForProject(project)" (cdkDropListDropped)="drop($event)">
             <div class="tasks" [cdkDragData]="task" *ngFor="let task of retrieveTasksForProject(project);" cdkDrag>
                 <div class="task">

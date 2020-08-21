@@ -15,15 +15,15 @@ import { Pattern } from '../../shared/model/Enums';
   styleUrls: ['./exercise-overview.component.scss'],
 })
 export class ExerciseOverViewComponent implements OnInit {
-  exercises: Exercise[];
-  exerciseToCreate: Exercise = new Exercise();
-  formForExerciseCreation = new FormGroup({
+  public exercises: Exercise[];
+  public formForExerciseCreation = new FormGroup({
     name: new FormControl('', [Validators.required]),
     category: new FormControl('', [Validators.required]),
   });
-  exerciseToDelete: Exercise = new Exercise();
 
-  selectedExercise: Exercise;
+  public selectedExercise: Exercise;
+  private exerciseToCreate: Exercise = new Exercise();
+  private exerciseToDelete: Exercise = new Exercise();
 
   constructor(
     private utilityService: UtilityService,

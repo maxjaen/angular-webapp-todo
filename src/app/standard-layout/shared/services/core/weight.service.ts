@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class WeightService {
-  url = 'http://localhost:3000/weights';
+  private url = 'http://localhost:3000/weights';
 
   constructor(private httpClient: HttpClient) {}
 

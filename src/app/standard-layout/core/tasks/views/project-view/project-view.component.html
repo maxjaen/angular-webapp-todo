@@ -4,19 +4,23 @@
             <div>{{ project }}</div>
         </div>
         <div class="tasksWrapper" cdkDropList [cdkDropListConnectedTo]="retrieveDistinctProjectNames(tasks)"
-            id="{{project}}" [cdkDropListData]="retrieveTasksForProject(project)" (cdkDropListDropped)="drop($event)">
-            <div class="tasks" [cdkDragData]="task" *ngFor="let task of retrieveTasksForProject(project);" cdkDrag>
-                <div class="task">
-                    <div class="description">{{ task.shortDescription }}</div>
+            id="{{project}}" [cdkDropListData]="retrieveTasksWithProject(project)"
+            (cdkDropListDropped)="dropTaskInGroup($event)">
+            <div class="timer" *ngIf="timeTaskService.runningTimeTask && isProjectGroupOfRunningTask(project)">
+                <countup-timer [countUpTimerConfig]="testConfig"></countup-timer>
+            </div>
+            <div class="tasks" [cdkDragData]="task" *ngFor="let task of retrieveTasksWithProject(project);" cdkDrag>
+                <div [ngClass]="['task', timeTaskService.runningTimeTask && isRunningTask(task) ? 'running' : '']">
+                    <div class=" description">{{ task.shortDescription }}</div>
                     <div class="time"></div>
                     <div class="task-hided">
-                        <button title="Continue" mat-button>
+                        <button title="Continue" (click)="startTimeTaskFeature(task)" mat-button>
                             <mat-icon>play_arrow</mat-icon>
                         </button>
-                        <button title="Stop" mat-button>
+                        <button title="Stop" (click)="stopTimeTaskFeature()" mat-button>
                             <mat-icon>close</mat-icon>
                         </button>
-                        <button title="Archive" mat-button>
+                        <button title="Archive" (click)="hideTask(task)" mat-button>
                             <mat-icon>move_to_inbox</mat-icon>
                         </button>
                         <button title="Delete" (click)="removeTask(task)" mat-button>

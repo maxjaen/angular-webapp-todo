@@ -8,7 +8,7 @@ import { UtilityService } from '../utils/utility.service';
   providedIn: 'root',
 })
 export class TaskService {
-  url = 'http://localhost:3000/tasks';
+  private url = 'http://localhost:3000/tasks';
 
   constructor(
     private utilityService: UtilityService,

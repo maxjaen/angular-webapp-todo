@@ -31,6 +31,13 @@
       height: 190px;
       overflow: hidden;
 
+      .timer {
+        display: flex;
+        justify-content: center;
+        padding: 7px;
+        border-bottom: 1px solid #424242;
+      }
+
       .tasks {
         .task {
           display: flex;
@@ -72,6 +79,10 @@
             display: block;
             color: $white;
           }
+        }
+
+        .running {
+          background-color: $purple;
         }
       }
     }

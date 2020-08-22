@@ -26,16 +26,16 @@ import { View } from '../../shared/model/Enums';
   styleUrls: ['./tasks.component.scss'],
 })
 export class TasksComponent implements OnInit {
-  tasks: Task[];
-  tasksHided: Task[];
-  tasksRunning: TimeTask[];
-  settings: Settings[];
+  public tasks: Task[];
+  public tasksHided: Task[];
+  public tasksRunning: TimeTask[];
+  public settings: Settings[];
 
   @ViewChild('creationField') inputElement: ElementRef;
-  showCreationField = false;
+  public showCreationField = false;
 
-  View = View;
-  viewSelected: View = View.PROJECTS;
+  readonly View = View;
+  public viewSelected: View = View.PROJECTS;
 
   /**
    * Dialog for creating a task will be displayed when clicking escape on keyboard

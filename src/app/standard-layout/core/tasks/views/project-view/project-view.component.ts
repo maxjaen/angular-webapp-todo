@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  SimpleChanges,
+  OnChanges,
+} from '@angular/core';
 import { Task } from '../../model/task';
 import { TimeTask } from '../../../timetask/model/timetask';
 import { Settings } from '../../../settings/model/settings';
@@ -9,11 +17,14 @@ import { TimeTaskService } from 'src/app/standard-layout/shared/services/core/ti
 import { UtilityService } from 'src/app/standard-layout/shared/services/utils/utility.service';
 import { MatSnackBar } from '@angular/material';
 import { KeyService } from 'src/app/standard-layout/shared/services/utils/key.service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CacheService } from 'src/app/standard-layout/shared/services/utils/cache.service';
 import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
+  CountupTimerService,
+  countUpTimerConfigModel,
+  timerTexts,
+} from 'ngx-timer';
+import { TimeService } from 'src/app/standard-layout/shared/services/utils/time.service';
 
 @Component({
   selector: 'app-project-view',
@@ -30,17 +41,32 @@ export class ProjectViewComponent implements OnInit {
   @Output()
   public reload = new EventEmitter<void>();
 
+  public testConfig: countUpTimerConfigModel;
+
   constructor(
     public timeTaskService: TimeTaskService,
     public settingsService: SettingsService,
     public taskService: TaskService,
+    private timerService: CountupTimerService,
+    private timeService: TimeService,
     private utilityService: UtilityService,
     private snackBarService: MatSnackBar,
-    private keyService: KeyService
+    private keyService: KeyService,
+    private cacheService: CacheService
   ) {}
 
   ngOnInit() {
     this.loadFromServices();
+    this.setTimerConfiguration();
+  }
+
+  private setTimerConfiguration() {
+    this.testConfig = new countUpTimerConfigModel();
+    this.testConfig.timerClass = 'test_Timer_class';
+    this.testConfig.timerTexts = new timerTexts();
+    this.testConfig.timerTexts.hourText = ' h -';
+    this.testConfig.timerTexts.minuteText = ' min -';
+    this.testConfig.timerTexts.secondsText = ' s';
   }
 
   public loadFromServices() {
@@ -88,7 +114,26 @@ export class ProjectViewComponent implements OnInit {
     });
   }
 
-  // TODO rework method
+  public dropTaskInGroup(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer.id !== event.container.id) {
+      this.tasks
+        .filter((task) => task.id == event.item.data.id)
+        .forEach((filteredTask) => {
+          filteredTask.project = event.container.id;
+        });
+
+      this.updateTask(event.item.data, 'Group of task updated.', null);
+    }
+  }
+
+  public hideTask(task: Task) {
+    this.cacheService.setCachedTask(task);
+
+    task.hided = !task.hided;
+    task.pinned = false;
+    this.updateTask(task, this.keyService.getKeyTranslation('ta5'), 'Reset');
+  }
+
   private updateTask(
     task: Task,
     notificationMessage: string,
@@ -96,58 +141,26 @@ export class ProjectViewComponent implements OnInit {
   ) {
     this.taskService.putTask(task).subscribe(() => {
       this.displayNotification(notificationMessage, notificationAction);
+
       this.reload.emit();
     });
   }
 
-  // TODO rework method
   public removeTask(task: Task) {
-    if (task !== undefined) {
-      if (this.utilityService.isNumber(task.id)) {
-        if (!window.confirm(this.keyService.getKeyTranslation('a11'))) {
-          return;
-        }
-        this.taskService.deleteTask(task.id).subscribe(() => {
-          this.displayNotification(
-            this.keyService.getKeyTranslation('ta3'),
-            null
-          );
-          this.reload.emit();
-        });
-      } else {
-        console.warn(`removeTask(): ID: ${task.id}, expected number`);
-      }
-    } else {
-      console.warn(`removeTask(): ID: ${task.id}, expected id`);
+    if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
+      // confirmed
+      this.taskService.deleteTask(task.id).subscribe(() => {
+        this.displayNotification(
+          this.keyService.getKeyTranslation('ta3'),
+          null
+        );
+        this.reload.emit();
+      });
     }
   }
 
-  // TODO rework method
-  public drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    if (event.previousContainer.id === event.container.id) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-
-      this.tasks
-        .filter(
-          (task) => task.shortDescription == event.item.data.shortDescription
-        )
-        .forEach((filteredTask) => {
-          filteredTask.project = event.container.id;
-        });
-      this.updateTask(event.item.data, 'Updated Task', null);
-    }
+  public resetTask(task: Task) {
+    this.updateTask(task, this.keyService.getKeyTranslation('ta4'), null);
   }
 
   public retrieveDistinctProjectNames(tasks: Task[]): string[] {
@@ -157,8 +170,90 @@ export class ProjectViewComponent implements OnInit {
       .sort();
   }
 
-  public retrieveTasksForProject(project: string): Task[] {
+  public retrieveTasksWithProject(project: string): Task[] {
     return this.tasks.filter((task) => task.project == project);
+  }
+
+  public isRunningTask(task: Task): boolean {
+    return task.shortDescription === this.timeTaskService.runningTimeTask.title;
+  }
+
+  public isProjectGroupOfRunningTask(projectId: string): boolean {
+    const task = this.tasks.filter(
+      (e) => e.shortDescription == this.timeTaskService.runningTimeTask.title
+    )[0];
+
+    return task && task.project === projectId;
+  }
+
+  /**
+   * Normally the timetask feature is in a different component but we want
+   * to click as little as possible at the frontend to be productive. So we need a small hint about the running clock
+   * in the tasks component too!
+   * That means we integrate the timetask feature into the task component
+   * even when there is another timetask component
+   */
+  public startTimeTaskFeature(task: Task): void {
+    this.saveIfTaskIsRunning();
+    this.resetTimer();
+
+    this.timeTaskService
+      .postTimeTask({
+        id: 0,
+        title: task.shortDescription,
+        shortDescription: task.shortDescription,
+        longDescription: '',
+        startDate: this.timeService.createNewDate(),
+        endDate: null,
+        running: true,
+      })
+      .subscribe((timeTask) => {
+        this.timerService.startTimer();
+        this.timeTaskService.runningTimeTask = timeTask;
+      });
+  }
+
+  private saveIfTaskIsRunning() {
+    if (this.timeTaskService.runningTimeTask) {
+      this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
+      this.timeTaskService.runningTimeTask.running = false;
+
+      this.timeTaskService
+        .putTimeTask(this.timeTaskService.runningTimeTask)
+        .subscribe(() => {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti62'),
+            null
+          );
+        });
+    }
+  }
+
+  public stopTimeTaskFeature(): void {
+    if (this.timerService.isTimerStart) {
+      this.resetTimer();
+
+      this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
+      this.timeTaskService.runningTimeTask.running = false;
+
+      this.timeTaskService
+        .putTimeTask(this.timeTaskService.runningTimeTask)
+        .subscribe(() => {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti4'),
+            null
+          );
+
+          this.timeTaskService.runningTimeTask = null;
+        });
+    } else {
+      this.displayNotification(this.keyService.getKeyTranslation('ti61'), null);
+    }
+  }
+
+  private resetTimer() {
+    this.timerService.stopTimer();
+    this.timerService.setTimervalue(0);
   }
 
   /**
@@ -167,8 +262,13 @@ export class ProjectViewComponent implements OnInit {
    * @param action to be taken
    */
   private displayNotification(message: string, action: string): void {
-    this.snackBarService.open(message, action, {
-      duration: 4000,
-    });
+    this.snackBarService
+      .open(message, action, {
+        duration: 4000,
+      })
+      .onAction()
+      .subscribe(() => {
+        this.resetTask(this.cacheService.getCachedTask());
+      });
   }
 }

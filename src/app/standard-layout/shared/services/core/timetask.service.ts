@@ -10,7 +10,8 @@ import { NumberValueGraph } from 'src/app/standard-layout/shared/model/GraphData
   providedIn: 'root',
 })
 export class TimeTaskService {
-  url = 'http://localhost:3000/timetasks';
+  private url = 'http://localhost:3000/timetasks';
+  public runningTimeTask: TimeTask;
 
   constructor(
     private httpClient: HttpClient,

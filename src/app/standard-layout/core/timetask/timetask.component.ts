@@ -39,7 +39,6 @@ export class TimeTaskComponent implements OnInit {
   testConfig: countUpTimerConfigModel;
   settings: Settings[] = [];
 
-  runningTimeTask: TimeTask;
   selectedTimeTask: TimeTask;
 
   id: number;
@@ -138,7 +137,6 @@ export class TimeTaskComponent implements OnInit {
       )
       .subscribe((timeTasks) => {
         this.timeTasksFromToday = timeTasks;
-        this.setRunningTimeTaskIfExisting();
       });
   }
 
@@ -158,17 +156,6 @@ export class TimeTaskComponent implements OnInit {
       .subscribe((timeTasks) => {
         this.timeTasksFromHistory = timeTasks;
       });
-  }
-
-  /**
-   * If the timer is not stopped the last timetask will be set to running
-   */
-  private setRunningTimeTaskIfExisting() {
-    if (this.timerService.isTimerStart) {
-      if (this.timeTasksFromToday.length > 0) {
-        this.runningTimeTask = this.timeTasksFromToday[0];
-      }
-    }
   }
 
   /**
@@ -232,10 +219,12 @@ export class TimeTaskComponent implements OnInit {
     const empty = '';
 
     if (this.timerService.isTimerStart) {
-      this.runningTimeTask.endDate = this.timeService.createNewDate();
-      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
-        this.getTimeTasksFromToday();
-      });
+      this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
+      this.timeTaskService
+        .putTimeTask(this.timeTaskService.runningTimeTask)
+        .subscribe(() => {
+          this.getTimeTasksFromToday();
+        });
     }
     this.resetTimer();
 
@@ -248,9 +237,9 @@ export class TimeTaskComponent implements OnInit {
         startDate: date,
         endDate: null,
       })
-      .subscribe((data) => {
+      .subscribe((timeTask) => {
         this.getTimeTasksFromToday();
-        this.runningTimeTask = data;
+        this.timeTaskService.runningTimeTask = timeTask;
         this.hideSelectedTimeTask();
         this.startTimer();
       });
@@ -265,10 +254,12 @@ export class TimeTaskComponent implements OnInit {
       window.confirm(this.keyService.getKeyTranslation('a12')) && // confirm new task
       this.timerService.isTimerStart // timer is running
     ) {
-      this.runningTimeTask.endDate = this.timeService.createNewDate();
-      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
-        this.getTimeTasksFromToday();
-      });
+      this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
+      this.timeTaskService
+        .putTimeTask(this.timeTaskService.runningTimeTask)
+        .subscribe(() => {
+          this.getTimeTasksFromToday();
+        });
     }
     this.resetTimer();
 
@@ -282,9 +273,9 @@ export class TimeTaskComponent implements OnInit {
         endDate: null,
         task: timeTask.task,
       })
-      .subscribe((data) => {
+      .subscribe((timeTask) => {
         this.getTimeTasksFromToday();
-        this.runningTimeTask = data;
+        this.timeTaskService.runningTimeTask = timeTask;
         this.hideSelectedTimeTask();
         this.startTimer();
       });
@@ -321,7 +312,10 @@ export class TimeTaskComponent implements OnInit {
     if (
       !isNullOrUndefined(timeTask) && // not undefined or null
       this.utilityService.isNumber(timeTask.id) && // is number
-      !this.timeTaskService.isSame(timeTask, this.runningTimeTask) && // not running
+      !this.timeTaskService.isSame(
+        timeTask,
+        this.timeTaskService.runningTimeTask
+      ) && // not running
       window.confirm(this.keyService.getKeyTranslation('a11')) // confirmed for deletion
     ) {
       this.timeTaskService.deleteTimeTask(timeTask.id).subscribe(() => {
@@ -369,8 +363,8 @@ export class TimeTaskComponent implements OnInit {
     }
   }
 
-  private selectRunningTimeTask(timeElement: TimeTask) {
-    this.runningTimeTask = timeElement;
+  private selectRunningTimeTask(timeTask: TimeTask) {
+    this.timeTaskService.runningTimeTask = timeTask;
   }
 
   private hideSelectedTimeTask() {
@@ -378,7 +372,7 @@ export class TimeTaskComponent implements OnInit {
   }
 
   private hideRunningTimeTask() {
-    this.runningTimeTask = null;
+    this.timeTaskService.runningTimeTask = null;
   }
 
   private startTimer() {
@@ -389,16 +383,18 @@ export class TimeTaskComponent implements OnInit {
   public finishTimer() {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
-      this.runningTimeTask.endDate = this.timeService.createNewDate();
-      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
-        this.hideRunningTimeTask();
-        this.hideSelectedTimeTask();
-        this.displayNotification(
-          this.keyService.getKeyTranslation('ti4'),
-          null
-        );
-        this.getTimeTasksFromToday();
-      });
+      this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
+      this.timeTaskService
+        .putTimeTask(this.timeTaskService.runningTimeTask)
+        .subscribe(() => {
+          this.hideRunningTimeTask();
+          this.hideSelectedTimeTask();
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti4'),
+            null
+          );
+          this.getTimeTasksFromToday();
+        });
     }
   }
 
@@ -414,14 +410,16 @@ export class TimeTaskComponent implements OnInit {
    */
   public openInsertDialog(): void {
     if (this.timerService.isTimerStart) {
-      this.runningTimeTask.endDate = this.timeService.createNewDate();
-      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
-        this.displayNotification(
-          this.keyService.getKeyTranslation('ti2'),
-          null
-        );
-        this.getTimeTasksFromToday();
-      });
+      this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
+      this.timeTaskService
+        .putTimeTask(this.timeTaskService.runningTimeTask)
+        .subscribe(() => {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti2'),
+            null
+          );
+          this.getTimeTasksFromToday();
+        });
     }
     this.resetTimer();
     this.hideSelectedTimeTask();
@@ -452,7 +450,7 @@ export class TimeTaskComponent implements OnInit {
                 null
               );
               this.getTimeTasksFromToday();
-              this.runningTimeTask.id = resultFromPost.id;
+              this.timeTaskService.runningTimeTask.id = resultFromPost.id;
               this.resetTimer();
               this.startTimer();
             });
@@ -519,7 +517,12 @@ export class TimeTaskComponent implements OnInit {
    * @returns background color
    */
   public getStatusColorValue(timeTask: TimeTask): string {
-    if (this.timeTaskService.isSame(timeTask, this.runningTimeTask)) {
+    if (
+      this.timeTaskService.isSame(
+        timeTask,
+        this.timeTaskService.runningTimeTask
+      )
+    ) {
       return this.keyService.getColor('yellow');
     } else if (this.timeTaskService.isSame(timeTask, this.selectedTimeTask)) {
       return this.keyService.getColor('blue');

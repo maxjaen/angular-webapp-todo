@@ -1,13 +1,3 @@
-<div class="block">
-    <div class="notifications" *ngIf="
-                  tasksUnpinned &&
-                  tasksUnpinned.length == 0 &&
-                  tasksPinned &&
-                  tasksPinned.length == 0
-                ">
-        Can't find any tasks!
-    </div>
-</div>
 <div *ngIf="tasksUnpinned && tasksPinned">
     <div class="fixedButtons-righttop">
         <div class="circle">{{ taskService.countUnsavedTasks(tasks) }}</div>
@@ -64,8 +54,8 @@
                         <mat-card-title>
                             {{ task.shortDescription }}
                             <div *ngIf="
-                                runningTimeTask &&
-                                task.shortDescription == runningTimeTask.title
+                                timeTaskService.runningTimeTask &&
+                                task.shortDescription === timeTaskService.runningTimeTask.title
                               ">
                                 <countup-timer [countUpTimerConfig]="testConfig"></countup-timer>
                             </div>
@@ -188,6 +178,10 @@
                     <mat-card-header>
                         <mat-card-title>
                             {{ task.shortDescription }}
+                            <div
+                                *ngIf="timeTaskService.runningTimeTask && task.shortDescription === timeTaskService.runningTimeTask.title">
+                                <countup-timer [countUpTimerConfig]="testConfig"></countup-timer>
+                            </div>
                             <div *ngIf="
                                 settings &&
                                 settingsService.getSettingsValue(

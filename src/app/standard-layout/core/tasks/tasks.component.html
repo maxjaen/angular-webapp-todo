@@ -2,6 +2,11 @@
   <!-- ###################### TODAY TAB ###################### -->
   <mat-tab label="Tasks">
     <div class="content">
+      <div class="block">
+        <div class="notifications" *ngIf="tasks && tasksHided && tasks.length === tasksHided.length">
+          Can't find any tasks!
+        </div>
+      </div>
       <div class="input-bottom" [ngClass]="showCreationField ? '' : 'hidden'">
         <mat-form-field class="example-form-field">
           <mat-label>Let's do it!</mat-label>

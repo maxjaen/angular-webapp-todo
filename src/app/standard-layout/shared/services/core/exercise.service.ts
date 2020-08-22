@@ -9,7 +9,7 @@ import { Pattern } from '../../model/Enums';
   providedIn: 'root',
 })
 export class ExerciseService {
-  url = 'http://localhost:3000/exercises';
+  private url = 'http://localhost:3000/exercises';
 
   constructor(
     private utilityService: UtilityService,

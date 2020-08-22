@@ -133,7 +133,7 @@
                     {{ timeElement.shortDescription }}
                     <div class="fontSize12" *ngIf="
                         !timeTaskService.isValid(timeElement) &&
-                        timeElement == runningTimeTask
+                        timeElement == timeTaskService.runningTimeTask
                       " [style.color]="'#ffffff'" style="margin-top: 20px;">
                       Measurement is running
                       <p>
@@ -147,7 +147,7 @@
                     </div>
                     <div class="fontSize12" *ngIf="
                         !timeTaskService.isValid(timeElement) &&
-                        timeElement != runningTimeTask
+                        timeElement != timeTaskService.runningTimeTask
                       " [style.color]="'#ffffff'" style="margin-top: 20px;">
                       Measurement is invalid
                       <p>

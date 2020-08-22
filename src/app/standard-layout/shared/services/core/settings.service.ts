@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SettingsService {
-  url = 'http://localhost:3000/settings';
+  private url = 'http://localhost:3000/settings';
 
   constructor(private httpClient: HttpClient) {}
 

@@ -9,7 +9,7 @@ import { UtilityService } from '../utils/utility.service';
   providedIn: 'root',
 })
 export class TrainingService {
-  url = 'http://localhost:3000/trainings';
+  private url = 'http://localhost:3000/trainings';
 
   constructor(
     private utilityService: UtilityService,

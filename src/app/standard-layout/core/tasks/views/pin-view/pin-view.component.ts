@@ -54,9 +54,6 @@ export class PinViewComponent implements OnInit, OnChanges {
   public selectedTask: Task;
   private cachedTask: Task;
 
-  // timetask feature
-  public runningTimeTask: TimeTask;
-
   // ng model
   public id: number;
   public shortDescription: string;
@@ -72,7 +69,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     public keyService: KeyService,
     public utilityService: UtilityService,
     public dialogService: MatDialog,
-    private timeTaskService: TimeTaskService,
+    public timeTaskService: TimeTaskService,
     private snackBarService: MatSnackBar
   ) {}
 
@@ -104,16 +101,9 @@ export class PinViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(_changes: SimpleChanges) {
-    if (this.tasks && this.settings && this.tasksRunning) {
+    if (this.tasks && this.settings) {
       this.onTaskCategoriesChange();
       this.onSettingsChange();
-      this.setRunningTaskWhenIsTimerStarted();
-    }
-  }
-
-  private setRunningTaskWhenIsTimerStarted() {
-    if (this.timerService.isTimerStart) {
-      this.runningTimeTask = this.tasksRunning[0];
     }
   }
 
@@ -322,23 +312,25 @@ export class PinViewComponent implements OnInit, OnChanges {
         endDate: null,
         running: true,
       })
-      .subscribe((data) => {
+      .subscribe((timeTask) => {
         this.timerService.startTimer();
-        this.runningTimeTask = data;
+        this.timeTaskService.runningTimeTask = timeTask;
       });
   }
 
   private saveIfTaskIsRunning() {
-    if (this.runningTimeTask) {
-      this.runningTimeTask.endDate = this.timeService.createNewDate();
-      this.runningTimeTask.running = false;
+    if (this.timeTaskService.runningTimeTask) {
+      this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
+      this.timeTaskService.runningTimeTask.running = false;
 
-      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
-        this.displayNotification(
-          this.keyService.getKeyTranslation('ti62'),
-          null
-        );
-      });
+      this.timeTaskService
+        .putTimeTask(this.timeTaskService.runningTimeTask)
+        .subscribe(() => {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti62'),
+            null
+          );
+        });
     }
   }
 
@@ -346,20 +338,27 @@ export class PinViewComponent implements OnInit, OnChanges {
     if (this.timerService.isTimerStart) {
       this.resetTimer();
 
-      this.runningTimeTask.endDate = this.timeService.createNewDate();
-      this.runningTimeTask.running = false;
+      this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
+      this.timeTaskService.runningTimeTask.running = false;
 
-      this.timeTaskService.putTimeTask(this.runningTimeTask).subscribe(() => {
-        this.displayNotification(
-          this.keyService.getKeyTranslation('ti4'),
-          null
-        );
+      this.timeTaskService
+        .putTimeTask(this.timeTaskService.runningTimeTask)
+        .subscribe(() => {
+          this.displayNotification(
+            this.keyService.getKeyTranslation('ti4'),
+            null
+          );
 
-        this.runningTimeTask = null;
-      });
+          this.timeTaskService.runningTimeTask = null;
+        });
     } else {
       this.displayNotification(this.keyService.getKeyTranslation('ti61'), null);
     }
+  }
+
+  private resetTimer() {
+    this.timerService.stopTimer();
+    this.timerService.setTimervalue(0);
   }
 
   public selectTask(task: Task) {
@@ -372,11 +371,6 @@ export class PinViewComponent implements OnInit, OnChanges {
 
   public displayUnpinnedTasks() {
     this.displayUnpinned = !this.displayUnpinned;
-  }
-
-  private resetTimer() {
-    this.timerService.stopTimer();
-    this.timerService.setTimervalue(0);
   }
 
   private hideSelectedTask() {

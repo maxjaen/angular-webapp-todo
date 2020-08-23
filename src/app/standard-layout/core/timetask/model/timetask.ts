@@ -9,4 +9,5 @@ export class TimeTask {
   endDate: Date;
   running?: boolean;
   task?: Task;
+  project?: string;
 }

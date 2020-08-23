@@ -311,6 +311,7 @@ export class PinViewComponent implements OnInit, OnChanges {
         startDate: this.timeService.createNewDate(),
         endDate: null,
         running: true,
+        project: task.project,
       })
       .subscribe((timeTask) => {
         this.timerService.startTimer();

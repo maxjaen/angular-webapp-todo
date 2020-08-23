@@ -66,7 +66,7 @@
             </div>
           </div>
           <div class="block" *ngIf="timeTasksFromToday.length > 1">
-            <ngx-charts-pie-chart [results]="graphDataFromToday" [legend]="true" [legendTitle]="'Zeiterfassung'"
+            <ngx-charts-pie-chart [results]="graphDataFromToday" [legend]="true" [legendTitle]="'Time Management'"
               [view]="[900, 300]" [labels]="true">
             </ngx-charts-pie-chart>
           </div>
@@ -90,11 +90,11 @@
           </div>
         </div>
         <div *ngIf="timeTasksFromToday">
-          <div *ngFor="let timeElement of timeTasksFromToday">
-            <div class="block low-margin smallToBottom changeField" *ngIf="selectedTimeTask == timeElement">
+          <div *ngFor="let timeTask of timeTasksFromToday">
+            <div class="block low-margin smallToBottom changeField" *ngIf="selectedTimeTask === timeTask">
               <form class="example-form">
                 <mat-form-field class="example-full-width" style="margin-right: 2%;">
-                  <input matInput #message maxlength="50" placeholder="titel" name="shortDescription"
+                  <input matInput #message maxlength="50" placeholder="title" name="shortDescription"
                     [(ngModel)]="selectedTimeTask.shortDescription" />
                   <mat-hint>{{ message.value.length }} / 50</mat-hint>
                 </mat-form-field>
@@ -116,7 +116,7 @@
                 </div>
               </form>
             </div>
-            <mat-card (click)="toggleSelection(timeElement)" class="example-card block">
+            <mat-card (click)="toggleSelection(timeTask)" class="example-card block">
               <div *ngIf="
                   settings &&
                   settings.length > 0 &&
@@ -125,47 +125,48 @@
                     'Show status color'
                   )
                 ">
-                <div class="card-status" [style.background-color]="getStatusColorValue(timeElement)"></div>
+                <div class="card-status" [style.background-color]="getStatusColorValue(timeTask)"></div>
               </div>
               <div style="width: 70%; display: inline-block;">
                 <mat-card-header style="float: left;">
                   <mat-card-title>
-                    {{ timeElement.shortDescription }}
+                    {{ timeTask.shortDescription }}
+                    <span *ngIf="timeTask.project"> ({{ timeTask.project }})</span>
                     <div class="fontSize12" *ngIf="
-                        !timeTaskService.isValid(timeElement) &&
-                        timeElement == timeTaskService.runningTimeTask
+                        !timeTaskService.isValid(timeTask) &&
+                        timeTask == timeTaskService.runningTimeTask
                       " [style.color]="'#ffffff'" style="margin-top: 20px;">
                       Measurement is running
                       <p>
                         @{{
                           timeService.formatDateToStringWithDescription(
-                            timeElement.startDate,
+                            timeTask.startDate,
                             'Start'
                           )
                         }}
                       </p>
                     </div>
-                    <div class="fontSize12" *ngIf="
-                        !timeTaskService.isValid(timeElement) &&
-                        timeElement != timeTaskService.runningTimeTask
-                      " [style.color]="'#ffffff'" style="margin-top: 20px;">
+                    <div class="fontSize12 smallToTop" *ngIf="
+                        !timeTaskService.isValid(timeTask) &&
+                        timeTask != timeTaskService.runningTimeTask
+                      " [style.color]="'#ffffff'">
                       Measurement is invalid
                       <p>
                         @{{
                           timeService.formatDateToStringWithDescription(
-                            timeElement.startDate,
+                            timeTask.startDate,
                             'Start'
                           )
                         }}
                       </p>
                     </div>
-                    <div class="fontSize12" style="margin-top: 20px;" *ngIf="timeTaskService.isValid(timeElement)">
+                    <div class="fontSize12 smallToTop" *ngIf="timeTaskService.isValid(timeTask)">
                       <div class="inline">
-                        {{ toString(timeElement) }} >>
+                        {{ toString(timeTask) }} >>
                       </div>
                       {{
                         timeService.formatDateToStringWithDescription(
-                          timeElement.startDate,
+                          timeTask.startDate,
                           'Start'
                         )
                       }}
@@ -173,7 +174,7 @@
                         ,
                         {{
                           timeService.formatDateToStringWithDescription(
-                            timeElement.endDate,
+                            timeTask.endDate,
                             'End'
                           )
                         }}
@@ -181,11 +182,11 @@
                     </div>
                   </mat-card-title>
                   <mat-card-subtitle *ngIf="
-                      timeElement.longDescription && timeElement.longDescription.length > 0
+                      timeTask.longDescription && timeTask.longDescription.length > 0
                     ">
                     <ul *ngFor="
                         let point of utilityService.splitWithNewLine(
-                          timeElement.longDescription
+                          timeTask.longDescription
                         )
                       ">
                       <div *ngIf="point.length > 0">
@@ -197,10 +198,10 @@
                 </mat-card-header>
               </div>
               <div class="inlineButtons">
-                <button title="Continue" (click)="continueTimeTask(timeElement)" mat-button>
+                <button title="Continue" (click)="continueTimeTask(timeTask)" mat-button>
                   <mat-icon>play_arrow</mat-icon>
                 </button>
-                <button title="Delete" (click)="removeTimeElement(timeElement)" mat-button>
+                <button title="Delete" (click)="removeTimeElement(timeTask)" mat-button>
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
@@ -252,30 +253,29 @@
           </div>
           <br />
         </div>
-        <div *ngFor="let timeElement of timeTasksFromHistory">
-          <mat-card [style.background-color]="keyService.getColor('darkGray')" class="example-card block">
+        <div *ngFor="let timeTask of timeTasksFromHistory">
+          <mat-card class="example-card block" [style.background-color]="keyService.getColor('darkGray')">
             <mat-card-header style="float: left;">
               <mat-card-title>
-                {{ timeElement.shortDescription }}
-                <div class="fontSize12" *ngIf="!timeElement.endDate" [style.color]="'#ffffff'"
-                  style="margin-top: 20px;">
+                {{ timeTask.shortDescription }}
+                <div class="fontSize12 smallToTop" *ngIf="!timeTask.endDate" [style.color]="'#ffffff'">
                   No measurement endDate available...
                 </div>
-                <div class="fontSize12" style="margin-top: 20px;">
-                  <div *ngIf="timeElement.endDate" style="display: inline;">
-                    {{ toString(timeElement) }} >>
+                <div class="fontSize12 smallToTop">
+                  <div *ngIf="timeTask.endDate" style="display: inline;">
+                    {{ toString(timeTask) }} >>
                   </div>
                   {{
                     timeService.formatDateToStringWithDescription(
-                      timeElement.startDate,
+                      timeTask.startDate,
                       'Start'
                     )
                   }}
-                  <div *ngIf="timeElement.endDate" style="display: inline;">
+                  <div *ngIf="timeTask.endDate" style="display: inline;">
                     ,
                     {{
                       timeService.formatDateToStringWithDescription(
-                        timeElement.endDate,
+                        timeTask.endDate,
                         'End'
                       )
                     }}
@@ -283,11 +283,11 @@
                 </div>
               </mat-card-title>
               <mat-card-subtitle *ngIf="
-                  timeElement.longDescription && timeElement.longDescription.length > 0
+                  timeTask.longDescription && timeTask.longDescription.length > 0
                 ">
                 <ul *ngFor="
                     let point of utilityService.splitWithNewLine(
-                      timeElement.longDescription
+                      timeTask.longDescription
                     )
                   ">
                   <li>{{ point }}</li>
@@ -295,7 +295,7 @@
               </mat-card-subtitle>
             </mat-card-header>
             <div class="inlineButtons">
-              <button (click)="removeTimeElement(timeElement)" mat-button>
+              <button (click)="removeTimeElement(timeTask)" mat-button>
                 Delete
               </button>
             </div>

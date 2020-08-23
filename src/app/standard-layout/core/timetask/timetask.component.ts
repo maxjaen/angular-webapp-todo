@@ -25,8 +25,6 @@ import { tap, map } from 'rxjs/operators';
 import { Period } from '../../shared/model/Enums';
 import { isNullOrUndefined } from 'util';
 
-const EMPTY_STRING = '';
-
 @Component({
   selector: 'app-timetask',
   templateUrl: './timetask.component.html',
@@ -413,19 +411,23 @@ export class TimeTaskComponent implements OnInit {
       this.timeTaskService.runningTimeTask.endDate = this.timeService.createNewDate();
       this.timeTaskService
         .putTimeTask(this.timeTaskService.runningTimeTask)
-        .subscribe(() => {
-          this.displayNotification(
-            this.keyService.getKeyTranslation('ti2'),
-            null
-          );
-          this.getTimeTasksFromToday();
-        });
+        .pipe(
+          tap(() => {
+            this.getTimeTasksFromToday();
+            this.displayNotification(
+              this.keyService.getKeyTranslation('ti2'),
+              null
+            );
+          })
+        )
+        .subscribe();
     }
+
     this.resetTimer();
     this.hideSelectedTimeTask();
     this.hideRunningTimeTask();
 
-    const dialogRef = this.dialog.open(InsertTaskDialogTime, {
+    const dialog = this.dialog.open(InsertTaskDialogTime, {
       width: '250px',
       data: {
         shortDescription: this.shortDescription,
@@ -433,40 +435,30 @@ export class TimeTaskComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((resultFromDialog) => {
+    dialog.afterClosed().subscribe((resultFromDialog) => {
       if (resultFromDialog !== undefined) {
         resultFromDialog.startDate = this.timeService.createNewDate();
+        resultFromDialog.project = 'Without project';
         this.selectRunningTimeTask(resultFromDialog);
 
-        if (
-          this.shortDescription !== EMPTY_STRING &&
-          this.longDescription !== EMPTY_STRING
-        ) {
+        if (this.shortDescription !== '' && this.longDescription !== '') {
           this.timeTaskService
             .postTimeTask(resultFromDialog)
+            .pipe(
+              tap(() => {
+                this.getTimeTasksFromToday();
+                this.resetTimer();
+                this.startTimer();
+                this.displayNotification(
+                  this.keyService.getKeyTranslation('ti5'),
+                  null
+                );
+              })
+            )
             .subscribe((resultFromPost) => {
-              this.displayNotification(
-                this.keyService.getKeyTranslation('ti5'),
-                null
-              );
-              this.getTimeTasksFromToday();
               this.timeTaskService.runningTimeTask.id = resultFromPost.id;
-              this.resetTimer();
-              this.startTimer();
             });
-        } else {
-          console.warn(
-            'dialogRef.afterClosed(): ID: ' +
-              this.id +
-              ', expected that all fields are not empty'
-          );
         }
-      } else {
-        console.warn(
-          'dialogRef.afterClosed(): resultFromDialog: ' +
-            resultFromDialog +
-            ', expected resultFromDialog'
-        );
       }
     });
   }
@@ -576,10 +568,10 @@ export class TimeTaskComponent implements OnInit {
    */
   public selectDistinctDates(): Array<string> {
     const tempDates: Date[] = [];
-    this.timeTasks.forEach((timeElement) => {
+    this.timeTasks.forEach((timeTask) => {
       if (
         !tempDates.find((date) => {
-          const DateToInsert: Date = new Date(timeElement.startDate);
+          const DateToInsert: Date = new Date(timeTask.startDate);
           const insertedDate: Date = new Date(date);
           return (
             insertedDate.getDate() === DateToInsert.getDate() &&
@@ -588,7 +580,7 @@ export class TimeTaskComponent implements OnInit {
           );
         })
       ) {
-        tempDates.push(timeElement.startDate);
+        tempDates.push(timeTask.startDate);
       }
     });
 
@@ -608,10 +600,10 @@ export class TimeTaskComponent implements OnInit {
       });
   }
 
-  public toString(timeElement: TimeTask): string {
+  public toString(timeTask: TimeTask): string {
     return this.timeService.formatMillisecondsToString(
-      new Date(timeElement.endDate).getTime() -
-        new Date(timeElement.startDate).getTime()
+      new Date(timeTask.endDate).getTime() -
+        new Date(timeTask.startDate).getTime()
     );
   }
 

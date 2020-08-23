@@ -206,6 +206,7 @@ export class ProjectViewComponent implements OnInit {
         startDate: this.timeService.createNewDate(),
         endDate: null,
         running: true,
+        project: task.project,
       })
       .subscribe((timeTask) => {
         this.timerService.startTimer();

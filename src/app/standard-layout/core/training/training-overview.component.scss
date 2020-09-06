@@ -1,4 +1,4 @@
-@import "../../../../styles.scss";
+@import '../../../../styles.scss';
 
 /*
 PAGE DESIGN
@@ -52,4 +52,10 @@ ELEMENTS
 
 #errormessage {
   width: 245px;
+}
+
+mat-card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

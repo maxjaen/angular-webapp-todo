@@ -23,6 +23,16 @@ import { KeyService } from '../../shared/services/utils/key.service';
 import { map } from 'rxjs/operators';
 import { Direction, Pattern } from '../../shared/model/Enums';
 
+enum ExerciseGroupAction {
+  ADDAFTER,
+  ADDBOTTOM,
+  REMOVE,
+}
+interface ExerciseGroup {
+  exercise: Exercise;
+  formGroup: FormGroup;
+}
+
 @Component({
   selector: 'app-training-overview',
   templateUrl: './training-overview.component.html',
@@ -44,11 +54,9 @@ export class TrainingOverViewComponent implements OnInit {
   public trainingDescription = '';
 
   public exercises: Exercise[];
-  public exercisesToInsert: Exercise[] = [];
+  public exerciseGroup: ExerciseGroup[] = [];
 
-  public formGroups: FormGroup[] = [];
-  private formGroupToInsert: FormGroup;
-
+  readonly ExerciseGroupAction = ExerciseGroupAction;
   readonly Direction = Direction;
   readonly Pattern = Pattern;
 
@@ -106,8 +114,8 @@ export class TrainingOverViewComponent implements OnInit {
 
     this.trainingDescription = '';
 
-    this.formGroups.forEach((formGroup) => {
-      this.training.exercises.push(formGroup.getRawValue());
+    this.exerciseGroup.forEach((group) => {
+      this.training.exercises.push(group.formGroup.getRawValue());
     });
 
     this.training.exercises.forEach((element) => {
@@ -132,7 +140,7 @@ export class TrainingOverViewComponent implements OnInit {
     index: number
   ): boolean {
     return (
-      index > 0 && this.exercisesToInsert[index - 1].name === exercise.name
+      index > 0 && this.exerciseGroup[index - 1].exercise.name === exercise.name
     );
   }
 
@@ -179,36 +187,26 @@ export class TrainingOverViewComponent implements OnInit {
   public toggleCheckboxEvent(exercise: Exercise, event: { checked: boolean }) {
     this.setCheckBoxFromExerciseName(exercise.name, true);
 
-    if (this.selectedMode === 'Time Session') {
-      const pattern: ConditionalPattern = {
-        category: 3, // Pattern.CONDITIONAL1
-        records: 0,
-        repetitions: 0,
-        unit: 's',
-      };
-      exercise.pattern = pattern;
-      exercise.category = Pattern.CONDITIONAL1;
+    if (this.isTimeSessionMode()) {
+      this.initializeTimeSession(exercise);
     }
 
-    if (event.checked === true) {
-      this.exercisesToInsert.push(exercise);
-      this.createFormGroup(exercise);
+    if (event.checked) {
+      // checkbox will be checked
+      const formGroup = this.createFormGroup(exercise);
+      this.exerciseGroup.push({ exercise, formGroup });
     } else {
-      while (this.exercisesToInsert.find((e) => e.name === exercise.name)) {
-        this.utilityService.removeElementFromArray(
-          this.exercisesToInsert.filter((e) => e.name === exercise.name)[0],
-          this.exercisesToInsert
-        );
-      }
-
+      // checkbox will be unchecked
       while (
-        this.formGroups.find((e) => e.getRawValue().name === exercise.name)
+        this.exerciseGroup.find(
+          (group) => group.exercise.name === exercise.name
+        )
       ) {
         this.utilityService.removeElementFromArray(
-          this.formGroups.filter(
-            (e) => e.getRawValue().name === exercise.name
+          this.exerciseGroup.filter(
+            (group) => group.exercise.name === exercise.name
           )[0],
-          this.formGroups
+          this.exerciseGroup
         );
       }
     }
@@ -218,35 +216,82 @@ export class TrainingOverViewComponent implements OnInit {
    * Create new from group for exercise
    * @param exercise to create from for
    */
-  private createFormGroup(exercise: Exercise) {
-    this.formGroupToInsert = new FormGroup({});
+  private createFormGroup(exercise: Exercise): FormGroup {
+    let formGroupToInsert = new FormGroup({});
 
     const patternArray: string[] = this.retrievePatternKeys(exercise);
 
     patternArray.forEach((key) => {
       if (key === 'name') {
-        this.formGroupToInsert.addControl(key, new FormControl(exercise.name));
+        formGroupToInsert.addControl(key, new FormControl(exercise.name));
       } else if (key.includes('unit')) {
-        this.formGroupToInsert.addControl(
+        formGroupToInsert.addControl(
           key,
           new FormControl(exercise.pattern[key])
         );
       } else {
-        this.formGroupToInsert.addControl(
+        formGroupToInsert.addControl(
           key,
           new FormControl(exercise[key.toString()], Validators.required)
         );
       }
     });
 
-    this.formGroupToInsert.addControl('name', new FormControl(exercise.name));
+    formGroupToInsert.addControl('name', new FormControl(exercise.name));
 
-    this.formGroupToInsert.addControl(
+    formGroupToInsert.addControl(
       'category',
       new FormControl(exercise.category)
     );
 
-    this.formGroups.push(this.formGroupToInsert);
+    return formGroupToInsert;
+  }
+
+  /**
+   * Each exercise's pattern will now be the conditional pattern for
+   * future time session workouts
+   */
+  private initializeTimeSession(exercise: Exercise) {
+    const pattern: ConditionalPattern = {
+      category: 3,
+      records: 0,
+      repetitions: 0,
+      unit: 's',
+    };
+    exercise.pattern = pattern;
+    exercise.category = Pattern.CONDITIONAL1;
+  }
+
+  private isTimeSessionMode(): boolean {
+    return this.selectedMode === 'Time Session';
+  }
+
+  /**
+   * Execute specific actions based pressed button on the user interface
+   */
+  public executeExerciseGroupAction(
+    action: ExerciseGroupAction,
+    exerciseGroup: ExerciseGroup,
+    elementPos?: number
+  ) {
+    switch (action) {
+      case ExerciseGroupAction.ADDAFTER:
+        let temp: ExerciseGroup[] = [
+          ...this.exerciseGroup.slice(0, elementPos),
+          exerciseGroup,
+          ...this.exerciseGroup.slice(elementPos),
+        ];
+        this.exerciseGroup = temp;
+        break;
+      case ExerciseGroupAction.ADDBOTTOM:
+        this.exerciseGroup.push(exerciseGroup);
+        break;
+      case ExerciseGroupAction.REMOVE:
+        this.removeExerciseGroup(exerciseGroup.exercise, elementPos);
+        break;
+      default:
+        break;
+    }
   }
 
   /**
@@ -254,11 +299,12 @@ export class TrainingOverViewComponent implements OnInit {
    * @param exercise to be removed
    * @param elementPosition to remove from array
    */
-  public removeExerciseFromForm(exercise: Exercise, elementPosition: number) {
+  public removeExerciseGroup(exercise: Exercise, elementPosition: number) {
     if (
       // only toggle exercise checkbox when exercise only once inserted
-      this.exercisesToInsert.filter((e) => e.name === exercise.name).length ===
-      1
+      this.exerciseGroup.filter(
+        (group) => group.exercise.name === exercise.name
+      ).length === 1
     ) {
       this.setCheckBoxFromExerciseName(exercise.name, false);
     }
@@ -266,8 +312,8 @@ export class TrainingOverViewComponent implements OnInit {
     while (true) {
       if (
         // Remove last element, when more than one element with same name in a row
-        elementPosition < this.exercisesToInsert.length - 1 &&
-        this.exercisesToInsert[elementPosition + 1].name === exercise.name
+        elementPosition < this.exerciseGroup.length - 1 &&
+        this.exerciseGroup[elementPosition + 1].exercise.name === exercise.name
       ) {
         elementPosition++;
       } else {
@@ -277,11 +323,7 @@ export class TrainingOverViewComponent implements OnInit {
 
     this.utilityService.removeElementOnPositionFromArray(
       elementPosition,
-      this.exercisesToInsert
-    );
-    this.utilityService.removeElementOnPositionFromArray(
-      elementPosition,
-      this.formGroups
+      this.exerciseGroup
     );
   }
 
@@ -369,12 +411,7 @@ export class TrainingOverViewComponent implements OnInit {
    */
   public switchPosition(direction: Direction, index: number) {
     this.utilityService.changeElementOrderInArray(
-      this.formGroups,
-      direction,
-      index
-    );
-    this.utilityService.changeElementOrderInArray(
-      this.exercisesToInsert,
+      this.exerciseGroup,
       direction,
       index
     );
@@ -470,14 +507,13 @@ export class TrainingOverViewComponent implements OnInit {
 
   public formIsValid(): boolean {
     return (
-      this.formGroups.length > 0 && !this.formGroups.find((e) => e.invalid)
+      this.exerciseGroup.length > 0 &&
+      !this.exerciseGroup.find((group) => group.formGroup.invalid)
     );
   }
 
   public resetForm() {
-    this.exercisesToInsert = [];
-    this.formGroupToInsert = null;
-    this.formGroups = [];
+    this.exerciseGroup = [];
 
     this.exercises.forEach((exercise) => {
       exercise.checked = false;

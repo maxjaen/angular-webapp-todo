@@ -274,17 +274,21 @@ export class TrainingOverViewComponent implements OnInit {
     exerciseGroup: ExerciseGroup,
     elementPos?: number
   ) {
+    const exercise = exerciseGroup.exercise;
+    const formGroup = this.createFormGroup(exercise);
+    const newExerciseGroup = { exercise, formGroup };
+
     switch (action) {
       case ExerciseGroupAction.ADDAFTER:
         let temp: ExerciseGroup[] = [
           ...this.exerciseGroup.slice(0, elementPos),
-          exerciseGroup,
+          newExerciseGroup,
           ...this.exerciseGroup.slice(elementPos),
         ];
         this.exerciseGroup = temp;
         break;
       case ExerciseGroupAction.ADDBOTTOM:
-        this.exerciseGroup.push(exerciseGroup);
+        this.exerciseGroup.push(newExerciseGroup);
         break;
       case ExerciseGroupAction.REMOVE:
         this.removeExerciseGroup(exerciseGroup.exercise, elementPos);
@@ -292,6 +296,8 @@ export class TrainingOverViewComponent implements OnInit {
       default:
         break;
     }
+
+    console.log(this.exerciseGroup);
   }
 
   /**

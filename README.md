@@ -68,3 +68,9 @@ The development server and the JSON server have be executed in separate terminal
 ## JSON Server
 
 - Run `json-server --watch server/example.json` for a json server. Navigate to `http://localhost:3000/`.
+
+<br>
+
+# Showcase
+
+![Alt Text](./showcase.gif)

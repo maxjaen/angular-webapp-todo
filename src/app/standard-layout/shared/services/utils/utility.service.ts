@@ -52,8 +52,8 @@ export class UtilityService {
   public removeElementOnPositionFromArray(
     elementPosition: number,
     array: any[]
-  ) {
-    array.splice(elementPosition, 1);
+  ): any[] {
+    return array.splice(elementPosition, 1);
   }
 
   public changeElementOrderInArray(

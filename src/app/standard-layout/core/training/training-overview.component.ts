@@ -22,6 +22,7 @@ import { UtilityService } from '../../shared/services/utils/utility.service';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { map } from 'rxjs/operators';
 import { Direction, Pattern } from '../../shared/model/Enums';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 enum ExerciseGroupAction {
   ADDAFTER,
@@ -556,5 +557,18 @@ export class TrainingOverViewComponent implements OnInit {
     this.snackBarService.open(message, action, {
       duration: 4000,
     });
+  }
+
+  public drop(event: CdkDragDrop<string[]>) {
+    const group = this.utilityService.removeElementOnPositionFromArray(
+      event.previousIndex,
+      this.exerciseGroup
+    )[0];
+
+    this.exerciseGroup = [
+      ...this.exerciseGroup.slice(0, event.currentIndex),
+      group,
+      ...this.exerciseGroup.slice(event.currentIndex),
+    ];
   }
 }

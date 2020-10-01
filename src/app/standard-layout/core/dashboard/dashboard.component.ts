@@ -62,7 +62,7 @@ export class DashboardComponent implements OnInit {
 
   private getTaskPlaceholder() {
     this.taskService.getTasks().subscribe((tasks) => {
-      const value = tasks.filter((task) => !task.hided).length.toString();
+      const value = tasks.filter((task) => task.pinned).length.toString();
 
       this.placeHolderArray.push({
         key: 'tasks',

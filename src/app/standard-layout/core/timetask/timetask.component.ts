@@ -438,7 +438,6 @@ export class TimeTaskComponent implements OnInit {
     dialog.afterClosed().subscribe((resultFromDialog) => {
       if (resultFromDialog !== undefined) {
         resultFromDialog.startDate = this.timeService.createNewDate();
-        resultFromDialog.project = 'Without project';
         this.selectRunningTimeTask(resultFromDialog);
 
         if (this.shortDescription !== '' && this.longDescription !== '') {

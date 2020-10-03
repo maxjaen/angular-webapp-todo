@@ -53,6 +53,7 @@ export class InsertTaskDialogTime {
     this.data.task = event.value;
     this.data.shortDescription = event.value.shortDescription;
     this.data.longDescription = event.value.longDescription;
+    this.data.project = event.value.project;
   }
 
   public onNoClick(): void {

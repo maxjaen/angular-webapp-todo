@@ -54,10 +54,12 @@ export class ExerciseOverViewComponent implements OnInit {
   }
 
   public saveExercise() {
-    this.prepareExerciseName(this.formForExerciseCreation.getRawValue().name);
+    const nameInForm = this.formForExerciseCreation.getRawValue().name;
 
+    this.prepareExerciseName(nameInForm);
     this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
       this.displayNotification(this.keyService.getKeyTranslation('t4'), null);
+      this.formForExerciseCreation.reset();
       this.initExercises();
     });
   }
@@ -86,7 +88,7 @@ export class ExerciseOverViewComponent implements OnInit {
   }
 
   /**
-   *  Set name of new exercise
+   * Set name of new exercise
    * @param name to be set for new exercise
    */
   private prepareExerciseName(name: string) {
@@ -98,7 +100,7 @@ export class ExerciseOverViewComponent implements OnInit {
    * @param event to init value for new exercise
    */
   public prepareExerciseCategory(event: { value: Pattern }) {
-    this.exerciseToCreate.category = event.value;
+    this.exerciseToCreate.category = +event.value;
   }
 
   /**

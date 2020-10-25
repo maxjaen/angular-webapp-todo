@@ -373,6 +373,10 @@ export class TimeTaskComponent implements OnInit {
     this.timeTaskService.runningTimeTask = null;
   }
 
+  private isRunningTimeTask(timeTask: TimeTask){
+    return timeTask.id === this.timeTaskService.runningTimeTask.id;
+  }
+
   private startTimer() {
     this.timerService.startTimer();
     this.tabTitleService.setTitle(this.keyService.getKeyTranslation('a3'));
@@ -472,13 +476,18 @@ export class TimeTaskComponent implements OnInit {
       const temp: Date = this.timeService.createNewDate();
       const timePickerResult: string[] = time.split(':');
 
-      timeTask.startDate = new Date(
+      const newDate = new Date(
         temp.getFullYear(),
         temp.getMonth(),
         temp.getDate(),
-        +timePickerResult[0], // hour
-        +timePickerResult[1] // min
+        +timePickerResult[0],
+        +timePickerResult[1]
       );
+      
+      timeTask.startDate = newDate;
+      if (this.isRunningTimeTask(timeTask)){
+        this.timeTaskService.runningTimeTask.startDate = newDate;
+      }
     });
   }
 

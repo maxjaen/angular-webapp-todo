@@ -45,6 +45,9 @@
                   <mat-icon>more_vert</mat-icon>
                </button>
                <mat-menu #menu="matMenu" xPosition="before">
+                  <button (click)="picker.open()" mat-menu-item>Change Date</button>
+                  <input id="datepicker" matInput (dateChange)="changeDate($event, weight)" [matDatepicker]="picker">
+                  <mat-datepicker #picker></mat-datepicker>
                   <button (click)="removeWeight(weight)" mat-menu-item>Remove</button>
                </mat-menu>
                <mat-card-header class="card-left">

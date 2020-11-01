@@ -95,6 +95,21 @@ export class WeightComponent implements OnInit {
   }
 
   /**
+   * Change the date of a weight measurement
+   * @param weight has a date property which wil be changed
+   */
+  public changeDate(event: any, weight: Weight) {
+    const oldDate: Date = new Date(weight.date);
+    const newDate: Date = new Date(event.value);
+    oldDate.setDate(newDate.getDate());
+    oldDate.setHours(newDate.getHours());
+    oldDate.setFullYear(newDate.getFullYear());
+    weight.date = oldDate;
+
+    this.weightService.putWeight(weight).subscribe();
+  }
+
+  /**
    * Remove selected weight from the database
    * @param weight to be removed
    */

@@ -13,7 +13,8 @@ import { ExerciseOverViewComponent } from './standard-layout/core/exercise/exerc
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent,
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   },
   {
     path: 'dashboard',

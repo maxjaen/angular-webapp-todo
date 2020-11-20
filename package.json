@@ -7,7 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "cypress open"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +23,7 @@
     "@angular/router": "^9.1.11",
     "@swimlane/ngx-charts": "^14.0.0",
     "amazing-time-picker": "^1.8.0",
+    "cypress": "^5.6.0",
     "json-server": "^0.16.1",
     "ngx-timer": "^1.0.6",
     "rxjs": "^6.6.0",

@@ -125,7 +125,6 @@ export class SessionComponent implements OnInit {
     }
 
     window.clearInterval(this.exerciseInterval);
-    this.selectedTraining = null;
     this.currentExercise = null;
   }
 
@@ -163,7 +162,7 @@ export class SessionComponent implements OnInit {
         throw new Error(`State ${this.state} not implemented yet.`);
     }
 
-    // set general exercise countdown
+    // Update total workout countdown
     this.workoutCountdown = this.selectedTraining.exercises
       .slice(elementIndex, this.selectedTraining.exercises.length)
       .map((exercise) => +exercise['repetitions'])
@@ -263,6 +262,11 @@ export class SessionComponent implements OnInit {
   public selectTrainingTemplate(event: { value: Training }) {
     this.selectedTraining = event.value;
     this.currentExercise = null;
+
+    // Initial total workout countdown
+    this.workoutCountdown = this.selectedTraining.exercises
+      .map((exercise) => +exercise['repetitions'])
+      .reduce((sum, current) => sum + current, 0);
   }
 
   /**
@@ -278,6 +282,14 @@ export class SessionComponent implements OnInit {
       this.selectedTraining.exercises.indexOf(exercise) ===
         this.currentExerciseIndex + 3
     );
+  }
+
+  /** 
+   * Show total duration of workout in minutes to user
+   * @returns number as duration
+  */
+  public workoutDurationInSeconds() {
+    return Math.round(this.workoutCountdown / 60);
   }
 
   /**

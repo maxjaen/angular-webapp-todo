@@ -17,6 +17,7 @@ $container-width: 300px;
   min-width: $container-width;
   @include low-margin;
   @include float-left;
+  margin-right: 15px;
 }
 
 .exercises {
@@ -58,4 +59,19 @@ mat-card-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+mat-checkbox {
+  width: inherit;
+  display: block;
+
+  label:nth-child(1) {
+    display: block;
+    white-space: normal;
+  }
+}
+
+#mat-checkbox-53 > label:nth-child(1) {
+  display: block;
+  white-space: normal;
 }

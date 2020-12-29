@@ -18,12 +18,12 @@
       <div class="tab" *ngIf="trainings.length > 0" #overviewTraining>
         <h2>Overview Training</h2>
         <div class="flow-root" *ngIf="trainings.length > 0">
-          <div *ngFor="let training of trainings.slice(0, displayedTrainings)">
+          <div *ngFor="let training of trainings.slice(0, displayableTrainings)">
             <mat-card class="indenting smallToBottom basic-block-advance card-costum example-card"
-              [style.border-color]="getStatusColorValue(training)" (click)="viewDetailedTraining(training)">
+              [style.border-color]="setBorderColor(training)" (click)="selectTraining(training)">
               <mat-card-header>
                 <mat-card-title>{{
-                  showDateString(training.date)
+                  toLocaleDateString(training.date)
                 }}</mat-card-title>
               </mat-card-header>
             </mat-card>
@@ -35,7 +35,7 @@
             Show more
           </button>
           <button type="button" (click)="showLessTrainings()" [disabled]="
-              trainings.slice(0, displayedTrainings).length <= 10
+              trainings.slice(0, displayableTrainings).length <= 10
             " mat-raised-button>
             Show less
           </button>
@@ -52,7 +52,7 @@
             <p>{{ exerciseService.retrievePatternValueFromPattern(category) }}</p>
             <div *ngFor="let exercise of exercises">
               <div class="indenting" *ngIf="exercise['category'] == category">
-                <mat-checkbox [checked]="exercise.checked" (change)="toggleCheckboxEvent(exercise, $event)">
+                <mat-checkbox [checked]="exercise.checked" (change)="toggleCheckbox(exercise, $event)">
                   {{ exercise['name'] }}
                 </mat-checkbox>
               </div>
@@ -72,7 +72,7 @@
           </div>
           <div id="errormessage" *ngIf="exercises.length > 0 && exerciseGroup.length == 0">
             <mat-form-field>
-              <mat-label>Choose workout template</mat-label>
+              <mat-label>Workout templates</mat-label>
               <mat-select (selectionChange)="selectTrainingTemplate($event)">
                 <mat-option *ngFor="let training of trainings" [value]="training">
                   {{ training.date }}
@@ -80,10 +80,18 @@
               </mat-select>
             </mat-form-field>
             <mat-form-field>
-              <mat-label>Choose workout mode</mat-label>
-              <mat-select (selectionChange)="selectTrainingMode($event)">
-                <mat-option *ngFor="let mode of sessionMode" [value]="mode">
+              <mat-label>Workout session</mat-label>
+              <mat-select (selectionChange)="selectTrainingSession($event)">
+                <mat-option *ngFor="let mode of trainingSessions" [value]="mode">
                   {{ mode }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Workout types</mat-label>
+              <mat-select (selectionChange)="selectTrainingType($event)">
+                <mat-option *ngFor="let type of trainingTypes" [value]="type">
+                  {{ type }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -94,11 +102,11 @@
           <div class="largeToBottom" *ngIf="exerciseGroup.length != 0">
             <h2>Description</h2>
             <mat-form-field class="text-width example-full-width">
-              <textarea matInput placeholder="Leave a comment" [(ngModel)]="trainingDescription"></textarea>
+              <textarea matInput placeholder="Leave a comment" [(ngModel)]="currentTrainingDescription"></textarea>
             </mat-form-field>
             <h2>Date</h2>
             <mat-form-field class="text-width">
-              <input matInput (dateChange)="setTrainingsDate('change', $event)" [matDatepicker]="picker"
+              <input matInput (dateChange)="selectTrainingDate($event)" [matDatepicker]="picker"
                 placeholder="Choose a date" />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
@@ -106,13 +114,13 @@
           </div>
           <div class="list" (cdkDropListDropped)="drop($event)" cdkDropList>
             <div class="block" *ngFor="let group of exerciseGroup; let i = index" cdkDrag>
-              <div *ngIf="!compareExerciseToOtherBefore(group.exercise, i)">
+              <div *ngIf="!isSameAsPreviousExercise(group.exercise, i)">
                 <p>{{ group.exercise['name'] }}</p>
-                <button class="buttons" (click)="executeExerciseGroupAction(ExerciseGroupAction.ADDBOTTOM, group)" mat-raised-button
+                <button class="buttons" (click)="executeExerciseGroupAction(ExerciseGroupAction.ADDEND, group)" mat-raised-button
                   color="primary">
                   Add new exercise to bottom
                 </button>
-                <button class="buttons" (click)="executeExerciseGroupAction(ExerciseGroupAction.ADDAFTER, group, i)"
+                <button class="buttons" (click)="executeExerciseGroupAction(ExerciseGroupAction.ADD, group, i)"
                   mat-raised-button color="primary">
                   Add additional exercise
                 </button>
@@ -122,96 +130,66 @@
                 </button>
               </div>
               <div>
-                <div *ngIf="hasPattern(group.exercise, Pattern.WEIGHT)">
+                <div *ngIf="exerciseHasPattern(group.exercise, Pattern.WEIGHT)">
                   <form class="example-form" [formGroup]="group.formGroup">
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Sätze" formControlName="records" />
+                      <input matInput placeholder="Record" formControlName="records" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Wiederholungen" formControlName="repetitions" />
+                      <input matInput placeholder="Repetitions" formControlName="repetitions" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Gewicht" formControlName="weight" />
+                      <input matInput placeholder="Weight" formControlName="weight" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Einheit" formControlName="unit" value="kg" />
+                      <input matInput placeholder="Unit" formControlName="unit" value="kg" />
                     </mat-form-field>
-                    <!-- <button class="positionbuttons" (click)="switchPosition(Direction.UP, i)" mat-stroked-button color="primary">
-                      Up
-                    </button>
-                    <button class="positionbuttons" (click)="switchPosition(Direction.DOWN, i)" mat-stroked-button color="primary">
-                      Down
-                    </button> -->
                   </form>
                 </div>
-                <div *ngIf="hasPattern(group.exercise, Pattern.CONDITIONAL1)">
+                <div *ngIf="exerciseHasPattern(group.exercise, Pattern.CONDITIONAL1)">
                   <form class="example-form" [formGroup]="group.formGroup">
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Anzahl" formControlName="records" />
+                      <input matInput placeholder="Count" formControlName="records" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Dauer" formControlName="repetitions" />
+                      <input matInput placeholder="Duration" formControlName="repetitions" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Einheit" formControlName="unit" value="s" />
+                      <input matInput placeholder="Unit" formControlName="unit" value="s" />
                     </mat-form-field>
-                    <!-- <button class="positionbuttons" (click)="switchPosition(Direction.UP, i)" mat-stroked-button color="primary">
-                      Up
-                    </button>
-                    <button class="positionbuttons" (click)="switchPosition(Direction.DOWN, i)" mat-stroked-button color="primary">
-                      Down
-                    </button> -->
                   </form>
                 </div>
-                <div *ngIf="hasPattern(group.exercise, Pattern.CONDITIONAL2)">
+                <div *ngIf="exerciseHasPattern(group.exercise, Pattern.CONDITIONAL2)">
                   <form class="example-form" [formGroup]="group.formGroup">
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Dauer" formControlName="period" />
+                      <input matInput placeholder="Duration" formControlName="period" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Einheit" formControlName="unitPeriod" value="min" />
+                      <input matInput placeholder="Unit" formControlName="unitPeriod" value="min" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Geschwindigkeit" formControlName="speed" />
+                      <input matInput placeholder="Speed" formControlName="speed" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Einheit" formControlName="unitSpeed" value="km/h" />
+                      <input matInput placeholder="Unit" formControlName="unitSpeed" value="km/h" />
                     </mat-form-field>
-                    <!-- <button class="positionbuttons" (click)="switchPosition(Direction.UP, i)" mat-stroked-button color="primary">
-                      Up
-                    </button>
-                    <button class="positionbuttons" (click)="switchPosition(Direction.DOWN, i)" mat-stroked-button color="primary">
-                      Down
-                    </button> -->
                   </form>
                 </div>
-                <div *ngIf="hasPattern(group.exercise, Pattern.COUNTABLE)">
+                <div *ngIf="exerciseHasPattern(group.exercise, Pattern.COUNTABLE)">
                   <form class="example-form" [formGroup]="group.formGroup">
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Sätze" formControlName="records" />
+                      <input matInput placeholder="Record" formControlName="records" />
                     </mat-form-field>
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Wiederholungen" formControlName="repetitions" />
+                      <input matInput placeholder="Repetitions" formControlName="repetitions" />
                     </mat-form-field>
-                    <button class="positionbuttons" (click)="switchPosition(Direction.UP, i)" mat-stroked-button color="primary">
-                      Up
-                    </button>
-                    <button class="positionbuttons" (click)="switchPosition(Direction.DOWN, i)" mat-stroked-button color="primary">
-                      Down
-                    </button>
                   </form>
                 </div>
-                <div *ngIf="hasPattern(group.exercise, Pattern.FREE)">
+                <div *ngIf="exerciseHasPattern(group.exercise, Pattern.FREE)">
                   <form class="example-form" [formGroup]="group.formGroup">
                     <mat-form-field class="example-full-width">
-                      <input matInput placeholder="Einheit" formControlName="text" />
+                      <input matInput placeholder="Unit" formControlName="text" />
                     </mat-form-field>
-                    <!-- <button class="positionbuttons" (click)="switchPosition(Direction.UP, i)" mat-stroked-button color="primary">
-                      Up
-                    </button>
-                    <button class="positionbuttons" (click)="switchPosition(Direction.DOWN, i)" mat-stroked-button color="primary">
-                      Down
-                    </button> -->
                   </form>
                 </div>
               </div>

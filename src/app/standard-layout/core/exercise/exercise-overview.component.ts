@@ -31,11 +31,12 @@ export class ExerciseOverViewComponent implements OnInit {
     private keyService: KeyService,
     private tabTitleService: Title,
     private snackBarService: MatSnackBar
-  ) {}
+  ) {
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('e1'));
+  }
 
   ngOnInit() {
     this.initExercises();
-    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('e1'));
   }
 
   private initExercises() {
@@ -54,9 +55,7 @@ export class ExerciseOverViewComponent implements OnInit {
   }
 
   public saveExercise() {
-    const nameInForm = this.formForExerciseCreation.getRawValue().name;
-
-    this.prepareExerciseName(nameInForm);
+    this.prepareExerciseName(this.formForExerciseCreation.getRawValue().name);
     this.exerciseService.postExercise(this.exerciseToCreate).subscribe(() => {
       this.displayNotification(this.keyService.getKeyTranslation('t4'), null);
       this.formForExerciseCreation.reset();

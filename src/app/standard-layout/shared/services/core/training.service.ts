@@ -28,6 +28,10 @@ export class TrainingService {
     return this.httpClient.post<Training>(this.url, training);
   }
 
+    public putTraining(training: Training): Observable<Training> {
+    return this.httpClient.put<Training>(this.url  + '/' + training.id, training);
+  }
+
   public deleteTrainingByID(id: number): Observable<Training> {
     return this.httpClient.delete<Training>(this.url + '/' + id);
   }
@@ -40,7 +44,7 @@ export class TrainingService {
     trainings: Training[],
     exercise: Exercise
   ): Training[] {
-    return this.retrieveTrainingsSortedByDate(trainings).filter(
+    return this.sortByDate(trainings).filter(
       (training) =>
         training.exercises.filter((other) => exercise.name === other.name)
           .length > 0
@@ -51,7 +55,7 @@ export class TrainingService {
    * @param trainings to be sorted
    * @returns sorted list of trainings
    */
-  public retrieveTrainingsSortedByDate(trainings: Training[]) {
+  public sortByDate(trainings: Training[]) {
     return trainings.sort((training, other) =>
       this.utilityService.sortNumerical(
         Date.parse(training.date.toString()),

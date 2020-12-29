@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import colors from '../../../../../assets/json/colors.json';
 import translation from '../../../../../assets/json/translations.json';
 import shortcuts from '../../../../../assets/json/shortcuts.json';
+import { Color } from '../../model/Enums';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class KeyService {
     return shortcuts;
   }
 
-  public getColor(color: string): string {
+  public getColor(color: Color): string {
     return colors[color];
   }
 

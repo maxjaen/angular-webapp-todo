@@ -39,7 +39,7 @@
          <h2>Overview</h2>
          <div *ngFor="let weight of weights.slice(0, displayedWeights)">
             <mat-card class="indenting smallToBottom basic-block-advance card-costum example-card"
-               [style.border-color]="getStatusColorValue(weight)">
+               [style.border-color]="setBorderColor(weight)">
                <button class="card-right more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu"
                   mat-icon-button>
                   <mat-icon>more_vert</mat-icon>

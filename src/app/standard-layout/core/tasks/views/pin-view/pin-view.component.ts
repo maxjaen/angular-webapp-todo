@@ -30,6 +30,7 @@ import { Settings } from '../../../settings/model/settings';
 import { InsertTaskDialog } from '../../dialogs/insert-task-dialog';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { Color } from 'src/app/standard-layout/shared/model/Enums';
 
 @Component({
   selector: 'app-pin-view',
@@ -60,6 +61,8 @@ export class PinViewComponent implements OnInit, OnChanges {
   public longDescription: string;
   public date: Date;
   public dateString: string;
+
+  readonly Color = Color;
 
   constructor(
     public timeService: TimeService,
@@ -227,7 +230,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     });
   }
 
-  public getStatusColorValue(task: Task): string {
+  public setBorderColor(task: Task): string {
     const actualDate: Date = this.timeService.createNewDate();
     const tempTaskDate: Date = new Date(task.date);
     const dayMilliseconds: number = 1000 * 60 * 60 * 24;
@@ -238,30 +241,30 @@ export class PinViewComponent implements OnInit, OnChanges {
       this.selectedTask.id === task.id
     ) {
       // Selected task
-      return this.keyService.getColor('blue');
+      return this.keyService.getColor(Color.BLUE);
     } else if (
       actualDate.getTime() <
       tempTaskDate.getTime() - dayMilliseconds * 30
     ) {
       // More than 30 days
-      return this.keyService.getColor('cyan');
+      return this.keyService.getColor(Color.CYAN);
     } else if (
       actualDate.getTime() >
       tempTaskDate.getTime() + dayMilliseconds
     ) {
       // More than one day
-      return this.keyService.getColor('red');
+      return this.keyService.getColor(Color.RED);
     } else if (
       tempTaskDate.getDate() === actualDate.getDate() &&
       tempTaskDate.getMonth() === actualDate.getMonth() &&
       tempTaskDate.getFullYear() === actualDate.getFullYear()
     ) {
       // Today
-      return this.keyService.getColor('yellow');
+      return this.keyService.getColor(Color.YELLOW);
     }
 
     // Standard colour
-    return this.keyService.getColor('darkGreen');
+    return this.keyService.getColor(Color.DARKGREEN);
   }
 
   /**

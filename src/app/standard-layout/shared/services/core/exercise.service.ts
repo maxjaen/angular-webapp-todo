@@ -77,7 +77,7 @@ export class ExerciseService {
     return Object.values(Pattern);
   }
 
-  public retrievePatternKeys() {
+  public retrievePatternProperties() {
     return Object.keys(Pattern).splice(0, Object.keys(Pattern).length / 2);
   }
 }

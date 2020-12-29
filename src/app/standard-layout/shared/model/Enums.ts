@@ -1,7 +1,23 @@
-export enum SessionState {
-  INITIAL,
-  STARTED,
-  STOPPED,
+/** GENERAL */
+
+export enum Color {
+  RED = 'red',
+  GREEN = 'green',
+  BLUE = 'blue',
+  YELLOW = 'yellow',
+  ORANGE ='orange',
+  CYAN = 'cyan',
+  WHITE = 'white',
+  LIGHTGREEN = 'lightGreen',
+  DARKGREEN = 'darkGreen',
+  DARKGRAY = 'darkGray'
+}
+
+/** TASKS */
+
+export enum View {
+  PROJECTS,
+  PINS,
 }
 
 export enum Period {
@@ -9,15 +25,7 @@ export enum Period {
   HISTORY,
 }
 
-export enum View {
-  PROJECTS,
-  PINS,
-}
-
-export enum Direction {
-  UP,
-  DOWN,
-}
+/** TRAINING */
 
 export enum Pattern {
   FREE,
@@ -25,4 +33,23 @@ export enum Pattern {
   COUNTABLE,
   CONDITIONAL1,
   CONDITIONAL2,
+}
+
+export enum TrainingType {
+  GYM,
+  HOME,
+  OUTSIDE
+}
+
+export enum TrainingSession {
+  STANDARD,
+  TIME
+}
+
+/** WORKOUT SESSION */
+
+export enum SessionState {
+  INITIAL,
+  STARTED,
+  STOPPED,
 }

@@ -22,7 +22,7 @@ import { NumberValueGraph } from '../../shared/model/GraphData';
 import { StringValueGraph } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
 import { tap, map } from 'rxjs/operators';
-import { Period } from '../../shared/model/Enums';
+import { Color, Period } from '../../shared/model/Enums';
 import { isNullOrUndefined } from 'util';
 
 @Component({
@@ -57,6 +57,8 @@ export class TimeTaskComponent implements OnInit {
   timeTasksFromHistory: TimeTask[] = [];
   accumulatedTasksFromHistory: StringValueGraph[] = [];
   graphDataFromHistory: NumberValueGraph[] = [];
+
+  readonly Color = Color;
 
   constructor(
     public settingsService: SettingsService,
@@ -516,21 +518,21 @@ export class TimeTaskComponent implements OnInit {
    * @param timeTask to set the background color
    * @returns background color
    */
-  public getStatusColorValue(timeTask: TimeTask): string {
+  public setBorderColor(timeTask: TimeTask): string {
     if (
       this.timeTaskService.isSame(
         timeTask,
         this.timeTaskService.runningTimeTask
       )
     ) {
-      return this.keyService.getColor('yellow');
+      return this.keyService.getColor(Color.YELLOW);
     } else if (this.timeTaskService.isSame(timeTask, this.selectedTimeTask)) {
-      return this.keyService.getColor('blue');
+      return this.keyService.getColor(Color.BLUE);
     } else if (!this.timeTaskService.isValid(timeTask)) {
-      return this.keyService.getColor('red');
+      return this.keyService.getColor(Color.RED);
     }
 
-    return this.keyService.getColor('darkGreen');
+    return this.keyService.getColor(Color.DARKGREEN);
   }
 
   /**

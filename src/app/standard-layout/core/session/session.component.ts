@@ -10,6 +10,10 @@ import { SessionState, Pattern } from '../../shared/model/Enums';
 import { map } from 'rxjs/operators';
 import { playSound } from '../../shared/utils/SoundUtils';
 
+enum Sound {
+  PHONE = 'phone',
+  SNAPCHAT = 'snapchat'
+}
 @Component({
   selector: 'app-session',
   templateUrl: './session.component.html',
@@ -35,11 +39,12 @@ export class SessionComponent implements OnInit {
     private keyService: KeyService,
     private snackBarService: MatSnackBar,
     private tabTitleService: Title
-  ) {}
+  ) {
+    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('wo1'));
+  }
 
   ngOnInit() {
     this.initTrainings();
-    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('wo1'));
   }
 
   public initTrainings() {
@@ -219,7 +224,7 @@ export class SessionComponent implements OnInit {
     this.readyCountdown = 5;
 
     (async () => {
-      playSound('snapchat');
+      playSound(Sound.SNAPCHAT);
       await this.waitMilliseconds(2000);
 
       this.currentExerciseIndex = index;
@@ -234,7 +239,7 @@ export class SessionComponent implements OnInit {
 
         if (iterationCountdown === 1 && endSound) {
           // play sound before exercise finished
-          playSound('phone');
+          playSound(Sound.PHONE);
           endSound = false;
         }
         if (iterationCountdown >= 0) {

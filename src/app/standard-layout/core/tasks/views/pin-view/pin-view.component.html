@@ -47,7 +47,7 @@
                             'Show status color'
                           )
                         ">
-                    <div class="card-status" [style.background-color]="getStatusColorValue(task)"></div>
+                    <div class="card-status" [style.background-color]="setBorderColor(task)"></div>
                 </div>
                 <div class="inlineblock">
                     <mat-card-header>
@@ -93,13 +93,13 @@
                                 <div *ngIf="point == ' '">
                                     <hr />
                                 </div>
-                                <div *ngIf="point.includes('!')" [style.color]="keyService.getColor('orange')">
+                                <div *ngIf="point.includes('!')" [style.color]="keyService.getColor(Color.ORANGE)">
                                     {{ point }}
                                 </div>
-                                <div *ngIf="point.includes('$')" [style.color]="keyService.getColor('green')">
+                                <div *ngIf="point.includes('$')" [style.color]="keyService.getColor(Color.GREEN)">
                                     {{ point }}
                                 </div>
-                                <div *ngIf="point.includes('#')" [style.color]="keyService.getColor('white')">
+                                <div *ngIf="point.includes('#')" [style.color]="keyService.getColor(Color.WHITE)">
                                     <h3>{{ point }}</h3>
                                 </div>
                             </ul>
@@ -172,7 +172,7 @@
                             'Show status color'
                           )
                         ">
-                    <div class="card-status" [style.background-color]="getStatusColorValue(task)"></div>
+                    <div class="card-status" [style.background-color]="setBorderColor(task)"></div>
                 </div>
                 <div class="inlineblock">
                     <mat-card-header>
@@ -213,13 +213,13 @@
                                 <div *ngIf="point == ' '">
                                     <hr />
                                 </div>
-                                <div *ngIf="point.includes('!')" [style.color]="keyService.getColor('orange')">
+                                <div *ngIf="point.includes('!')" [style.colors]="keyService.getColor(Color.ORANGE)">
                                     {{ point }}
                                 </div>
-                                <div *ngIf="point.includes('$')" [style.color]="keyService.getColor('green')">
+                                <div *ngIf="point.includes('$')" [style.color]="keyService.getColor(Color.GREEN)">
                                     {{ point }}
                                 </div>
-                                <div *ngIf="point.includes('#')" [style.color]="keyService.getColor('white')">
+                                <div *ngIf="point.includes('#')" [style.color]="keyService.getColor(Color.WHITE)">
                                     <h3>{{ point }}</h3>
                                 </div>
                             </ul>

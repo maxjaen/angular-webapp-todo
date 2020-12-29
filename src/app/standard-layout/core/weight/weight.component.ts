@@ -10,6 +10,7 @@ import { NumberValueGraph } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
 import { Title } from '@angular/platform-browser';
 import { map, tap } from 'rxjs/operators';
+import { Color } from '../../shared/model/Enums';
 
 @Component({
   selector: 'app-weight',
@@ -219,29 +220,29 @@ export class WeightComponent implements OnInit {
    * @param weight to set the background color for
    * @returns background color
    */
-  public getStatusColorValue(weight: Weight): string {
+  public setBorderColor(weight: Weight): string {
     const highestValue: number = this.getHighestWeightValue();
     if (weight.value === highestValue) {
-      return this.keyService.getColor('darkGreen');
+      return this.keyService.getColor(Color.DARKGREEN);
     }
 
     const lowestValue: number = this.getLowestWeightValue();
     if (weight.value === lowestValue) {
-      return this.keyService.getColor('red');
+      return this.keyService.getColor(Color.RED);
     }
 
     const averageValue: number = this.getAverageWeightValue();
     if (weight.value <= averageValue + 1 && weight.value >= averageValue - 1) {
-      return this.keyService.getColor('yellow');
+      return this.keyService.getColor(Color.YELLOW);
     }
     if (weight.value < averageValue - 1) {
-      return this.keyService.getColor('orange');
+      return this.keyService.getColor(Color.ORANGE);
     }
     if (weight.value > averageValue + 1) {
-      return this.keyService.getColor('lightGreen');
+      return this.keyService.getColor(Color.LIGHTGREEN);
     }
 
-    return this.keyService.getColor('darkGray');
+    return this.keyService.getColor(Color.DARKGRAY);
   }
 
   /**

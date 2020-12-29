@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Direction } from '../../model/Enums';
 
 const NEW_LINE = '\n';
 
@@ -45,55 +44,7 @@ export class UtilityService {
     );
   }
 
-  public removeElementFromArray(element: any, array: any[]) {
-    array.splice(array.indexOf(element), 1);
-  }
-
-  public removeElementOnPositionFromArray(
-    elementPosition: number,
-    array: any[]
-  ): any[] {
-    return array.splice(elementPosition, 1);
-  }
-
-  public changeElementOrderInArray(
-    array: any[],
-    direction: Direction,
-    index: number
-  ) {
-    const actualElement: number = index;
-    const lastElement: number = index - 1;
-    const nextElement: number = index + 1;
-
-    switch (direction) {
-      case Direction.UP:
-        if (index !== 0) {
-          const tempLast = array[lastElement];
-          array[lastElement] = array[actualElement];
-          array[actualElement] = tempLast;
-        } else {
-          console.warn(
-            `First element in array cannot be moved further up to index ${
-              index - 1
-            }.`
-          );
-        }
-        break;
-      case Direction.DOWN:
-        if (actualElement < array.length - 1) {
-          const tempNext: any = array[nextElement];
-          array[nextElement] = array[actualElement];
-          array[actualElement] = tempNext;
-        } else {
-          console.warn(
-            `Last element in array cannot be moved further down to index ${
-              index + 1
-            }.`
-          );
-        }
-        break;
-      default:
-        console.warn('Wrong direction selected');
-    }
+  public removeFromArray(index: number, array: any[]): any[] {
+    return array.splice(index, 1);
   }
 }

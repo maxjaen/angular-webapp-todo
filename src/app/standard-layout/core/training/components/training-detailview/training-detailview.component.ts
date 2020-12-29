@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Exercise } from '../../../exercise/model/exercise';
 import { KeyService } from '../../../../shared/services/utils/key.service';
 import { ExerciseService } from 'src/app/standard-layout/shared/services/core/exercise.service';
+import { TrainingType } from 'src/app/standard-layout/shared/model/Enums';
 
 @Component({
   selector: 'app-training-detailview',
@@ -34,7 +35,7 @@ export class TrainingDetailViewComponent implements OnInit {
         .getTrainingByID(+params['id'])
         .subscribe((training) => {
           this.actualTraining = training;
-          this.dataSource = this.actualTraining.exercises;
+          this.dataSource = this.actualTraining.exercises;         
         });
     });
   }
@@ -43,24 +44,24 @@ export class TrainingDetailViewComponent implements OnInit {
     if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
       this.activeRouteService.params.subscribe((params) => {
         this.trainingService.deleteTrainingByID(+params['id']).subscribe(() => {
-          this.viewDetailedTraining();
+          this.navigateBack();
         });
       });
     }
   }
 
-  public viewDetailedTraining() {
+  public navigateBack() {
     this.RouterService.navigate(['/training']);
   }
 
-  public showDateString(date: Date): string {
-    const tempDate: Date = new Date(date);
+  public toLocaleDateString(date: Date): string {
     const options = {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     };
-    return tempDate.toLocaleDateString('de-DE', options);
+
+    return new Date(date).toLocaleDateString('de-DE', options);
   }
 }

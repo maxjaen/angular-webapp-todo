@@ -25,7 +25,7 @@
               ">
               <p>
                 <span>Time week: </span>
-                <span [style.color]="keyService.getColor('white')">
+                <span [style.color]="keyService.getColor(Color.WHITE)">
                   {{
                     timeService.formatMillisecondsToString(
                       timeTaskService.calculateTimeForCurrentWeek(timeTasks)
@@ -41,7 +41,7 @@
               ">
               <p>
                 <span>Time today: </span>
-                <span [style.color]="keyService.getColor('white')">
+                <span [style.color]="keyService.getColor(Color.WHITE)">
                   {{
                     timeService.formatMillisecondsToString(
                       timeTaskService.calculateTimeForToday(timeTasksFromToday)
@@ -57,7 +57,7 @@
               ">
               <p>
                 <span>Week: </span>
-                <span [style.color]="keyService.getColor('white')">{{
+                <span [style.color]="keyService.getColor(Color.WHITE)">{{
                   utilityService.formatToTwoDigits(
                     timeService.calculateCurrentWeekNumber()
                   )
@@ -125,7 +125,7 @@
                     'Show status color'
                   )
                 ">
-                <div class="card-status" [style.background-color]="getStatusColorValue(timeTask)"></div>
+                <div class="card-status" [style.background-color]="setBorderColor(timeTask)"></div>
               </div>
               <div style="width: 70%; display: inline-block;">
                 <mat-card-header style="float: left;">
@@ -254,7 +254,7 @@
           <br />
         </div>
         <div *ngFor="let timeTask of timeTasksFromHistory">
-          <mat-card class="example-card block" [style.background-color]="keyService.getColor('darkGray')">
+          <mat-card class="example-card block" [style.background-color]="keyService.getColor(Color.DARKGRAY)">
             <mat-card-header style="float: left;">
               <mat-card-title>
                 {{ timeTask.shortDescription }}

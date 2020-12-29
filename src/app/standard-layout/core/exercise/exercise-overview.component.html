@@ -14,7 +14,7 @@
             <mat-form-field>
               <mat-label>Choose pattern</mat-label>
               <mat-select (selectionChange)="prepareExerciseCategory($event)">
-                <mat-option *ngFor="let category of exerciseService.retrievePatternKeys()" [value]="category">
+                <mat-option *ngFor="let category of exerciseService.retrievePatternProperties()" [value]="category">
                   {{ exerciseService.retrievePatternValueFromPattern(category) }}
                 </mat-option>
               </mat-select>

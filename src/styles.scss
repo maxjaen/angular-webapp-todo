@@ -88,10 +88,10 @@ $white: white;
 
 mat-card {
   background-color: $main-background-gray;
-  border-left: 3px solid $main;
-  border-right: 3px solid $main;
-  border-top: 3px solid $taskbar-gray;
-  border-bottom: 3px solid $taskbar-gray;
+  border-left: 2px solid $main;
+  border-right: 2px solid $main;
+  border-top: 2px solid $taskbar-gray;
+  border-bottom: 2px solid $taskbar-gray;
 }
 
 mat-card:hover {
@@ -224,7 +224,7 @@ textarea,
 
 .basic-block-advance {
   @include basic-block;
-  border-left: 5px solid;
+  border-left: 11px solid;
 }
 
 .notifications {

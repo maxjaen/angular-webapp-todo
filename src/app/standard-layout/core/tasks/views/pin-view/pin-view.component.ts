@@ -43,7 +43,7 @@ export class PinViewComponent implements OnInit, OnChanges {
   @Input()
   public tasksRunning: TimeTask[];
   @Input()
-  public settings: Settings[];
+  public settings: Settings;
   @Output()
   public reload = new EventEmitter<void>();
 
@@ -136,10 +136,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     of(this.settings)
       .pipe(
         tap((settings) => {
-          this.displayUnpinned = this.settingsService.getSettingsValue(
-            settings,
-            'Show unpinned Tasks'
-          );
+          this.displayUnpinned = settings.task.showUnpinnedTasks.value;
         })
       )
       .subscribe();

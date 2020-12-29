@@ -16,7 +16,7 @@
             <div class="block changeField minorToBottom" *ngIf="task == selectedTask">
                 <form class="example-form">
                     <mat-form-field class="example-full-width indentingFromRight">
-                        <input #message maxlength="50" placeholder="titel" name="shortDescription"
+                        <input #message maxlength="50" placeholder="title" name="shortDescription"
                             [(ngModel)]="selectedTask.shortDescription" matInput />
                         <mat-hint>{{ message.value.length }} / 50</mat-hint>
                     </mat-form-field>
@@ -39,14 +39,7 @@
                 </form>
             </div>
             <mat-card class="example-card">
-                <div *ngIf="
-                          settings &&
-                          settings.length > 0 &&
-                          settingsService.getSettingsValue(
-                            settings,
-                            'Show status color'
-                          )
-                        ">
+                <div *ngIf="settings && settings.task.showStatusColor.value">
                     <div class="card-status" [style.background-color]="setBorderColor(task)"></div>
                 </div>
                 <div class="inlineblock">
@@ -59,13 +52,7 @@
                               ">
                                 <countup-timer [countUpTimerConfig]="testConfig"></countup-timer>
                             </div>
-                            <div *ngIf="
-                                settings &&
-                                settingsService.getSettingsValue(
-                                  settings,
-                                  'Show creation date'
-                                )
-                              ">
+                            <div *ngIf="settings && settings.task.showCreationDate.value">
                                 <div class="smallToTop fontSize12">
                                     {{ taskService.extractUtcStringFromTask(task) }}
                                     {{
@@ -165,13 +152,7 @@
                 </form>
             </div>
             <mat-card class="example-card">
-                <div *ngIf="
-                          settings &&
-                          settingsService.getSettingsValue(
-                            settings,
-                            'Show status color'
-                          )
-                        ">
+                <div *ngIf="settings && settings.task.showStatusColor.value">
                     <div class="card-status" [style.background-color]="setBorderColor(task)"></div>
                 </div>
                 <div class="inlineblock">
@@ -182,13 +163,7 @@
                                 *ngIf="timeTaskService.runningTimeTask && task.shortDescription === timeTaskService.runningTimeTask.title">
                                 <countup-timer [countUpTimerConfig]="testConfig"></countup-timer>
                             </div>
-                            <div *ngIf="
-                                settings &&
-                                settingsService.getSettingsValue(
-                                  settings,
-                                  'Show creation date'
-                                )
-                              ">
+                            <div *ngIf="settings && settings.task.showCreationDate.value">
                                 <div class="smallToTop fontSize12">
                                     {{ taskService.extractUtcStringFromTask(task) }}
                                 </div>

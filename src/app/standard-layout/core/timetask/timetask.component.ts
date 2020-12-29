@@ -35,7 +35,7 @@ export class TimeTaskComponent implements OnInit {
   showCreationField = false;
 
   testConfig: countUpTimerConfigModel;
-  settings: Settings[] = [];
+  settings: Settings;
 
   selectedTimeTask: TimeTask;
 
@@ -121,7 +121,7 @@ export class TimeTaskComponent implements OnInit {
 
   private getSettings() {
     this.settingsService.getSettings().subscribe((settings) => {
-      this.settings = settings;
+      this.settings = settings[0];
     });
   }
 
@@ -310,7 +310,7 @@ export class TimeTaskComponent implements OnInit {
    */
   public removeTimeElement(timeTask: TimeTask) {
     if (
-      !isNullOrUndefined(timeTask) && // not undefined or null
+      timeTask !== null && timeTask !== undefined && // not undefined or null
       this.utilityService.isNumber(timeTask.id) && // is number
       !this.timeTaskService.isSame(
         timeTask,

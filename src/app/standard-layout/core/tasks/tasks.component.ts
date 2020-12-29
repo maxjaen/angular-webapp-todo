@@ -29,7 +29,7 @@ export class TasksComponent implements OnInit {
   public tasks: Task[];
   public tasksHided: Task[];
   public tasksRunning: TimeTask[];
-  public settings: Settings[];
+  public settings: Settings;
 
   @ViewChild('creationField') inputElement: ElementRef;
   public showCreationField = false;
@@ -102,7 +102,7 @@ export class TasksComponent implements OnInit {
 
   private initSettings() {
     this.settingsService.getSettings().subscribe((settings) => {
-      this.settings = settings;
+      this.settings = settings[0];
     });
   }
 

@@ -1,8 +1,12 @@
-import { StartPageSetting } from './start-page-setting';
-import { ThemeSetting } from './theme-setting';
+import { GeneralSettings } from './general-settings';
+import { SessionSettings } from './session-settings';
+import { TaskSettings } from './task-settings';
+import { TimeTaskSettings } from './timetask-settings';
 
 export class Settings {
   id: number;
-  startPage: StartPageSetting[];
-  theme: ThemeSetting;
+  general: GeneralSettings;
+  task: TaskSettings;
+  timetask: TimeTaskSettings;
+  session: SessionSettings;
 }

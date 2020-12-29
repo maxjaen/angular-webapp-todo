@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Color } from '../../model/Enums';
 import colors from '../../../../../assets/json/colors.json';
 import translation from '../../../../../assets/json/translations.json';
 import shortcuts from '../../../../../assets/json/shortcuts.json';
-import { Color } from '../../model/Enums';
+import sections from '../../../../../assets/json/sections.json';
 
 @Injectable({
   providedIn: 'root',
@@ -32,5 +33,10 @@ export class KeyService {
 
   public getKeyTranslations(): any {
     return translation;
+  }
+
+  public getSections(): any {
+    const elem = 'sections';
+    return sections[elem];
   }
 }

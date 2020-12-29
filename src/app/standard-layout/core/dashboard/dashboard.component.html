@@ -1,72 +1,43 @@
 <div class="content">
-    <div *ngIf="settings && settings.length > 0">
+    <div *ngIf="settings">
         <h1 class="mat-h1">Dashboard</h1>
-        <div *ngIf="settings && settings.length > 0">
-            <div *ngFor="let component of settingsService.getStartPageHeaders(settings);">
-                <div *ngIf="settingsService.getSettingsValue(settings, 'Show Tasks module') && component.type=='task'">
-                    <mat-card class="dashboard-card primary-bg" (click)="goToUrl(component)">
-                        <mat-card-content class="dashboard-card-content">
-                            <div class="tab-symbol">
-                                <mat-icon>{{ component.symbol }}</mat-icon>
-                            </div>
-                            <div class="tab-message">
-                                <div
-                                    *ngIf="placeHolderArray && placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
-                                    {{ replacePlaceholder(component.displaytext, "_", getPlaceHolderValueFromKey(component.name)) }}
-                                </div>
-                                <div *ngIf="!component.displaytext.includes('_')">
-                                    {{ component.displaytext }}
-                                </div>
-                                <div *ngIf="!hasPlaceHolder(component.name) && !isIgnoredModule(component.name)">
-                                    no data available
-                                </div>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
-                <div
-                    *ngIf="settingsService.getSettingsValue(settings, 'Show Fitness module') && component.type=='fitness'">
-                    <mat-card class="dashboard-card primary-bg" (click)="goToUrl(component)">
-                        <mat-card-content class="dashboard-card-content">
-                            <div class="tab-symbol">
-                                <mat-icon>{{component.symbol}}</mat-icon>
-                            </div>
-                            <div class="tab-message">
-                                <div
-                                    *ngIf="placeHolderArray && placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
-                                    {{replacePlaceholder(component.displaytext, "_", getPlaceHolderValueFromKey(component.name))}}
-                                </div>
-                                <div *ngIf="!component.displaytext.includes('_')">
-                                    {{ component.displaytext }}
-                                </div>
-                                <div *ngIf="!hasPlaceHolder(component.name) && !isIgnoredModule(component.name)">
-                                    no data available
-                                </div>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
-                <div *ngIf="component.type=='general'">
-                    <mat-card class="dashboard-card primary-bg" (click)=" goToUrl(component)">
-                        <mat-card-content class="dashboard-card-content">
-                            <div class="tab-symbol">
-                                <mat-icon>{{component.symbol}}</mat-icon>
-                            </div>
-                            <div class="tab-message">
-                                <div
-                                    *ngIf="placeHolderArray && placeHolderArray.length > 0 && component.displaytext.includes('_') && hasPlaceHolder(component.name)">
-                                    {{replacePlaceholder(component.displaytext, "_", getPlaceHolderValueFromKey(component.name))}}
-                                </div>
-                                <div *ngIf="!component.displaytext.includes('_')">
-                                    {{ component.displaytext }}
-                                </div>
-                                <div *ngIf="!hasPlaceHolder(component.name) && !isIgnoredModule(component.name)">
-                                    no data available
-                                </div>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
+        <div *ngFor="let section of sections">
+            <div *ngIf="hasTaskType(section) && settings.general.showTasksModule.value">
+                <mat-card class="dashboard-card primary-bg" (click)="goToUrl(section.name)">
+                    <mat-card-content class="dashboard-card-content">
+                        <div class="tab-symbol">
+                            <mat-icon>{{ section.symbol }}</mat-icon>
+                        </div>
+                        <div class="tab-message">
+                            {{ buildDisplayableMessage(section)}}
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div
+                *ngIf="hasFitnessType(section) && settings.general.showFitnessModule.value">
+                <mat-card class="dashboard-card primary-bg" (click)="goToUrl(section.name)">
+                    <mat-card-content class="dashboard-card-content">
+                        <div class="tab-symbol">
+                            <mat-icon>{{section.symbol}}</mat-icon>
+                        </div>
+                        <div class="tab-message">
+                            {{ buildDisplayableMessage(section)}}
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div *ngIf="hasGeneralType(section)">
+                <mat-card class="dashboard-card primary-bg" (click)="goToUrl(section.name)">
+                    <mat-card-content class="dashboard-card-content">
+                        <div class="tab-symbol">
+                            <mat-icon>{{section.symbol}}</mat-icon>
+                        </div>
+                        <div class="tab-message">
+                            {{ buildDisplayableMessage(section)}}
+                        </div>
+                    </mat-card-content>
+                </mat-card>
             </div>
         </div>
     </div>

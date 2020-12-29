@@ -16,13 +16,8 @@
       <div class="show-wrapper">
         <div class="show">
           <countup-timer [countUpTimerConfig]="testConfig"> </countup-timer>
-          <div *ngIf="settings.length > 0">
-            <div *ngIf="
-                settingsService.getSettingsValue(
-                  settings,
-                  'Show total this week'
-                )
-              ">
+          <div *ngIf="settings">
+            <div *ngIf="settings.timetask.showTotalWeek.value">
               <p>
                 <span>Time week: </span>
                 <span [style.color]="keyService.getColor(Color.WHITE)">
@@ -33,12 +28,7 @@
                   }}</span>
               </p>
             </div>
-            <div *ngIf="
-                settingsService.getSettingsValue(
-                  settings,
-                  'Show total today'
-                )
-              ">
+            <div *ngIf="settings.timetask.showTotalToday.value">
               <p>
                 <span>Time today: </span>
                 <span [style.color]="keyService.getColor(Color.WHITE)">
@@ -49,12 +39,7 @@
                   }}</span>
               </p>
             </div>
-            <div *ngIf="
-                settingsService.getSettingsValue(
-                  settings,
-                  'Show week number'
-                )
-              ">
+            <div *ngIf="settings.timetask.showWeekNumber.value">
               <p>
                 <span>Week: </span>
                 <span [style.color]="keyService.getColor(Color.WHITE)">{{
@@ -118,13 +103,7 @@
             </div>
             <mat-card (click)="toggleSelection(timeTask)" class="example-card block">
               <div *ngIf="
-                  settings &&
-                  settings.length > 0 &&
-                  settingsService.getSettingsValue(
-                    settings,
-                    'Show status color'
-                  )
-                ">
+                  settings && settings.task.showStatusColor.value">
                 <div class="card-status" [style.background-color]="setBorderColor(timeTask)"></div>
               </div>
               <div style="width: 70%; display: inline-block;">

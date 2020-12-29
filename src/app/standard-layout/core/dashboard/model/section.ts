@@ -1,4 +1,4 @@
-export class StartPageSetting {
+export class Section {
   name: string;
   symbol: string;
   displaytext: string;

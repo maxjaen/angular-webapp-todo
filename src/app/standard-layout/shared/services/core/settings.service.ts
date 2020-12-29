@@ -21,26 +21,4 @@ export class SettingsService {
       settings
     );
   }
-
-  public getStartPageHeaders(settings: Settings[]) {
-    return settings[0]['startPage'];
-  }
-
-  public getSettingsHeaders(settings: Settings[]) {
-    return settings[0]['settingsMenu'];
-  }
-
-  /*
-   * Get settings value from input key
-   */
-  public getSettingsValue(settings: Settings[], key: string): any {
-    let array = [];
-
-    this.getSettingsHeaders(settings).forEach((header) => {
-      array = [...array, ...header.settings];
-    });
-
-    return array.filter((settingsItem) => settingsItem.displaytext === key)[0]
-      .value;
-  }
 }

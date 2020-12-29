@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Exercise } from '../../../exercise/model/exercise';
 import { KeyService } from '../../../../shared/services/utils/key.service';
 import { ExerciseService } from 'src/app/standard-layout/shared/services/core/exercise.service';
-import { TrainingType } from 'src/app/standard-layout/shared/model/Enums';
 
 @Component({
   selector: 'app-training-detailview',

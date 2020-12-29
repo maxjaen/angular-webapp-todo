@@ -7,116 +7,69 @@
   "settings": [
     {
       "id": 0,
-      "startPage": [
-        {
-          "name": "tasks",
-          "symbol": "post_add",
-          "displaytext": "You have _ pinned task/s",
-          "type": "task"
+      "general": {
+        "showTasksModule": {
+          "value": false,
+          "displaytext": "Show Tasks module",
+          "category": "general"
         },
-        {
-          "name": "timetask",
-          "symbol": "timer",
-          "displaytext": "You have worked _ today",
-          "type": "task"
-        },
-        {
-          "name": "training",
-          "symbol": "emoji_events",
-          "displaytext": "Create or view your trainings",
-          "type": "fitness"
-        },
-        {
-          "name": "exercise",
-          "symbol": "pool",
-          "displaytext": "Create or view your exercises",
-          "type": "fitness"
-        },
-        {
-          "name": "session",
-          "symbol": "fitness_center",
-          "displaytext": "Your previous workout session lasts _ seconds",
-          "type": "fitness"
-        },
-        {
-          "name": "weight",
-          "symbol": "point_of_sale",
-          "displaytext": "Your weight is currently _ kilograms",
-          "type": "fitness"
-        },
-        {
-          "name": "settings",
-          "symbol": "settings",
-          "displaytext": "Change whatever you want",
-          "type": "general"
+        "showFitnessModule": {
+          "value": true,
+          "displaytext": "Show Fitness module",
+          "category": "general"
         }
-      ],
-      "settingsMenu": [
-        {
-          "name": "General",
-          "settings": [
-            {
-              "displaytext": "Show Tasks module",
-              "value": true
-            },
-            {
-              "displaytext": "Show Fitness module",
-              "value": false
-            }
-          ]
+      },
+      "task": {
+        "showStatusColor": {
+          "value": true,
+          "displaytext": "Show status color",
+          "category": "task"
         },
-        {
-          "name": "Tasks",
-          "settings": [
-            {
-              "displaytext": "Show status color",
-              "value": true
-            },
-            {
-              "displaytext": "Show creation date",
-              "value": false
-            },
-            {
-              "displaytext": "Enable task history",
-              "value": false
-            },
-            {
-              "displaytext": "Show unpinned Tasks",
-              "value": false
-            }
-          ]
+        "showCreationDate": {
+          "value": false,
+          "displaytext": "Show creation date",
+          "category": "task"
         },
-        {
-          "name": "Timetasks",
-          "settings": [
-            {
-              "displaytext": "Show total this week",
-              "value": true
-            },
-            {
-              "displaytext": "Show total today",
-              "value": true
-            },
-            {
-              "displaytext": "Show week number",
-              "value": false
-            },
-            {
-              "displaytext": "Enable timetask history",
-              "value": false
-            }
-          ]
+        "enableTaskHistory": {
+          "value": false,
+          "displaytext": "Enable task history",
+          "category": "task"
         },
-        {
-          "name": "Session",
-          "settings": [
-            {
-              "displaytext": "Play sound",
-              "value": "false"
-            }
-          ]
+        "showUnpinnedTasks": {
+          "value": false,
+          "displaytext": "Show unpinned Tasks",
+          "category": "task"
         }
-      ]
+      },
+      "timetask": {
+        "showTotalWeek": {
+          "value": true,
+          "displaytext": "Show total this week",
+          "category": "timetask"
+        },
+        "showTotalToday": {
+          "value": true,
+          "displaytext": "Show total today",
+          "category": "timetask"
+        },
+        "showWeekNumber": {
+          "value": false,
+          "displaytext": "Show week number",
+          "category": "timetask"
+        },
+        "enableTimeTaskHistory": {
+          "value": false,
+          "displaytext": "Enable timetask history",
+          "category": "timetask"
+        }
+      },
+      "session": {
+        "playSound": {
+          "value": false,
+          "displaytext": "Play sound",
+          "category": "session"
+        }
+      }
     }
   ]
 }

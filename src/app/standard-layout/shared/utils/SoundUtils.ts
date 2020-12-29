@@ -3,7 +3,7 @@
  * https://stackoverflow.com/questions/32790311/how-to-structure-utility-class/37659978#37659978
  *
  * New audio soundtrack will be created and played
- * @param fileName
+ * @param fileName name of the sound file without extension
  */
 export function playSound(fileName: string): void {
   const soundtrackExtension = '.mp3';

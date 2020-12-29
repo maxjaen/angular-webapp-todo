@@ -170,7 +170,7 @@ export class SessionComponent implements OnInit {
     // Update total workout countdown
     this.workoutCountdown = this.selectedTraining.exercises
       .slice(elementIndex, this.selectedTraining.exercises.length)
-      .map((exercise) => +exercise['repetitions'])
+      .map((exercise) => +exercise.repetitions)
       .reduce((sum, current) => sum + current, 0);
 
     this.startWorkout(elementIndex);
@@ -209,9 +209,7 @@ export class SessionComponent implements OnInit {
     );
 
     // Update current exercise value with countdown to continue where you STOPPED
-    this.selectedTraining.exercises[elementIndex][
-      'repetitions'
-    ] = this.exerciseCountdown;
+    this.selectedTraining.exercises[elementIndex].repetitions = this.exerciseCountdown;
 
     this.startWorkout(elementIndex);
   }
@@ -229,10 +227,10 @@ export class SessionComponent implements OnInit {
 
       this.currentExerciseIndex = index;
       this.currentExercise = this.selectedTraining.exercises[index];
-      this.exerciseCountdown = this.currentExercise['repetitions'];
+      this.exerciseCountdown = this.currentExercise.repetitions;
 
       let endSound = true;
-      let iterationCountdown = this.currentExercise['repetitions'];
+      let iterationCountdown = this.currentExercise.repetitions;
 
       this.exerciseInterval = window.setInterval(() => {
         iterationCountdown = iterationCountdown - 1;
@@ -270,7 +268,7 @@ export class SessionComponent implements OnInit {
 
     // Initial total workout countdown
     this.workoutCountdown = this.selectedTraining.exercises
-      .map((exercise) => +exercise['repetitions'])
+      .map((exercise) => +exercise.repetitions)
       .reduce((sum, current) => sum + current, 0);
   }
 
@@ -289,10 +287,10 @@ export class SessionComponent implements OnInit {
     );
   }
 
-  /** 
+  /**
    * Show total duration of workout in minutes to user
    * @returns number as duration
-  */
+   */
   public workoutDurationInSeconds() {
     return Math.round(this.workoutCountdown / 60);
   }

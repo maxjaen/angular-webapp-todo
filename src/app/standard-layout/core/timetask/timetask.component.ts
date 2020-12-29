@@ -8,7 +8,7 @@ import {
 import { TimeTaskService } from '../../shared/services/core/timetask.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { TimeTask } from './model/timetask';
-import { InsertTaskDialogTime } from './dialogs/insert-task-dialog';
+import { InsertTaskDialogTimeComponent } from './dialogs/insert-task-dialog';
 import { countUpTimerConfigModel, timerTexts } from 'ngx-timer';
 import { CountupTimerService } from 'ngx-timer';
 import { Title } from '@angular/platform-browser';
@@ -231,7 +231,7 @@ export class TimeTaskComponent implements OnInit {
     this.timeTaskService
       .postTimeTask({
         id: 0,
-        title: title,
+        title,
         shortDescription: title,
         longDescription: empty,
         startDate: date,
@@ -273,9 +273,9 @@ export class TimeTaskComponent implements OnInit {
         endDate: null,
         task: timeTask.task,
       })
-      .subscribe((timeTask) => {
+      .subscribe((e) => {
         this.getTimeTasksFromToday();
-        this.timeTaskService.runningTimeTask = timeTask;
+        this.timeTaskService.runningTimeTask = e;
         this.hideSelectedTimeTask();
         this.startTimer();
       });
@@ -375,7 +375,7 @@ export class TimeTaskComponent implements OnInit {
     this.timeTaskService.runningTimeTask = null;
   }
 
-  private isRunningTimeTask(timeTask: TimeTask){
+  private isRunningTimeTask(timeTask: TimeTask) {
     return timeTask.id === this.timeTaskService.runningTimeTask.id;
   }
 
@@ -433,7 +433,7 @@ export class TimeTaskComponent implements OnInit {
     this.hideSelectedTimeTask();
     this.hideRunningTimeTask();
 
-    const dialog = this.dialog.open(InsertTaskDialogTime, {
+    const dialog = this.dialog.open(InsertTaskDialogTimeComponent, {
       width: '250px',
       data: {
         shortDescription: this.shortDescription,
@@ -485,9 +485,9 @@ export class TimeTaskComponent implements OnInit {
         +timePickerResult[0],
         +timePickerResult[1]
       );
-      
+
       timeTask.startDate = newDate;
-      if (this.isRunningTimeTask(timeTask)){
+      if (this.isRunningTimeTask(timeTask)) {
         this.timeTaskService.runningTimeTask.startDate = newDate;
       }
     });

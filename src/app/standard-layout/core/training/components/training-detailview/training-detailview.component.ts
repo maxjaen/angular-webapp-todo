@@ -32,10 +32,10 @@ export class TrainingDetailViewComponent implements OnInit {
   private getTraining() {
     this.activeRouteService.params.subscribe((params) => {
       this.trainingService
-        .getTrainingByID(+params['id'])
+        .getTrainingByID(+params.id)
         .subscribe((training) => {
           this.actualTraining = training;
-          this.dataSource = this.actualTraining.exercises;         
+          this.dataSource = this.actualTraining.exercises;
         });
     });
   }
@@ -43,7 +43,7 @@ export class TrainingDetailViewComponent implements OnInit {
   public removeTraining() {
     if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
       this.activeRouteService.params.subscribe((params) => {
-        this.trainingService.deleteTrainingByID(+params['id']).subscribe(() => {
+        this.trainingService.deleteTrainingByID(+params.id).subscribe(() => {
           this.navigateBack();
         });
       });

@@ -12,7 +12,7 @@ export class TimeService {
 
   public createNewDate(): Date {
     const date: Date = new Date();
-    date.setHours(this.isDST(date) ? date.getUTCHours() + GER_UTC_PLUS_TWO: date.getUTCHours() + GER_UTC_PLUS_ONE);
+    date.setHours(this.isDST(date) ? date.getUTCHours() + GER_UTC_PLUS_TWO : date.getUTCHours() + GER_UTC_PLUS_ONE);
 
     return date;
   }
@@ -96,15 +96,15 @@ export class TimeService {
   /**
    * Checks if a date is in the Daylight Saving Time (DST) in germany.
    * DST starts on Sunday 29 March 2020, 02:00
-   * DST ends on Sunday 25 October 2020, 03:00 
+   * DST ends on Sunday 25 October 2020, 03:00s
    * https://24timezones.com/Germany/time
    * https://stackoverflow.com/questions/11887934/how-to-check-if-dst-daylight-saving-time-is-in-effect-and-if-so-the-offset
-   * 
+   *
    * @param date to be checked if in dst or not
    */
   private isDST(date: Date) {
-    let jan = new Date(date.getFullYear(), 0, 1).getTimezoneOffset();
-    let jul = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
-    return Math.max(jan, jul) != date.getTimezoneOffset(); 
+    const jan = new Date(date.getFullYear(), 0, 1).getTimezoneOffset();
+    const jul = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
+    return Math.max(jan, jul) !== date.getTimezoneOffset();
   }
 }

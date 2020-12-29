@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from '../../shared/services/core/settings.service';
 import { Settings } from '../settings/model/settings';
-import { startPageSetting } from '../settings/model/start-page-setting';
+import { StartPageSetting } from '../settings/model/start-page-setting';
 import { Router } from '@angular/router';
 import { TaskService } from '../../shared/services/core/task.service';
 import { TimeTaskService } from '../../shared/services/core/timetask.service';
@@ -50,7 +50,7 @@ export class DashboardComponent implements OnInit {
     this.getWeightPlaceholder();
   }
 
-  public goToUrl(component: startPageSetting) {
+  public goToUrl(component: StartPageSetting) {
     this.routerService.navigate(['/' + component.name]);
   }
 
@@ -66,7 +66,7 @@ export class DashboardComponent implements OnInit {
 
       this.placeHolderArray.push({
         key: 'tasks',
-        value: value,
+        value,
       });
     });
   }
@@ -103,14 +103,14 @@ export class DashboardComponent implements OnInit {
         const training = timeTrainings[timeTrainings.length - 1];
         const value = (
           training.exercises
-            .map((exercise) => +exercise['repetitions'])
+            .map((exercise) => +exercise.repetitions)
             .reduce((sum, current) => sum + current, 0) +
           5 * training.exercises.length
         ).toString();
 
         this.placeHolderArray.push({
           key: 'session',
-          value: value,
+          value,
         });
       }
     });
@@ -123,7 +123,7 @@ export class DashboardComponent implements OnInit {
 
         this.placeHolderArray.push({
           key: 'weight',
-          value: value,
+          value,
         });
       }
     });

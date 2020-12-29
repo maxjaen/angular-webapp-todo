@@ -40,17 +40,17 @@ export class PatternAnalysisService {
     switch (foundExercises[0].category) {
       case Pattern.WEIGHT:
         foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
-          const weight: number = +e['weight'];
+          const records: number = +e.records;
+          const repetitions: number = +e.repetitions;
+          const weight: number = +e.weight;
 
           sum += records * repetitions * weight;
         });
         return `${sum} kg`;
       case Pattern.COUNTABLE:
         foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
+          const records: number = +e.records;
+          const repetitions: number = +e.repetitions;
 
           sum += records * repetitions;
         });
@@ -58,17 +58,17 @@ export class PatternAnalysisService {
       case Pattern.CONDITIONAL1:
         let unit = '';
         foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
-          unit = e['unit'];
+          const records: number = +e.records;
+          const repetitions: number = +e.repetitions;
+          unit = e.unit;
 
           sum += records * repetitions;
         });
         return `${sum}${unit}`;
       case Pattern.CONDITIONAL2:
         foundExercises.forEach((e) => {
-          const period: number = +e['period'];
-          const speed: number = +e['speed'];
+          const period: number = +e.period;
+          const speed: number = +e.speed;
 
           sum += (speed / 60) * period;
         });
@@ -99,9 +99,9 @@ export class PatternAnalysisService {
     switch (foundExercises[0].category) {
       case Pattern.WEIGHT:
         foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
-          const weight: number = +e['weight'];
+          const records: number = +e.records;
+          const repetitions: number = +e.repetitions;
+          const weight: number = +e.weight;
 
           sum += records * repetitions * weight;
         });
@@ -109,16 +109,16 @@ export class PatternAnalysisService {
       case Pattern.COUNTABLE:
       case Pattern.CONDITIONAL1:
         foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
+          const records: number = +e.records;
+          const repetitions: number = +e.repetitions;
 
           sum += records * repetitions;
         });
         break;
       case Pattern.CONDITIONAL2:
         foundExercises.forEach((e) => {
-          const period: number = +e['period'];
-          const speed: number = +e['speed'];
+          const period: number = +e.period;
+          const speed: number = +e.speed;
 
           sum += (speed / 60) * period;
         });
@@ -149,36 +149,36 @@ export class PatternAnalysisService {
     switch (foundExercises[0].category) {
       case Pattern.WEIGHT:
         foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
-          const weight: number = +e['weight'];
+          const records: number = +e.records;
+          const repetitions: number = +e.repetitions;
+          const weight: number = +e.weight;
 
           entry += `${records}/${repetitions}/${weight}, `;
         });
         break;
       case Pattern.COUNTABLE:
         foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
+          const records: number = +e.records;
+          const repetitions: number = +e.repetitions;
 
           entry += `${records}/${repetitions}, `;
         });
         break;
       case Pattern.CONDITIONAL1:
         foundExercises.forEach((e) => {
-          const records: number = +e['records'];
-          const repetitions: number = +e['repetitions'];
-          const unit: string = e['unit'];
+          const records: number = +e.records;
+          const repetitions: number = +e.repetitions;
+          const unit: string = e.unit;
 
           entry += `${records}/${repetitions}${unit}, `;
         });
         break;
       case Pattern.CONDITIONAL2:
         foundExercises.forEach((e) => {
-          const period: number = +e['period'];
-          const unitPeriod: string = e['unitPeriod'];
-          const speed: number = +e['speed'];
-          const unitSpeed: string = e['unitSpeed'];
+          const period: number = +e.period;
+          const unitPeriod: string = e.unitPeriod;
+          const speed: number = +e.speed;
+          const unitSpeed: string = e.unitSpeed;
 
           entry += `${period} ${unitPeriod}/${speed} ${unitSpeed}, `;
         });

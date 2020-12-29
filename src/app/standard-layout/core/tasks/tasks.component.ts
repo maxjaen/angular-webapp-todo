@@ -41,9 +41,7 @@ export class TasksComponent implements OnInit {
    * Dialog for creating a task will be displayed when clicking escape on keyboard
    * @param event occurs when esc is pressed
    */
-  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(
-    _event: KeyboardEvent
-  ) {
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler() {
     this.toggleFastCreation();
   }
 
@@ -143,13 +141,13 @@ export class TasksComponent implements OnInit {
       id: 0,
       shortDescription: name,
       tempShortDescription: shortDescription,
-      longDescription: longDescription,
+      longDescription,
       tempLongDescription: longDescription,
-      date: date,
+      date,
       tempDate: date,
       hided: false,
       pinned: false,
-      project: project,
+      project,
     };
 
     this.taskService.postTask(task).subscribe(() => {
@@ -161,7 +159,7 @@ export class TasksComponent implements OnInit {
   /**
    * Make sure that each tasks temporary infos are same as current
    * in order to use actions like 'redo'
-   * @param tasks
+   * @param tasks to get temporary information from
    */
   private fillTemporaryInfos(tasks: Task[]) {
     tasks.forEach((task) => {

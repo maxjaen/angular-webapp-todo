@@ -3,12 +3,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Task } from '../model/task';
 
 @Component({
-  selector: 'insert-task-dialog',
+  selector: 'app-insert-task-dialog',
   templateUrl: 'insert-task-dialog.html',
 })
-export class InsertTaskDialog {
+export class InsertTaskDialogComponent {
   constructor(
-    public dialogRefService: MatDialogRef<InsertTaskDialog>,
+    public dialogRefService: MatDialogRef<InsertTaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Task
   ) {}
 

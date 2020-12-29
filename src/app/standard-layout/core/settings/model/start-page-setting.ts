@@ -1,4 +1,4 @@
-export class startPageSetting {
+export class StartPageSetting {
   name: string;
   symbol: string;
   displaytext: string;

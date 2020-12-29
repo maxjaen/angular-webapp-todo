@@ -7,8 +7,8 @@ import { WeightComponent } from './core/weight/weight.component';
 import { TasksComponent } from './core/tasks/tasks.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { InsertTaskDialog } from './core/tasks/dialogs/insert-task-dialog';
-import { InsertTaskDialogTime } from './core/timetask/dialogs/insert-task-dialog';
+import { InsertTaskDialogComponent } from './core/tasks/dialogs/insert-task-dialog';
+import { InsertTaskDialogTimeComponent } from './core/timetask/dialogs/insert-task-dialog';
 import { NgxTimerModule } from 'ngx-timer';
 import { AmazingTimePickerModule } from 'amazing-time-picker';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -59,8 +59,8 @@ import { ProjectViewComponent } from './core/tasks/views/project-view/project-vi
     TasksComponent,
     TimeTaskComponent,
     WeightComponent,
-    InsertTaskDialog,
-    InsertTaskDialogTime,
+    InsertTaskDialogComponent,
+    InsertTaskDialogTimeComponent,
     TrainingDetailViewComponent,
     SettingsComponent,
     SessionComponent,
@@ -122,6 +122,6 @@ import { ProjectViewComponent } from './core/tasks/views/project-view/project-vi
     TrainingDetailViewComponent,
     ExerciseOverViewComponent,
   ],
-  entryComponents: [InsertTaskDialog, InsertTaskDialogTime],
+  entryComponents: [InsertTaskDialogComponent, InsertTaskDialogTimeComponent],
 })
 export class StandardLayoutModule {}

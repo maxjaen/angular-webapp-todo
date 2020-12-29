@@ -26,7 +26,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 // https://stackoverflow.com/questions/30774874/enum-as-parameter-in-typescript
 interface Enum {
-    [id: number]: string
+    [id: number]: string;
 }
 interface ExerciseGroup {
   exercise: Exercise;
@@ -46,7 +46,7 @@ enum ExerciseGroupAction {
 export class TrainingOverViewComponent implements OnInit {
 
   public exerciseGroup: ExerciseGroup[] = [];
-  
+
   public training: Training;
   public currentTrainingDescription = '';
   private currentTrainingDate: Date = new Date();
@@ -132,7 +132,7 @@ export class TrainingOverViewComponent implements OnInit {
       month: 'long',
       day: 'numeric',
     };
-    
+
     return new Date(date).toLocaleDateString('en-GB', options);
   }
 
@@ -166,13 +166,13 @@ export class TrainingOverViewComponent implements OnInit {
   }
 
   public moreTrainingsThanDisplayed(): boolean {
-    return this.trainings.length - this.displayableTrainings > 0
+    return this.trainings.length - this.displayableTrainings > 0;
   }
 
   public selectTrainingTemplate(event: { value: Training }) {
     this.currentTrainingDescription = event.value.description;
     this.selectedTrainingType = event.value.type;
-    
+
     event.value.exercises.forEach((element) => {
       this.toggleCheckbox(element, { checked: true });
     });
@@ -182,7 +182,7 @@ export class TrainingOverViewComponent implements OnInit {
     this.selectedTrainingSession = this.enumToArray(TrainingSession).indexOf(event.value);
   }
 
-  public selectTrainingType(event: { value: string }) {  
+  public selectTrainingType(event: { value: string }) {
     this.selectedTrainingType = this.enumToArray(TrainingType).indexOf(event.value);
   }
 
@@ -238,7 +238,7 @@ export class TrainingOverViewComponent implements OnInit {
       // remove all exercise occurrences
       while (true) {
         const index = this.exerciseGroup.map(group => group.exercise.name).indexOf(exercise.name);
-        if (index != -1){
+        if (index !== -1) {
            this.utilityService.removeFromArray(index, this.exerciseGroup);
         } else {
           break;
@@ -278,7 +278,7 @@ export class TrainingOverViewComponent implements OnInit {
         this.exerciseGroup[index + 1].exercise.name === exercise.name) {
         index++;
     }
-    
+
     this.utilityService.removeFromArray(index, this.exerciseGroup);
   }
 
@@ -296,7 +296,7 @@ export class TrainingOverViewComponent implements OnInit {
 
     switch (action) {
       case ExerciseGroupAction.ADD:
-        let temp: ExerciseGroup[] = [
+        const temp: ExerciseGroup[] = [
           ...this.exerciseGroup.slice(0, index),
           newExerciseGroup,
           ...this.exerciseGroup.slice(index),
@@ -342,7 +342,7 @@ export class TrainingOverViewComponent implements OnInit {
         exercise.pattern = patternThree;
         return Object.getOwnPropertyNames(patternThree);
       case Pattern.CONDITIONAL2:
-        let patternTwo: ConditionalPattern2d = {
+        const patternTwo: ConditionalPattern2d = {
           category: Pattern.CONDITIONAL2,
           period: 0,
           speed: 0,
@@ -352,7 +352,7 @@ export class TrainingOverViewComponent implements OnInit {
         exercise.pattern = patternTwo;
         return Object.getOwnPropertyNames(patternTwo);
       case Pattern.CONDITIONAL1:
-        let patternOne: ConditionalPattern = {
+        const patternOne: ConditionalPattern = {
           category: Pattern.CONDITIONAL1,
           records: 0,
           repetitions: 0,
@@ -393,7 +393,7 @@ export class TrainingOverViewComponent implements OnInit {
    * @returns exercise formatted as string
    */
   private buildExerciseInfo(exercise: Exercise): string {
-    const ignoredProperties: string[] = ['name', 'category']
+    const ignoredProperties: string[] = ['name', 'category'];
     const properties: string[] = Object.getOwnPropertyNames(exercise).filter(
       (e) => ignoredProperties.indexOf(e) === -1
     );
@@ -436,7 +436,7 @@ export class TrainingOverViewComponent implements OnInit {
       .filter(value => !isNaN(Number(value)))
         .map(key => e[key]);
   }
-  
+
   /**
    * Drag and drop exercises to different positions during creation
    */

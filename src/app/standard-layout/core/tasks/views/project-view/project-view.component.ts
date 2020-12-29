@@ -109,7 +109,7 @@ export class ProjectViewComponent implements OnInit {
   public dropTaskInGroup(event: CdkDragDrop<string[]>) {
     if (event.previousContainer.id !== event.container.id) {
       this.tasks
-        .filter((task) => task.id == event.item.data.id)
+        .filter((task) => task.id === event.item.data.id)
         .forEach((filteredTask) => {
           filteredTask.project = event.container.id;
         });
@@ -163,7 +163,7 @@ export class ProjectViewComponent implements OnInit {
   }
 
   public retrieveTasksWithProject(project: string): Task[] {
-    return this.tasks.filter((task) => task.project == project);
+    return this.tasks.filter((task) => task.project === project);
   }
 
   public isRunningTask(task: Task): boolean {
@@ -172,7 +172,7 @@ export class ProjectViewComponent implements OnInit {
 
   public isProjectGroupOfRunningTask(projectId: string): boolean {
     const task = this.tasks.filter(
-      (e) => e.shortDescription == this.timeTaskService.runningTimeTask.title
+      (e) => e.shortDescription === this.timeTaskService.runningTimeTask.title
     )[0];
 
     return task && task.project === projectId;

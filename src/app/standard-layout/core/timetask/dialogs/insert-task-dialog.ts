@@ -7,17 +7,17 @@ import { TimeService } from 'src/app/standard-layout/shared/services/utils/time.
 import { UtilityService } from 'src/app/standard-layout/shared/services/utils/utility.service';
 
 @Component({
-  selector: 'insert-task-dialog',
+  selector: 'app-insert-task-dialog',
   templateUrl: 'insert-task-dialog.html',
 })
-export class InsertTaskDialogTime {
+export class InsertTaskDialogTimeComponent {
   tasks: Task[];
 
   constructor(
     private utilityService: UtilityService,
     private taskService: TaskService,
     private timeService: TimeService,
-    public dialogRefService: MatDialogRef<InsertTaskDialogTime>,
+    public dialogRefService: MatDialogRef<InsertTaskDialogTimeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TimeTask
   ) {
     this.taskService.getTasks().subscribe((tasks) => {
@@ -36,11 +36,11 @@ export class InsertTaskDialogTime {
 
       tasks.push({
         id: 0,
-        shortDescription: shortDescription,
+        shortDescription,
         tempShortDescription: shortDescription,
-        longDescription: longDescription,
+        longDescription,
         tempLongDescription: longDescription,
-        date: date,
+        date,
         tempDate: date,
         hided: false,
         pinned: true,

@@ -27,7 +27,7 @@ import { TimeTaskService } from 'src/app/standard-layout/shared/services/core/ti
 import { UtilityService } from 'src/app/standard-layout/shared/services/utils/utility.service';
 import { TimeTask } from '../../../timetask/model/timetask';
 import { Settings } from '../../../settings/model/settings';
-import { InsertTaskDialog } from '../../dialogs/insert-task-dialog';
+import { InsertTaskDialogComponent } from '../../dialogs/insert-task-dialog';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Color } from 'src/app/standard-layout/shared/model/Enums';
@@ -103,7 +103,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     this.setTimerConfiguration();
   }
 
-  ngOnChanges(_changes: SimpleChanges) {
+  ngOnChanges() {
     if (this.tasks && this.settings) {
       this.onTaskCategoriesChange();
       this.onSettingsChange();
@@ -391,7 +391,7 @@ export class PinViewComponent implements OnInit, OnChanges {
   openInsertTaskDialog() {
     this.hideSelectedTask();
 
-    const dialog = this.dialogService.open(InsertTaskDialog, {
+    const dialog = this.dialogService.open(InsertTaskDialogComponent, {
       width: '250px',
       data: {
         shortDescription: this.shortDescription,

@@ -5,7 +5,7 @@ export enum Color {
   GREEN = 'green',
   BLUE = 'blue',
   YELLOW = 'yellow',
-  ORANGE ='orange',
+  ORANGE = 'orange',
   CYAN = 'cyan',
   WHITE = 'white',
   LIGHTGREEN = 'lightGreen',

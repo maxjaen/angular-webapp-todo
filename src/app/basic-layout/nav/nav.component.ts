@@ -14,13 +14,20 @@ import { ThemeService } from 'src/app/standard-layout/shared/services/utils/them
 export class NavComponent implements OnInit {
   settings: Settings;
 
+  isHandset$: Observable<boolean> = this.breakpointObserver
+    .observe(Breakpoints.Handset)
+    .pipe(
+      map((result) => result.matches),
+      shareReplay()
+    );
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private settingsService: SettingsService,
     private themeService: ThemeService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.themeService.setTheme('blue');
     this.getSettings();
   }
@@ -36,11 +43,4 @@ export class NavComponent implements OnInit {
       document.activeElement.blur();
     }
   }
-
-  isHandset$: Observable<boolean> = this.breakpointObserver
-    .observe(Breakpoints.Handset)
-    .pipe(
-      map((result) => result.matches),
-      shareReplay()
-    );
 }

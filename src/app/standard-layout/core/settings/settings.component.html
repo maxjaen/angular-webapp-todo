@@ -1,10 +1,5 @@
 <div class="content">
     <div *ngIf="settings">
-        <div class="fixedButtons-rightbottom">
-            <button class="control-buttons-gray" title="Save settings" (click)="saveSettings()" mat-mini-fab>
-                <mat-icon>save_alt</mat-icon>
-            </button>
-        </div>
         <div class="largeToBottom" *ngFor="let category of getBaseListCategories()">
             <div class="largeToBottom">
                 <h2>{{ category | uppercase }}</h2>
@@ -18,7 +13,7 @@
                     <div class="right">
                         <section class="example-section">
                             <mat-slide-toggle class="example-margin" [color]="" [checked]="setting.value" [disabled]=""
-                                (change)="toggleSlider(setting, $event)">
+                                (change)="toggleSlider(setting)">
                             </mat-slide-toggle>
                         </section>
                     </div>

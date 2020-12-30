@@ -33,8 +33,12 @@ export class NavComponent implements OnInit {
   }
 
   private getSettings() {
-    this.settingsService.getSettings().subscribe((settings) => {
+    this.settingsService.getSettings().subscribe(settings => {
       this.settings = settings[0];
+    });
+    // react on changed settings
+    this.settingsService.settings.subscribe({
+      next: (settings) => this.settings = settings
     });
   }
 

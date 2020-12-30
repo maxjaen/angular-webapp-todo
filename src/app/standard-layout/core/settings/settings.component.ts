@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { SettingsService } from '../../shared/services/core/settings.service';
 import { Settings } from './model/settings';
-import { MatSnackBar } from '@angular/material';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { BaseSetting } from './model/base-setting';
 import { UtilityService } from '../../shared/services/utils/utility.service';
@@ -19,8 +18,7 @@ export class SettingsComponent implements OnInit {
     public settingsService: SettingsService,
     private utilityService: UtilityService,
     private keyService: KeyService,
-    private tabTitleService: Title,
-    private snackBarService: MatSnackBar
+    private tabTitleService: Title
   ) {
     this.tabTitleService.setTitle(this.keyService.getKeyTranslation('s1'));
   }
@@ -32,13 +30,6 @@ export class SettingsComponent implements OnInit {
   private initSettings() {
     this.settingsService.getSettings().subscribe((settings) => {
       this.settings = settings[0];
-    });
-  }
-
-  public saveSettings() {
-    this.settingsService.putSettings(this.settings).subscribe(() => {
-      this.displayNotification(this.keyService.getKeyTranslation('s2'), null);
-      window.location.reload();
     });
   }
 
@@ -63,18 +54,10 @@ export class SettingsComponent implements OnInit {
    * @param setting to be changed
    * @param event toggle event on user interface
    */
-  public toggleSlider(setting: BaseSetting, event: any) {
+  public toggleSlider(setting: BaseSetting) {
     setting.value = !setting.value;
-  }
-
-  /**
-   * Opens popup menu to show new notifications on user interface
-   * @param message to be displayed
-   * @param action to be taken
-   */
-  private displayNotification(message: string, action: string) {
-    this.snackBarService.open(message, action, {
-      duration: 4000,
-    });
+  
+    this.settingsService.settings.next(this.settings); // multicast settings change
+    this.settingsService.putSettings(this.settings).subscribe(); // save changed settings to database
   }
 }

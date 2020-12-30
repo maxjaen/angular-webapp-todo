@@ -112,6 +112,9 @@
                     <button title="Archive" (click)="hideTask(task)" mat-button>
                         <mat-icon>move_to_inbox</mat-icon>
                     </button>
+                    <button title="Duplicate task" (click)="duplicateTask(task)" mat-button>
+                        <mat-icon>filter_none</mat-icon>
+                    </button>
                     <button title="Delete" (click)="removeTask(task)" mat-button>
                         <mat-icon>delete</mat-icon>
                     </button>
@@ -219,6 +222,9 @@
                     </button>
                     <button title="Archive task" (click)="hideTask(task)" mat-button>
                         <mat-icon>move_to_inbox</mat-icon>
+                    </button>
+                    <button title="Duplicate task" (click)="duplicateTask(task)" mat-button>
+                        <mat-icon>filter_none</mat-icon>
                     </button>
                     <button title="Delete task" (click)="removeTask(task)" mat-button>
                         <mat-icon>delete</mat-icon>

@@ -188,6 +188,29 @@ export class PinViewComponent implements OnInit, OnChanges {
     });
   }
 
+  public duplicateTask(task: Task) {
+    const tempTask: Task = {
+      id: 0,
+      shortDescription: task.shortDescription,
+      tempShortDescription: task.tempShortDescription,
+      longDescription: task.longDescription,
+      tempLongDescription: task.tempLongDescription,
+      date: task.date,
+      tempDate: task.tempDate,
+      hided: task.hided,
+      pinned: task.pinned,
+      project: task.project,
+    };
+
+    this.taskService.postTask(tempTask).subscribe(() => {
+      this.displayNotification(
+        this.keyService.getKeyTranslation('ta3'),
+        null
+      );
+      this.reload.emit();
+    });
+  }
+
   public removeTask(task: Task) {
     if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
       // confirmed

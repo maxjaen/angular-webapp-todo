@@ -10,18 +10,23 @@
       "general": {
         "showTasksModule": {
           "value": false,
-          "displaytext": "Show Tasks module",
+          "displaytext": "Show tasks module",
           "category": "general"
         },
         "showFitnessModule": {
           "value": true,
-          "displaytext": "Show Fitness module",
+          "displaytext": "Show fitness module",
+          "category": "general"
+        },
+        "showTitleBar": {
+          "value": false,
+          "displaytext": "Show title bar",
           "category": "general"
         }
       },
       "task": {
         "showStatusColor": {
-          "value": true,
+          "value": false,
           "displaytext": "Show status color",
           "category": "task"
         },
@@ -36,7 +41,7 @@
           "category": "task"
         },
         "showUnpinnedTasks": {
-          "value": false,
+          "value": true,
           "displaytext": "Show unpinned Tasks",
           "category": "task"
         }

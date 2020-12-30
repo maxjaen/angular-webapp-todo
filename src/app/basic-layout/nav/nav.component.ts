@@ -5,6 +5,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { SettingsService } from 'src/app/standard-layout/shared/services/core/settings.service';
 import { Settings } from 'src/app/standard-layout/core/settings/model/settings';
 import { ThemeService } from 'src/app/standard-layout/shared/services/utils/theme.service';
+import { TimeService } from 'src/app/standard-layout/shared/services/utils/time.service';
 
 @Component({
   selector: 'app-nav',
@@ -13,6 +14,7 @@ import { ThemeService } from 'src/app/standard-layout/shared/services/utils/them
 })
 export class NavComponent implements OnInit {
   settings: Settings;
+  time = this.timeService.createNewDate();
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -24,12 +26,15 @@ export class NavComponent implements OnInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private settingsService: SettingsService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private timeService: TimeService
   ) {}
 
   ngOnInit() {
     this.themeService.setTheme('blue');
+
     this.getSettings();
+    this.updateClock();
   }
 
   private getSettings() {
@@ -40,6 +45,12 @@ export class NavComponent implements OnInit {
     this.settingsService.settings.subscribe({
       next: (settings) => this.settings = settings
     });
+  }
+
+  private updateClock() {
+    setInterval(() => {
+       this.time = this.timeService.createNewDate();
+    }, 1000);
   }
 
   public unFocusAfterClick() {

@@ -56,7 +56,7 @@ export class SettingsComponent implements OnInit {
    */
   public toggleSlider(setting: BaseSetting) {
     setting.value = !setting.value;
-  
+
     this.settingsService.settings.next(this.settings); // multicast settings change
     this.settingsService.putSettings(this.settings).subscribe(); // save changed settings to database
   }

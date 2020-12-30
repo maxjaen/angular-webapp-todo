@@ -27,12 +27,13 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <div *ngIf="settings && settings.general.showTitleBar.value">
-      <mat-toolbar color="primary">
+      <mat-toolbar class="title-bar" color="primary">
         <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
           *ngIf="isHandset$ | async">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
-        <span>Presence</span>
+        <span class="clock">{{ time | date: 'hh:mm:ss a' }}</span>
+        <span class="title">Presence</span>
       </mat-toolbar>
     </div>
     <!-- Add Content Here -->

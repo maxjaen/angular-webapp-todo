@@ -26,10 +26,11 @@ import { View } from '../../shared/model/Enums';
   styleUrls: ['./tasks.component.scss'],
 })
 export class TasksComponent implements OnInit {
+  public settings: Settings;
+
   public tasks: Task[];
   public tasksHided: Task[];
   public tasksRunning: TimeTask[];
-  public settings: Settings;
 
   @ViewChild('creationField') inputElement: ElementRef;
   public showCreationField = false;
@@ -46,13 +47,11 @@ export class TasksComponent implements OnInit {
   }
 
   constructor(
-    public timeService: TimeService,
-    public settingsService: SettingsService,
-    public taskService: TaskService,
-    public keyService: KeyService,
+    private timeService: TimeService,
+    private settingsService: SettingsService,
+    private taskService: TaskService,
+    private keyService: KeyService,
     private tabTitleService: Title,
-    public utilityService: UtilityService,
-    public dialogService: MatDialog,
     private timeTaskService: TimeTaskService,
     private snackBarService: MatSnackBar
   ) {}

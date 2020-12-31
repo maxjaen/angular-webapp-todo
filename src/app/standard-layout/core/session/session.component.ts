@@ -9,6 +9,8 @@ import { KeyService } from '../../shared/services/utils/key.service';
 import { SessionState, Pattern } from '../../shared/model/Enums';
 import { map } from 'rxjs/operators';
 import { playSound } from '../../shared/utils/SoundUtils';
+import { SettingsService } from '../../shared/services/core/settings.service';
+import { Settings } from '../settings/model/settings';
 
 enum Sound {
   PHONE = 'phone',
@@ -20,6 +22,8 @@ enum Sound {
   styleUrls: ['./session.component.scss'],
 })
 export class SessionComponent implements OnInit {
+  public settings: Settings;
+
   public trainings: Training[];
   public selectedTraining: Training;
   private exerciseInterval: number;
@@ -34,6 +38,7 @@ export class SessionComponent implements OnInit {
   private state: SessionState = SessionState.INITIAL;
 
   constructor(
+    private settingsService: SettingsService,
     private utilityService: UtilityService,
     private trainingService: TrainingService,
     private keyService: KeyService,
@@ -45,6 +50,7 @@ export class SessionComponent implements OnInit {
 
   ngOnInit() {
     this.initTrainings();
+    this.initSettings();
   }
 
   public initTrainings() {
@@ -73,6 +79,12 @@ export class SessionComponent implements OnInit {
       .subscribe((trainings) => {
         this.trainings = trainings;
       });
+  }
+
+  private initSettings() {
+    this.settingsService.getSettings().subscribe((settings) => {
+      this.settings = settings[0];
+    });
   }
 
   /**
@@ -222,7 +234,7 @@ export class SessionComponent implements OnInit {
     this.readyCountdown = 5;
 
     (async () => {
-      playSound(Sound.SNAPCHAT);
+      this.playSound(Sound.SNAPCHAT);
       await this.waitMilliseconds(2000);
 
       this.currentExerciseIndex = index;
@@ -237,7 +249,7 @@ export class SessionComponent implements OnInit {
 
         if (iterationCountdown === 1 && endSound) {
           // play sound before exercise finished
-          playSound(Sound.PHONE);
+          this.playSound(Sound.PHONE);
           endSound = false;
         }
         if (iterationCountdown >= 0) {
@@ -293,6 +305,12 @@ export class SessionComponent implements OnInit {
    */
   public workoutDurationInSeconds() {
     return Math.round(this.workoutCountdown / 60);
+  }
+
+  private playSound(sound: Sound) {
+    if (this.settings.session.playSound.value) {
+      playSound(sound);
+    }
   }
 
   /**

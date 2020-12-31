@@ -1,5 +1,8 @@
-<div *ngIf="trainings">
-    <div class="content">
+<div class="content">
+    <div class="notifications" *ngIf="!trainings">
+        No time trainings created (every exercise needs to have the conditional 1 pattern)!
+    </div>
+    <div *ngIf="trainings">
         <div class="insert">
             <div>
                 <button class="session-button" (click)="doWorkout(0)" mat-flat-button color="primary">Start</button>

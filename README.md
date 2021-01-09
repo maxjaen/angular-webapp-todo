@@ -14,8 +14,6 @@ Note on the project
 - Since this is a pure hobby project of mine, commit messages and the code quality were not always put into focus by me - this lies mainly in the generation of new functions.
   - If, on the other hand, I work professionally in a project, then the code quality and a strong project team are in the foreground, where everyone contributes his or her share for the common higher goal.
   - Since I work alone on this project, there is only the master branch. If, on the other hand, I were to argue together in a team, the standardized git workflow with release and feature branches is of course to be preferred.
-- I was particularly inspired by [here](https://symmetricstrength.com/), [here](https://www.reddit.com/r/productivity/comments/eg9tf9/) and [here](https://www.youtube.com/watch?v=nH0oO1aWpSs) in this project.
-- The use of code snippets is not permitted for commercial use.
 
 <br>
 

@@ -532,7 +532,7 @@ export class TimeTaskComponent implements OnInit {
       return this.keyService.getColor(Color.RED);
     }
 
-    return this.keyService.getColor(Color.DARKGREEN);
+    return this.keyService.getColor(Color.GREEN);
   }
 
   /**

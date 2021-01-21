@@ -284,7 +284,7 @@ export class PinViewComponent implements OnInit, OnChanges {
     }
 
     // Standard colour
-    return this.keyService.getColor(Color.DARKGREEN);
+    return this.keyService.getColor(Color.GREEN);
   }
 
   /**

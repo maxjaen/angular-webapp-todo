@@ -13,8 +13,8 @@ import { SettingsService } from '../../shared/services/core/settings.service';
 import { Settings } from '../settings/model/settings';
 
 enum Sound {
-  PHONE = 'phone',
-  SNAPCHAT = 'snapchat'
+  PHONE_MP3 = 'phone.mp3',
+  SNAPCHAT_MP3 = 'snapchat.mp3'
 }
 @Component({
   selector: 'app-session',
@@ -234,7 +234,7 @@ export class SessionComponent implements OnInit {
     this.readyCountdown = 5;
 
     (async () => {
-      this.playSound(Sound.SNAPCHAT);
+      this.playSound(Sound.SNAPCHAT_MP3);
       await this.waitMilliseconds(2000);
 
       this.currentExerciseIndex = index;
@@ -249,7 +249,7 @@ export class SessionComponent implements OnInit {
 
         if (iterationCountdown === 1 && endSound) {
           // play sound before exercise finished
-          this.playSound(Sound.PHONE);
+          this.playSound(Sound.PHONE_MP3);
           endSound = false;
         }
         if (iterationCountdown >= 0) {

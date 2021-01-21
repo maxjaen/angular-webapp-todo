@@ -5,12 +5,10 @@
   "violet": "#6e36c9",
   "blue": "#45679d",
   "cyan": "#2f98af",
-  "darkGreen": "#459d63",
-  "lightGreen": "#95C936",
-  "yellow": "#aa982e",
+  "yellow": "#9d8f45",
   "orange": "#C97136",
   "red": "#9d4545",
+  "purple": "#86459d",
   "green": "#459d4a",
-  "darkGray": "#424242",
-  "hoverdarkGray": "#464545"
+  "gray": "#424242"
 }

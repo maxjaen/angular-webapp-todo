@@ -8,9 +8,8 @@ export enum Color {
   ORANGE = 'orange',
   CYAN = 'cyan',
   WHITE = 'white',
-  LIGHTGREEN = 'lightGreen',
-  DARKGREEN = 'darkGreen',
-  DARKGRAY = 'darkGray'
+  PURPLE = 'purple',
+  GRAY = 'gray'
 }
 
 /** TASKS */

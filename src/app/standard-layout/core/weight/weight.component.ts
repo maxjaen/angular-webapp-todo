@@ -223,26 +223,27 @@ export class WeightComponent implements OnInit {
   public setBorderColor(weight: Weight): string {
     const highestValue: number = this.getHighestWeightValue();
     if (weight.value === highestValue) {
-      return this.keyService.getColor(Color.DARKGREEN);
+      return this.keyService.getColor(Color.PURPLE);
     }
 
     const lowestValue: number = this.getLowestWeightValue();
     if (weight.value === lowestValue) {
-      return this.keyService.getColor(Color.RED);
+      return this.keyService.getColor(Color.PURPLE);
     }
 
     const averageValue: number = this.getAverageWeightValue();
     if (weight.value <= averageValue + 1 && weight.value >= averageValue - 1) {
       return this.keyService.getColor(Color.YELLOW);
     }
+
     if (weight.value < averageValue - 1) {
-      return this.keyService.getColor(Color.ORANGE);
+      return this.keyService.getColor(Color.RED);
     }
     if (weight.value > averageValue + 1) {
-      return this.keyService.getColor(Color.LIGHTGREEN);
+      return this.keyService.getColor(Color.GREEN);
     }
 
-    return this.keyService.getColor(Color.DARKGRAY);
+    return this.keyService.getColor(Color.BLUE);
   }
 
   /**

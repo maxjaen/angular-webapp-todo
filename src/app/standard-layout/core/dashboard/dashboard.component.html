@@ -2,27 +2,26 @@
     <div *ngIf="settings">
         <h1 class="mat-h1">Dashboard</h1>
         <div *ngFor="let section of sections">
-            <div *ngIf="hasTaskType(section) && settings.general.showTasksModule.value">
+            <div *ngIf="settings.general.showTasksModule.value && hasTaskType(section)">
                 <mat-card class="dashboard-card primary-bg" (click)="goToUrl(section.name)">
                     <mat-card-content class="dashboard-card-content">
                         <div class="tab-symbol">
                             <mat-icon>{{ section.symbol }}</mat-icon>
                         </div>
                         <div class="tab-message">
-                            {{ buildDisplayableMessage(section)}}
+                            {{ buildDisplayableSectionMessage(section)}}
                         </div>
                     </mat-card-content>
                 </mat-card>
             </div>
-            <div
-                *ngIf="hasFitnessType(section) && settings.general.showFitnessModule.value">
+            <div *ngIf="settings.general.showFitnessModule.value && hasFitnessType(section)">
                 <mat-card class="dashboard-card primary-bg" (click)="goToUrl(section.name)">
                     <mat-card-content class="dashboard-card-content">
                         <div class="tab-symbol">
                             <mat-icon>{{section.symbol}}</mat-icon>
                         </div>
                         <div class="tab-message">
-                            {{ buildDisplayableMessage(section)}}
+                            {{ buildDisplayableSectionMessage(section)}}
                         </div>
                     </mat-card-content>
                 </mat-card>
@@ -34,7 +33,7 @@
                             <mat-icon>{{section.symbol}}</mat-icon>
                         </div>
                         <div class="tab-message">
-                            {{ buildDisplayableMessage(section)}}
+                            {{ buildDisplayableSectionMessage(section)}}
                         </div>
                     </mat-card-content>
                 </mat-card>

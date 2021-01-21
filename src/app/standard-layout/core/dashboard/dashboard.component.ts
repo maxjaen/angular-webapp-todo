@@ -11,10 +11,28 @@ import { TimeService } from '../../shared/services/utils/time.service';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { Pattern } from '../../shared/model/Enums';
 import { Section } from './model/section';
+import { first, last, notEmpty } from '../../shared/utils/ArrayUtils';
+import { Exercise } from '../exercise/model/exercise';
 
-interface KeyValuePair {
-  key: string;
+const UNDERSCORE = '_';
+const SLASH = '/';
+
+interface ModulePlaceholder {
+  name: string;
   value: string;
+}
+
+enum SectionType {
+  GENERAL = 'general',
+  TASK = 'task',
+  FITNESS = 'fitness'
+}
+
+enum Module {
+  TASKS = 'tasks',
+  TIMETASK = 'timetask',
+  SESSION = 'session',
+  WEIGHT = 'weight'
 }
 
 @Component({
@@ -26,8 +44,7 @@ export class DashboardComponent implements OnInit {
   public sections: Section[];
   public settings: Settings;
 
-  public placeHolderArray: KeyValuePair[] = [];
-  private ignoreModules: string[] = ['settings', 'training', 'exercise'];
+  public placeHolderArray: ModulePlaceholder[] = [];
 
   constructor(
     public settingsService: SettingsService,
@@ -44,7 +61,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getSections();
+    this.getDisplayableSections();
     this.getSettings();
     this.getTaskPlaceholder();
     this.getTimeTaskPlaceholder();
@@ -53,16 +70,16 @@ export class DashboardComponent implements OnInit {
   }
 
   public goToUrl(section: string) {
-    this.routerService.navigate(['/' + section]);
+    this.routerService.navigate([SLASH + section]);
   }
 
-  private getSections() {
+  private getDisplayableSections() {
     this.sections = this.keyService.getSections();
   }
 
   private getSettings() {
     this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings[0];
+      this.settings = first(settings);
     });
   }
 
@@ -71,7 +88,7 @@ export class DashboardComponent implements OnInit {
       const value = tasks.filter((task) => task.pinned).length.toString();
 
       this.placeHolderArray.push({
-        key: 'tasks',
+        name: Module.TASKS,
         value,
       });
     });
@@ -91,7 +108,7 @@ export class DashboardComponent implements OnInit {
         .reduce((a, b) => a + b, 0);
 
       this.placeHolderArray.push({
-        key: 'timetask',
+        name: Module.TIMETASK,
         value: this.timeService.formatMillisecondsToString(value).toString(),
       });
     });
@@ -106,16 +123,16 @@ export class DashboardComponent implements OnInit {
           )
         );
 
-        const training = timeTrainings[timeTrainings.length - 1];
+        const lastTraining = last(timeTrainings);
         const value = (
-          training.exercises
-            .map((exercise) => +exercise.repetitions)
-            .reduce((sum, current) => sum + current, 0) +
-          5 * training.exercises.length
+          lastTraining.exercises
+            .map((exercise: Exercise) => +exercise.repetitions)
+            .reduce((sum: number, current: number) => sum + current, 0) +
+          5 * lastTraining.exercises.length
         ).toString();
 
         this.placeHolderArray.push({
-          key: 'session',
+          name: Module.SESSION,
           value,
         });
       }
@@ -124,82 +141,50 @@ export class DashboardComponent implements OnInit {
 
   private getWeightPlaceholder() {
     this.weightService.getAllWeights().subscribe((weights) => {
-      if (weights.length > 0) {
-        const value = weights[weights.length - 1].value.toString();
+      if (notEmpty(weights)) {
+        const lastWeight = last(weights);
 
         this.placeHolderArray.push({
-          key: 'weight',
-          value,
+          name: Module.WEIGHT,
+          value: lastWeight.value,
         });
       }
     });
   }
 
-  /**
-   * Get value from element in placeholder array
-   * @param key to identify an specific element from the array
-   */
-  public getPlaceHolderValueFromKey(key: string): string {
-    return this.placeHolderArray.filter(
-      (placeholder) => placeholder.key === key
-    )[0].value;
-  }
-
-  /**
-   * Checks if element is in placeholder array and not undefined
-   * @param key to identify an specific element from the array
-   */
-  public hasPlaceHolder(key: string): boolean {
-    return (
-      this.placeHolderArray.filter(
-        (placeholder) => placeholder.key === key
-      )[0] !== undefined
-    );
-  }
-
-  /**
-   * Checks if an argument of type string is an ignored module
-   * @param str check if ignore module
-   */
-  public isIgnoredModule(str: string) {
-    return this.ignoreModules.indexOf(str) > -1;
-  }
-
-  /**
-   * Replace characters in a string
-   * @param word where you want to replace characters
-   * @param from character
-   * @param to character
-   */
-  public replacePlaceholder(word: string, from: string, to: string) {
-    return word.replace(from, to);
-  }
-
-  public buildDisplayableMessage(section: Section) {
-    let str = '';
-
-    if (this.placeHolderArray && this.placeHolderArray.length > 0
-        && section.displaytext.includes('_')
-        && this.hasPlaceHolder(section.name)) {
-      str = this.replacePlaceholder(section.displaytext, '_', this.getPlaceHolderValueFromKey(section.name));
-    } else if (!section.displaytext.includes('_')) {
-      str = section.displaytext;
-    } else if (!this.hasPlaceHolder(section.name) && !this.isIgnoredModule(section.name)) {
-      str = 'No data available';
+  public buildDisplayableSectionMessage(section: Section) {
+    if (this.placeHolderArray && notEmpty(this.placeHolderArray)
+        && section.displaytext.includes(UNDERSCORE)
+        && this.hasPlaceHolder(this.placeHolderArray, section)) {
+      return section.displaytext.replace(UNDERSCORE, this.getModulePlaceHolderValue(this.placeHolderArray, section));
+    } else if (!section.displaytext.includes(UNDERSCORE)) {
+      return section.displaytext;
     }
 
-    return str;
+    return 'No data available';
+  }
+
+  public getModulePlaceHolderValue(array: ModulePlaceholder[], section: Section): string {
+    return first(
+      array.filter((placeholder) => placeholder.name === section.name)
+    ).value;
+  }
+
+  public hasPlaceHolder(array: ModulePlaceholder[], section: Section): boolean {
+    return first(
+      array.filter((placeholder) => placeholder.name === section.name)
+     ) !== undefined;
   }
 
   public hasTaskType(section: Section): boolean {
-    return section.type === 'task';
+    return section.type === SectionType.TASK;
   }
 
   public hasFitnessType(section: Section): boolean {
-    return section.type === 'fitness';
+    return section.type === SectionType.FITNESS;
   }
 
   public hasGeneralType(section: Section): boolean {
-    return section.type === 'general';
+    return section.type === SectionType.GENERAL;
   }
 }

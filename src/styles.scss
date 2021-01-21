@@ -89,10 +89,6 @@ $white: white;
 mat-card {
   padding: 15px 15px 15px 20px;
   background-color: $main-background-gray;
-  border-left: 2px solid $main;
-  border-right: 2px solid $main;
-  border-top: 2px solid $taskbar-gray;
-  border-bottom: 2px solid $taskbar-gray;
 }
 
 mat-card:hover {

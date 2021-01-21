@@ -139,13 +139,13 @@ export class TrainingOverViewComponent implements OnInit {
   public setBorderColor(training: Training): string {
     switch (training.type) {
       case TrainingType.OUTSIDE:
-        return this.keyService.getColor(Color.YELLOW);
+        return this.keyService.getColor(Color.RED);
       case TrainingType.GYM:
         return this.keyService.getColor(Color.BLUE);
       case TrainingType.HOME:
-        return this.keyService.getColor(Color.ORANGE);
+        return this.keyService.getColor(Color.PURPLE);
       default:
-            return this.keyService.getColor(Color.DARKGRAY);
+            return this.keyService.getColor(Color.WHITE);
     }
   }
 

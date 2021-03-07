@@ -3,37 +3,37 @@
         {
             "name": "tasks",
             "symbol": "post_add",
-            "displaytext": "You have _ pinned task/s",
+            "displayText": "You have _ pinned task/s",
             "type": "task"
         },
         {
             "name": "timetask",
             "symbol": "timer",
-            "displaytext": "You have worked _ today",
+            "displayText": "You have worked _ today",
             "type": "task"
         },
         {
             "name": "training",
             "symbol": "emoji_events",
-            "displaytext": "Create or view your trainings",
+            "displayText": "Create or view your trainings",
             "type": "fitness"
         },
         {
             "name": "session",
             "symbol": "fitness_center",
-            "displaytext": "Your previous workout session lasts _ seconds",
+            "displayText": "Your previous workout session lasts _ seconds",
             "type": "fitness"
         },
         {
             "name": "weight",
             "symbol": "point_of_sale",
-            "displaytext": "Your weight is currently _ kilograms",
+            "displayText": "Your weight is currently _ kilograms",
             "type": "fitness"
         },
         {
             "name": "settings",
             "symbol": "settings",
-            "displaytext": "Change whatever you want",
+            "displayText": "Change whatever you want",
             "type": "general"
         }
     ]

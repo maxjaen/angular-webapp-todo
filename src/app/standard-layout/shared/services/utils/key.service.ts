@@ -6,37 +6,37 @@ import shortcuts from '../../../../../assets/json/shortcuts.json';
 import sections from '../../../../../assets/json/sections.json';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class KeyService {
-  constructor() {}
 
-  public getShortcut(shortcut: string): string {
-    return shortcuts[shortcut];
-  }
+    constructor() {}
 
-  public getShortcuts(): any {
-    return shortcuts;
-  }
+    public getShortcut(shortcut: string): string {
+        return shortcuts[shortcut];
+    }
 
-  public getColor(color: Color): string {
-    return colors[color];
-  }
+    public getShortcuts(): any {
+        return shortcuts;
+    }
 
-  public getColors(): any {
-    return colors;
-  }
+    public getColor(color: Color): string {
+        return colors[color];
+    }
 
-  public getKeyTranslation(key: string): string {
-    return translation[key];
-  }
+    public getColors(): any {
+        return colors;
+    }
 
-  public getKeyTranslations(): any {
-    return translation;
-  }
+    public getKeyTranslation(key: string): string {
+        return translation[key];
+    }
 
-  public getSections(): any {
-    const elem = 'sections';
-    return sections[elem];
-  }
+    public getKeyTranslations(): any {
+        return translation;
+    }
+
+    public getSections(): any {
+        return sections.sections;
+    }
 }

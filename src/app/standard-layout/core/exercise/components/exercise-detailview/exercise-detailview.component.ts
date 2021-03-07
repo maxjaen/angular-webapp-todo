@@ -8,70 +8,84 @@ import { GraphDataService } from 'src/app/standard-layout/shared/services/utils/
 import { Pattern } from 'src/app/standard-layout/shared/model/Enums';
 
 @Component({
-  selector: 'app-exercise-detailview',
-  templateUrl: './exercise-detailview.component.html',
-  styleUrls: ['./exercise-detailview.component.scss'],
+    selector: 'app-exercise-detailview',
+    templateUrl: './exercise-detailview.component.html',
+    styleUrls: ['./exercise-detailview.component.scss'],
 })
 export class ExerciseDetailviewComponent implements OnChanges {
-  @Input() exercise: Exercise;
 
-  trainings: Training[];
-  graphData: NumberValueGraph[] = [];
-  graphDataPercent: NumberValueGraph[] = [];
+    @Input() exercise: Exercise;
 
-  Pattern = Pattern;
+    public trainings: Training[];
+    public graphData: NumberValueGraph[] = [];
+    public graphDataPercent: NumberValueGraph[] = [];
 
-  constructor(
-    public trainingService: TrainingService,
-    public patternAnalysisService: PatternAnalysisService,
-    private graphDataService: GraphDataService
-  ) {}
+    Pattern = Pattern;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.firstChange) {
-      this.initTrainingData();
+    constructor(
+        public trainingService: TrainingService,
+        public patternAnalysisService: PatternAnalysisService,
+        private graphDataService: GraphDataService
+    ) {}
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (!changes.firstChange) {
+            this.initDetailedData();
+        }
     }
-  }
 
-  private initTrainingData() {
-    this.trainingService.getTrainings().subscribe((trainings) => {
-      if (this.exercise) {
-        this.trainings = this.trainingService.retrieveTrainingsIncludingExercise(
-          trainings,
-          this.exercise
+    private initDetailedData() {
+        this.trainingService.getTrainings().subscribe((trainings) => {
+            if (this.exercise) {
+                this.initTrainings(trainings);
+                this.initNumericalGraph();
+                this.initPercentageGraph();
+            }
+        });
+    }
+
+    private initTrainings(trainings: Training[]) {
+        this.trainings = this.trainingService.retrieveTrainingsFromExercise(
+            trainings,
+            this.exercise
         );
+    }
+
+    private initNumericalGraph() {
         this.graphData = this.graphDataService.initGraphDataForExerciseProgress(
-          this.trainings,
-          this.exercise
+            this.trainings,
+            this.exercise
         );
+    }
 
+    private initPercentageGraph() {
         this.graphDataPercent = this.calculateGraphDataPercent();
-      }
-    });
-  }
+    }
 
-  /**
-   * Method to calculate the difference between one training and the training before
-   * as percentage to determine highs and lows in exercises and trainings
-   */
-  private calculateGraphDataPercent() {
-    const graphData = this.graphData;
-    const graphDataPercent = [];
+    /**
+     * Calculates the difference between one training and the training before
+     * as percentage to determine highs and lows for each exercise.
+     */
+    private calculateGraphDataPercent() {
+        const graphData = this.graphData;
+        const graphDataPercent = [];
 
-    graphData.forEach((currentElem, i) => {
-      const lastElem = graphData[i + 1];
-      const endOfArray = graphData[graphData.length - 1];
+        graphData.forEach((currentElem, i) => {
+            const lastElem = graphData[i + 1];
+            const endOfArray = graphData[graphData.length - 1];
 
-      if (currentElem !== endOfArray) {
-        const entry: NumberValueGraph = {
-          name: 'From ' + lastElem.name + ' to ' + currentElem.name,
-          value:
-            ((+currentElem.value - +lastElem.value) / +currentElem.value) * 100,
-        };
-        graphDataPercent.push(entry);
-      }
-    });
+            if (currentElem !== endOfArray) {
+                const entry: NumberValueGraph = {
+                    name: 'From ' + lastElem.name + ' to ' + currentElem.name,
+                    value:
+                        ((+currentElem.value - +lastElem.value) /
+                            +currentElem.value) *
+                        100,
+                };
+                graphDataPercent.push(entry);
+            }
+        });
 
-    return graphDataPercent;
-  }
+        return graphDataPercent;
+    }
 }

@@ -13,7 +13,7 @@
             </mat-form-field>
             <mat-form-field>
               <mat-label>Choose pattern</mat-label>
-              <mat-select (selectionChange)="prepareExerciseCategory($event)">
+              <mat-select (selectionChange)="addExerciseCategory($event)">
                 <mat-option *ngFor="let category of exerciseService.retrievePatternProperties()" [value]="category">
                   {{ exerciseService.retrievePatternValueFromPattern(category) }}
                 </mat-option>
@@ -31,7 +31,7 @@
           <form class="inline example-form">
             <mat-form-field>
               <mat-label>Choose exercise</mat-label>
-              <mat-select (selectionChange)="selectExerciseToDelete($event)">
+              <mat-select (selectionChange)="markForDeletion($event)">
                 <mat-option *ngFor="let exercise of exercises" [value]="exercise">
                   {{ exercise.name }}
                 </mat-option>

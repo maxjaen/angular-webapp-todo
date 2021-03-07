@@ -1,5 +1,5 @@
 export class BaseSetting {
   value: boolean;
-  displaytext: string;
+  displayText: string;
   category: string;
 }

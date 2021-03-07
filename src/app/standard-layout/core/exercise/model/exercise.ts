@@ -8,7 +8,8 @@ export class Exercise {
   name: string;
   checked: boolean;
   pattern: ExercisePattern;
-  string: string;
+  str: string;
+
   /** optional */
   repetitions?: number;
   records?: number;

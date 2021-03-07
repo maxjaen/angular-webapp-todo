@@ -34,7 +34,7 @@
                     <p>current counter</p>
                 </div>
                 <div class="session-header-text">
-                    <h1>{{ workoutCountdown }}</h1>
+                    <h1>{{ workoutCountdownSeconds }}</h1>
                     <p>general counter</p>
                 </div>
                 <div class="session-header-text">
@@ -46,20 +46,20 @@
                 <h2> Next Exercises</h2>
                 <div class="exercise-start" *ngFor="let exercise of selectedTraining.exercises; let i = index;">
                     <div
-                        *ngIf="currentExercise.name==exercise.name && currentExercise.name!='Break' && selectedTraining.exercises.indexOf(exercise)==currentExerciseIndex">
+                        *ngIf="currentExercise.name==exercise.name && currentExercise.name!='Break' && selectedTraining.exercises.indexOf(exercise)==currentIndex">
                         <div class="current">{{ i+1 }}: {{exercise.name}}, {{exercise.repetitions}}</div>
                     </div>
                     <div
-                        *ngIf="exercise.name=='Break' && selectedTraining.exercises.indexOf(exercise)==currentExerciseIndex">
+                        *ngIf="isBreakTime(exercise)">
                         <div class="break">{{ i+1 }}: {{exercise.name}}, {{exercise.repetitions}}</div>
                     </div>
-                    <div *ngIf="currentExercise.name!=exercise.name && inListOfNextSteps(exercise)">
+                    <div *ngIf="currentExercise.name!=exercise.name && isInNextThreeExercises(exercise)">
                         <div>{{ i+1 }}: {{exercise.name}} ({{exercise.repetitions}} seconds)</div>
                     </div>
                 </div>
             </div>
             <div class="block session" *ngIf="selectedTraining && !currentExercise">
-                <h2>Aktuelles Training ({{ workoutDurationInSeconds() }} min)</h2>
+                <h2>Aktuelles Training ({{ formatWorkoutToMin() }} min)</h2>
                 <div class="exercise-start" *ngFor="let exercise of selectedTraining.exercises; let i = index;">
                     <div class="text" *ngIf="exercise.name!='Break'">
                         <div>{{ i+1 }}: {{exercise.name}} ({{exercise.repetitions}} seconds)</div>

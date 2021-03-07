@@ -3,8 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Task } from '../../tasks/model/task';
 import { TaskService } from '../../../shared/services/core/task.service';
 import { TimeTask } from '../model/timetask';
-import { TimeService } from 'src/app/standard-layout/shared/services/utils/time.service';
-import { UtilityService } from 'src/app/standard-layout/shared/services/utils/utility.service';
+import { newDate } from 'src/app/standard-layout/shared/utils/TimeUtils';
+import { sortNumerical } from 'src/app/standard-layout/shared/utils/CommonUtils';
 
 @Component({
   selector: 'app-insert-task-dialog',
@@ -14,9 +14,7 @@ export class InsertTaskDialogTimeComponent {
   tasks: Task[];
 
   constructor(
-    private utilityService: UtilityService,
     private taskService: TaskService,
-    private timeService: TimeService,
     public dialogRefService: MatDialogRef<InsertTaskDialogTimeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TimeTask
   ) {
@@ -24,7 +22,7 @@ export class InsertTaskDialogTimeComponent {
       this.tasks = tasks
         .filter((e) => !e.hided)
         .sort((a, b) =>
-          this.utilityService.sortNumerical(
+          sortNumerical(
             Date.parse(a.date.toString()),
             Date.parse(b.date.toString())
           )
@@ -32,7 +30,7 @@ export class InsertTaskDialogTimeComponent {
 
       const shortDescription = 'Not an existing task';
       const longDescription = '';
-      const date = this.timeService.createNewDate();
+      const date = newDate();
 
       tasks.push({
         id: 0,

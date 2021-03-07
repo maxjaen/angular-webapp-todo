@@ -5,62 +5,83 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Exercise } from '../../../exercise/model/exercise';
 import { KeyService } from '../../../../shared/services/utils/key.service';
 import { ExerciseService } from 'src/app/standard-layout/shared/services/core/exercise.service';
+import { formatLocaleDateStr } from 'src/app/standard-layout/shared/utils/TimeUtils';
+import { tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-training-detailview',
-  templateUrl: './training-detailview.component.html',
-  styleUrls: ['./training-detailview.component.scss'],
+    selector: 'app-training-detailview',
+    templateUrl: './training-detailview.component.html',
+    styleUrls: ['./training-detailview.component.scss'],
 })
 export class TrainingDetailViewComponent implements OnInit {
-  actualTraining: Training;
-  dataSource: Exercise[] = [];
-  displayedColumns: string[] = ['name', 'category', 'string'];
 
-  constructor(
-    public exerciseService: ExerciseService,
-    private keyService: KeyService,
-    private trainingService: TrainingService,
-    private activeRouteService: ActivatedRoute,
-    private RouterService: Router
-  ) {}
+    public dataSource: Exercise[] = [];
+    public displayedColumns: string[] = ['name', 'category', 'string'];
+    public viewedTraining: Training;
+    private viewedTrainingId: number;
 
-  ngOnInit() {
-    this.getTraining();
-  }
+    constructor(
+        public exerciseService: ExerciseService,
+        private keyService: KeyService,
+        private trainingService: TrainingService,
+        private activeRoute: ActivatedRoute,
+        private router: Router
+    ) {}
 
-  private getTraining() {
-    this.activeRouteService.params.subscribe((params) => {
-      this.trainingService
-        .getTrainingByID(+params.id)
-        .subscribe((training) => {
-          this.actualTraining = training;
-          this.dataSource = this.actualTraining.exercises;
-        });
-    });
-  }
-
-  public removeTraining() {
-    if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
-      this.activeRouteService.params.subscribe((params) => {
-        this.trainingService.deleteTrainingByID(+params.id).subscribe(() => {
-          this.navigateBack();
-        });
-      });
+    ngOnInit() {
+        this.initTrainingOnParamId();
     }
-  }
 
-  public navigateBack() {
-    this.RouterService.navigate(['/training']);
-  }
+    /**
+     * Navigate back to get an overview of all the available trainings.
+     */
+    public navigateToTrainingsOverview() {
+        this.router.navigate(['/training']);
+    }
 
-  public toLocaleDateString(date: Date): string {
-    const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
+    /**
+     * @see formatLocaleDateStr
+     */
+    public toLocaleDateString(date: Date): string {
+        return formatLocaleDateStr(date);
+    }
 
-    return new Date(date).toLocaleDateString('de-DE', options);
-  }
+    /**
+     * Delete the viewed training from the database.
+     */
+    public removeTraining() {
+        if (window.confirm(this.keyService.getKeyTranslation('a11'))) {
+            this.activeRoute.params.subscribe((params) => {
+                this.trainingService
+                    .deleteTrainingByID(+params.id)
+                    .subscribe(() => {
+                        this.navigateToTrainingsOverview();
+                    });
+            });
+        }
+    }
+
+    private initTrainingOnParamId() {
+        this.activeRoute.params
+            .pipe(
+                tap((params) => {
+                    this.viewedTrainingId = +params.id;
+                })
+            )
+            .subscribe(() => {
+                this.initTraining();
+            });
+    }
+
+    private initTraining() {
+        this.trainingService
+            .getTrainingByID(this.viewedTrainingId)
+            .pipe(
+                tap((training) => {
+                    this.viewedTraining = training;
+                    this.dataSource = this.viewedTraining.exercises;
+                })
+            )
+            .subscribe();
+    }
 }

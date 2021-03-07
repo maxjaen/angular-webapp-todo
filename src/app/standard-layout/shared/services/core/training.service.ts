@@ -3,68 +3,82 @@ import { Training } from '../../../core/training/model/training';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Exercise } from '../../../core/exercise/model/exercise';
-import { UtilityService } from '../utils/utility.service';
+import { sortNumerical } from '../../utils/CommonUtils';
+
+const TRAININGS_URL = 'http://localhost:3000/trainings';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class TrainingService {
-  private url = 'http://localhost:3000/trainings';
 
-  constructor(
-    private utilityService: UtilityService,
-    private httpClient: HttpClient
-  ) {}
+    constructor(private httpClient: HttpClient) {}
 
-  public getTrainings(): Observable<Training[]> {
-    return this.httpClient.get<Array<Training>>(this.url);
-  }
+    public getTrainings(): Observable<Training[]> {
+        return this.httpClient.get<Array<Training>>(TRAININGS_URL);
+    }
 
-  public getTrainingByID(id: number): Observable<Training> {
-    return this.httpClient.get<Training>(this.url + '/' + id);
-  }
+    public getTrainingByID(id: number): Observable<Training> {
+        return this.httpClient.get<Training>(TRAININGS_URL + '/' + id);
+    }
 
-  public postTraining(training: Training): Observable<Training> {
-    return this.httpClient.post<Training>(this.url, training);
-  }
+    public postTraining(training: Training): Observable<Training> {
+        return this.httpClient.post<Training>(TRAININGS_URL, training);
+    }
 
     public putTraining(training: Training): Observable<Training> {
-    return this.httpClient.put<Training>(this.url  + '/' + training.id, training);
-  }
+        return this.httpClient.put<Training>(
+            TRAININGS_URL + '/' + training.id,
+            training
+        );
+    }
 
-  public deleteTrainingByID(id: number): Observable<Training> {
-    return this.httpClient.delete<Training>(this.url + '/' + id);
-  }
+    public deleteTrainingByID(id: number): Observable<Training> {
+        return this.httpClient.delete<Training>(TRAININGS_URL + '/' + id);
+    }
 
-  /**
-   * @param trainings to look for specified exercise
-   * @param exercise which should be included in training
-   */
-  public retrieveTrainingsIncludingExercise(
-    trainings: Training[],
-    exercise: Exercise
-  ): Training[] {
-    return this.sortByDate(trainings).filter(
-      (training) =>
-        training.exercises.filter((other) => exercise.name === other.name)
-          .length > 0
-    );
-  }
+    /**
+     * Get all trainings that contain the given exercise.
+     *
+     * @param trainings The trainings to look for specified exercise.
+     * @param exercise The exercise which will be used as a filter value.
+     * @returns Returns a training array where a trainings contain the given
+     * exercise.
+     */
+    public retrieveTrainingsFromExercise(
+        trainings: Training[],
+        exercise: Exercise
+    ): Training[] {
+        return this.sortByDate(trainings).filter(
+            (training) =>
+                training.exercises.filter(
+                    (other) => exercise.name === other.name
+                ).length > 0
+        );
+    }
 
-  /**
-   * @param trainings to be sorted
-   * @returns sorted list of trainings
-   */
-  public sortByDate(trainings: Training[]) {
-    return trainings.sort((training, other) =>
-      this.utilityService.sortNumerical(
-        Date.parse(training.date.toString()),
-        Date.parse(other.date.toString())
-      )
-    );
-  }
+    /**
+     * Sort the specified trainings numerically.
+     *
+     * @param trainings The trainings array that should be sorted.
+     * @returns Returns a numerically sorted list of trainings.
+     */
+    public sortByDate(trainings: Training[]) {
+        return trainings.sort((a, b) =>
+            sortNumerical(
+                Date.parse(a.date.toString()),
+                Date.parse(b.date.toString())
+            )
+        );
+    }
 
-  public extractLocaleDateStringFromTraining(training: Training): string {
-    return new Date(training.date).toLocaleString();
-  }
+    /**
+     * Extract the locale date as string representation from the given training.
+     *
+     * @param training The training to extract the string from.
+     * @returns Returns a local date string representation from the given training.
+     */
+    public extractLocaleDateString(training: Training): string {
+        return new Date(training.date).toLocaleString();
+    }
 }

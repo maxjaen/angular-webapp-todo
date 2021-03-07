@@ -15,115 +15,19 @@
       </div>
       <div class="chips">
         <mat-chip-list aria-label="View selection">
-          <mat-chip (click)="selectView(View.PROJECTS)" selected>Projects</mat-chip>
-          <mat-chip (click)="selectView(View.PINS)" selected>Pins</mat-chip>
+          <mat-chip (click)="selectView(VIEW.PROJECTS)" selected>Projects</mat-chip>
+          <mat-chip (click)="selectView(VIEW.PINS)" selected>Pins</mat-chip>
         </mat-chip-list>
       </div>
-      <div *ngIf="viewSelected === View.PROJECTS">
+      <div *ngIf="viewSelected === VIEW.PROJECTS">
         <app-project-view [tasks]="tasks" [settings]="settings" [tasksRunning]="tasksRunning"
           (reload)="loadFromServices()">
         </app-project-view>
       </div>
-      <div *ngIf="viewSelected === View.PINS">
+      <div *ngIf="viewSelected === VIEW.PINS">
         <app-pin-view [tasks]="tasks" [settings]="settings" [tasksRunning]="tasksRunning" (reload)="loadFromServices()">
         </app-pin-view>
       </div>
     </div>
   </mat-tab>
-  <!-- TODO is this still important?
-  <mat-tab label="Archive">
-    <div class="content" *ngIf="tasksHided">
-      <div class="fixedButtons-righttop">
-        <div class="circle">{{ taskService.countUnsavedTasks(tasks) }}</div>
-      </div>
-      <div *ngFor="let task of tasksHided">
-        <div *ngIf="task == taskSelected" class="block changeField minorToBottom">
-          <form class="example-form">
-            <mat-form-field class="example-full-width indentingFromRight">
-              <input matInput #message maxlength="50" placeholder="titel" name="shortDescription"
-                [(ngModel)]="taskSelected.shortDescription" />
-              <mat-hint>{{ message.value.length }} / 50</mat-hint>
-            </mat-form-field>
-            <mat-form-field>
-              <input matInput (dateChange)="changeDateFromTask($event)" [matDatepicker]="picker"
-                placeholder="Choose a date" />
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field class="example-full-width textarea-container indentingFromTop">
-              <textarea placeholder="description" name="longDescription" [(ngModel)]="taskSelected.longDescription"
-                (ngModelChange)="replaceWithShortcuts(taskSelected)" matInput></textarea>
-            </mat-form-field>
-            <div class="inlineButtons">
-              <button (click)="saveTask(taskSelected)" mat-button>
-                Save task
-              </button>
-
-            </div>
-          </form>
-        </div>
-        <mat-card class="example-card">
-          <div block="inlineblock">
-            <mat-card-header>
-              <mat-card-title>
-                {{ task.shortDescription }}
-                <div *ngIf="
-                          settings &&
-                          settingsService.getSettingsValue(
-                            settings,
-                            'Show creation date'
-                          )
-                        ">
-                  <div class="smallToTop fontSize12">
-                    {{ taskService.extractUtcStringFromTask(task) }}
-                  </div>
-                </div>
-              </mat-card-title>
-              <mat-card-subtitle *ngIf="task.longDescription && task.longDescription.length > 0">
-                <ul *ngFor="
-                          let point of utilityService.splitWithNewLine(task.longDescription)
-                        ">
-                  <div *ngIf="
-                            point.length > 0 &&
-                            !point.includes('!') &&
-                            !point.includes('#') &&
-                            !(point == ' ') &&
-                            !point.includes('$')
-                          ">
-                    <li>{{ point }}</li>
-                  </div>
-                  <div *ngIf="point.length == 0">
-                    <br />
-                  </div>
-                  <div *ngIf="point == ' '">
-                    <hr />
-                  </div>
-                  <div *ngIf="point.includes('!')" [style.color]="keyService.getColor('orange')">
-                    {{ point }}
-                  </div>
-                  <div *ngIf="point.includes('$')" [style.color]="keyService.getColor('green')">
-                    {{ point }}
-                  </div>
-                  <div *ngIf="point.includes('#')" [style.color]="keyService.getColor('white')">
-                    <h3>{{ point }}</h3>
-                  </div>
-                </ul>
-              </mat-card-subtitle>
-            </mat-card-header>
-          </div>
-          <div class="inlineButtons">
-            <p *ngIf="!taskService.isSaved(task)">
-              Not saved
-            </p>
-            <button title="Unarchive" (click)="hideTask(task)" mat-button>
-              <mat-icon>move_to_inbox</mat-icon>
-            </button>
-            <button title="Delete" (click)="removeTask(task)" mat-button>
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-card>
-      </div>
-    </div>
-  </mat-tab>-->
 </mat-tab-group>

@@ -4,30 +4,31 @@ import { Weight } from '../../../core/weight/model/weight';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class WeightService {
-  private url = 'http://localhost:3000/weights';
 
-  constructor(private httpClient: HttpClient) {}
+    private url = 'http://localhost:3000/weights';
 
-  public getAllWeights(): Observable<Weight[]> {
-    return this.httpClient.get<Array<Weight>>(this.url);
-  }
+    constructor(private httpClient: HttpClient) {}
 
-  public getWeightByID(id: number): Observable<Weight[]> {
-    return this.httpClient.get<Array<Weight>>(this.url + '/' + id);
-  }
+    public getAllWeights(): Observable<Weight[]> {
+        return this.httpClient.get<Array<Weight>>(this.url);
+    }
 
-  public postWeight(weight: Weight): Observable<Weight> {
-    return this.httpClient.post<Weight>(this.url, weight);
-  }
+    public getWeightByID(id: number): Observable<Weight[]> {
+        return this.httpClient.get<Array<Weight>>(this.url + '/' + id);
+    }
 
-  public putWeight(weight: Weight): Observable<Weight> {
-    return this.httpClient.put<Weight>(this.url + '/' + weight.id, weight);
-  }
+    public postWeight(weight: Weight): Observable<Weight> {
+        return this.httpClient.post<Weight>(this.url, weight);
+    }
 
-  public deleteWeight(id: number): Observable<Weight> {
-    return this.httpClient.delete<Weight>(this.url + '/' + id);
-  }
+    public putWeight(weight: Weight): Observable<Weight> {
+        return this.httpClient.put<Weight>(this.url + '/' + weight.id, weight);
+    }
+
+    public deleteWeight(id: number): Observable<Weight> {
+        return this.httpClient.delete<Weight>(this.url + '/' + id);
+    }
 }

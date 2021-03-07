@@ -10,68 +10,68 @@
       "general": {
         "showTasksModule": {
           "value": false,
-          "displaytext": "Show tasks module",
+          "displayText": "Show tasks module",
           "category": "general"
         },
         "showFitnessModule": {
           "value": true,
-          "displaytext": "Show fitness module",
+          "displayText": "Show fitness module",
           "category": "general"
         },
         "showTitleBar": {
           "value": false,
-          "displaytext": "Show title bar",
+          "displayText": "Show title bar",
           "category": "general"
         }
       },
       "task": {
         "showStatusColor": {
           "value": false,
-          "displaytext": "Show status color",
+          "displayText": "Show status color",
           "category": "task"
         },
         "showCreationDate": {
           "value": false,
-          "displaytext": "Show creation date",
+          "displayText": "Show creation date",
           "category": "task"
         },
         "enableTaskHistory": {
           "value": false,
-          "displaytext": "Enable task history",
+          "displayText": "Enable task history",
           "category": "task"
         },
         "showUnpinnedTasks": {
           "value": true,
-          "displaytext": "Show unpinned Tasks",
+          "displayText": "Show unpinned Tasks",
           "category": "task"
         }
       },
       "timetask": {
         "showTotalWeek": {
           "value": true,
-          "displaytext": "Show total this week",
+          "displayText": "Show total this week",
           "category": "timetask"
         },
         "showTotalToday": {
           "value": true,
-          "displaytext": "Show total today",
+          "displayText": "Show total today",
           "category": "timetask"
         },
         "showWeekNumber": {
           "value": false,
-          "displaytext": "Show week number",
+          "displayText": "Show week number",
           "category": "timetask"
         },
         "enableTimeTaskHistory": {
           "value": false,
-          "displaytext": "Enable timetask history",
+          "displayText": "Enable timetask history",
           "category": "timetask"
         }
       },
       "session": {
         "playSound": {
           "value": false,
-          "displaytext": "Play sound",
+          "displayText": "Play sound",
           "category": "session"
         }
       }

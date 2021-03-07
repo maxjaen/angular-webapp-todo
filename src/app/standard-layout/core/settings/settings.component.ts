@@ -4,60 +4,71 @@ import { SettingsService } from '../../shared/services/core/settings.service';
 import { Settings } from './model/settings';
 import { KeyService } from '../../shared/services/utils/key.service';
 import { BaseSetting } from './model/base-setting';
-import { UtilityService } from '../../shared/services/utils/utility.service';
+import { sortDistinct } from '../../shared/utils/CommonUtils';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
-  settings: Settings;
 
-  constructor(
-    public settingsService: SettingsService,
-    private utilityService: UtilityService,
-    private keyService: KeyService,
-    private tabTitleService: Title
-  ) {
-    this.tabTitleService.setTitle(this.keyService.getKeyTranslation('s1'));
-  }
+    public settings: Settings;
 
-  ngOnInit(): void {
-    this.initSettings();
-  }
+    constructor(
+        public settingsService: SettingsService,
+        private keyService: KeyService,
+        private title: Title
+    ) {
+        this.title.setTitle(this.keyService.getKeyTranslation('s1'));
+    }
 
-  private initSettings() {
-    this.settingsService.getSettings().subscribe((settings) => {
-      this.settings = settings[0];
-    });
-  }
+    ngOnInit() {
+        this.initSettings();
+    }
 
-  public getBaseSettingsList() {
-    const list: BaseSetting[] = [];
-    Object.getOwnPropertyNames(this.settings).map(e => this.settings[e]).forEach(e => {
-      Object.getOwnPropertyNames(e).forEach(f => list.push(e[f]));
-    });
-    return list;
-  }
+    public getBaseSettingsList(): BaseSetting[] {
+        const list: BaseSetting[] = [];
+        Object.getOwnPropertyNames(this.settings)
+            .map((e) => this.settings[e])
+            .forEach((e) => {
+                Object.getOwnPropertyNames(e).forEach((f) => list.push(e[f]));
+            });
+        return list;
+    }
 
-  public getBaseListCategories() {
-    return this.getBaseSettingsList().map(e => e.category).filter(this.utilityService.sortDistinct);
-  }
+    public getBaseListCategories(): string[] {
+        return this.getBaseSettingsList()
+            .map((e) => e.category)
+            .filter(sortDistinct);
+    }
 
-  public getBaseSettingsListByCategory(category: string): BaseSetting[] {
-    return this.getBaseSettingsList().filter(baseSetting => baseSetting.category === category);
-  }
+    public getBaseSettingsListByCategory(category: string): BaseSetting[] {
+        return this.getBaseSettingsList().filter(
+            (baseSetting) => baseSetting.category === category
+        );
+    }
 
-  /**
-   * Switch setting on/off when clicking on slider
-   * @param setting to be changed
-   * @param event toggle event on user interface
-   */
-  public toggleSlider(setting: BaseSetting) {
-    setting.value = !setting.value;
+    /**
+     * Switch settings on and off when triggering the slider on the user
+     * interface.
+     *
+     * @param setting The setting that will be triggered on the UI.
+     * @param event The toggle event that indicates that the slider has changed
+     * its internal value.
+     */
+    public toggleSlider(setting: BaseSetting) {
+        setting.value = !setting.value;
 
-    this.settingsService.settings.next(this.settings); // multicast settings change
-    this.settingsService.putSettings(this.settings).subscribe(); // save changed settings to database
-  }
+        // multicast settings change
+        this.settingsService.settings.next(this.settings);
+        // save changed settings to database
+        this.settingsService.putSettings(this.settings).subscribe();
+    }
+
+    private initSettings() {
+        this.settingsService.getSettings().subscribe((settings) => {
+            this.settings = settings[0];
+        });
+    }
 }

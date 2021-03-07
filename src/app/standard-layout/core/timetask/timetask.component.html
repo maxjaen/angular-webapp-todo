@@ -20,9 +20,9 @@
             <div *ngIf="settings.timetask.showTotalWeek.value">
               <p>
                 <span>Time week: </span>
-                <span [style.color]="keyService.getColor(Color.WHITE)">
+                <span [style.color]="keyService.getColor(color.WHITE)">
                   {{
-                    timeService.formatMillisecondsToString(
+                    formatToHms(
                       timeTaskService.calculateTimeForCurrentWeek(timeTasks)
                     )
                   }}</span>
@@ -31,9 +31,9 @@
             <div *ngIf="settings.timetask.showTotalToday.value">
               <p>
                 <span>Time today: </span>
-                <span [style.color]="keyService.getColor(Color.WHITE)">
+                <span [style.color]="keyService.getColor(color.WHITE)">
                   {{
-                    timeService.formatMillisecondsToString(
+                    formatToHms(
                       timeTaskService.calculateTimeForToday(timeTasksFromToday)
                     )
                   }}</span>
@@ -42,9 +42,9 @@
             <div *ngIf="settings.timetask.showWeekNumber.value">
               <p>
                 <span>Week: </span>
-                <span [style.color]="keyService.getColor(Color.WHITE)">{{
-                  utilityService.formatToTwoDigits(
-                    timeService.calculateCurrentWeekNumber()
+                <span [style.color]="keyService.getColor(color.WHITE)">{{
+                  formatToTwoDigits(
+                    calculateCurrentWeekNumber()
                   )
                 }}</span>
               </p>
@@ -118,7 +118,7 @@
                       Measurement is running
                       <p>
                         @{{
-                          timeService.formatDateToStringWithDescription(
+                          formatDateToStringWithDescription(
                             timeTask.startDate,
                             'Start'
                           )
@@ -132,7 +132,7 @@
                       Measurement is invalid
                       <p>
                         @{{
-                          timeService.formatDateToStringWithDescription(
+                          formatDateToStringWithDescription(
                             timeTask.startDate,
                             'Start'
                           )
@@ -144,7 +144,7 @@
                         {{ toString(timeTask) }} >>
                       </div>
                       {{
-                        timeService.formatDateToStringWithDescription(
+                        formatDateToStringWithDescription(
                           timeTask.startDate,
                           'Start'
                         )
@@ -152,7 +152,7 @@
                       <div class="inline">
                         ,
                         {{
-                          timeService.formatDateToStringWithDescription(
+                          formatDateToStringWithDescription(
                             timeTask.endDate,
                             'End'
                           )
@@ -164,7 +164,7 @@
                       timeTask.longDescription && timeTask.longDescription.length > 0
                     ">
                     <ul *ngFor="
-                        let point of utilityService.splitWithNewLine(
+                        let point of splitWithNewLine(
                           timeTask.longDescription
                         )
                       ">
@@ -212,7 +212,7 @@
           <p>
             Time:
             <span style="color: coral;">{{
-              timeService.formatMillisecondsToString(
+              formatToHms(
                 timeTaskService.calculateTimeForToday(timeTasksFromHistory)
               )
             }}</span>
@@ -233,7 +233,7 @@
           <br />
         </div>
         <div *ngFor="let timeTask of timeTasksFromHistory">
-          <mat-card class="example-card block" [style.background-color]="keyService.getColor(Color.GRAY)">
+          <mat-card class="example-card block" [style.background-color]="keyService.getColor(color.GRAY)">
             <mat-card-header style="float: left;">
               <mat-card-title>
                 {{ timeTask.shortDescription }}
@@ -245,7 +245,7 @@
                     {{ toString(timeTask) }} >>
                   </div>
                   {{
-                    timeService.formatDateToStringWithDescription(
+                    formatDateToStringWithDescription(
                       timeTask.startDate,
                       'Start'
                     )
@@ -253,7 +253,7 @@
                   <div *ngIf="timeTask.endDate" style="display: inline;">
                     ,
                     {{
-                      timeService.formatDateToStringWithDescription(
+                      formatDateToStringWithDescription(
                         timeTask.endDate,
                         'End'
                       )
@@ -265,7 +265,7 @@
                   timeTask.longDescription && timeTask.longDescription.length > 0
                 ">
                 <ul *ngFor="
-                    let point of utilityService.splitWithNewLine(
+                    let point of splitWithNewLine(
                       timeTask.longDescription
                     )
                   ">

@@ -5,57 +5,60 @@ import { map, shareReplay } from 'rxjs/operators';
 import { SettingsService } from 'src/app/standard-layout/shared/services/core/settings.service';
 import { Settings } from 'src/app/standard-layout/core/settings/model/settings';
 import { ThemeService } from 'src/app/standard-layout/shared/services/utils/theme.service';
-import { TimeService } from 'src/app/standard-layout/shared/services/utils/time.service';
+import { newDate } from 'src/app/standard-layout/shared/utils/TimeUtils';
 
 @Component({
-  selector: 'app-nav',
-  templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.scss'],
+    selector: 'app-nav',
+    templateUrl: './nav.component.html',
+    styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent implements OnInit {
-  settings: Settings;
-  time = this.timeService.createNewDate();
 
-  isHandset$: Observable<boolean> = this.breakpointObserver
-    .observe(Breakpoints.Handset)
-    .pipe(
-      map((result) => result.matches),
-      shareReplay()
-    );
+    public settings: Settings;
+    public time = newDate();
 
-  constructor(
-    private breakpointObserver: BreakpointObserver,
-    private settingsService: SettingsService,
-    private themeService: ThemeService,
-    private timeService: TimeService
-  ) {}
+    isHandset$: Observable<boolean> = this.breakpointObserver
+        .observe(Breakpoints.Handset)
+        .pipe(
+            map((result) => result.matches),
+            shareReplay()
+        );
 
-  ngOnInit() {
-    this.themeService.setTheme('blue');
+    constructor(
+        private breakpointObserver: BreakpointObserver,
+        private settingsService: SettingsService,
+        private themeService: ThemeService
+    ) {}
 
-    this.getSettings();
-    this.updateClock();
-  }
+    ngOnInit() {
+        this.themeService.setTheme('blue');
 
-  private getSettings() {
-    this.settingsService.getSettings().subscribe(settings => {
-      this.settings = settings[0];
-    });
-    // react on changed settings
-    this.settingsService.settings.subscribe({
-      next: (settings) => this.settings = settings
-    });
-  }
-
-  private updateClock() {
-    setInterval(() => {
-       this.time = this.timeService.createNewDate();
-    }, 1000);
-  }
-
-  public unFocusAfterClick() {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
+        this.initSettings();
+        this.updateClock();
     }
-  }
+
+    public unFocusAfterClick() {
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
+    }
+
+    private initSettings() {
+        this.settingsService.getSettings().subscribe((settings) => {
+            this.settings = settings[0];
+        });
+        this.reactOnSettingsChanged();
+    }
+
+    private reactOnSettingsChanged() {
+        this.settingsService.settings.subscribe(
+            settings => this.settings = settings
+        );
+    }
+
+    private updateClock() {
+        setInterval(() => {
+            this.time = newDate();
+        }, 1000);
+    }
 }

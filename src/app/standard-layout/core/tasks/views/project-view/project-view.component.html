@@ -4,12 +4,12 @@
             <div>{{ project }}</div>
         </div>
         <div class="tasksWrapper" cdkDropList [cdkDropListConnectedTo]="retrieveDistinctProjectNames(tasks)"
-            id="{{project}}" [cdkDropListData]="retrieveTasksWithProject(project)"
+            id="{{project}}" [cdkDropListData]="retrieveProjectTasks(project)"
             (cdkDropListDropped)="dropTaskInGroup($event)">
             <div class="timer" *ngIf="timeTaskService.runningTimeTask && isProjectGroupOfRunningTask(project)">
                 <countup-timer [countUpTimerConfig]="testConfig"></countup-timer>
             </div>
-            <div class="tasks" [cdkDragData]="task" *ngFor="let task of retrieveTasksWithProject(project);" cdkDrag>
+            <div class="tasks" [cdkDragData]="task" *ngFor="let task of retrieveProjectTasks(project);" cdkDrag>
                 <div [ngClass]="['task', timeTaskService.runningTimeTask && isRunningTask(task) ? 'running' : '']">
                     <div class=" description">{{ task.shortDescription }}</div>
                     <div class="time"></div>

@@ -23,7 +23,6 @@ import { StringValueGraph } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
 import { tap, map } from 'rxjs/operators';
 import { Color, Period } from '../../shared/model/Enums';
-import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-timetask',
@@ -286,7 +285,7 @@ export class TimeTaskComponent implements OnInit {
    * @param timeTask to save
    */
   public saveTimeTask(timeTask: TimeTask) {
-    if (isNullOrUndefined(timeTask)) {
+    if (timeTask === null || timeTask === undefined) {
       throw new Error(
         'saveTimeTask(): timeTask is not valid. Expected not null or not undefined.'
       );

@@ -3,13 +3,38 @@
  *
  * @returns Returns a new date object.
  */
-export const newDate = () => {
-    const date: Date = new Date();
-    date.setHours(
-        isDST(date) ? date.getUTCHours() + 1 : date.getUTCHours() + 2
-    );
+export const newDate = () => fromLocaleDateString(toLocalDateString(new Date()));
 
-    return date;
+/**
+ * Creates a new local date string.
+ *
+ * @param date The date that should be formatted.
+ * @returns a local date string for with the german timezone.
+ */
+export const toLocalDateString = (date: Date) =>
+    new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+
+/**
+ * Creates a date object from a locale date string.
+ *
+ * @param localDateStr The locale date that should be transformed into a date
+ * object.
+ * @returns A date object from the locale date string e.g. "2.4.2021, 08:43:01"
+ */
+export const fromLocaleDateString = (localDateStr: string) => {
+    const parts = localDateStr.split(',');
+    const partsDate = parts[0].trim().split('.');
+    const partsTime = parts[1].trim().split(':');
+
+    const day = +partsDate[0];
+    const month = +partsDate[1] - 1; // january is on index 0 and so on
+    const year = +partsDate[2];
+
+    const hours = +partsTime[0];
+    const minutes = +partsTime[1];
+    const seconds = +partsTime[2];
+
+    return new Date(year, month, day, hours, minutes, seconds);
 };
 
 /**
@@ -35,22 +60,6 @@ export const isToday = (date: Date) => {
  * @returns Returns true in case the date object is valid, otherwise false.
  */
 export const isValid = (date: Date) => date !== null || date !== undefined;
-
-/**
- * Checks if a date is in the Daylight Saving Time (DST) in germany.
- * DST starts on Sunday 29 March 2020, 02:00
- * DST ends on Sunday 25 October 2020, 03:00
- *
- * @param date The date to be checked if in dst or not.
- * @returns Returns true if the given date is in the daylight saving time,
- * otherwise false.
- */
-export const isDST = (date: Date) => {
-    const jan = new Date(date.getFullYear(), 0, 1).getTimezoneOffset();
-    const jul = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
-
-    return Math.max(jan, jul) !== date.getTimezoneOffset();
-};
 
 /**
  * Get the day of the week by number.

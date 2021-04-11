@@ -3,7 +3,7 @@
   <mat-tab label="Today">
     <div class="content">
       <div class="block">
-        <div class="notifications" *ngIf="timeTasksFromToday.length == 0">
+        <div class="notifications" *ngIf="todaysTimeTasks.length == 0">
           Start a new timer now!
         </div>
       </div>
@@ -16,11 +16,17 @@
       <div class="show-wrapper">
         <div class="show">
           <countup-timer [countUpTimerConfig]="testConfig"> </countup-timer>
+          <div *ngFor="let title of titles">
+            <p>
+              <span>(weekly) {{ title }}: </span>
+              <span>{{ formatToHms(timeTaskService.calculateTimeForCurrentWeek(getTimeTasksByTitle(title))) }}</span>
+            </p>
+          </div>
           <div *ngIf="settings">
             <div *ngIf="settings.timetask.showTotalWeek.value">
               <p>
                 <span>Time week: </span>
-                <span [style.color]="keyService.getColor(color.WHITE)">
+                <span [style.Color]="keyService.getColor(Color.WHITE)">
                   {{
                     formatToHms(
                       timeTaskService.calculateTimeForCurrentWeek(timeTasks)
@@ -31,10 +37,10 @@
             <div *ngIf="settings.timetask.showTotalToday.value">
               <p>
                 <span>Time today: </span>
-                <span [style.color]="keyService.getColor(color.WHITE)">
+                <span [style.Color]="keyService.getColor(Color.WHITE)">
                   {{
                     formatToHms(
-                      timeTaskService.calculateTimeForToday(timeTasksFromToday)
+                      timeTaskService.calculateTimeForToday(todaysTimeTasks)
                     )
                   }}</span>
               </p>
@@ -42,7 +48,7 @@
             <div *ngIf="settings.timetask.showWeekNumber.value">
               <p>
                 <span>Week: </span>
-                <span [style.color]="keyService.getColor(color.WHITE)">{{
+                <span [style.Color]="keyService.getColor(Color.WHITE)">{{
                   formatToTwoDigits(
                     calculateCurrentWeekNumber()
                   )
@@ -50,7 +56,7 @@
               </p>
             </div>
           </div>
-          <div class="block" *ngIf="timeTasksFromToday.length > 1">
+          <div class="block" *ngIf="todaysTimeTasks.length > 1">
             <ngx-charts-pie-chart [results]="graphDataFromToday" [legend]="true" [legendTitle]="'Time Management'"
               [view]="[900, 300]" [labels]="true">
             </ngx-charts-pie-chart>
@@ -65,17 +71,17 @@
         </div>
         <div>
           <div class="fixedButtons-rightbottom">
-            <button class="control-buttons-gray smallToBottom" (click)="openInsertDialog()" color="primary"
+            <button class="control-buttons-gray smallToBottom" (click)="openInsertDialog()" Color="primary"
               mat-mini-fab>
               <mat-icon>create</mat-icon>
             </button>
-            <button class="control-buttons-gray" title="Finish" (click)="finishTimer()" color="primary" mat-mini-fab>
+            <button class="control-buttons-gray" title="Finish" (click)="finishTimer()" Color="primary" mat-mini-fab>
               <mat-icon>close</mat-icon>
             </button>
           </div>
         </div>
-        <div *ngIf="timeTasksFromToday">
-          <div *ngFor="let timeTask of timeTasksFromToday">
+        <div *ngIf="todaysTimeTasks">
+          <div *ngFor="let timeTask of todaysTimeTasks">
             <div class="block low-margin smallToBottom changeField" *ngIf="selectedTimeTask === timeTask">
               <form class="example-form">
                 <mat-form-field class="example-full-width" style="margin-right: 2%;">
@@ -89,10 +95,10 @@
                     (ngModelChange)="replaceWithShortcuts(selectedTimeTask)"></textarea>
                 </mat-form-field>
                 <div class="inlineButtons">
-                  <button (click)="changeStartDate(selectedTimeTask)" style="float: right;" mat-button color="accent">
+                  <button (click)="changeStartDate(selectedTimeTask)" style="float: right;" mat-button Color="accent">
                     Start
                   </button>
-                  <button (click)="changeEndDate(selectedTimeTask)" style="float: right;" mat-button color="accent">
+                  <button (click)="changeEndDate(selectedTimeTask)" style="float: right;" mat-button Color="accent">
                     End
                   </button>
                   <button (click)="saveTimeTask(selectedTimeTask)" style="float: right;" mat-button>
@@ -104,7 +110,7 @@
             <mat-card (click)="toggleSelection(timeTask)" class="example-card block">
               <div *ngIf="
                   settings && settings.task.showStatusColor.value">
-                <div class="card-status" [style.background-color]="setBorderColor(timeTask)"></div>
+                <div class="card-status" [style.background-Color]="setBorderColor(timeTask)"></div>
               </div>
               <div style="width: 70%; display: inline-block;">
                 <mat-card-header style="float: left;">
@@ -114,7 +120,7 @@
                     <div class="fontSize12" *ngIf="
                         !timeTaskService.isValid(timeTask) &&
                         timeTask == timeTaskService.runningTimeTask
-                      " [style.color]="'#ffffff'" style="margin-top: 20px;">
+                      " [style.Color]="'#ffffff'" style="margin-top: 20px;">
                       Measurement is running
                       <p>
                         @{{
@@ -128,7 +134,7 @@
                     <div class="fontSize12 smallToTop" *ngIf="
                         !timeTaskService.isValid(timeTask) &&
                         timeTask != timeTaskService.runningTimeTask
-                      " [style.color]="'#ffffff'">
+                      " [style.Color]="'#ffffff'">
                       Measurement is invalid
                       <p>
                         @{{
@@ -205,13 +211,13 @@
         <div *ngIf="timeTasksFromHistory.length > 0">
           <div class="fixedButtons-rightbottom">
             <button class="control-buttons-gray" title="Delete all" (click)="deleteAllAvailableTimeTasks()"
-              color="primary" mat-mini-fab>
+              Color="primary" mat-mini-fab>
               <mat-icon>close</mat-icon>
             </button>
           </div>
           <p>
             Time:
-            <span style="color: coral;">{{
+            <span style="Color: coral;">{{
               formatToHms(
                 timeTaskService.calculateTimeForToday(timeTasksFromHistory)
               )
@@ -233,11 +239,11 @@
           <br />
         </div>
         <div *ngFor="let timeTask of timeTasksFromHistory">
-          <mat-card class="example-card block" [style.background-color]="keyService.getColor(color.GRAY)">
+          <mat-card class="example-card block" [style.background-Color]="keyService.getColor(Color.GRAY)">
             <mat-card-header style="float: left;">
               <mat-card-title>
                 {{ timeTask.shortDescription }}
-                <div class="fontSize12 smallToTop" *ngIf="!timeTask.endDate" [style.color]="'#ffffff'">
+                <div class="fontSize12 smallToTop" *ngIf="!timeTask.endDate" [style.Color]="'#ffffff'">
                   No measurement endDate available...
                 </div>
                 <div class="fontSize12 smallToTop">

@@ -19,7 +19,7 @@ import { Settings } from '../settings/model/settings';
 import { NumberValueGraph } from '../../shared/model/GraphData';
 import { StringValueGraph } from '../../shared/model/GraphData';
 import { GraphDataService } from '../../shared/services/utils/graph.service';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, take } from 'rxjs/operators';
 import { Color, Period } from '../../shared/model/Enums';
 import {
     calculateCurrentWeekNumber,
@@ -31,6 +31,7 @@ import {
     formatToTwoDigits,
     isNumber,
     splitWith,
+    sortDistinct
 } from '../../shared/utils/CommonUtils';
 import { NotificationService } from '../../shared/services/utils/notification.service';
 
@@ -50,10 +51,12 @@ export class TimeTaskComponent implements OnInit {
     public shortDescription: string;
     public longDescription: string;
 
+    public titles: string[];
+
     // general
     public timeTasks: TimeTask[] = [];
     // today
-    public timeTasksFromToday: TimeTask[] = [];
+    public todaysTimeTasks: TimeTask[] = [];
     public accumulatedTasksFromToday: StringValueGraph[] = [];
     public graphDataFromToday: NumberValueGraph[] = [];
     // history
@@ -61,7 +64,7 @@ export class TimeTaskComponent implements OnInit {
     public accumulatedTasksFromHistory: StringValueGraph[] = [];
     public graphDataFromHistory: NumberValueGraph[] = [];
 
-    readonly color = Color;
+    readonly Color = Color;
 
     constructor(
         public settingsService: SettingsService,
@@ -110,7 +113,7 @@ export class TimeTaskComponent implements OnInit {
     ngOnInit() {
         this.setTimerConfiguration();
         this.getSettings();
-        this.getTimeTasksFromToday();
+        this.getTimeTasks();
     }
 
     /**
@@ -143,7 +146,7 @@ export class TimeTaskComponent implements OnInit {
             this.timeTaskService
                 .putTimeTask(this.timeTaskService.runningTimeTask)
                 .subscribe(() => {
-                    this.getTimeTasksFromToday();
+                    this.getTimeTasks();
                 });
         }
         this.resetTimer();
@@ -158,7 +161,7 @@ export class TimeTaskComponent implements OnInit {
                 endDate: null,
             })
             .subscribe((timeTask) => {
-                this.getTimeTasksFromToday();
+                this.getTimeTasks();
                 this.timeTaskService.runningTimeTask = timeTask;
                 this.hideSelectedTimeTask();
                 this.startTimer();
@@ -179,7 +182,7 @@ export class TimeTaskComponent implements OnInit {
             this.timeTaskService
                 .putTimeTask(this.timeTaskService.runningTimeTask)
                 .subscribe(() => {
-                    this.getTimeTasksFromToday();
+                    this.getTimeTasks();
                 });
         }
         this.resetTimer();
@@ -195,7 +198,7 @@ export class TimeTaskComponent implements OnInit {
                 task: timeTask.task,
             })
             .subscribe((e) => {
-                this.getTimeTasksFromToday();
+                this.getTimeTasks();
                 this.timeTaskService.runningTimeTask = e;
                 this.hideSelectedTimeTask();
                 this.startTimer();
@@ -224,7 +227,7 @@ export class TimeTaskComponent implements OnInit {
                 this.keyService.getKeyTranslation('ti2'),
                 null
             );
-            this.getTimeTasksFromToday();
+            this.getTimeTasks();
             this.hideSelectedTimeTask();
         });
     }
@@ -247,7 +250,7 @@ export class TimeTaskComponent implements OnInit {
                     this.keyService.getKeyTranslation('a23'),
                     null
                 );
-                this.getTimeTasksFromToday();
+                this.getTimeTasks();
                 this.hideSelectedTimeTask();
             });
         }
@@ -264,7 +267,7 @@ export class TimeTaskComponent implements OnInit {
                         this.keyService.getKeyTranslation('ti3'),
                         null
                     );
-                    this.getTimeTasksFromToday();
+                    this.getTimeTasks();
                     this.hideSelectedTimeTask();
                 });
             });
@@ -304,7 +307,7 @@ export class TimeTaskComponent implements OnInit {
                         this.keyService.getKeyTranslation('ti4'),
                         null
                     );
-                    this.getTimeTasksFromToday();
+                    this.getTimeTasks();
                 });
         }
     }
@@ -321,7 +324,7 @@ export class TimeTaskComponent implements OnInit {
                 .putTimeTask(this.timeTaskService.runningTimeTask)
                 .pipe(
                     tap(() => {
-                        this.getTimeTasksFromToday();
+                        this.getTimeTasks();
                         this.notificationService.displayNotification(
                             this.keyService.getKeyTranslation('ti2'),
                             null
@@ -356,7 +359,7 @@ export class TimeTaskComponent implements OnInit {
                         .postTimeTask(resultFromDialog)
                         .pipe(
                             tap(() => {
-                                this.getTimeTasksFromToday();
+                                this.getTimeTasks();
                                 this.resetTimer();
                                 this.startTimer();
                                 this.notificationService.displayNotification(
@@ -565,24 +568,23 @@ export class TimeTaskComponent implements OnInit {
 
     private getSettings() {
         this.settingsService.getSettings().subscribe((settings) => {
-            this.settings = settings[0];
+                this.settings = settings[0];
         });
     }
 
-    private getTimeTasksFromToday() {
+    private getTimeTasks() {
         this.timeTaskService
             .getTimeTasks()
             .pipe(
-                tap((timeTasks) => (this.timeTasks = timeTasks)),
-                map((timeTasks) =>
-                    this.timeTaskService.retrieveFromToday(timeTasks)
-                ),
                 tap((timeTasks) => {
-                    this.initAccumulationProcess(timeTasks, Period.TODAY);
+                    const todaysTimeTasks = this.timeTaskService.retrieveFromToday(timeTasks);
+                    this.todaysTimeTasks = todaysTimeTasks;
+                    this.initAccumulationProcess(todaysTimeTasks, Period.TODAY);
                 })
             )
             .subscribe((timeTasks) => {
-                this.timeTasksFromToday = timeTasks;
+                this.timeTasks = timeTasks;
+                this.titles = this.getDistinctTitles(timeTasks);
             });
     }
 
@@ -607,6 +609,18 @@ export class TimeTaskComponent implements OnInit {
             .subscribe((timeTasks) => {
                 this.timeTasksFromHistory = timeTasks;
             });
+    }
+
+    private getDistinctTitles(timeTasks: TimeTask[]): string[] {
+        return timeTasks
+            .map(timetask => timetask.title)
+            .filter(project => project != null)
+            .filter(sortDistinct);
+    }
+
+    public getTimeTasksByTitle(title: string): TimeTask[] {
+        return this.timeTasks
+            .filter(timetask => timetask.title === title);
     }
 
     /**

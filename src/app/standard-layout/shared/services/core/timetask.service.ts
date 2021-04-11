@@ -10,7 +10,8 @@ import {
 } from '../../utils/TimeUtils';
 import { objHasProperty, sortNumerical } from '../../utils/CommonUtils';
 
-const WEIGHTS_URL = 'http://localhost:3000/timetasks';
+const TIMETASKS_URL = 'http://localhost:3000/timetasks';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -21,26 +22,26 @@ export class TimeTaskService {
     constructor(private httpClient: HttpClient) {}
 
     public getTimeTasks(): Observable<TimeTask[]> {
-        return this.httpClient.get<Array<TimeTask>>(WEIGHTS_URL);
+        return this.httpClient.get<Array<TimeTask>>(TIMETASKS_URL);
     }
 
     public getTimeTaskByID(id: number): Observable<TimeTask[]> {
-        return this.httpClient.get<Array<TimeTask>>(WEIGHTS_URL + '/' + id);
+        return this.httpClient.get<Array<TimeTask>>(TIMETASKS_URL + '/' + id);
     }
 
     public postTimeTask(timeTask: TimeTask): Observable<TimeTask> {
-        return this.httpClient.post<TimeTask>(WEIGHTS_URL, timeTask);
+        return this.httpClient.post<TimeTask>(TIMETASKS_URL, timeTask);
     }
 
     public putTimeTask(timeTask: TimeTask): Observable<TimeTask> {
         return this.httpClient.put<TimeTask>(
-            WEIGHTS_URL + '/' + timeTask.id,
+            TIMETASKS_URL + '/' + timeTask.id,
             timeTask
         );
     }
 
     public deleteTimeTask(timeTask: number): Observable<TimeTask> {
-        return this.httpClient.delete<TimeTask>(WEIGHTS_URL + '/' + timeTask);
+        return this.httpClient.delete<TimeTask>(TIMETASKS_URL + '/' + timeTask);
     }
 
     /**

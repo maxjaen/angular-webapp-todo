@@ -31,7 +31,7 @@ export class NavComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.themeService.setTheme('blue');
+        this.themeService.setTheme('main');
 
         this.initSettings();
         this.updateClock();

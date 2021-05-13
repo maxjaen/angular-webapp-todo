@@ -174,35 +174,34 @@ export class TimeTaskComponent implements OnInit {
      * @param timeTask to continue
      */
     public continueTimeTask(timeTask: TimeTask) {
-        if (
-            window.confirm(this.keyService.getKeyTranslation('a12')) && // confirm new task
-            this.timerService.isTimerStart // timer is running
-        ) {
+        if (window.confirm(this.keyService.getKeyTranslation('a12'))) {
+           if (this.timerService.isTimerStart) {
             this.timeTaskService.runningTimeTask.endDate = newDate();
             this.timeTaskService
                 .putTimeTask(this.timeTaskService.runningTimeTask)
-                .subscribe(() => {
+                .subscribe();
+           }
+
+            this.resetTimer();
+
+            this.timeTaskService
+                .postTimeTask({
+                    id: null,
+                    title: timeTask.title,
+                    shortDescription: timeTask.shortDescription,
+                    longDescription: timeTask.longDescription,
+                    startDate: newDate(),
+                    endDate: null,
+                    task: timeTask.task,
+                    project: timeTask.project
+                })
+                .subscribe((e) => {
                     this.getTimeTasks();
+                    this.timeTaskService.runningTimeTask = e;
+                    this.hideSelectedTimeTask();
+                    this.startTimer();
                 });
         }
-        this.resetTimer();
-
-        this.timeTaskService
-            .postTimeTask({
-                id: null,
-                title: timeTask.title,
-                shortDescription: timeTask.shortDescription,
-                longDescription: timeTask.longDescription,
-                startDate: newDate(),
-                endDate: null,
-                task: timeTask.task,
-            })
-            .subscribe((e) => {
-                this.getTimeTasks();
-                this.timeTaskService.runningTimeTask = e;
-                this.hideSelectedTimeTask();
-                this.startTimer();
-            });
     }
 
     /**
@@ -532,6 +531,11 @@ export class TimeTaskComponent implements OnInit {
         return formatToTwoDigits(num);
     }
 
+    public getTimeTasksByTitle(title: string): TimeTask[] {
+        return this.timeTasks
+            .filter(timetask => timetask.title === title);
+    }
+
     /**
      * Used to create accumulated graph data and description.
      *
@@ -616,11 +620,6 @@ export class TimeTaskComponent implements OnInit {
             .map(timetask => timetask.title)
             .filter(project => project != null)
             .filter(sortDistinct);
-    }
-
-    public getTimeTasksByTitle(title: string): TimeTask[] {
-        return this.timeTasks
-            .filter(timetask => timetask.title === title);
     }
 
     /**
